@@ -12,6 +12,7 @@ It's now possible to specify a command other than the default one (the `go` tool
    * The goal for the future is to enable invoking this command on-the-fly (as the user types), although for this to be useful in practice it will likely require the compiler to support incremental compilation (or be super fast otherwise).
  * Added support for modifying the environment variables of a Build Target's build command. (#191)
  * Added support for lint build target, using `gometalinter`. (#163)
+ * The Go `oracle` tool has been renamed to `guru`. Goclipse has been updated to reflect this.
 
  * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
  * Fixed: Don't call editor save actions (such as `gofmt`) when Open Definition is requested.

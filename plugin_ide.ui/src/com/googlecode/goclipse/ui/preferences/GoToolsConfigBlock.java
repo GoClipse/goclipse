@@ -67,17 +67,17 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 	
 	public class GoOracleGroup extends AbstractToolLocationGroup {
 		public GoOracleGroup() {
-			super("oracle");
+			super("guru");
 			
-			bindFieldToDerivedPreference(toolLocationField, GoToolPreferences.GO_ORACLE_Path);
+			bindFieldToDerivedPreference(toolLocationField, GoToolPreferences.GO_GURU_Path);
 		}
 		
 		@Override
 		protected BasicUIOperation do_getDownloadButtonHandler(DownloadToolTextField toolLocationField) {
-			return new Start_GoInstallJob_Operation("Download oracle", "Downloading oracle...", 
+			return new Start_GoInstallJob_Operation("Download guru", "Downloading guru...", 
 				toolLocationField,
-				"golang.org/x/tools/cmd/oracle",
-				"oracle") {
+				"golang.org/x/tools/cmd/guru",
+				"guru") {
 			};
 		}
 	};

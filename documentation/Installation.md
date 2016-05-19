@@ -1,10 +1,9 @@
 ## Installation
 
-#### Requirements: 
+#### Installation requirements: 
  * Eclipse 4.5 (Mars) or later.
  * Java VM version 8 or later.
- * [Gocode](https://github.com/nsf/gocode) and [Go oracle](http://golang.org/s/oracle-user-manual).
-
+ 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
   * For an Eclipse package without any other IDEs or extras (such a VCS tools), download the ["Platform Runtime Binary"](http://archive.eclipse.org/eclipse/downloads/drops4/R-4.5.2-201602121500/#PlatformRuntime). 

@@ -18,7 +18,8 @@ A [Go installation](https://golang.org/doc/install) is required for most IDE fun
 
 For functionality such as code completion, open definition, and editor outline, you will need:
  * The [gocode](https://github.com/nsf/gocode) tool. It is recommended to use the latest gocode version.
- * The [Go Oracle](http://golang.org/s/oracle-user-manual) tool. 
+ * The [guru](https://godoc.org/golang.org/x/tools/cmd/guru) tool. 
+ * The [godef](https://github.com/rogpeppe/godef) tool. 
  
 The path to the executable of these two tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
 
@@ -63,7 +64,7 @@ The Open Definition functionality is invoked by pressing F3 in the source editor
 Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
 (hold Ctrl and click on a reference with the mouse cursor). 
 
-> This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Go Tools Log` console page in the Eclipse Console view.
+> This functionality is provided by either `godef` or `guru`. If there is a problem with this operation, a diagnostics log with the output of the tool can be seen in the `Go Tools Log` console page in the Eclipse Console view.
 
 ### Launch and Debug:
 To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open `Run / Run Configurations...`. Then double click `Go Application` to create a new launch, and configure it accordingly. You can run these launches from the `Run Configurations...`, or for quicker access, from the Launch button in the Eclipse toolbar. You will need to specify a Go package as the build target for the launch.

@@ -255,6 +255,7 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 	public SourceFileStructure parseErrorMessage(String errorMsg) throws CommonException {
 		errorMsg = StringUtil.substringUntilLastMatch(errorMsg, "\n");
 		errorMsg = StringUtil.trimStart(errorMsg, "oracle: ");
+		errorMsg = StringUtil.trimStart(errorMsg, "guru: ");
 		
 		ArrayList2<ParserError> parserProblems = new ArrayList2<>();
 		

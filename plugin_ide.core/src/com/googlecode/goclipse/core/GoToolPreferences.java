@@ -19,9 +19,9 @@ import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
 
 public interface GoToolPreferences {
 	
-	DerivedValuePreference<Path> GO_ORACLE_Path = new DerivedValuePreference<Path>(LangCore.PLUGIN_ID, 
-		"GoToolPreferences.GO_ORACLE_Path", "", null,  
-		(new LocationOrSinglePathValidator("Go oracle path:")).setFileOnly(true));
+	DerivedValuePreference<Path> GO_GURU_Path = new DerivedValuePreference<Path>(LangCore.PLUGIN_ID, 
+		"GoToolPreferences.GO_GURU_Path", "", null,  
+		(new LocationOrSinglePathValidator("guru path:")).setFileOnly(true));
 	
 	DerivedValuePreference<Path> GODEF_Path = new DerivedValuePreference<Path>(LangCore.PLUGIN_ID, 
 		"GoToolPreferences.godef.Path", "", null, 

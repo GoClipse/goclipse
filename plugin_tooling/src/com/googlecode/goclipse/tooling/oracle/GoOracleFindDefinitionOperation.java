@@ -40,7 +40,7 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 		
 		ExternalProcessResult result = opRunner.runProcess(pb, null, cm);
 		if(result.exitValue != 0) {
-			throw new OperationSoftFailure("Go oracle did not complete successfully.");
+			throw new OperationSoftFailure("`guru` did not complete successfully.");
 		}
 		
 		return parseToolResult(result);

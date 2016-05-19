@@ -14,8 +14,8 @@
 | [![sample_basic](screenshots/Feature_QuickOutline.thumb.png)](screenshots/Feature_QuickOutline.png?raw=true)<br/>`Outline (right) and Quick-Outline (filtered to "pr")` |
 |----|
 
- * Open Definition (and "Ctrl-click") via [Go oracle](http://golang.org/s/oracle-user-manual).
- * Content Assist (auto-complete) via [gocode](https://github.com/nsf/gocode). 
+ * Open Definition (and "Ctrl-click") via `guru` or `godef`.
+ * Content Assist (auto-complete) via `gocode`. 
   * Content Assist code snippets (configurable).
 
 | [![sample_basic](screenshots/Feature_ContentAssist.thumb.png)](screenshots/Feature_ContentAssist.png?raw=true)<br/>`Content Assist` |

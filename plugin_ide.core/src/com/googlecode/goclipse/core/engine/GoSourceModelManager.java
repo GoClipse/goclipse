@@ -89,7 +89,7 @@ public class GoSourceModelManager extends SourceModelManager {
 			try {
 				setupDescribeFile();
 			} catch(IOException e) {
-				LangCore.logError("Error creating temporary file for oracle describe: ", e);
+				LangCore.logError("Error creating temporary file for guru describe: ", e);
 				return null;
 			}
 			
@@ -101,7 +101,7 @@ public class GoSourceModelManager extends SourceModelManager {
 			} catch(OperationCancellation e) {
 				return null;
 			} catch(CommonException | CoreException e) {
-				LangCore.logError("Error running oracle describe for source structure update", e);
+				LangCore.logError("Error running guru describe for source structure update", e);
 				return null;
 			} finally {
 				if(tempDir != null) {
@@ -126,7 +126,7 @@ public class GoSourceModelManager extends SourceModelManager {
 					};
 				}.parse(describeResult);
 			} catch(CommonException e) {
-				LangCore.logWarning("Error parsing oracle describe result, for source structure update. ", e);
+				LangCore.logWarning("Error parsing guru describe result, for source structure update. ", e);
 				return null;
 			}
 		}
@@ -150,7 +150,7 @@ public class GoSourceModelManager extends SourceModelManager {
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)
 				throws CommonException, CoreException, OperationCancellation {
 			GoOracleDescribeOperation oracleOp = new GoOracleDescribeOperation(
-				GoToolPreferences.GO_ORACLE_Path.getDerivedValue().toString());
+				GoToolPreferences.GO_GURU_Path.getDerivedValue().toString());
 			
 			int offset = GoSourceFileUtil.findPackageDeclaration_NameStart(source);
 			
