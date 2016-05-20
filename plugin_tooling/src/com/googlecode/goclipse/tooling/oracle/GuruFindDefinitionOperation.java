@@ -28,9 +28,9 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class GoOracleFindDefinitionOperation extends GoGuruDescribeOperation {
+public class GuruFindDefinitionOperation extends GuruDescribeOperation {
 	
-	public GoOracleFindDefinitionOperation(String goOraclePath) {
+	public GuruFindDefinitionOperation(String goOraclePath) {
 		super(goOraclePath);
 	}
 	
@@ -66,9 +66,7 @@ public class GoOracleFindDefinitionOperation extends GoGuruDescribeOperation {
 	
 	protected FindDefinitionResult doParseJsonResult(String output) 
 			throws JSONException, CommonException, OperationSoftFailure {
-		JSONObject jsonResult = new JSONObject(output);
-		
-		JSONObject describe = jsonResult.getJSONObject("describe");
+		JSONObject describe = new JSONObject(output);
 		
 		String desc = describe.getString("desc");
 		String detail = describe.getString("detail");

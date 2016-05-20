@@ -46,9 +46,9 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class GoOraclePackageDescribeParser extends AbstractStructureParser {
+public class GuruPackageDescribeParser extends AbstractStructureParser {
 	
-	public GoOraclePackageDescribeParser(Location location, String goSource) {
+	public GuruPackageDescribeParser(Location location, String goSource) {
 		super(location, goSource);
 	}
 	
@@ -76,9 +76,7 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 	
 	protected ArrayList2<StructureElement> doParseJsonResult(String output) 
 			throws JSONException, CommonException {
-		JSONObject jsonResult = new JSONObject(output);
-		
-		JSONObject describe = jsonResult.getJSONObject("describe");
+		JSONObject describe = new JSONObject(output);
 		
 		JSONObject packageObj = describe.getJSONObject("package");
 		
@@ -265,7 +263,7 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 		}
 		Matcher matcher = GO_MESSAGE_LINE_Regex.matcher(errorMsg);
 		if(!matcher.matches()) {
-			throw new CommonException("Error message line format not recognized.");
+			throw new CommonException(errorMsg);
 		}
 		
 		String lineStr = matcher.group(2);

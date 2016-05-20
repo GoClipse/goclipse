@@ -39,7 +39,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 	public GoToolsConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		addChildWidget(new GoOracleGroup());
+		addChildWidget(new GoGuruGroup());
 		addChildWidget(new GoDefGroup());
 		addChildWidget(new GoFmtGroup());
 	}
@@ -65,8 +65,8 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		};
 	}
 	
-	public class GoOracleGroup extends AbstractToolLocationGroup {
-		public GoOracleGroup() {
+	public class GoGuruGroup extends AbstractToolLocationGroup {
+		public GoGuruGroup() {
 			super("guru");
 			
 			bindFieldToDerivedPreference(toolLocationField, GoToolPreferences.GO_GURU_Path);

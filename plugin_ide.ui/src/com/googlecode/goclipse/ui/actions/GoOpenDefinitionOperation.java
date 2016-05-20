@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
-import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
+import com.googlecode.goclipse.tooling.oracle.GuruFindDefinitionOperation;
 import com.googlecode.goclipse.tooling.oracle.GodefOperation;
 
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -85,7 +85,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 			// Try go oracle as an alternative
 			try {
 				String goOraclePath = GoToolPreferences.GO_GURU_Path.getDerivedValue().toString();
-				return new GoOracleFindDefinitionOperation(goOraclePath).execute(inputLoc, byteOffset, goEnv, this, cm);
+				return new GuruFindDefinitionOperation(goOraclePath).execute(inputLoc, byteOffset, goEnv, this, cm);
 			} catch(OperationSoftFailure | CommonException oracleError) {
 				// Ignore oracle error, display previous godef error 
 			}

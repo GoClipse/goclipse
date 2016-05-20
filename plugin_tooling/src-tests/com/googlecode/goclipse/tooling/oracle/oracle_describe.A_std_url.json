@@ -1,6 +1,4 @@
 {
-	"mode": "describe",
-	"describe": {
 		"desc": "definition of package \"util\"",
 		"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:7:9",
 		"detail": "package",
@@ -255,5 +253,4 @@
 				}
 			]
 		}
-	}
 }

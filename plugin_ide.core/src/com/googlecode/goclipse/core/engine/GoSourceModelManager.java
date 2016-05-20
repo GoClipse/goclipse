@@ -29,8 +29,8 @@ import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.GoSourceFileUtil;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
-import com.googlecode.goclipse.tooling.oracle.GoGuruDescribeOperation;
-import com.googlecode.goclipse.tooling.oracle.GoOraclePackageDescribeParser;
+import com.googlecode.goclipse.tooling.oracle.GuruDescribeOperation;
+import com.googlecode.goclipse.tooling.oracle.GuruPackageDescribeParser;
 
 public class GoSourceModelManager extends SourceModelManager {
 	
@@ -111,7 +111,7 @@ public class GoSourceModelManager extends SourceModelManager {
 			}
 			
 			try {
-				return new GoOraclePackageDescribeParser(fileLocation, source) {
+				return new GuruPackageDescribeParser(fileLocation, source) {
 					@Override
 					protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
 						return describeFile.equals(sourceFileLoc);
@@ -140,7 +140,7 @@ public class GoSourceModelManager extends SourceModelManager {
 		
 		protected ExternalProcessResult runGuru(GoEnvironment goEnv, Location opTempFile)
 				throws CommonException, OperationCancellation {
-			GoGuruDescribeOperation guruOp = new GoGuruDescribeOperation(
+			GuruDescribeOperation guruOp = new GuruDescribeOperation(
 				GoToolPreferences.GO_GURU_Path.getDerivedValue().toString());
 			
 			int offset = GoSourceFileUtil.findPackageDeclaration_NameStart(source);

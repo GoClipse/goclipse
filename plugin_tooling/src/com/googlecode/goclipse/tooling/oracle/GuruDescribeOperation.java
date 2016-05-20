@@ -11,9 +11,6 @@
 package com.googlecode.goclipse.tooling.oracle;
 
 
-import java.text.MessageFormat;
-
-import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
@@ -21,22 +18,16 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class GoGuruDescribeOperation implements ToolOutputParseHelper {
+public class GuruDescribeOperation implements ToolOutputParseHelper {
 	
 	protected final String guruPath;
 	
-	public GoGuruDescribeOperation(String guruPath) {
+	public GuruDescribeOperation(String guruPath) {
 		this.guruPath = guruPath;
 	}
 	
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset) 
 			throws CommonException {
-		GoPackageName goPackage = goEnv.findGoPackageForSourceFile(fileLoc);
-		if(goPackage == null) {
-			throw new CommonException(MessageFormat.format(
-				"Could not determine Go package for Go file ({0}), file not in the Go environment.", fileLoc), 
-				null);
-		}
 		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			guruPath,

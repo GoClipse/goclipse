@@ -1,6 +1,4 @@
 {
-	"mode": "describe",
-	"describe": {
 		"desc": "reference to type Foo (size 32, align 8)",
 		"pos": "D:/devel/tools.Go/GoTest/src/other/blah.go:22:12",
 		"detail": "type",
@@ -9,5 +7,4 @@
 			"namepos": "D:/devel/tools.Go/GoTest/src/other/blah.go:16:6",
 			"namedef": "struct{A string; B string}"
 		}
-	}
 }

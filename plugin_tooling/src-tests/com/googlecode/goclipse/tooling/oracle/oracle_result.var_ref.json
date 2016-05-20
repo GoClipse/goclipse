@@ -1,6 +1,4 @@
 {
-	"mode": "describe",
-	"describe": {
 		"desc": "identifier",
 		"pos": "D:/devel/tools.Go/go-workspace/src/newmath/sqrt.go:5:6",
 		"detail": "value",
@@ -8,5 +6,4 @@
 			"type": "func(x float64) float64",
 			"objpos": "D:/devel/tools.Go/go-workspace/src/newmath/sqrt.go:5:6"
 		}
-	}
 }

@@ -39,7 +39,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 
-public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_Test {
+public class GuruPackageDescribeParser_Test extends AbstractStructureParser_Test {
 	
 	@Override
 	public String getClassResource(String resourceName) {
@@ -97,8 +97,8 @@ public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_
 	}
 	
 	@Override
-	protected GoOraclePackageDescribeParser createStructureParser() {
-		return new GoOraclePackageDescribeParser(location, source);
+	protected GuruPackageDescribeParser createStructureParser() {
+		return new GuruPackageDescribeParser(location, source);
 	}
 	
 	public int ixof(String marker) {
@@ -171,7 +171,7 @@ public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_
 		);
 		
 		source = getClassResource("oracle_describe.A_std_url.go");
-		new GoOraclePackageDescribeParser(null, source).parse(
+		new GuruPackageDescribeParser(null, source).parse(
 			getClassResource("oracle_describe.A_std_url.json"));
 		
 		
@@ -191,7 +191,7 @@ public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_
 	public void testErrorParse() throws Exception { testErrorParse$(); }
 	public void testErrorParse$() throws Exception {
 		source = DEFAULT_SOURCE; 
-		GoOraclePackageDescribeParser parser = createStructureParser();
+		GuruPackageDescribeParser parser = createStructureParser();
 		
 		String errorMsg = "oracle: C:\\Users\\Bruno\\src\\describe.go:1:2: expected operand, found 'for'";
 		

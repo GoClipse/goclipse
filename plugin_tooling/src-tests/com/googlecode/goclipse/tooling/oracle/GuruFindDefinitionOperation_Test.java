@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.oracle;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.json.JSONException;
@@ -22,24 +21,7 @@ import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.utilbox.core.CommonException;
 
-public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
-	
-	@Test
-	public void testCreateProcessBuilder() throws Exception { testCreateProcessBuilder$(); }
-	public void testCreateProcessBuilder$() throws Exception {
-		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
-		
-		ProcessBuilder pb;
-		pb = op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GOPATH_Entry.resolve("src/foobar/file.go"), 0);
-		assertEquals(pb.command().get(4), "foobar");
-		
-		try {
-			op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GOPATH_Entry.resolve("not_on_src/foobar/file.go"), 0);
-			assertFail();
-		} catch (CommonException se) {
-			assertTrue(se.getMessage().contains("file not in the Go environment"));
-		}
-	}
+public class GuruFindDefinitionOperation_Test extends CommonGoToolingTest {
 	
 	@Test
 	public void test() throws Exception { test$(); }
@@ -64,7 +46,7 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	
 	protected void testParseResult(String toolOutput, FindDefinitionResult expectedResult) throws JSONException,
 			CommonException {
-		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
+		GuruFindDefinitionOperation op = new GuruFindDefinitionOperation("gopath");
 		
 		try {
 			FindDefinitionResult result = op.parseJsonResult(toolOutput);
