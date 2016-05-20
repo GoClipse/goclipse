@@ -46,6 +46,7 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.misc.Location;
 
@@ -112,19 +113,24 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		}
 	}
 	
-	protected final Field<SourceFileStructure> structureField = new Field<>();
-	protected final Field<StructureElement> selectedElementField = new Field<>();
+	protected final Field<Result<SourceFileStructure, CommonException>> structureResultField = new Field<>();
 	
-	public Field<SourceFileStructure> getStructureField() {
-		return structureField;
+	public Field<Result<SourceFileStructure, CommonException>> getStructureField() {
+		return structureResultField;
 	}
+	
+	public Result<SourceFileStructure, CommonException> getSourceStructureResult() {
+		return getStructureField().getFieldValue();
+	}
+	
+	public SourceFileStructure getSourceStructure() throws CommonException {
+		return getSourceStructureResult().get();
+	}
+	
+	protected final Field<StructureElement> selectedElementField = new Field<>();
 	
 	public Field<StructureElement> getSelectedElementField() {
 		return selectedElementField;
-	}
-	
-	public SourceFileStructure getSourceStructure() {
-		return structureField.getFieldValue();
 	}
 	
 	public StructureElement getSelectedElement() {
@@ -160,12 +166,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	protected void handleEditorStructureUpdated(StructureInfo structureInfo) {
 		assertTrue(Display.getCurrent() != null);
 		
-		SourceFileStructure structure = structureInfo.getStoredData();
-		if(structure == null) {
-			return; // Ignore
-		}
-		
-		structureField.setFieldValue(structure);
+		structureResultField.setFieldValue(structureInfo.getStoredData());
 		
 		setSelectedElementField();
 	}
@@ -190,7 +191,12 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			TextSelection textSelection = (TextSelection) selection;
 			int caretOffset = textSelection.getOffset();
 			
-			SourceFileStructure structure = getSourceStructure();
+			SourceFileStructure structure;
+			try {
+				structure = getSourceStructure();
+			} catch(CommonException e) {
+				return;
+			}
 			if(structure != null) {
 				StructureElement selectedElement = structure.getStructureElementAt(caretOffset);
 				selectedElementField.setFieldValue(selectedElement);

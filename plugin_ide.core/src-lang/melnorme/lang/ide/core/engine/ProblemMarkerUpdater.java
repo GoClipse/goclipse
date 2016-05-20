@@ -32,6 +32,8 @@ import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.LifecycleObject;
@@ -67,7 +69,14 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 			
 			assertTrue(Job.getJobManager().currentRule() == null);
 			
-			executor.submitR(new UpdateProblemMarkersTask(structureInfo));
+			UpdateProblemMarkersTask task;
+			try {
+				task = new UpdateProblemMarkersTask(structureInfo);
+			} catch(CommonException e) {
+				// Ignore
+				return;
+			}
+			executor.submitR(task);
 		}
 	};
 	
@@ -76,11 +85,13 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 		protected final StructureInfo structureInfo;
 		protected final Location location;
 		protected final SourceFileStructure structure;
+		protected final Result<SourceFileStructure, CommonException> storedData;
 		
-		public UpdateProblemMarkersTask(StructureInfo structureInfo) {
+		public UpdateProblemMarkersTask(StructureInfo structureInfo) throws CommonException {
 			this.structureInfo = assertNotNull(structureInfo);
 			this.location = assertNotNull(structureInfo.getLocation());
-			this.structure = structureInfo.getStoredData();
+			this.storedData = structureInfo.getStoredData();
+			this.structure = storedData.get();
 		}
 		
 		@Override
@@ -97,7 +108,7 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 		}
 		
 		protected void checkIsStillValid() throws OperationCancellation {
-			if(structureInfo.isStale(structure)) {
+			if(structureInfo.isStale(storedData)) {
 				// A new update is on the way, so ignore these marker updates
 				throw new OperationCancellation();
 			}

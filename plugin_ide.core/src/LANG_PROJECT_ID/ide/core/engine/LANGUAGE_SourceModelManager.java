@@ -17,6 +17,7 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class LANGUAGE_SourceModelManager extends SourceModelManager {
@@ -28,7 +29,7 @@ public class LANGUAGE_SourceModelManager extends SourceModelManager {
 	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
-			protected SourceFileStructure createNewData() {
+			protected SourceFileStructure doCreateNewData() throws CommonException {
 				Location location = structureInfo.getLocation();
 				SourceRange sr = new SourceRange(0, source.length());
 				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 

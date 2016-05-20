@@ -21,6 +21,7 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Result;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
@@ -57,14 +58,19 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 		if(structureInfo.isStale()) {
 			return true;
 		} else {
-			result = structureInfo.getStoredData();
+			Result<SourceFileStructure, CommonException> structureResult = structureInfo.getStoredData();
+			if(structureResult.isException()) {
+				// TODO: retry computation if in error
+			}
+			result = structureResult.get();
 			return false;
 		}
 	}
 	
 	@Override
-	protected SourceFileStructure doBackgroundValueComputation(IOperationMonitor om) throws OperationCancellation {
-		return structureInfo.awaitUpdatedData(om);
+	protected SourceFileStructure doBackgroundValueComputation(IOperationMonitor om) 
+			throws OperationCancellation, CommonException {
+		return structureInfo.awaitUpdatedData(om).get();
 	}
 	
 	@Override

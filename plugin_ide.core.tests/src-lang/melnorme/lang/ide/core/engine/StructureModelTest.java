@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.ownership.StrictDisposable;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -62,7 +63,7 @@ public class StructureModelTest extends CommonCoreTest {
 		public final Function<StructureInfo, StructureUpdateTask> DEFAULT_UPDATE_TASK = (structureInfo) -> {
 			return new StructureUpdateTask(structureInfo) {
 				@Override
-				protected SourceFileStructure createNewData() {
+				protected SourceFileStructure doCreateNewData() {
 					return DEFAULT_STRUCTURE;
 				}
 			};
@@ -237,14 +238,14 @@ public class StructureModelTest extends CommonCoreTest {
 			fixtureMgr.updateTaskProvider = (structureInfo) -> {
 				return new StructureUpdateTask(structureInfo) {
 					@Override
-					protected SourceFileStructure createNewData() {
+					protected SourceFileStructure doCreateNewData() throws OperationCancellation {
 						entryLatch.countDown();
 						
 						try {
 							new CountDownLatch(1).await(); // Infinite wait unless interrupted
 						} catch(InterruptedException e) {
 							interruptionTerminationLatch.countDown();
-							return null;
+							throw new OperationCancellation();
 						}
 						throw assertFail();
 					}

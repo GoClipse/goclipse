@@ -19,9 +19,10 @@ import org.eclipse.jface.text.IDocument;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
-import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
+import melnorme.lang.utils.concurrency.ConcurrentlyDerivedResult;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
@@ -118,7 +119,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 	
 	/* -----------------  ----------------- */
 	
-	public class StructureInfo extends ConcurrentlyDerivedData<SourceFileStructure, StructureInfo> {
+	public class StructureInfo extends ConcurrentlyDerivedResult<SourceFileStructure, CommonException, StructureInfo> {
 		
 		protected final LocationKey key2;
 		protected final StructureUpdateTask disconnectTask; // Can be null
@@ -230,12 +231,12 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		return new DisconnectUpdatesTask(structureInfo);
 	}
 	
-	public static abstract class StructureUpdateTask extends DataUpdateTask<SourceFileStructure> {
+	public static abstract class StructureUpdateTask extends StructureInfo.ResultUpdateTask {
 		
 		protected final StructureInfo structureInfo;
 		
 		public StructureUpdateTask(StructureInfo structureInfo) {
-			super(structureInfo, structureInfo.getKey2().toString());
+			structureInfo.super(structureInfo.getKey2().toString());
 			this.structureInfo = structureInfo;
 		}
 		
@@ -253,7 +254,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		}
 		
 		@Override
-		protected SourceFileStructure createNewData() {
+		protected SourceFileStructure doCreateNewData() throws CommonException, OperationCancellation {
 			Location location = structureInfo.getLocation();
 			if(location != null) {
 				handleDisconnectForLocation(location);
@@ -261,7 +262,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 				handleDisconnectForNoLocation();
 			}
 			
-			return null;
+			throw new OperationCancellation();
 		}
 		
 		@SuppressWarnings("unused")

@@ -41,6 +41,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 class AnnotationsModelManager {
@@ -189,11 +190,11 @@ public class ModelReconcilationTest extends CommonCoreTest {
 				
 				return new StructureUpdateTask(structureInfo) {
 					@Override
-					protected SourceFileStructure createNewData() {
+					protected SourceFileStructure doCreateNewData() throws OperationCancellation {
 						try {
 							createStructureTask_EntryLatch.await();
 						} catch(InterruptedException e) {
-							return null;
+							throw new OperationCancellation();
 						}
 
 						return new SourceFileStructure(null, null, (Indexable<ParserError>) null);

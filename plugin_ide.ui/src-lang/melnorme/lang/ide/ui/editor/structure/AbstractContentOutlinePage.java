@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
@@ -93,7 +92,6 @@ public abstract class AbstractContentOutlinePage extends Page implements IConten
 		
 		createTreeViewer(topControl);
 		treeViewer.getTree().setLayoutData(AbstractWidget.gdGrabAll());
-		treeViewer.getTree().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
     }
 	
 	@Override

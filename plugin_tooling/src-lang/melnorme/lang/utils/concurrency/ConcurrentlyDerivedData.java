@@ -82,6 +82,8 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	}
 	
 	public synchronized void setUpdateTask(DataUpdateTask<DATA> newUpdateTask) {
+		assertTrue(latestUpdateTask != newUpdateTask);
+		
 		if(latestUpdateTask == null) {
 			assertTrue(latch.getCount() == 0);
 			latch = new CountDownLatch(1);
@@ -114,10 +116,7 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	}
 	
 	public synchronized void cancelUpdateTask(DataUpdateTask<DATA> updateTask) {
-		if(latestUpdateTask != updateTask) {
-			// Ignore, means this update task was cancelled
-			assertTrue(updateTask.isCancelled());
-		} else {
+		if(latestUpdateTask == updateTask) {
 			latestUpdateTask = null;
 			
 			latch.countDown();

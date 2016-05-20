@@ -3,6 +3,7 @@
 
 ### (NextVersion)
  * Improved the default names for automatically created launch configuration.
+ * Improved error display for Outline operation failures.
 
  * Added customization of the build command for Build Targets:
 It's now possible to specify a command other than the default one (the $$SDK tool). 
