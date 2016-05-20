@@ -15,44 +15,35 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class CommonResult<DATA> {
-	
-	protected volatile DATA resultValue = null;
-	/** Note: resultException is either a EXC, or a RuntimeException. */
-	protected volatile Throwable resultException;
+public class CommonResult<DATA> extends Result<DATA, Exception> {
 	
 	public CommonResult(DATA resultValue) {
-		this.resultValue = resultValue;
-		this.resultException = null;
+		super(resultValue);
 	}
 	
-	public CommonResult(@SuppressWarnings("unused") Void dummy, CommonException resultException) {
-		this.resultException = resultException;
+	public CommonResult(Void dummy, CommonException resultException) {
+		super(dummy, resultException);
 	}
 	
-	public CommonResult(@SuppressWarnings("unused") Void dummy, OperationCancellation resultException) {
-		this.resultException = resultException;
+	public CommonResult(Void dummy, OperationCancellation resultException) {
+		super(dummy, resultException);
 	}
 	
+	@Override
 	public DATA get() throws CommonException, OperationCancellation {
 		throwIfExceptionResult();
 		return resultValue;
 	}
 	
+	@Override
 	protected void throwIfExceptionResult() throws CommonException, OperationCancellation  {
-		if(resultException == null) {
-			return;
+		try {
+			super.throwIfExceptionResult();
+		} catch(OperationCancellation | CommonException | RuntimeException e) {
+			throw e;
+		} catch(Exception e) {
+			assertFail();
 		}
-		if(resultException instanceof OperationCancellation) {
-			throw (OperationCancellation) resultException;
-		}
-		if(resultException instanceof CommonException) {
-			throw (CommonException) resultException;
-		}
-		if(resultException instanceof RuntimeException) {
-			throw (RuntimeException) resultException;
-		}
-		assertFail();
 	}
 	
 }

@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.ownership.StrictDisposable;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -43,12 +44,6 @@ public class StructureModelTest extends CommonCoreTest {
 	protected FixtureSourceModelManager fixtureMgr;
 	
 	public int createUpdateTaskCount_EXPECTED;
-	
-	public static final IStructureModelListener NIL_LISTENER = new IStructureModelListener() {
-		@Override
-		public void dataChanged(StructureInfo lockedStructureInfo) {
-		}
-	};
 	
 	protected void initializeTestsEngineClient() {
 		fixtureMgr = new FixtureSourceModelManager();
@@ -68,7 +63,7 @@ public class StructureModelTest extends CommonCoreTest {
 		public final Function<StructureInfo, StructureUpdateTask> DEFAULT_UPDATE_TASK = (structureInfo) -> {
 			return new StructureUpdateTask(structureInfo) {
 				@Override
-				protected SourceFileStructure createNewData() {
+				protected SourceFileStructure doCreateNewData() {
 					return DEFAULT_STRUCTURE;
 				}
 			};
@@ -158,7 +153,7 @@ public class StructureModelTest extends CommonCoreTest {
 			assertTrue(storedStructureInfo == null || !storedStructureInfo.hasConnectedListeners());
 		}
 		
-		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, NIL_LISTENER);
+		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, IStructureModelListener.NIL_LISTENER);
 		checkTaskDelta(initialConnect ? 1 : 0);
 		
 		StructureInfo structureInfo = registration.structureInfo;
@@ -243,14 +238,14 @@ public class StructureModelTest extends CommonCoreTest {
 			fixtureMgr.updateTaskProvider = (structureInfo) -> {
 				return new StructureUpdateTask(structureInfo) {
 					@Override
-					protected SourceFileStructure createNewData() {
+					protected SourceFileStructure doCreateNewData() throws OperationCancellation {
 						entryLatch.countDown();
 						
 						try {
 							new CountDownLatch(1).await(); // Infinite wait unless interrupted
 						} catch(InterruptedException e) {
 							interruptionTerminationLatch.countDown();
-							return null;
+							throw new OperationCancellation();
 						}
 						throw assertFail();
 					}
@@ -283,7 +278,7 @@ public class StructureModelTest extends CommonCoreTest {
 		StructureInfo structureInfo = registration.structureInfo;
 		
 		checkCounts();
-		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, NIL_LISTENER);
+		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, IStructureModelListener.NIL_LISTENER);
 		assertTrue(registration2.structureInfo == structureInfo);
 		// Test no extra updates
 		checkCounts();
@@ -291,7 +286,7 @@ public class StructureModelTest extends CommonCoreTest {
 		testBasicFlow(key, doc, false);
 		
 		StructureModelRegistration registration_unmanaged = 
-				mgr.connectStructureUpdates(key, new Document(), NIL_LISTENER);
+				mgr.connectStructureUpdates(key, new Document(), IStructureModelListener.NIL_LISTENER);
 		assertTrue(structureInfo != registration_unmanaged.structureInfo);
 
 		checkTaskDelta(1);

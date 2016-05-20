@@ -30,8 +30,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import melnorme.lang.ide.core.LangCore;
@@ -44,14 +42,13 @@ import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.CompositeWidget;
-import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldWidget;
+import melnorme.util.swt.components.misc.StatusMessageWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
@@ -267,33 +264,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	public class ProjectValidationGroup extends AbstractWidget {
-		
-		protected Label icon;
-		protected Link hintText;
-		
-		protected Composite topControl;
-		
-		@Override
-		public int getPreferredLayoutColumns() {
-			return 2;
-		}
-		
-		@Override
-		public void createComponentInlined(Composite parent) {
-			this.topControl = parent;
-		}
-		
-		@Override
-		protected void createContents(Composite topControl) {
-			this.topControl = topControl;
-			
-			icon = SWTFactoryUtil.createLabel(topControl, SWT.LEFT, "", GridDataFactory.swtDefaults().create());
-			icon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
-			
-			hintText = SWTFactoryUtil.createLink(topControl, SWT.LEFT, "", 
-				GridDataFactory.fillDefaults().grab(true, false).create());
-		}
+	public class ProjectValidationGroup extends StatusMessageWidget {
 		
 		@Override
 		public void updateWidgetFromInput() {
@@ -307,21 +278,14 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			IPath projectLoc = getProjectLocation();
 			
 			if(projectHandle != null && projectHandle.exists()) {
-				setValidationMessage(WizardMessages.LangNewProject_DetectGroup_projectExists);
+				setStatusMessage(Severity.INFO, WizardMessages.LangNewProject_DetectGroup_projectExists);
 			} else if(projectLoc != null && projectLoc.toFile().exists()) {
-				setValidationMessage(WizardMessages.LangNewProject_DetectGroup_message);
+				setStatusMessage(Severity.INFO, WizardMessages.LangNewProject_DetectGroup_message);
 			} else {
-				setValidationMessage(null);
+				setStatusMessage(null);
 			}
 		}
 		
-		protected void setValidationMessage(String message) {
-			icon.setVisible(message != null);
-			hintText.setVisible(message != null);
-			hintText.setText(StringUtil.nullAsEmpty(message));
-			
-			topControl.getParent().layout();
-		}
 	}
 	
 	public class PreferencesValidationGroup extends ProjectValidationGroup {
@@ -329,8 +293,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		@Override
 		protected void createContents(Composite parent) {
 			super.createContents(parent);
-			
-			icon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
 			
 			hintText.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -354,7 +316,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		public void updateWidgetFromInput() {
 			try {
 				validatePreferences();
-				setValidationMessage(null);
+				setStatusMessage(null);
 			} catch (CommonException ve) {
 				setPreferencesErrorMessage(ve);
 			}
@@ -362,7 +324,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		@SuppressWarnings("unused")
 		protected void setPreferencesErrorMessage(CommonException ve) {
-			setValidationMessage("The "+ LangCore_Actual.NAME_OF_LANGUAGE + 
+			setStatusMessage(Severity.WARNING, 
+				"The "+ LangCore_Actual.NAME_OF_LANGUAGE + 
 				" preferences have not been configured correctly.\n"+
 				"<a>Click here to configure preferences...</a>");
 		}

@@ -24,7 +24,6 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.runtime.CoreException;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.GoSourceFileUtil;
@@ -76,7 +75,7 @@ public class GoSourceModelManager extends SourceModelManager {
 		protected Location describeFile;
 		
 		@Override
-		protected SourceFileStructure createNewData() {
+		protected SourceFileStructure doCreateNewData() throws CommonException, OperationCancellation {
 			
 			if(fileLocation == null || isCancelled()) {
 				return null;
@@ -89,20 +88,14 @@ public class GoSourceModelManager extends SourceModelManager {
 			try {
 				setupDescribeFile();
 			} catch(IOException e) {
-				LangCore.logError("Error creating temporary file for guru describe: ", e);
-				return null;
+				throw new CommonException("Error creating temporary file for `guru describe`: ", e);
 			}
 			
 			ExternalProcessResult describeResult;
 			try {
-				
-				describeResult = runGoOracle(goEnv, describeFile);
-				
-			} catch(OperationCancellation e) {
-				return null;
-			} catch(CommonException | CoreException e) {
-				LangCore.logError("Error running guru describe for source structure update", e);
-				return null;
+				describeResult = runGuru(goEnv, describeFile);
+			} catch(CommonException e) {
+				throw new CommonException("Error running `guru describe` for source structure update: ", e);
 			} finally {
 				if(tempDir != null) {
 					try {
@@ -118,7 +111,6 @@ public class GoSourceModelManager extends SourceModelManager {
 			}
 			
 			try {
-				
 				return new GoOraclePackageDescribeParser(fileLocation, source) {
 					@Override
 					protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
@@ -126,8 +118,7 @@ public class GoSourceModelManager extends SourceModelManager {
 					};
 				}.parse(describeResult);
 			} catch(CommonException e) {
-				LangCore.logWarning("Error parsing guru describe result, for source structure update. ", e);
-				return null;
+				throw new CommonException("Error parsing `guru describe` result, for source structure update: ", e);
 			}
 		}
 		
@@ -147,14 +138,14 @@ public class GoSourceModelManager extends SourceModelManager {
 			goEnv = new GoEnvironment(goEnv.getGoRoot(), new GoPath(tempDir.toString()));
 		}
 		
-		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)
-				throws CommonException, CoreException, OperationCancellation {
-			GoGuruDescribeOperation oracleOp = new GoGuruDescribeOperation(
+		protected ExternalProcessResult runGuru(GoEnvironment goEnv, Location opTempFile)
+				throws CommonException, OperationCancellation {
+			GoGuruDescribeOperation guruOp = new GoGuruDescribeOperation(
 				GoToolPreferences.GO_GURU_Path.getDerivedValue().toString());
 			
 			int offset = GoSourceFileUtil.findPackageDeclaration_NameStart(source);
 			
-			ProcessBuilder pb = oracleOp.createProcessBuilder(goEnv, opTempFile, offset);
+			ProcessBuilder pb = guruOp.createProcessBuilder(goEnv, opTempFile, offset);
 			
 			return LangCore.getToolManager().runEngineTool(pb, null, cm);
 		}
@@ -167,7 +158,7 @@ public class GoSourceModelManager extends SourceModelManager {
 		}
 		
 		@Override
-		protected SourceFileStructure createNewData() {
+		protected SourceFileStructure doCreateNewData() {
 			return null;
 		}
 	}

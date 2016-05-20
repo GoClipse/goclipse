@@ -16,6 +16,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.util.swt.SWTLayoutUtil;
+
 /**
  * Common class for UI components, or composite widgets, using SWT.
  * Can be created in two ways: 
@@ -33,8 +35,10 @@ public abstract class AbstractWidget implements IWidgetComponent {
 	}
 	
 	@Override
-	public Composite createComponent(Composite parent) {
+	public Composite createComponent(Composite parent, Object layoutData) {
 		Composite topControl = createTopLevelControl(parent);
+		// Note: we set the layout data of topControl before creating it's children. Some children need this.
+		SWTLayoutUtil.setLayoutData(topControl, layoutData);
 		createContents(topControl);
 		updateWidgetFromInput();
 		return topControl;
@@ -105,6 +109,10 @@ public abstract class AbstractWidget implements IWidgetComponent {
 	
 	public static GridData gdGrabHorizontal(int hHint) {
 		return gdfGrabHorizontal(hHint).create();
+	}
+	
+	public static GridData gdGrabAll() {
+		return gdGrabAll(SWT.DEFAULT, SWT.DEFAULT);
 	}
 	
 	public static GridData gdGrabAll(int xHint, int yHint) {

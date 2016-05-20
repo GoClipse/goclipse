@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.status;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 public interface IStatusMessage {
 	
 	Severity getSeverity();
@@ -22,6 +24,30 @@ public interface IStatusMessage {
 	
 	default StatusException toStatusException() {
 		return new StatusException(getSeverity(), getMessage());
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class StatusMessage implements IStatusMessage {
+		
+		protected final Severity severity;
+		protected final String message;
+		
+		public StatusMessage(Severity severity, String message) {
+			this.severity = assertNotNull(severity);
+			this.message = assertNotNull(message);
+		}
+		
+		@Override
+		public Severity getSeverity() {
+			return severity;
+		}
+		
+		@Override
+		public String getMessage() {
+			return message;
+		}
+		
 	}
 	
 }

@@ -15,4 +15,12 @@ import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.IDataChangedListe
 
 public interface IStructureModelListener extends IDataChangedListener<StructureInfo> {
 	
+	/* -----------------  ----------------- */
+	
+	public static IStructureModelListener NIL_LISTENER = new IStructureModelListener() {
+		@Override
+		public void dataChanged(StructureInfo lockedStructureInfo) {
+		}
+	};
+	
 }

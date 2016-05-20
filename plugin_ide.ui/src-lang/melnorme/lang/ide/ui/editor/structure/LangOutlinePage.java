@@ -24,6 +24,7 @@ import org.eclipse.ui.part.ShowInContext;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.ownership.IDisposable;
 
@@ -77,8 +78,19 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 			return;
 		}
 		
-		SourceFileStructure structure = editor.getSourceStructure();
+		SourceFileStructure structure;
+		
+		try {
+			structure = editor.getSourceStructure();
+			
+		} catch(CommonException e) {
+			statusWidget.setStatusMessage(e.toStatusException());
+			return;
+		}
+		
 		if(getTreeViewer().getInput() != structure) {
+			statusWidget.setStatusMessage(null);
+			
 			getTreeViewer().setInput(structure);
 			getTreeViewer().refresh();
 		}
