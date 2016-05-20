@@ -62,8 +62,9 @@ public class ConcurrentlyDerivedResult<VALUE, EXC extends Exception, SELF>
 		protected Result<VALUE, EXC> createNewData() throws OperationCancellation {
 			try {
 				return new Result<>(doCreateNewData());
-			} catch(RuntimeException e) {
-				// This behavior is illegal, but try to handle it as gracefully as possible
+			} catch(RuntimeException | OperationCancellation e) {
+				// WARNING: make sure the exception we catch here match the function throws signature
+				// including RuntimeException's
 				throw e; 
 			} catch(Exception e) {
 				// We can't catch EXC directly because it's a type parameter

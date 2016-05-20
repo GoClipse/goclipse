@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.utils.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
@@ -82,6 +83,7 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	}
 	
 	public synchronized void setUpdateTask(DataUpdateTask<DATA> newUpdateTask) {
+		assertNotNull(newUpdateTask);
 		assertTrue(latestUpdateTask != newUpdateTask);
 		
 		if(latestUpdateTask == null) {
@@ -107,11 +109,13 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 			// Ignore, means this update task was cancelled
 			assertTrue(updateTask.isCancelled());
 		} else {
-			latestUpdateTask = null;
-			internalSetData(newData);
-			doHandleDataChanged();
-			
-			latch.countDown();
+			try {
+				internalSetData(newData);
+				doHandleDataChanged();
+			} finally {
+				latestUpdateTask = null;
+				latch.countDown();
+			}
 		}
 	}
 	
