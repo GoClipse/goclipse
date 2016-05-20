@@ -18,12 +18,10 @@ import org.eclipse.jface.text.IDocument;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
@@ -201,26 +199,9 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		}
 		
 		@Override
-		protected void doHandleDataUpdateRequested() {
-			for(IDataUpdateRequestedListener<StructureInfo> listener : updateRequestedListeners.getListeners()) {
-				listener.dataUpdateRequested(this);
-			}
-		}
-		
-		@Override
 		protected void doHandleDataChanged() {
-			notifyStructureChanged(this, connectedListeners);
+			super.doHandleDataChanged();
 			notifyStructureChanged(this, globalListeners);
-			
-			if(!hasConnectedListeners()) {
-				// TODO need to verify thread-safety, to enable this code.
-				assertTrue(getStoredData() == null);
-//				infosMap.runSynchronized(() -> infosMap.removeEntry(key));
-			}
-		}
-		
-		public SourceFileStructure awaitUpdatedData(IOperationMonitor om) throws OperationCancellation {
-			return asFuture().awaitData(om);
 		}
 		
 	}

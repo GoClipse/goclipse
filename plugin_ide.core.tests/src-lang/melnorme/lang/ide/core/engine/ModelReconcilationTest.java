@@ -100,7 +100,7 @@ public class ModelReconcilationTest extends CommonCoreTest {
 			
 			LocationKey locationKey = new LocationKey(location(fileA));
 			StructureModelRegistration reg = sourceModelMgr.connectStructureUpdates(locationKey, helper.getDocument(), 
-				StructureModelTest.NIL_LISTENER);
+				IStructureModelListener.NIL_LISTENER);
 			
 			// A structure working copy is now connected
 			

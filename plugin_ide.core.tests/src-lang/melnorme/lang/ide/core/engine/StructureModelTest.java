@@ -44,12 +44,6 @@ public class StructureModelTest extends CommonCoreTest {
 	
 	public int createUpdateTaskCount_EXPECTED;
 	
-	public static final IStructureModelListener NIL_LISTENER = new IStructureModelListener() {
-		@Override
-		public void dataChanged(StructureInfo lockedStructureInfo) {
-		}
-	};
-	
 	protected void initializeTestsEngineClient() {
 		fixtureMgr = new FixtureSourceModelManager();
 		mgr = fixtureMgr; 
@@ -158,7 +152,7 @@ public class StructureModelTest extends CommonCoreTest {
 			assertTrue(storedStructureInfo == null || !storedStructureInfo.hasConnectedListeners());
 		}
 		
-		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, NIL_LISTENER);
+		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, IStructureModelListener.NIL_LISTENER);
 		checkTaskDelta(initialConnect ? 1 : 0);
 		
 		StructureInfo structureInfo = registration.structureInfo;
@@ -283,7 +277,7 @@ public class StructureModelTest extends CommonCoreTest {
 		StructureInfo structureInfo = registration.structureInfo;
 		
 		checkCounts();
-		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, NIL_LISTENER);
+		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, IStructureModelListener.NIL_LISTENER);
 		assertTrue(registration2.structureInfo == structureInfo);
 		// Test no extra updates
 		checkCounts();
@@ -291,7 +285,7 @@ public class StructureModelTest extends CommonCoreTest {
 		testBasicFlow(key, doc, false);
 		
 		StructureModelRegistration registration_unmanaged = 
-				mgr.connectStructureUpdates(key, new Document(), NIL_LISTENER);
+				mgr.connectStructureUpdates(key, new Document(), IStructureModelListener.NIL_LISTENER);
 		assertTrue(structureInfo != registration_unmanaged.structureInfo);
 
 		checkTaskDelta(1);

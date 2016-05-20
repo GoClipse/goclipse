@@ -17,7 +17,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.SafeFuture;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.fields.ListenerListHelper;
@@ -30,6 +32,7 @@ import melnorme.utilbox.fields.ListenerListHelper;
  * 
  * The responsibility for actually executing the update task lies externally, not here. 
  * 
+ * @param SELF must be a subtype of the parameterized class.
  */
 public class ConcurrentlyDerivedData<DATA, SELF> {
 	
@@ -42,8 +45,20 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	private DataUpdateTask<DATA> latestUpdateTask = null;
 	private CountDownLatch latch = new CountDownLatch(0);
 	
+	public ConcurrentlyDerivedData() {
+	}
+	
+	public void internalSetData(DATA newData) {
+		this.data = newData;
+	}
+	
 	public synchronized DATA getStoredData() {
 		return data;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected SELF getSelf() {
+		return (SELF) this;
 	}
 	
 	public synchronized boolean isStale() {
@@ -80,6 +95,9 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	}
 	
 	protected void doHandleDataUpdateRequested() {
+		for(IDataUpdateRequestedListener<SELF> listener : updateRequestedListeners.getListeners()) {
+			listener.dataUpdateRequested(getSelf());
+		}
 	}
 	
 	public synchronized void setNewData(DATA newData, DataUpdateTask<DATA> updateTask) {
@@ -88,14 +106,26 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 			assertTrue(updateTask.isCancelled());
 		} else {
 			latestUpdateTask = null;
-			data = newData;
+			internalSetData(newData);
 			doHandleDataChanged();
 			
 			latch.countDown();
 		}
 	}
 	
+	public synchronized void cancelUpdateTask(DataUpdateTask<DATA> updateTask) {
+		if(latestUpdateTask != updateTask) {
+			// Ignore, means this update task was cancelled
+			assertTrue(updateTask.isCancelled());
+		} else {
+			latestUpdateTask = null;
+			
+			latch.countDown();
+		}
+	}
+	
 	protected void doHandleDataChanged() {
+		notifyStructureChanged(getSelf(), connectedListeners);
 	}
 	
 	/* -----------------  ----------------- */
@@ -139,21 +169,27 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 			String originalName = thread.getName();
 			try {
 				thread.setName(originalName + " >> " + taskDisplayName);
-				
-				DATA newData = createNewData();
-				derivedData.setNewData(newData, this);
-				
-			} catch(RuntimeException e) {
-				derivedData.setNewData(null, this);
-				handleRuntimeException(e);
+				doRun();
 			} finally {
 				thread.setName(originalName);
 			}
 		}
 		
+		protected final void doRun() {
+			try {
+				DATA newData = createNewData();
+				derivedData.setNewData(newData, this);
+			} catch(OperationCancellation e) {
+				derivedData.cancelUpdateTask(this);
+			} catch(RuntimeException e) {
+				derivedData.setNewData(null, this);
+				handleRuntimeException(e);
+			}
+		}
+		
 		protected abstract void handleRuntimeException(RuntimeException e);
 		
-		protected abstract DATA createNewData();
+		protected abstract DATA createNewData() throws OperationCancellation;
 		
 	}
 	
@@ -171,6 +207,10 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	
 	public DATA awaitUpdatedData() throws InterruptedException {
 		return asFuture().get();
+	}
+	
+	public DATA awaitUpdatedData(IOperationMonitor om) throws OperationCancellation {
+		return asFuture().awaitData(om);
 	}
 	
 	public class DataUpdateFuture implements SafeFuture<DATA> {
