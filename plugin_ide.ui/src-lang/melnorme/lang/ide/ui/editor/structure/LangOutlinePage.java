@@ -27,6 +27,7 @@ import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.status.Severity;
 
 public class LangOutlinePage extends AbstractContentOutlinePage implements IAdaptable, IDisposable {
 	
@@ -84,7 +85,7 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 			structure = editor.getSourceStructure();
 			
 		} catch(CommonException e) {
-			statusWidget.setStatusMessage(e.toStatusException());
+			statusWidget.setStatusMessage(Severity.ERROR, e.getMultiLineRender());
 			return;
 		}
 		
