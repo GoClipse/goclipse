@@ -85,6 +85,12 @@ public class SWTFactory {
 	
 	/* -----------------  ----------------- */
 	
+	public static Label createIconLabel(Composite parent, Image image, GridData gridData) {
+		Label label = createLabel(parent, SWT.LEFT, "");
+		label.setImage(image);
+		return setLayoutData(label, gridData);
+	}
+	
 	public static Label createLabel(Composite parent, int style, String labelText, GridData gridData) {
 		Label label = createLabel(parent, style, labelText);
 		return setLayoutData(label, gridData);

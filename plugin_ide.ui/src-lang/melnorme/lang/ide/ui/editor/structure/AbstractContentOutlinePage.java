@@ -11,13 +11,11 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.utilbox.fields.ListenerListHelper;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,6 +25,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
@@ -34,6 +33,12 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractWidget;
+import melnorme.util.swt.components.misc.StatusMessageWidget;
+import melnorme.utilbox.fields.ListenerListHelper;
 
 /**
  * Abstract helper class for an {@link IContentOutlinePage}, similar to {@link ContentOutlinePage},
@@ -49,7 +54,9 @@ public abstract class AbstractContentOutlinePage extends Page implements IConten
 	protected final ListenerListHelper<ISelectionChangedListener> postSelectionChangedListeners = 
 			new ListenerListHelper<>();
 	
+	protected Composite topControl;
 	protected TreeViewer treeViewer;
+	protected StatusMessageWidget statusWidget;
 	
 	public AbstractContentOutlinePage() {
 		super();
@@ -62,14 +69,6 @@ public abstract class AbstractContentOutlinePage extends Page implements IConten
 	}
 	
 	@Override
-	public void createControl(Composite parent) {
-		treeViewer = createTreeViewer(parent);
-		setupTreeViewerListeners();
-        
-		createTreeViewerMenu();
-    }
-	
-	@Override
 	public void dispose() {
 		selectionChangedListeners.clear();
 		postSelectionChangedListeners.clear();
@@ -77,13 +76,45 @@ public abstract class AbstractContentOutlinePage extends Page implements IConten
 		super.dispose();
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void createControl(Composite parent) {
+		topControl = SWTFactoryUtil.createGridComposite(parent, 1, null);
+		topControl.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).spacing(0, 0).create());
+		
+		statusWidget = new StatusMessageWidget() {
+			@Override
+			protected GridLayoutFactory createTopLevelLayout() {
+				return GridLayoutFactory.fillDefaults().numColumns(getPreferredLayoutColumns()).margins(5, 5);
+			}
+		};
+		statusWidget.createComponent(topControl, AbstractWidget.gdGrabHorizontal());
+		
+		createTreeViewer(topControl);
+		treeViewer.getTree().setLayoutData(AbstractWidget.gdGrabAll());
+		treeViewer.getTree().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+    }
+	
+	@Override
+	public Control getControl() {
+		return topControl;
+	}
+	
+	public TreeViewer getTreeViewer() {
+		return treeViewer;
+	}
 	
 	protected TreeViewer createTreeViewer(Composite parent) {
-		TreeViewer treeViewer = new TreeViewer(parent, SWT.MULTI);
+		treeViewer = new TreeViewer(parent, SWT.MULTI);
 		
 		treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 		// TODO: allow certain StructureElements to not be initially expanded
 		treeViewer.setUseHashlookup(true);
+		
+		setupTreeViewerListeners();
+		createTreeViewerMenu();
+		
 		return treeViewer;
 	}
 	
@@ -115,18 +146,6 @@ public abstract class AbstractContentOutlinePage extends Page implements IConten
 	}
 
 	/* -----------------  ----------------- */
-	
-	public TreeViewer getTreeViewer() {
-		return treeViewer;
-	}
-	
-	@Override
-	public Control getControl() {
-		if (treeViewer != null) {
-			return treeViewer.getControl();
-		}
-		return null;
-	}
 	
 	@Override
 	public void setFocus() {
