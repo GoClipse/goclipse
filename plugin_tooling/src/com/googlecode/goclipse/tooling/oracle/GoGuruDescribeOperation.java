@@ -21,12 +21,12 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class GoOracleDescribeOperation implements ToolOutputParseHelper {
+public class GoGuruDescribeOperation implements ToolOutputParseHelper {
 	
-	protected final String goOraclePath;
+	protected final String guruPath;
 	
-	public GoOracleDescribeOperation(String goOraclePath) {
-		this.goOraclePath = goOraclePath;
+	public GoGuruDescribeOperation(String guruPath) {
+		this.guruPath = guruPath;
 	}
 	
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset) 
@@ -38,27 +38,11 @@ public class GoOracleDescribeOperation implements ToolOutputParseHelper {
 				null);
 		}
 		
-		// BM: I thought go oracle required these variables to be set, but it seems its not the case anymore?
-		// So commented them out
-//		boolean requireNonNullGoOSGoArch = false;
-//		if(requireNonNullGoOSGoArch) {
-//			goEnv.getGoArch_NonNull();
-//			goEnv.getGoOs_NonNull();
-//		}
-		
-		String goPackageString = goPackage.getFullNameAsString();
-		
-		return createProcessBuilder(goEnv, fileLoc, offset, goPackageString);
-	}
-	
-	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset,
-			String goPackageString) throws CommonException {
 		ArrayList2<String> commandLine = new ArrayList2<>(
-			goOraclePath,
-			"-pos=" + fileLoc.toPathString() + ":#" + offset + ",#" + offset,
-			"-format=json",
+			guruPath,
+			"-json",
 			"describe",
-			goPackageString
+			fileLoc.toPathString() + ":#" + offset + ",#" + offset
 		);
 		
 		return goEnv.createProcessBuilder(commandLine, null, true);

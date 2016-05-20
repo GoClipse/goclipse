@@ -28,7 +28,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
+public class GoOracleFindDefinitionOperation extends GoGuruDescribeOperation {
 	
 	public GoOracleFindDefinitionOperation(String goOraclePath) {
 		super(goOraclePath);

@@ -30,7 +30,7 @@ import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.GoSourceFileUtil;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
-import com.googlecode.goclipse.tooling.oracle.GoOracleDescribeOperation;
+import com.googlecode.goclipse.tooling.oracle.GoGuruDescribeOperation;
 import com.googlecode.goclipse.tooling.oracle.GoOraclePackageDescribeParser;
 
 public class GoSourceModelManager extends SourceModelManager {
@@ -149,7 +149,7 @@ public class GoSourceModelManager extends SourceModelManager {
 		
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)
 				throws CommonException, CoreException, OperationCancellation {
-			GoOracleDescribeOperation oracleOp = new GoOracleDescribeOperation(
+			GoGuruDescribeOperation oracleOp = new GoGuruDescribeOperation(
 				GoToolPreferences.GO_GURU_Path.getDerivedValue().toString());
 			
 			int offset = GoSourceFileUtil.findPackageDeclaration_NameStart(source);
