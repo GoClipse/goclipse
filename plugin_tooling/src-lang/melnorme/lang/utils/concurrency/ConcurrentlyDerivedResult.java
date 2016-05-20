@@ -27,7 +27,7 @@ public class ConcurrentlyDerivedResult<VALUE, EXC extends Exception, SELF>
 	
 	public ConcurrentlyDerivedResult() {
 		super();
-		internalSetData(new Result<>(null));
+		internalSetData(createResult(null, null));
 		_invariant_();
 	}
 	
@@ -38,6 +38,10 @@ public class ConcurrentlyDerivedResult<VALUE, EXC extends Exception, SELF>
 	@Override
 	public void internalSetData(Result<VALUE, EXC> newData) {
 		super.internalSetData(assertNotNull(newData));
+	}
+	
+	protected Result<VALUE, EXC> createResult(VALUE resultValue, EXC resultException) {
+		return new Result<>(resultValue, resultException);
 	}
 	
 	/* -----------------  ----------------- */
@@ -61,7 +65,7 @@ public class ConcurrentlyDerivedResult<VALUE, EXC extends Exception, SELF>
 		@Override
 		protected Result<VALUE, EXC> createNewData() throws OperationCancellation {
 			try {
-				return new Result<>(doCreateNewData());
+				return createResult(doCreateNewData(), null);
 			} catch(RuntimeException | OperationCancellation e) {
 				// WARNING: make sure the exception we catch here match the function throws signature
 				// including RuntimeException's
@@ -70,7 +74,7 @@ public class ConcurrentlyDerivedResult<VALUE, EXC extends Exception, SELF>
 				// We can't catch EXC directly because it's a type parameter
 				@SuppressWarnings("unchecked")
 				EXC exc = (EXC) e;
-				return new Result<>(null, exc);
+				return createResult(null, exc);
 			}
 		}
 		

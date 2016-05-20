@@ -23,6 +23,8 @@ import melnorme.lang.utils.concurrency.ConcurrentlyDerivedResult;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CResult;
+import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
@@ -141,6 +143,14 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		/** @return the file location if source is based on a file, null otherwise. */
 		public Location getLocation() {
 			return key2.getLocation();
+		}
+		
+		@Override
+		protected Result<SourceFileStructure, CommonException> createResult(SourceFileStructure resultValue,
+				CommonException resultException) {
+			// CResult will provide better runtime assertion checks for the exception contract, 
+			// better than just using Result
+			return new CResult<>(resultValue, resultException);
 		}
 		
 		public synchronized boolean hasConnectedListeners() {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.core.fntypes;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 public class Result<DATA, EXC extends Throwable> {
 	
 	protected volatile DATA resultValue = null;
@@ -17,12 +19,13 @@ public class Result<DATA, EXC extends Throwable> {
 	protected volatile Throwable resultException;
 	
 	public Result(DATA resultValue) {
-		this.resultValue = resultValue;
-		this.resultException = null;
+		this(resultValue, null);
 	}
 	
-	public Result(@SuppressWarnings("unused") Void dummy, EXC resultException) {
+	public Result(DATA resultValue, EXC resultException) {
+		this.resultValue = resultValue;
 		this.resultException = resultException;
+		assertTrue(resultValue == null || resultException == null);
 	}
 	
 	public DATA get() throws EXC {
