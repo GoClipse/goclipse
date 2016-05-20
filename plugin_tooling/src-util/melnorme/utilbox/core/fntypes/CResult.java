@@ -12,34 +12,23 @@ package melnorme.utilbox.core.fntypes;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class CommonResult<DATA> extends Result<DATA, Exception> {
+public class CResult<DATA> extends Result<DATA, CommonException> {
 	
-	public CommonResult(DATA resultValue) {
+	public CResult(DATA resultValue) {
 		super(resultValue);
 	}
 	
-	public CommonResult(DATA resultValue, CommonException resultException) {
-		super(resultValue, resultException);
-	}
-	
-	public CommonResult(DATA resultValue, OperationCancellation resultException) {
+	public CResult(DATA resultValue, CommonException resultException) {
 		super(resultValue, resultException);
 	}
 	
 	@Override
-	public DATA get() throws CommonException, OperationCancellation {
-		throwIfExceptionResult();
-		return resultValue;
-	}
-	
-	@Override
-	protected void throwIfExceptionResult() throws CommonException, OperationCancellation  {
+	protected void throwIfExceptionResult() throws CommonException  {
 		try {
 			super.throwIfExceptionResult();
-		} catch(OperationCancellation | CommonException | RuntimeException e) {
+		} catch(CommonException | RuntimeException e) {
 			throw e;
 		} catch(Exception e) {
 			assertFail();
