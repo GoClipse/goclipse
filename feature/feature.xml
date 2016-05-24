@@ -6,14 +6,14 @@
       provider-name="The GoClipse Development Team"
       plugin="com.googlecode.goclipse.ui">
 
-   <description url="http://code.google.com/p/goclipse/">
-      This is the development version of the GoClipse Plug-In. 
+   <description url="http://goclipse.github.io/">
+This is the development version of the GoClipse Plug-In.
 Features may be broken, partially implemented, or removed
-at anytime. Use at your own risk. 
+at anytime. Use at your own risk.
 
-Stable versions will be released from a secondary update site 
-as major milestones are completed. GoClipse is an Eclipse 
-plug-in that provides a rudimentary level of support for 
+Stable versions will be released from a secondary update site
+as major milestones are completed. GoClipse is an Eclipse
+plug-in that provides a rudimentary level of support for
 programming with Go.
 
 Current Features:
