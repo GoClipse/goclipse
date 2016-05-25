@@ -2,8 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: LANG_PROJECT_ID.ide.core.tests;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-Name: LANG_IDE_NAME IDE Core Tests
 Fragment-Host: LANG_PROJECT_ID.ide.core;bundle-version="0.0.1"
+Bundle-Vendor: %pluginProvider
+Bundle-Name: %pluginNameTests
+Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-ClassPath: .
