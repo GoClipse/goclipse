@@ -7,18 +7,19 @@ Developers Guide
 #### Setting up the development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
  * Clone the Git repository.
- * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", and select all the Eclipse projects that show up. Click finish to import those projects.
+ * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", enable "Search for nested projects", and select all the Eclipse projects that show up. Click finish to import those projects.
 <div align="center">
 <a><img src="documentation/README_images/ImportPluginProjects.png" /><a/> <br/>
-<sub><sup>Note: The actual project names will be different from those in the screenshot above.</sup></sub>
 </div>
- * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
+   * Note: The actual project names will be different from those in the screenshot above.
+   * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
  * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` (You can use the Open Resource dialog to help find this file, press Ctrl-R and type `IDE.target` in the dialog). Then click "Set as Target Platform" once the file is opened, as seen here: 
 <div align="center">
 <a><img src="documentation/README_images/Set_As_Target_Platform.png" /><a/> 
 </div>
  * Build the workspace ( "Project / Build All"). Everything should build fine now, there should be no errors.
  * To start the IDE from your workspace: Open "Run / Run Configurations ...". Click on "Eclipse Application" to create a new launch for the plugins in your workspace. The default new configuration that is created should already be ready to be launched.
+ * **Additional tip:** Locate the `bin-maven` folder in the top-level project, open its Properties from the Project Explorer context menu, and mark that directory as "Derived" in the "Resources" property page. This will prevent those folder resources to appear in UI operations such as "Open Resource" for example. 
 
 #### Running the tests in Eclipse:
  * In `releng/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
