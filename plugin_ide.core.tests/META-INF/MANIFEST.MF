@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.googlecode.goclipse.core.tests;singleton:=true
 Bundle-Version: 0.14.1.qualifier
 Fragment-Host: com.googlecode.goclipse.core
-Bundle-Name: GoClipse Core Tests
 Bundle-Vendor: %pluginProvider
+Bundle-Name: %pluginNameTests
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.0"
