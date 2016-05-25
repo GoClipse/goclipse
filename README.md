@@ -1,3 +1,7 @@
+Project website: LANG_IDE_SITE
+
+--
+
 Developers Guide
 ================
 
