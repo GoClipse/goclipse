@@ -25,12 +25,12 @@ import org.eclipse.swt.widgets.Link;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractWidget;
+import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.IStatusMessage.StatusMessage;
 import melnorme.utilbox.status.Severity;
 
-public class StatusMessageWidget extends AbstractWidget {
+public class StatusMessageWidget extends AbstractDisableableWidget {
 	
 	protected Composite topControl;
 	
@@ -45,7 +45,7 @@ public class StatusMessageWidget extends AbstractWidget {
 	
 	@Override
 	public void createComponentInlined(Composite parent) {
-		this.topControl = parent;
+		assertFail(); // not supported yet
 	}
 	
 	@Override
@@ -56,8 +56,15 @@ public class StatusMessageWidget extends AbstractWidget {
 			null, 
 			GridDataFactory.swtDefaults().create());
 		
+		// Note: make sure we provide a minimum width hint, so label text doesn't take up one long line.
 		hintText = SWTFactoryUtil.createLink(topControl, SWT.LEFT, "", 
-			GridDataFactory.fillDefaults().grab(true, false).create());
+			GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).create());
+	}
+	
+	@Override
+	protected void doSetEnabled(boolean enabled) {
+		setControlEnabled(icon, enabled);
+		setControlEnabled(hintText, enabled);
 	}
 	
 	@Override
