@@ -74,7 +74,7 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	
 	/* -----------------  ----------------- */
 	
-	protected void setControlEnabled(Control control, boolean enabled) {
+	protected static void setControlEnabled(Control control, boolean enabled) {
 		SWTUtil.setEnabledIfOk(control, enabled);
 	}
 	

@@ -61,7 +61,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		commandInvocation.addChangeListener(this::updateWidgetFromInput);
 	}
 	
-	public TextFieldWidget getButtonTextField() {
+	public TextFieldWidget getCommandArgumentsWidget() {
 		return commandArgumentsField;
 	}
 	
@@ -152,7 +152,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	}
 	
 	protected void handleEditEnvironmentVars() {
-		Shell shell = getButtonTextField().getFieldControl().getShell();
+		Shell shell = getCommandArgumentsWidget().getFieldControl().getShell();
 		
 		CommandInvocation cmd = getFieldValue();
 		EnvironmentSettings envSettings = new EnvironmentSettings(
