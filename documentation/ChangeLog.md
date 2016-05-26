@@ -1,20 +1,19 @@
 ## release ChangeLog
 
-### (NextVersion)
- * Improved the default names for automatically created launch configuration.
- * Improved error display for Outline operation failures.
-
+### 0.15.0
+ * Added support for lint build target, using `gometalinter`. (#163)
  * Added customization of the build command for Build Targets:
 It's now possible to specify a command other than the default one (the `go` tool). 
-   * Note however that Goclipse still expects the output of the command (the error messages) to be in the same format as the default tool.
- * Added support for invoking a specific Build Target when a $IDE editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
-   * The default is `` for $$IDE
+   * Note however that GoClipse still expects the output of the command (the error messages) to be in the same format as the `go` tool (or `gometalinter`).
+ * Added support for invoking a specific Build Target when a GoClipse editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
    * Added [Building](documentation/UserGuide.md#building) section to documentation.
    * The goal for the future is to enable invoking this command on-the-fly (as the user types), although for this to be useful in practice it will likely require the compiler to support incremental compilation (or be super fast otherwise).
  * Added support for modifying the environment variables of a Build Target's build command. (#191)
- * Added support for lint build target, using `gometalinter`. (#163)
- * The Go `oracle` tool has been renamed to `guru`. Goclipse has been updated to reflect this.
+ * The Go `oracle` tool is now the `guru` tool. GoClipse has been updated to reflect this.
+ * Improved the default names for automatically created launch configuration.
+ * Improved error display for Outline operation failures.
 
+--
  * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
  * Fixed: Don't call editor save actions (such as `gofmt`) when Open Definition is requested.
 

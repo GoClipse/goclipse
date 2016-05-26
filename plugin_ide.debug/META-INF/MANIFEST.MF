@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.googlecode.goclipse.debug;singleton:=true
-Bundle-Version: 0.14.1.qualifier
+Bundle-Version: 0.15.0.qualifier
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
