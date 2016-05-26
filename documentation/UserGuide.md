@@ -44,7 +44,8 @@ From the context menu of a Build Target, you can also directly create a Run or D
 
 Each Go project has 3 built-in Build Targets:
  * `build`: The default build. Builds all Go packages present in the project (excluding test packages).
- * `build-tests`: Builds all Go test packages present in the project. 
+ * `build-tests`: Builds all Go test packages present in the project.
+ * `lint`: Run a lint tool on the project's packages. The default settings calls [gometalinter](https://github.com/alecthomas/gometalinter). A different tool can be used, but the output of the command should be in the same format as the `gometalinter` or `go build` commands, in order for GoClipse to extract error messages. 
  * `[run-tests]`: Builds all and *runs* Go tests.
 
 
