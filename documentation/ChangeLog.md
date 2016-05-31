@@ -2,7 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
- * Fixed Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
+ * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
+ * Fixed: Eclipse variables not being substituted in environment-variable values.
 
  * Improved the default names for automatically created launch configuration.
  * Improved error display for Outline operation failures.

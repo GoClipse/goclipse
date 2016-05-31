@@ -284,7 +284,7 @@ public class MultipleInputDialog extends Dialog {
 			});
 		}
 		
-		Button button = createButton(comp, IDialogConstants.IGNORE_ID, "Varia&bles...", false); 
+		Button button = createButton(comp, IDialogConstants.IGNORE_ID, "Eclipse Varia&bles...", false); 
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
