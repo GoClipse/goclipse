@@ -19,8 +19,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
+import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.ProgressMonitorDialogOpRunner;
+import melnorme.lang.ide.ui.utils.operations.UIOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.IValidatableWidget;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractLangPropertyPage2<WIDGET extends IValidatableWidget> extends PropertyPage {
 	
@@ -75,7 +80,20 @@ public abstract class AbstractLangPropertyPage2<WIDGET extends IValidatableWidge
 	}
 	
 	@Override
-	public abstract boolean performOk();
+	public final boolean performOk() {
+		UIOperation op = new UIOperation("Saving project settings", this::doPerformSave) {
+			@Override
+			protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
+				// We don't use the standard WorkbenchProgressServiceOpRunner 
+				// because of a bug with the workbench progess service:
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=495015
+				new ProgressMonitorDialogOpRunner(getShell(), this::runBackgroundComputation).execute();
+			}
+		};
+		return op.executeAndHandle();
+	}
+	
+	public abstract void doPerformSave(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
 	@Override
 	protected abstract void performDefaults();

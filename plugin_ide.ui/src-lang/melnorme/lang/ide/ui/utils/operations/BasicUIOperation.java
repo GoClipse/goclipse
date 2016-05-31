@@ -53,16 +53,23 @@ public abstract class BasicUIOperation implements Runnable {
 		executeAndHandle();
 	}
 	
-	public void executeAndHandle() {
+	/**
+	 * Execute this operation and handle any potential errors by presenting an error dialog to the user.
+	 * 
+	 * @return true if operation completed successfully, false otherwise.
+	 */
+	public boolean executeAndHandle() {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {
 			execute0();
+			return true;
 		} catch(CommonException ce) {
 			handleError(ce);
 		} catch(RuntimeException re) {
 			handleRuntimeException(re);
 		}
+		return false;
 	}
 	
 	protected void handleError(CoreException ce) {

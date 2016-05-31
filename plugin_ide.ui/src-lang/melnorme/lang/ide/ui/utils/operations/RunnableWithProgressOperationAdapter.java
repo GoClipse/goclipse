@@ -15,7 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
@@ -25,27 +27,17 @@ import melnorme.lang.tooling.common.ops.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class ProgressServiceExecutor {
+public abstract class RunnableWithProgressOperationAdapter {
 	
 	protected final ICommonOperation coreOperation;
-	protected final IProgressService progressService;
 	
-	public ProgressServiceExecutor(ICommonOperation coreOperation) {
-		this(coreOperation, PlatformUI.getWorkbench().getProgressService());
-	}
-	
-	public ProgressServiceExecutor(ICommonOperation coreOperation, IProgressService progressService) {
+	public RunnableWithProgressOperationAdapter(ICommonOperation coreOperation) {
 		this.coreOperation = assertNotNull(coreOperation);
-		this.progressService = assertNotNull(progressService);
 	}
 	
 	public void execute() throws CommonException, OperationCancellation {
-		runUnder(progressService);
-	}
-	
-	public void runUnder(IProgressService ps) throws CommonException, OperationCancellation {
 		try {
-			ps.busyCursorWhile(new IRunnableWithProgress() {
+			IRunnableWithProgress runnableWithProgress = new IRunnableWithProgress() {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					try {
@@ -55,7 +47,8 @@ public class ProgressServiceExecutor {
 						throw new InvocationTargetException(e);
 					}
 				}
-			});
+			};
+			runRunnableWithProgress(runnableWithProgress);
 		} catch (InvocationTargetException ite) {
 			try {
 				throw ite.getCause();
@@ -69,7 +62,40 @@ public class ProgressServiceExecutor {
 			// This should not happen
 			throw new CommonException(LangCoreMessages.LangCore_internalError, e);
 		}
+	}
+	
+	protected abstract void runRunnableWithProgress(IRunnableWithProgress progressRunnable)
+			throws InvocationTargetException, InterruptedException;
+	
+	/* -----------------  ----------------- */
+	
+	public static class ProgressMonitorDialogOpRunner extends RunnableWithProgressOperationAdapter {
 		
+		protected final ProgressMonitorDialog progressMonitorDialog;
+		
+		public ProgressMonitorDialogOpRunner(Shell shell, ICommonOperation coreOperation) {
+			super(coreOperation);
+			progressMonitorDialog = assertNotNull(new ProgressMonitorDialog(shell));
+		}
+		
+		@Override
+		protected void runRunnableWithProgress(IRunnableWithProgress progressRunnable)
+				throws InvocationTargetException, InterruptedException {
+			progressMonitorDialog.run(true, true, progressRunnable);
+		}
+	}
+	
+	public static class WorkbenchProgressServiceOpRunner extends RunnableWithProgressOperationAdapter {
+		public WorkbenchProgressServiceOpRunner(ICommonOperation coreOperation) {
+			super(coreOperation);
+		}
+		
+		@Override
+		protected void runRunnableWithProgress(IRunnableWithProgress progressRunnable)
+				throws InvocationTargetException, InterruptedException {
+			IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
+			progressService.busyCursorWhile(progressRunnable);
+		}
 	}
 	
 }

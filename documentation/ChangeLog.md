@@ -1,5 +1,9 @@
 ## release ChangeLog
 
+### (NextVersion)
+ * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
+ * Fixed: Eclipse variables not being substituted in environment-variable values.
+
 ### 0.15.0
  * Added support for lint build target, using `gometalinter`. (#163)
  * Added customization of the build command for Build Targets:

@@ -13,6 +13,9 @@ package melnorme.lang.ide.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage2;
 import melnorme.lang.ide.ui.preferences.ProjectBuildConfigurationComponent;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class BuildConfigurationPropertyPage 
 	extends AbstractLangPropertyPage2<ProjectBuildConfigurationComponent> {
@@ -33,8 +36,8 @@ public abstract class BuildConfigurationPropertyPage
 	}
 	
 	@Override
-	public boolean performOk() {
-		return getPreferencesWidget().saveSettings();
+	public void doPerformSave(IOperationMonitor om) throws CommonException, OperationCancellation {
+		getPreferencesWidget().doSaveSettings();
 	}
 	
 	@Override

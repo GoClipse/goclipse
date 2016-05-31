@@ -75,22 +75,24 @@ public class CommandInvocation {
 	
 	/* -----------------  ----------------- */
 	
-	public ProcessBuilder getProcessBuilder(IVariablesResolver variablesResolver) throws StatusException {
+	public ProcessBuilder getProcessBuilder(IVariablesResolver variablesResolver) throws CommonException {
 		Indexable<String> CommandLine = validateCommandArguments(variablesResolver);
 		
 		ProcessBuilder pb = ProcessUtils.createProcessBuilder(CommandLine, null);
 		
-		setupEnvironment(pb.environment());
+		setupEnvironment(pb.environment(), variablesResolver);
 		
 		return pb;
 	}
 	
-	public void setupEnvironment(Map<String, String> environment) {
+	public void setupEnvironment(Map<String, String> environment, IVariablesResolver variablesResolver) 
+			throws CommonException {
 		if(!isAppendEnvironment()) {
 			environment.clear();			
 		}
 		for (Entry<String, String> envVar : getEnvironmentVars()) {
-			environment.put(envVar.getKey(), envVar.getValue());
+			String newValue = variablesResolver.performStringSubstitution(envVar.getValue());
+			environment.put(envVar.getKey(), newValue);
 		}
 	}
 	
@@ -102,7 +104,7 @@ public class CommandInvocation {
 		return getValidatedCommandArguments(variablesResolver).getValidatedValue();
 	}
 	
-	public ValidatedCommandArgumentsSource getValidatedCommandArguments(IVariablesResolver variablesResolver) {
+	protected ValidatedCommandArgumentsSource getValidatedCommandArguments(IVariablesResolver variablesResolver) {
 		return new ValidatedCommandArgumentsSource(commandArguments, variablesResolver);
 	}
 	
