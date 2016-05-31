@@ -15,6 +15,9 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage2;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractProjectToolchainSettingsPage extends AbstractLangPropertyPage2<ProjectSDKSettingsBlock> {
 	
@@ -26,8 +29,8 @@ public abstract class AbstractProjectToolchainSettingsPage extends AbstractLangP
 	protected abstract ProjectSDKSettingsBlock createProjectConfigWidget(IProject project);
 	
 	@Override
-	public boolean performOk() {
-		return getPreferencesWidget().saveSettings();
+	public void doPerformSave(IOperationMonitor om) throws CommonException, OperationCancellation {
+		getPreferencesWidget().doSaveSettings();
 	}
 	
 	@Override

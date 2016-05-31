@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.ui.progress.IProgressService;
 
+import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.WorkbenchProgressServiceOpRunner;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -36,15 +37,15 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	 */
 	@Override
 	protected void doOperation() throws CommonException, OperationCancellation {
-		startBackgroundOperation();
+		executeBackgroundOperation();
 		handleComputationResult();
 	}
 	
-	protected void startBackgroundOperation() throws CommonException, OperationCancellation {
+	protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
 		if(!isBackgroundComputationNecessary()) {
 			return;
 		}
-		new ProgressServiceExecutor(this::runBackgroundComputation).execute();
+		new WorkbenchProgressServiceOpRunner(this::runBackgroundComputation).execute();
 	}
 	
 	protected boolean isBackgroundComputationNecessary() throws CommonException {
