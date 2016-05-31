@@ -4,7 +4,7 @@
       label="%featureName"
       version="0.1.0.qualifier"
       provider-name="%providerName"
-      plugin="LANG_PROJECT_ID.ide.ui">
+      plugin="LANG_PROJECT_ID.jvmcheck">
 
    <description>
       %description
