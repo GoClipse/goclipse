@@ -12,6 +12,7 @@ package com.googlecode.goclipse.tooling.gocode;
 
 import static melnorme.lang.tooling.CompletionProposalKind.FUNCTION;
 import static melnorme.lang.tooling.CompletionProposalKind.INTERFACE;
+import static melnorme.lang.tooling.CompletionProposalKind.NATIVE;
 import static melnorme.lang.tooling.CompletionProposalKind.PACKAGE;
 import static melnorme.lang.tooling.CompletionProposalKind.STRUCT;
 import static melnorme.lang.tooling.CompletionProposalKind.TYPE_DECL;
@@ -66,10 +67,12 @@ public class GocodeOutputParser_Test extends CommonTestExt {
 		
 		testProposalParse("type,,Type,,map[string][]string", 
 			proposal("Type", "Type", TYPE_DECL, attribs(null), ": map[string][]string"));
+
+		testProposalParse("type,,int16,,built-in", 
+			proposal("int16", "int16", NATIVE, attribs(null), null));
 		
 		testProposalParse("package,,fmt,,", 
 			proposal("fmt", "fmt", PACKAGE, attribs(null), null));
-		
 		
 	}
 	

@@ -31,6 +31,7 @@ public enum CompletionProposalKind {
 	STRUCT,
 	
 	TYPE_DECL,
+	NATIVE,
 	
 	//ALIAS 
 	
@@ -54,6 +55,7 @@ public enum CompletionProposalKind {
 		case STRUCT: return visitor.visitStruct();
 		case INTERFACE: return visitor.visitInterface();
 		case TYPE_DECL: return visitor.visitTypeDecl();
+		case NATIVE: return visitor.visitNative();
 		
 //		case ALIAS: return visitor.visitAlias();
 		

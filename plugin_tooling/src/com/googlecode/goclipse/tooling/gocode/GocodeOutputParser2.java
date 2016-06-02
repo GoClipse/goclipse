@@ -106,12 +106,20 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 		EnumSet<EAttributeFlag> flagsSet = EnumSet.noneOf(EAttributeFlag.class);
 		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN;
 		
-		if (spec.startsWith("interface")) {
-			kind = CompletionProposalKind.INTERFACE;
-		} else 
-		if (spec.startsWith("struct")) {
-			kind = CompletionProposalKind.STRUCT;
-		} else 
+		if (kindString.equals("type")) {
+			if (spec.equals("interface")) {
+				kind = CompletionProposalKind.INTERFACE;
+			} else 
+			if (spec.equals("struct")) {
+				kind = CompletionProposalKind.STRUCT;
+			} else 
+			if (spec.equals("built-in")) {
+				kind = CompletionProposalKind.NATIVE;
+			} else {
+				kind = CompletionProposalKind.TYPE_DECL;
+				typeLabel = ": " + spec;
+			}
+		} else
 		if (kindString.equals("package")) {
 			kind = CompletionProposalKind.PACKAGE;
 		} else 
@@ -135,10 +143,6 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 				flagsSet.add(EAttributeFlag.CONST);
 			}
 		} else 
-		if (kindString.equals("type")) {
-			kind = CompletionProposalKind.TYPE_DECL;
-			typeLabel = ": " + spec;
-		} else
 		{
 			logWarning("Unknown element kind: " + kindString);
 			kind = CompletionProposalKind.UNKNOWN;
@@ -146,7 +150,7 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 		
 		EProtection prot = null;
 		
-		if(kind != CompletionProposalKind.PACKAGE) {
+		if(kind != CompletionProposalKind.PACKAGE && kind != CompletionProposalKind.NATIVE) {
 			if (identifier.length() > 0 && Character.isLowerCase(identifier.charAt(0))) {
 				prot = EProtection.PRIVATE;
 			}
