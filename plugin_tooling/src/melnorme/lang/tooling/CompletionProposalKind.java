@@ -19,19 +19,20 @@ public enum CompletionProposalKind {
 	KEYWORD,
 	ERROR,
 	
-	MODULEDEC,
-	IMPORT,
+	PACKAGE,
 	
 	VARIABLE,
 	
 	FUNCTION,
-	CONSTRUCTOR, // Not applicable to Go
+	//CONSTRUCTOR, 
 	
-	CLASS,
+	//CLASS, 
 	INTERFACE,
 	STRUCT,
 	
-	ALIAS
+	TYPE_DECL,
+	
+	//ALIAS 
 	
 	/* ----------------- Language-specific: ----------------- */
 	;
@@ -43,19 +44,18 @@ public enum CompletionProposalKind {
 		case KEYWORD: return visitor.visitKeyword();
 		case ERROR: return visitor.visitError();
 		
-		case MODULEDEC: return visitor.visitModule();
-		case IMPORT: return visitor.visitImport();
+		case PACKAGE: return visitor.visitPackage();
 		
 		case VARIABLE: return visitor.visitVariable();
 		
 		case FUNCTION: return visitor.visitFunction();
-		case CONSTRUCTOR: return visitor.visitConstructor();
+//		case CONSTRUCTOR: return visitor.visitConstructor();
 		
 		case STRUCT: return visitor.visitStruct();
-		case CLASS: return visitor.visitClass();
 		case INTERFACE: return visitor.visitInterface();
+		case TYPE_DECL: return visitor.visitTypeDecl();
 		
-		case ALIAS: return visitor.visitAlias();
+//		case ALIAS: return visitor.visitAlias();
 		
 		/* ----------------- Language-specific: ----------------- */
 		
@@ -67,7 +67,9 @@ public enum CompletionProposalKind {
 		
 		RET visitError();
 		
-		RET visitImport();
+		RET visitPackage();
+		
+		RET visitTypeDecl();
 		
 	}
 	

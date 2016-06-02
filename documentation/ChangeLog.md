@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Reworked the icon and label of completion proposals and fixed some related issues. Also, now the icons are consistent with the Outline icons. 
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
  * Fixed: Eclipse variables not being substituted in environment-variable values.
 

@@ -45,8 +45,8 @@ public class LangImageProvider extends AbstractLangImageProvider {
 	}
 	
 	@Override
-	public IManagedImage visitImport() {
-		return GoPluginImages.SOURCE_IMPORT;
+	public IManagedImage visitPackage() {
+		return LangElementImages.PACKAGE;
 	}
 	
 }

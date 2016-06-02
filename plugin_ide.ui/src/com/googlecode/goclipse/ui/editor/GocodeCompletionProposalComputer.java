@@ -9,7 +9,7 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
-import com.googlecode.goclipse.tooling.gocode.GocodeOutputParser;
+import com.googlecode.goclipse.tooling.gocode.GocodeOutputParser2;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
@@ -46,7 +46,12 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		String source = document.get();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);
 		
-		return new LangCompletionResult(new GocodeOutputParser(offset, source).parseResult(processResult));
+		return new LangCompletionResult(new GocodeOutputParser2(offset, source){
+			@Override
+			protected void logWarning(String message) {
+				LangCore.logWarning(message);
+			}
+		} .parseResult(processResult));
 	}
 	
 }
