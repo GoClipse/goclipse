@@ -32,15 +32,15 @@ public abstract class LangToolCompletionProposal {
 	protected final String label;
 	protected final CompletionProposalKind kind;
 	protected final ElementAttributes attributes;
+	protected final String typeLabel; // can be null
 	protected final String moduleName; // can be null
-	protected final String description;
-	
+	protected final String documentation; // can be null
 	protected final String fullReplaceString;
 	protected final Indexable<SourceRange> sourceSubElements;
 	
 	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String baseReplaceString, 
 			String label, CompletionProposalKind kind, ElementAttributes attributes, 
-			String moduleName, String description,
+			String typeLabel, String moduleName, String documentation,
 			String fullReplaceString, Indexable<SourceRange> sourceSubElements) {
 		assertTrue(replaceOffset >= 0);
 		assertTrue(replaceLength >= 0);
@@ -50,12 +50,46 @@ public abstract class LangToolCompletionProposal {
 		this.label = assertNotNull(label);
 		this.kind = kind != null ? kind : CompletionProposalKind.UNKNOWN;
 		this.attributes = assertNotNull(attributes);
+		
+		this.typeLabel = typeLabel;
 		this.moduleName = moduleName;
-		this.description = description;
+		this.documentation = documentation;
 		
 		this.fullReplaceString = assertNotNull(fullReplaceString);
 		this.sourceSubElements = CollectionUtil.nullToEmpty(sourceSubElements);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof LangToolCompletionProposal)) return false;
+		
+		LangToolCompletionProposal other = (LangToolCompletionProposal) obj;
+		
+		return 
+				areEqual(replaceOffset, other.replaceOffset) &&
+				areEqual(replaceLength, other.replaceLength) &&
+				areEqual(baseReplaceString, other.baseReplaceString) &&
+				areEqual(label, other.label) &&
+				areEqual(kind, other.kind) &&
+				areEqual(attributes, other.attributes) &&
+				areEqual(typeLabel, other.typeLabel) &&
+				areEqual(moduleName, other.moduleName) &&
+				areEqual(documentation, other.documentation) &&
+				areEqual(fullReplaceString, other.fullReplaceString) &&
+				areEqual(sourceSubElements, other.sourceSubElements) &&
+				subclassEquals(other);
+	}
+	
+	protected abstract boolean subclassEquals(LangToolCompletionProposal other);
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(
+			replaceOffset, replaceLength, baseReplaceString, label, kind, moduleName);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public int getReplaceOffset() {
 		return replaceOffset;
@@ -81,12 +115,16 @@ public abstract class LangToolCompletionProposal {
 		return attributes;
 	}
 	
+	public String getTypeLabel() {
+		return typeLabel;
+	}
+	
 	public String getModuleName() {
 		return moduleName;
 	}
 	
-	public String getDescription() {
-		return description;
+	public String getDocumentation() {
+		return documentation;
 	}
 	
 	/** @return Alternative replace string, with more completion text. 
@@ -101,40 +139,15 @@ public abstract class LangToolCompletionProposal {
 	
 	@Override
 	public String toString() {
-		return MessageFormat.format("PROPOSAL: @{0}:{1} {2} [{3}]{4}",
-			getReplaceOffset(), getReplaceLength(),
+		return MessageFormat.format("PROPOSAL: @{0}+{1} {2} [{3}] {4} {5} {6}",
+			getReplaceOffset(), 
+			getReplaceLength(),
 			getLabel(),
 			getKind(),
+			getAttributes(),
+			getTypeLabel(),
 			moduleName == null ? "" : (" - " + moduleName)
 			);
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!(obj instanceof LangToolCompletionProposal)) return false;
-		
-		LangToolCompletionProposal other = (LangToolCompletionProposal) obj;
-		
-		return 
-				areEqual(replaceOffset, other.replaceOffset) &&
-				areEqual(replaceLength, other.replaceLength) &&
-				areEqual(baseReplaceString, other.baseReplaceString) &&
-				areEqual(label, other.label) &&
-				areEqual(kind, other.kind) &&
-				areEqual(moduleName, other.moduleName) &&
-				areEqual(description, other.description) &&
-				areEqual(fullReplaceString, other.fullReplaceString) &&
-				areEqual(sourceSubElements, other.sourceSubElements) &&
-				subclassEquals(other);
-	}
-	
-	protected abstract boolean subclassEquals(LangToolCompletionProposal other);
-	
-	@Override
-	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(
-			replaceOffset, replaceLength, baseReplaceString, label, kind, moduleName);
 	}
 	
 }

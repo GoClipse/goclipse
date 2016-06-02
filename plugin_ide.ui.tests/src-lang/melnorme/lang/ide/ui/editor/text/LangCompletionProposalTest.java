@@ -29,7 +29,7 @@ public class LangCompletionProposalTest extends CommonUITest {
 		String source = "void foo(); Int blah";
 		
 		ToolCompletionProposal tcp = new ToolCompletionProposal(source.indexOf("Int"), 3, "interface", 
-			"label", CompletionProposalKind.values()[0], new ElementAttributes(null), "moduleName", null);
+			"label", CompletionProposalKind.values()[0], new ElementAttributes(null), null, "moduleName", null);
 		LangCompletionProposal completionProposal = new LangCompletionProposal(tcp, null, null);
 		
 		Document document = new Document(source);

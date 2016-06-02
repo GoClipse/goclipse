@@ -37,14 +37,6 @@ abstract class AbstractElementAttributes {
 		this(protection, newFlagsSet(flagsArray));
 	}
 	
-	public EProtection getProtection() {
-		return protection;
-	}
-	
-	public Iterable<EAttributeFlag> getFlagsSet() {
-		return flagsSet;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
@@ -52,12 +44,22 @@ abstract class AbstractElementAttributes {
 		
 		ElementAttributes other = (ElementAttributes) obj;
 		
-		return areEqual(protection, other.protection) && areEqual(flagsSet, other.flagsSet);
+		return 
+			areEqual(protection, other.protection) && 
+			areEqual(flagsSet, other.flagsSet);
 	}
 	
 	@Override
 	public int hashCode() {
 		return HashcodeUtil.combinedHashCode(protection, flagsSet);
+	}
+	
+	public EProtection getProtection() {
+		return protection;
+	}
+	
+	public Iterable<EAttributeFlag> getFlagsSet() {
+		return flagsSet;
 	}
 	
 	@Override
