@@ -76,7 +76,7 @@ public class LangCompletionProposal implements
 			IContextInformation contextInformation) {
 		super();
 		this.proposal = assertNotNull(proposal);
-		this.additionalProposalInfo = proposal.getDescription();
+		this.additionalProposalInfo = proposal.getDocumentation();
 		this.image = image;
 		this.contextInformation = contextInformation;
 		
@@ -135,18 +135,23 @@ public class LangCompletionProposal implements
 		if(styledDisplayString == null) {
 			StyledString styledString = new StyledString(proposal.getLabel());
 			
-			String labelModuleSuffix = getLabelModuleSuffix();
-			if(labelModuleSuffix != null) {
-				styledString.append(new StyledString(labelModuleSuffix, StyledString.QUALIFIER_STYLER));
-			}
+			getStyledDisplayString_TypeLabel(styledString);
+			getStyledDisplayString_ModuleName(styledString);
 			styledDisplayString = styledString;
 		}
 		return styledDisplayString;
 	}
 	
-	protected String getLabelModuleSuffix() {
-		String moduleName = proposal.getModuleName();
-		return moduleName == null ? null : " - " + moduleName;
+	protected void getStyledDisplayString_TypeLabel(StyledString styledString) {
+		if(proposal.getTypeLabel() != null) {
+			styledString.append(new StyledString(" " + proposal.getTypeLabel(), StyledString.DECORATIONS_STYLER));
+		}
+	}
+	
+	protected void getStyledDisplayString_ModuleName(StyledString styledString) {
+		if(proposal.getModuleName() != null) {
+			styledString.append(new StyledString(" - " + proposal.getModuleName(), StyledString.QUALIFIER_STYLER));
+		}
 	}
 	
 	@Override
