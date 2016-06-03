@@ -62,7 +62,7 @@ public abstract class BasicUIOperation implements Runnable {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {
-			execute0();
+			execute();
 			return true;
 		} catch(CommonException ce) {
 			handleError(ce);
@@ -92,7 +92,7 @@ public abstract class BasicUIOperation implements Runnable {
 	
 	/* -----------------  ----------------- */
 	
-	protected final void execute0() throws CommonException {
+	public final void execute() throws CommonException {
 		prepareOperation();
 		try {
 			doOperation();

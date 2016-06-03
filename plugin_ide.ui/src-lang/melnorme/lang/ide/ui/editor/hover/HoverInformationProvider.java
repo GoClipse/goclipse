@@ -23,9 +23,9 @@ import org.eclipse.jface.text.information.IInformationProviderExtension2;
 public class HoverInformationProvider 
 	implements IInformationProvider, IInformationProviderExtension, IInformationProviderExtension2 {
 	
-	protected final AbstractLangEditorTextHover editorHover;
+	protected final AbstractEditorTextHover editorHover;
 	
-	public HoverInformationProvider(AbstractLangEditorTextHover editorHover) {
+	public HoverInformationProvider(AbstractEditorTextHover editorHover) {
 		this.editorHover = assertNotNull(editorHover);
 	}
 

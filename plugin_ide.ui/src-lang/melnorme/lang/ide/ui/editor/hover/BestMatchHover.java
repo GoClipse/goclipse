@@ -12,18 +12,20 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.hover;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import melnorme.lang.ide.core.text.JavaWordFinder;
-import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
-import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.core.text.JavaWordFinder;
+import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
+import melnorme.lang.ide.ui.LangUIPlugin;
 
 /**
  * 'Fake' hover used to choose the best available hover.
@@ -32,13 +34,16 @@ import org.eclipse.ui.IEditorPart;
  * hover that returns some text for the specified parameters.
  * 
  */
-public class BestMatchHover extends AbstractLangEditorTextHover implements IInformationProviderExtension2 {
+public class BestMatchHover extends AbstractEditorTextHover 
+	implements IInformationProviderExtension2 {
+	
+	protected final ITextEditor editor;
 	
 	protected List<ILangEditorTextHover<?>> fInstantiatedTextHovers;
 	protected ILangEditorTextHover<?> matchedHover;
 	
-	public BestMatchHover(IEditorPart editor) {
-		setEditor(editor);
+	public BestMatchHover(ITextEditor editor) {
+		this.editor = assertNotNull(editor);
 		prepareTextHovers();
 	}
 	
@@ -62,10 +67,6 @@ public class BestMatchHover extends AbstractLangEditorTextHover implements IInfo
 	
 	protected void prepareTextHovers() {
 		installTextHovers();
-		
-		for (ILangEditorTextHover<?> textHover : fInstantiatedTextHovers) {
-			textHover.setEditor(fEditor);
-		}
 	}
 	
 	@Override
@@ -85,7 +86,7 @@ public class BestMatchHover extends AbstractLangEditorTextHover implements IInfo
 			if (hover == null) 
 				continue;
 			
-			Object info = hover.getHoverInfo2(textViewer, hoverRegion);
+			Object info = hover.getHoverInfo(editor, textViewer, hoverRegion);
 			if (info != null) {
 				matchedHover = hover;
 				return info;

@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
@@ -41,10 +40,10 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 		return getResultValue();
 	}
 	
-	public RESULT executeAndGetValidatedResult() throws CoreException, CommonException {
+	public RESULT executeAndGetValidatedResult() throws CommonException {
 		assertTrue(Display.getCurrent() != null);
 		
-		execute0();
+		execute();
 		return getResultValue();
 	}
 	
@@ -54,7 +53,7 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 		result = doBackgroundValueComputation(om);
 	}
 	
-	protected abstract RESULT doBackgroundValueComputation(IOperationMonitor monitor) 
+	protected abstract RESULT doBackgroundValueComputation(IOperationMonitor om) 
 			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */

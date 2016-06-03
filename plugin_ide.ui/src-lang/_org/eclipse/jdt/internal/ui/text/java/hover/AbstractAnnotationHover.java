@@ -12,8 +12,6 @@ package _org.eclipse.jdt.internal.ui.text.java.hover;
 
 import java.util.Iterator;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.filebuffers.LocationKind;
@@ -30,7 +28,6 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension2;
 import org.eclipse.jface.text.IInformationControlExtension4;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -57,8 +54,10 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.javaeditor.JavaAnnotationIterator;
+import melnorme.lang.ide.ui.LangUIPlugin;
 
 
 /**
@@ -602,27 +601,30 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 	 * @since 3.4
 	 */
 	private IInformationControlCreator fPresenterControlCreator;
+	private ITextEditor editor;
 
 
 	public AbstractAnnotationHover(boolean allAnnotations) {
 		fAllAnnotations= allAnnotations;
 	}
 
-	/**
-	 * @deprecated As of 3.4, replaced by {@link ITextHoverExtension2#getHoverInfo2(ITextViewer, IRegion)}
-	 * @see org.eclipse.jface.text.ITextHover#getHoverInfo(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-	 */
-	@Override
-	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		return null;
-	}
+//	/**
+//	 * @deprecated As of 3.4, replaced by {@link ITextHoverExtension2#getHoverInfo2(ITextViewer, IRegion)}
+//	 * @see org.eclipse.jface.text.ITextHover#getHoverInfo(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
+//	 */
+//	@Override
+//	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+//		return null;
+//	}
 
-	/*
-	 * @see org.eclipse.jdt.internal.ui.text.java.hover.AbstractJavaEditorTextHover#getHoverInfo2(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-	 * @since 3.4
-	 */
+	public ITextEditor getEditor() {
+		return editor;
+	}
+	
 	@Override
-	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
+	public Object getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion) {
+		this.editor = editor;
+		
 		IPath path;
 		IAnnotationModel model;
 		if (textViewer instanceof ISourceViewer) {
