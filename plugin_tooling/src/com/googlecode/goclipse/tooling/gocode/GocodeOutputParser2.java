@@ -13,16 +13,20 @@ package com.googlecode.goclipse.tooling.gocode;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation2;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
 
 public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayList2<ToolCompletionProposal>> {
@@ -106,6 +110,9 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 		EnumSet<EAttributeFlag> flagsSet = EnumSet.noneOf(EAttributeFlag.class);
 		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN;
 		
+		String fullReplaceString = identifier;
+		Indexable<SourceRange> subRanges = null;
+		
 		if (kindString.equals("type")) {
 			if (spec.equals("interface")) {
 				kind = CompletionProposalKind.INTERFACE;
@@ -131,6 +138,11 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 			if(typeLabel != null) {
 				fnParams = StringUtil.trimEnd(spec, typeLabel);
 				typeLabel = typeLabel.trim();
+				
+				Pair<String, ArrayList2<SourceRange>> pair = getParamsString(identifier.length(), fnParams);
+				String paramsString = pair.getFirst();
+				subRanges = pair.getSecond();
+				fullReplaceString = identifier + paramsString; 
 			}
 			label = label + fnParams;
 		} else
@@ -158,8 +170,42 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 		
 		ElementAttributes attributes = new ElementAttributes(prot, flagsSet);
 		return new ToolCompletionProposal(
-			offset - completionPrefix.length(), completionPrefix.length(), identifier, label, 
-			kind, attributes, typeLabel, null, null);
+			offset - completionPrefix.length(), completionPrefix.length(), 
+			identifier, label, 
+			kind, attributes, 
+			typeLabel, null, null, 
+			fullReplaceString, subRanges);
+	}
+	
+	protected Pair<String, ArrayList2<SourceRange>> getParamsString(int baseOffset, String fnParams) {
+		fnParams = fnParams.trim();
+		if(!fnParams.startsWith("(") && fnParams.endsWith(")")) {
+			return Pair.create("", null);
+		}
+		String parse = fnParams.substring(1, fnParams.length()-1);
+		if(parse.trim().isEmpty()) {
+			return Pair.create("()", null);
+		}
+		
+		String[] params = parse.split(Pattern.quote(","));
+		
+		ArrayList2<SourceRange> subRanges = new ArrayList2<>();
+		
+		StringBuilder paramsString = new StringBuilder("(");
+		baseOffset += 1;
+		for(int i = 0; i < params.length; i++) {
+			if(i != 0) {
+				paramsString.append(", ");
+				baseOffset += 2;
+			}
+			String paramName = StringUtil.substringUntilMatch(params[i].trim(), " ");
+			paramsString.append(paramName);
+			subRanges.add(new SourceRange(baseOffset, paramName.length()));
+			baseOffset += paramName.length();
+		}
+		paramsString.append(")");
+		
+		return Pair.create(paramsString.toString(), subRanges);
 	}
 	
 }

@@ -28,6 +28,8 @@ import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.tests.CommonTestExt;
 
@@ -35,6 +37,10 @@ public class GocodeOutputParser_Test extends CommonTestExt {
 	
 	protected ElementAttributes attribs(EProtection protection) {
 		return new ElementAttributes(protection);
+	}
+	
+	protected SourceRange sr(int offset, int length) {
+		return new SourceRange(offset, length);
 	}
 	
 	@Test
@@ -47,17 +53,6 @@ public class GocodeOutputParser_Test extends CommonTestExt {
 		
 		testProposalParse("const,,xxx,,int", 
 			proposal("xxx", "xxx", VARIABLE, new ElementAttributes(PRIVATE, EAttributeFlag.CONST), ": int"));
-		
-		
-		testProposalParse("func,,my_func,,func() int", 
-			proposal("my_func", "my_func()", FUNCTION, attribs(EProtection.PRIVATE), "int"));
-		testProposalParse("func,,my_func,,func() (int, string)", 
-			proposal("my_func", "my_func()", FUNCTION, attribs(EProtection.PRIVATE), "(int, string)"));
-		testProposalParse("func,,ApiFunc,,func(w io.Writer, a ...interface{})", 
-			proposal("ApiFunc", "ApiFunc(w io.Writer, a ...interface{})", FUNCTION, attribs(null), ""));
-		// Incorrectly formated function entry
-		testProposalParse("func,,xpto,,func", 
-			proposal("xpto", "xpto", FUNCTION, attribs(EProtection.PRIVATE), null));
 		
 		
 		testProposalParse("type,,Foo,,struct", 
@@ -74,11 +69,44 @@ public class GocodeOutputParser_Test extends CommonTestExt {
 		testProposalParse("package,,fmt,,", 
 			proposal("fmt", "fmt", PACKAGE, attribs(null), null));
 		
+		testProposalParse("func,,xpto,,func() int", 
+			fnProposal("xpto", "xpto()", null, "xpto()", FUNCTION, attribs(PRIVATE), "int"));
+		testProposalParse("func,,xpto,,func() (int, string)", 
+			fnProposal("xpto", "xpto()", null, "xpto()", FUNCTION, attribs(PRIVATE), "(int, string)"));
+		testProposalParse("func,,ApiFunc,,func()", 
+			fnProposal("ApiFunc", "ApiFunc()", null, "ApiFunc()", FUNCTION, attribs(null), ""));
+		// Incorrectly formated function entry
+		testProposalParse("func,,xpto,,func", 
+			fnProposal("xpto", "xpto", null, "xpto", FUNCTION, attribs(PRIVATE), null));
+		
+		// Test function parameters
+		testProposalParse("func,,ApiFunc,,func(writer io.Writer)", 
+			fnProposal("ApiFunc", "ApiFunc(writer)", list(sr(8, 6)), 
+				"ApiFunc(writer io.Writer)", FUNCTION, 
+				attribs(null), ""));
+		testProposalParse("func,,ApiFunc,,func(writer io.Writer, a ...interface{})", 
+			fnProposal("ApiFunc", "ApiFunc(writer, a)", list(sr(8, 6), sr(8+6+2, 1)), 
+				"ApiFunc(writer io.Writer, a ...interface{})", FUNCTION, 
+				attribs(null), ""));
+		
+		testProposalParse("func,,ApiFunc,,func(writer, a ...interface{})", 
+			fnProposal("ApiFunc", "ApiFunc(writer, a)", list(sr(8, 6), sr(8+6+2, 1)), 
+				"ApiFunc(writer, a ...interface{})", FUNCTION, 
+				attribs(null), ""));
+		
 	}
 	
 	protected ToolCompletionProposal proposal(String replaceString, String label, CompletionProposalKind kind, 
 			ElementAttributes attribs, String typeLabel) {
 		return new ToolCompletionProposal(10-6, 6, replaceString, label, kind, attribs, typeLabel, null, null);
+	}
+	
+	protected ToolCompletionProposal fnProposal(
+			String simpleReplaceString, String fullReplaceString, Indexable<SourceRange> sourceSubElements, 
+			String label, 
+			CompletionProposalKind kind, ElementAttributes attribs, String typeLabel) {
+		return new ToolCompletionProposal(10-6, 6, simpleReplaceString, label, kind, attribs, typeLabel, null, null,
+			fullReplaceString, sourceSubElements);
 	}
 	
 	protected void testProposalParse(String gocodeResultLine, ToolCompletionProposal expectedProposal) 
@@ -90,6 +118,12 @@ public class GocodeOutputParser_Test extends CommonTestExt {
 			}
 		};
 		ToolCompletionProposal completion = outputParser.parseCompletion(gocodeResultLine);
+		
+		// These 3 checks are redundant, they are just a shortcut for interactive debugging: 
+		assertAreEqual(completion.getTypeLabel(), expectedProposal.getTypeLabel());
+		assertAreEqual(completion.getFullReplaceString(), expectedProposal.getFullReplaceString());
+		assertAreEqual(completion.getSourceSubElements(), expectedProposal.getSourceSubElements());
+		
 		
 		assertTrue(completion.equals(expectedProposal));
 	}
