@@ -1,7 +1,5 @@
 package melnorme.lang.ide.debug.ui;
 
-import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
-
 import org.eclipse.cdt.ui.text.c.hover.ICEditorTextHover;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.ui.DebugUITools;
@@ -10,7 +8,9 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 /**
  * Common debug text hover delegating to debugger specific implementations
@@ -20,35 +20,37 @@ import org.eclipse.ui.IEditorPart;
  */
 //BM: adapted to ILangEditorTextHover
 // TODO: try to find a way to restrict the hover to relevant launches only?
-public class DelegatingDebugTextHover 
-implements ILangEditorTextHover<Object>, ITextHoverExtension, ITextHoverExtension2 {
+public class DelegatingDebugTextHover
+implements ILangEditorTextHover<Object>{
 
-    private IEditorPart fEditor;
+    private ITextEditor fEditor;
 	private ICEditorTextHover fDelegate;
 
-	@Override
-	public IRegion getHoverRegion(ITextViewer viewer, int offset) {
-		fDelegate = getDelegate();
-		if (fDelegate != null) {
-	        return fDelegate.getHoverRegion(viewer, offset);
-		}
-		return null;
-	}
+//	@Override
+//	public IRegion getHoverRegion(ITextViewer viewer, int offset) {
+//		fDelegate = getDelegate();
+//		if (fDelegate != null) {
+//	        return fDelegate.getHoverRegion(viewer, offset);
+//		}
+//		return null;
+//	}
 	
-    @Override
+//    @Override
+//	@SuppressWarnings("deprecation")
+//    public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+//        fDelegate = getDelegate();
+//        if (fDelegate != null) {
+//            return fDelegate.getHoverInfo(textViewer, hoverRegion);
+//        }
+//        return null;
+//    }
+	
 	@SuppressWarnings("deprecation")
-    public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-        fDelegate = getDelegate();
-        if (fDelegate != null) {
-            return fDelegate.getHoverInfo(textViewer, hoverRegion);
-        }
-        return null;
-    }
-
-    @Override
-	@SuppressWarnings("deprecation")
-    public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-        fDelegate = getDelegate();
+	@Override
+	public Object getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion) {
+        fEditor = editor;
+        
+		fDelegate = getDelegate();
         if (fDelegate instanceof ITextHoverExtension2) {
             return ((ITextHoverExtension2) fDelegate).getHoverInfo2(textViewer, hoverRegion);
         }
@@ -66,16 +68,11 @@ implements ILangEditorTextHover<Object>, ITextHoverExtension, ITextHoverExtensio
         }
         return null;
     }
-
-    @Override
-	public final void setEditor(IEditorPart editor) {
-        fEditor = editor;
-    }
-
+    
     private ICEditorTextHover getDelegate() {
         IAdaptable context = DebugUITools.getDebugContext();
         if (context != null) {
-            ICEditorTextHover hover = (ICEditorTextHover) context.getAdapter(ICEditorTextHover.class);
+            ICEditorTextHover hover = context.getAdapter(ICEditorTextHover.class);
             if (hover != null) {
                 hover.setEditor(fEditor);
             }

@@ -35,15 +35,11 @@ import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
-import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.StatusException;
 
-public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> 
-	implements IToolOperationService {
+public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> {
 	
 	protected final String source;
 	protected final SourceRange range; // range of element to open. Usually only offset matters
@@ -94,9 +90,9 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected FindDefinitionResult doBackgroundValueComputation(IOperationMonitor monitor)
+	protected FindDefinitionResult doBackgroundValueComputation(IOperationMonitor om)
 			throws CommonException, OperationCancellation {
-		return performLongRunningComputation_doAndGetResult(monitor);
+		return performLongRunningComputation_doAndGetResult(om);
 	}
 	
 	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor monitor) 
@@ -158,15 +154,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	/* -----------------  ----------------- */
 	
-	@Override
-	public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm)
-			throws OperationCancellation, CommonException {
-		return LangCore.getToolManager().runEngineTool(pb, input, cm);
-	}
-	
-	@Override
-	public void logStatus(StatusException statusException) {
-		LangCore.logStatusException(statusException);
+	public IToolOperationService getToolService() {
+		return LangCore.getToolManager().getEngineToolsOperationService();
 	}
 	
 }

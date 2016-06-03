@@ -253,7 +253,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 		return runEngineTool(pb, processInput, EclipseUtils.cm(pm));
 	}
 	
-	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, ICancelMonitor cm)
+	public final ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
 		IToolOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
 		return new RunToolTask(opMonitor, pb, cm).runProcess(processInput);
@@ -267,10 +267,9 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	public class ToolManagerEngineToolRunner implements IToolOperationService {
 		
 		@Override
-		public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
+		public ExternalProcessResult runProcess(ProcessBuilder pb, String processInput, ICancelMonitor cm) 
 				throws CommonException, OperationCancellation {
-			IToolOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
-			return new RunToolTask(opMonitor, pb, cm).runProcess(input);
+			return runEngineTool(pb, processInput, cm);
 		}
 		
 		@Override
@@ -278,6 +277,10 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 			LangCore.logStatusException(statusException);
 		}
 		
+	}
+	
+	public IToolOperationService getEngineToolsOperationService() {
+		return new ToolManagerEngineToolRunner();
 	}
 	
 }

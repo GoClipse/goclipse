@@ -11,9 +11,6 @@
  *******************************************************************************/
 package _org.eclipse.jdt.internal.ui.text.java.hover;
 
-import melnorme.lang.ide.core.text.JavaWordFinder;
-import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -23,8 +20,10 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 
 /**
@@ -35,17 +34,6 @@ import org.eclipse.ui.editors.text.EditorsUI;
 public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHover<Object>, 
 	IInformationProviderExtension2 {
 	
-	private IEditorPart fEditor;
-	
-	@Override
-	public void setEditor(IEditorPart editor) {
-		fEditor= editor;
-	}
-
-	protected IEditorPart getEditor() {
-		return fEditor;
-	}
-
 //	protected ICodeAssist getCodeAssist() {
 //		if (fEditor != null) {
 //			IEditorInput input= fEditor.getEditorInput();
@@ -60,17 +48,14 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 //
 //		return null;
 //	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
-	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		return getHoverInfo(textViewer, hoverRegion);
-	}
+	public abstract Object getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion);
 
-	@Override
-	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		return JavaWordFinder.findWord(textViewer.getDocument(), offset);
-	}
+//	@Override
+//	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
+//		return JavaWordFinder.findWord(textViewer.getDocument(), offset);
+//	}
 
 //	/**
 //	 * Returns the Java elements at the given hover region.

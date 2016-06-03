@@ -19,42 +19,35 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 
 
-public abstract class BrowserControlHover extends AbstractLangEditorTextHover 
-	implements IInformationProviderExtension2 {
+public abstract class BrowserControlHover 
+	implements ILangEditorTextHover<String>, IInformationProviderExtension2 
+{
 	
 	public BrowserControlHover() {
 		super();
 	}
 	
 	@Override
-	public final String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		return getHoverInfo2(textViewer, hoverRegion);
-	}
-	
-	@Override
-	public abstract String getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion);
-	
-	/* -----------------  ----------------- */
-	
-	@Override
 	public IInformationControlCreator getHoverControlCreator() {
 		return createEnrichableBrowserControlCreator(EditorsUI.getTooltipAffordanceString());
 	}
 	
-	public static EnrichableBrowserControlCreator createEnrichableBrowserControlCreator(String statusFieldText) {
-		return new EnrichableBrowserControlCreator(new BrowserControlCreator(), statusFieldText);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return new BrowserControlCreator();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static EnrichableBrowserControlCreator createEnrichableBrowserControlCreator(String statusFieldText) {
+		return new EnrichableBrowserControlCreator(new BrowserControlCreator(), statusFieldText);
 	}
 	
 	@SuppressWarnings("restriction")
