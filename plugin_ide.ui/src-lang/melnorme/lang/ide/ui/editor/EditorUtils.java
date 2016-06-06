@@ -279,4 +279,9 @@ public class EditorUtils {
 		return new Region(viewerSelection.x, viewerSelection.y);
 	}
 	
+	public static Location getInputLocationOrNull(IEditorPart editor) {
+		Path inputPath = getFilePathFromEditorInput(editor.getEditorInput());
+		return Location.createValidOrNull(inputPath);
+	}
+	
 }

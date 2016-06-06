@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Point;
@@ -23,6 +22,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.ISourceFile;
+import melnorme.lang.ide.core.text.DocumentSourceOpContext;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.CommonException;
@@ -46,6 +46,8 @@ public class SourceOperationContext {
 	
 	/* -----------------  ----------------- */
 	
+	protected final DocumentSourceOpContext context;
+	
 	protected final int offset;
 	protected final SourceRange selection;
 	protected final IDocument document;
@@ -58,6 +60,14 @@ public class SourceOperationContext {
 		this.document = assertNotNull(document);
 		
 		this.editor = editor;
+		
+		Location fileLocation = null;
+		boolean dirty = true;
+		if(editor != null) {
+			fileLocation = EditorUtils.getInputLocationOrNull(editor);
+			dirty = editor.isDirty();
+		}
+		context = new DocumentSourceOpContext(fileLocation, offset, document, dirty);
 	}
 	
 	public IDocument getDocument() {
@@ -65,11 +75,11 @@ public class SourceOperationContext {
 	}
 	
 	public String getSource() {
-		return document.get();
+		return context.getSource();
 	}
 	
 	public int getInvocationOffset() {
-		return offset;
+		return context.getOffset();
 	}
 	
 	public SourceRange getSelection() {
@@ -106,22 +116,6 @@ public class SourceOperationContext {
 	
 	public boolean isSourceDocumentDirty() throws CommonException {
 		return getEditor_nonNull().isDirty();
-	}
-	
-	public int getInvocationLine_0() throws CommonException {
-		try {
-			return getDocument().getLineOfOffset(getInvocationOffset());
-		} catch (BadLocationException e) {
-			throw new CommonException("Could not get line position.", e);
-		}
-	}
-	
-	public int getInvocationColumn_0() throws CommonException {
-		try {
-			return getInvocationOffset() - getDocument().getLineInformation(getInvocationLine_0()).getOffset();
-		} catch (BadLocationException e) {
-			throw new CommonException("Could not get column position.", e);
-		}
 	}
 	
 	public ISourceFile getSourceFile() throws CommonException {

@@ -11,10 +11,11 @@
 package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.nio.file.Path;
-
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.DocumentRewriteSessionType;
@@ -25,14 +26,15 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.core.text.DocumentSourceOpContext;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -40,29 +42,75 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	
 	protected final ITextEditor editor;
 	protected final IWorkbenchWindow window;
-	protected final IEditorInput editorInput;
-	protected final Location inputLoc;
+	
 	protected final IDocument doc;
+	protected final IProject project;
+	protected final DocumentSourceOpContext sourceOpContext;
+	
 	
 	protected String statusErrorMessage;
 	
 	public AbstractEditorOperation2(String operationName, ITextEditor editor) {
+		this(operationName, editor, new SourceRange(0, 0));
+	}
+	
+	public AbstractEditorOperation2(String operationName, ITextEditor editor, SourceRange range) {
 		super(operationName);
 		this.editor = assertNotNull(editor);
 		this.window = editor.getSite().getWorkbenchWindow();
-		this.editorInput = editor.getEditorInput();
-		Path inputPath = EditorUtils.getFilePathFromEditorInput(editorInput);
-		this.inputLoc = Location.createValidOrNull(inputPath);
+		
 		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
+		this.project = EditorUtils.getAssociatedProject(editor.getEditorInput());
+		this.sourceOpContext = getSourceContext(editor, range);
+	}
+	
+	public static DocumentSourceOpContext getSourceContext(ITextEditor editor, SourceRange range) {
+		Location inputLoc = EditorUtils.getInputLocationOrNull(editor);
+		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		
+		return new DocumentSourceOpContext(inputLoc, range.getOffset(), document, editor.isDirty());
+	}
+	
+	public DocumentSourceOpContext getContext2() {
+		return sourceOpContext;
+	}
+	
+	public String getSource() {
+		return sourceOpContext.source;
+	}
+	
+	public SourceRange getOperationRange() {
+		return sourceOpContext.sourceRange;
+	}
+	
+	public int getOperationOffset() {
+		return sourceOpContext.getOffset();
+	}
+	
+	public Location getInputLocation() throws CommonException {
+		return sourceOpContext.getFileLocation();
 	}
 	
 	@Override
 	protected void prepareOperation() throws CommonException {
-		if(inputLoc == null) {
-			throw new CommonException("Could not determine filesystem path from editor input"); 
+		if(!getContext2().getOptionalFileLocation().isPresent()) {
+			throw new CommonException("No file available for editor contents.");
 		}
 	}
 	
+	public void saveEditor(NullProgressMonitor pm) {
+		assertTrue(Display.getCurrent() != null);
+		
+		if(editor instanceof AbstractLangEditor) {
+			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
+			langEditor.saveWithoutSaveActions(pm);
+		} else {
+			editor.doSave(pm);
+		}
+	}
+	
+	/* -----------------  ----------------- */ 
+		
 	@Override
 	protected void handleComputationResult() throws CommonException {
 		if(statusErrorMessage != null) {
