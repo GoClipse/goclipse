@@ -40,6 +40,7 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.prefs.EclipsePreferencesAdapter;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
@@ -51,6 +52,7 @@ import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.ownership.Disposable;
@@ -278,6 +280,12 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	public EnablementCounter saveActionsEnablement() {
 		return saveActionsEnablement;
+	}
+	
+	public void saveWithoutSaveActions2(IOperationMonitor om) {
+		try(Disposable disposable = saveActionsEnablement().enterDisable()) {
+			doSave(EclipseUtils.pm(om));
+		}
 	}
 	
 	public void saveWithoutSaveActions(IProgressMonitor pm) {

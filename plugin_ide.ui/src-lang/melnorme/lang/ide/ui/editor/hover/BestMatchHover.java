@@ -13,6 +13,7 @@
 package melnorme.lang.ide.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,11 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.text.JavaWordFinder;
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 
 /**
  * 'Fake' hover used to choose the best available hover.
@@ -37,12 +38,12 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 public class BestMatchHover extends AbstractEditorTextHover 
 	implements IInformationProviderExtension2 {
 	
-	protected final ITextEditor editor;
+	protected final AbstractLangStructureEditor editor;
 	
 	protected List<ILangEditorTextHover<?>> fInstantiatedTextHovers;
 	protected ILangEditorTextHover<?> matchedHover;
 	
-	public BestMatchHover(ITextEditor editor) {
+	public BestMatchHover(AbstractLangStructureEditor editor) {
 		this.editor = assertNotNull(editor);
 		prepareTextHovers();
 	}
@@ -80,13 +81,19 @@ public class BestMatchHover extends AbstractEditorTextHover
 	
 	@Override
 	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
+		return getInformation(textViewer, hoverRegion, false);
+	}
+	
+	public Object getInformation(ITextViewer textViewer, IRegion hoverRegion, boolean canSaveEditor) {
+		assertTrue(textViewer == editor.getSourceViewer_());
+		
 		matchedHover = null;
 		
 		for (ILangEditorTextHover<?> hover : fInstantiatedTextHovers) {
 			if (hover == null) 
 				continue;
 			
-			Object info = hover.getHoverInfo(editor, textViewer, hoverRegion);
+			Object info = hover.getHoverInfo(editor, hoverRegion, canSaveEditor);
 			if (info != null) {
 				matchedHover = hover;
 				return info;
@@ -98,10 +105,10 @@ public class BestMatchHover extends AbstractEditorTextHover
 	
 	@Override
 	public IInformationControlCreator getHoverControlCreator() {
-		if(matchedHover != null) {
-			return matchedHover.getHoverControlCreator();
+		if(matchedHover == null) {
+			return null;
 		}
-		return null;
+		return matchedHover.getHoverControlCreator();
 	}
 	
 	@Override
@@ -109,12 +116,7 @@ public class BestMatchHover extends AbstractEditorTextHover
 		if(matchedHover == null) {
 			return null;
 		}
-		
-		if(matchedHover instanceof IInformationProviderExtension2) {
-			IInformationProviderExtension2 infProviderControlCreator = (IInformationProviderExtension2) matchedHover;
-			return infProviderControlCreator.getInformationPresenterControlCreator();
-		}
-		return matchedHover.getHoverControlCreator();
+		return matchedHover.getInformationPresenterControlCreator();
 	}
 	
 }

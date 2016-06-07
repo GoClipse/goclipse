@@ -348,6 +348,10 @@ public class StringUtil {
 		return string == null ? "" : prefix + string;
 	}
 	
+	public static String asString(String prefix, Object obj) {
+		return obj == null ? "" : prefix + obj.toString();
+	}
+	
 	public static String commonPrefix(String... strings) {
 		assertTrue(strings.length > 0);
 		String firstString = strings[0];

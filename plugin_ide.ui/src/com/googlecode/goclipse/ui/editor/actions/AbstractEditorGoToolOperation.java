@@ -13,7 +13,6 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -21,7 +20,6 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.utils.ProcessUtils;
@@ -31,7 +29,6 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperation2<String> {
 	
-	protected IProject project;
 	protected ProcessBuilder pb;
 	
 	public AbstractEditorGoToolOperation(String operationName, ITextEditor editor) {
@@ -40,8 +37,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	
 	@Override
 	protected void prepareOperation() throws CommonException {
-		
-		project = EditorUtils.getAssociatedProject(editorInput);
+		super.prepareOperation();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
@@ -51,13 +47,12 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected abstract ProcessBuilder prepareProcessBuilder(GoEnvironment goEnv) throws CommonException;
 	
 	@Override
-	protected String doBackgroundValueComputation(IOperationMonitor monitor)
+	protected String doBackgroundValueComputation(IOperationMonitor om)
 			throws CommonException, OperationCancellation {
 		
 		ToolManager toolMgr = LangCore.getToolManager();
 		
-		String editorText = doc.get();
-		ExternalProcessResult processResult = toolMgr.runEngineTool(pb, editorText, monitor);
+		ExternalProcessResult processResult = toolMgr.runEngineTool(pb, getSource(), om);
 		ProcessUtils.validateNonZeroExitValue(processResult.exitValue);
 		
 		return processResult.getStdOutBytes().toString();

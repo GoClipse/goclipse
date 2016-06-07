@@ -34,7 +34,6 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension2;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
@@ -49,8 +48,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
@@ -58,6 +55,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.javaeditor.JavaAnnotationIterator;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 
 
 /**
@@ -622,19 +620,21 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 	}
 	
 	@Override
-	public Object getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion) {
+	public Object getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
 		this.editor = editor;
 		
-		IPath path;
-		IAnnotationModel model;
-		if (textViewer instanceof ISourceViewer) {
-			path= null;
-			model= ((ISourceViewer)textViewer).getAnnotationModel();
-		} else {
-			// Get annotation model from file buffer manager
-			path= getEditorInputPath();
-			model= getAnnotationModel(path);
-		}
+		ITextViewer textViewer = editor.getSourceViewer_();
+		
+		IPath path = null;
+		IAnnotationModel model = editor.getSourceViewer_().getAnnotationModel();
+//		if (editor.getSourceViewer_() instanceof ISourceViewer) {
+//			path= null;
+//			model= editor.getSourceViewer_().getAnnotationModel();
+//		} else {
+//			// Get annotation model from file buffer manager
+//			path= getEditorInputPath();
+//			model= getAnnotationModel(path);
+//		}
 		if (model == null)
 			return null;
 
@@ -704,47 +704,47 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 		return fPresenterControlCreator;
 	}
 
-	private IPath getEditorInputPath() {
-		if (getEditor() == null)
-			return null;
-
-		IEditorInput input= getEditor().getEditorInput();
-		if (input instanceof IStorageEditorInput) {
-			try {
-				return ((IStorageEditorInput)input).getStorage().getFullPath();
-			} catch (CoreException ex) {
-				LangUIPlugin.logStatus(ex);
-			}
-		}
-		return null;
-	}
-
-	protected IAnnotationModel getAnnotationModel(IPath path) {
-		if (path == null)
-			return null;
-
-		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
-		try {
-			manager.connect(path, LocationKind.NORMALIZE, null);
-		} catch (CoreException ex) {
-			LangUIPlugin.logStatus(ex);
-			return null;
-		}
-
-		IAnnotationModel model= null;
-		try {
-			model= manager.getTextFileBuffer(path, LocationKind.NORMALIZE).getAnnotationModel();
-			return model;
-		} finally {
-			if (model == null) {
-				try {
-					manager.disconnect(path, LocationKind.NORMALIZE, null);
-				} catch (CoreException ex) {
-					LangUIPlugin.logStatus(ex);
-				}
-			}
-		}
-	}
+//	private IPath getEditorInputPath() {
+//		if (getEditor() == null)
+//			return null;
+//
+//		IEditorInput input= getEditor().getEditorInput();
+//		if (input instanceof IStorageEditorInput) {
+//			try {
+//				return ((IStorageEditorInput)input).getStorage().getFullPath();
+//			} catch (CoreException ex) {
+//				LangUIPlugin.logStatus(ex);
+//			}
+//		}
+//		return null;
+//	}
+//
+//	protected IAnnotationModel getAnnotationModel(IPath path) {
+//		if (path == null)
+//			return null;
+//
+//		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
+//		try {
+//			manager.connect(path, LocationKind.NORMALIZE, null);
+//		} catch (CoreException ex) {
+//			LangUIPlugin.logStatus(ex);
+//			return null;
+//		}
+//
+//		IAnnotationModel model= null;
+//		try {
+//			model= manager.getTextFileBuffer(path, LocationKind.NORMALIZE).getAnnotationModel();
+//			return model;
+//		} finally {
+//			if (model == null) {
+//				try {
+//					manager.disconnect(path, LocationKind.NORMALIZE, null);
+//				} catch (CoreException ex) {
+//					LangUIPlugin.logStatus(ex);
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * Returns the annotation preference for the given annotation.

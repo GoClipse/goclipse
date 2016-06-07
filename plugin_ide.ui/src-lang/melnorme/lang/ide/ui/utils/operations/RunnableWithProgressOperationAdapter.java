@@ -72,6 +72,7 @@ public abstract class RunnableWithProgressOperationAdapter {
 	public static class ProgressMonitorDialogOpRunner extends RunnableWithProgressOperationAdapter {
 		
 		protected final ProgressMonitorDialog progressMonitorDialog;
+		protected boolean fork = true;
 		
 		public ProgressMonitorDialogOpRunner(Shell shell, ICommonOperation coreOperation) {
 			super(coreOperation);
@@ -81,7 +82,7 @@ public abstract class RunnableWithProgressOperationAdapter {
 		@Override
 		protected void runRunnableWithProgress(IRunnableWithProgress progressRunnable)
 				throws InvocationTargetException, InterruptedException {
-			progressMonitorDialog.run(true, true, progressRunnable);
+			progressMonitorDialog.run(fork, true, progressRunnable);
 		}
 	}
 	

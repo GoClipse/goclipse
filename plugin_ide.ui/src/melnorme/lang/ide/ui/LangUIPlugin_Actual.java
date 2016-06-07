@@ -7,7 +7,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
-import com.googlecode.goclipse.ui.editor.GoDocHover;
+import com.googlecode.goclipse.ui.editor.GoDocTextHover;
 import com.googlecode.goclipse.ui.editor.actions.GoFmtOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
@@ -36,7 +36,7 @@ public final class LangUIPlugin_Actual {
 	
 	protected static void initTextHovers_afterProblemHover(
 			List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
-		textHoverSpecifications.add(GoDocHover.class);
+		textHoverSpecifications.add(GoDocTextHover.class);
 	}
 	
 	public static GoAutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
