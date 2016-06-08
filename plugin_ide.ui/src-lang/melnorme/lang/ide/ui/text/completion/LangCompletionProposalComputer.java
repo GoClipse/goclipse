@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.text.completion;
 
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -27,7 +26,7 @@ import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
@@ -43,8 +42,8 @@ import melnorme.utilbox.core.CommonException;
 public abstract class LangCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
 	@Override
-	protected Indexable<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
-			int offset) throws CoreException, CommonException, OperationSoftFailure {
+	protected Indexable<ICompletionProposal> doComputeCompletionProposals(EditorOperationContext context) 
+			throws CommonException, OperationSoftFailure {
 		
 		final TimeoutCancelMonitor cm = new TimeoutCancelMonitor(5000);
 		try {
@@ -52,7 +51,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 				doEditorSave(context, EclipseUtils.pm(cm));
 			}
 			
-			return computeProposals(context, offset, cm);
+			return computeProposals(context, cm);
 			
 		} catch (OperationCancellation e) {
 			if(cm.isCanceled()) {
@@ -69,7 +68,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return false;
 	}
 	
-	protected void doEditorSave(SourceOperationContext context, IProgressMonitor pm) throws CommonException {
+	protected void doEditorSave(EditorOperationContext context, IProgressMonitor pm) throws CommonException {
 		IEditorPart editor = context.getEditor_nonNull();
 		if(editor instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
@@ -79,12 +78,11 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		}
 	}
 	
-	protected Indexable<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
-			ICancelMonitor cm)
-			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure
+	protected Indexable<ICompletionProposal> computeProposals(EditorOperationContext context, ICancelMonitor cm)
+			throws CommonException, OperationCancellation, OperationSoftFailure
 	{
 		
-		LangCompletionResult result = doComputeProposals(context, offset, cm);
+		LangCompletionResult result = doComputeProposals(context, cm);
 		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
@@ -95,9 +93,9 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return proposals;
 	}
 	
-	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
-			int offset, ICancelMonitor cm) 
-			throws CoreException, CommonException, OperationCancellation;
+	protected abstract LangCompletionResult doComputeProposals(EditorOperationContext context,
+			ICancelMonitor cm) 
+			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	

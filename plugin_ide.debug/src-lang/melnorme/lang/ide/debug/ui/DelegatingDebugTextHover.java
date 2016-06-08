@@ -1,5 +1,7 @@
 package melnorme.lang.ide.debug.ui;
 
+import java.util.Optional;
+
 import org.eclipse.cdt.ui.text.c.hover.ICEditorTextHover;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.ui.DebugUITools;
@@ -7,11 +9,11 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextHoverExtension2;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
+import melnorme.lang.tooling.common.ISourceBuffer;
 
 /**
  * Common debug text hover delegating to debugger specific implementations
@@ -46,11 +48,16 @@ implements ILangEditorTextHover<Object>{
 //        return null;
 //    }
 	
+	@Override
+	public Object getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, Optional<ITextEditor> editor,
+			ITextViewer textViewer, boolean allowedToSaveEditor) {
+		fEditor = editor.orElse(null);		
+		return getHoverInfo(sourceBuffer, hoverRegion, textViewer);
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Override
-	public Object getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
-		fEditor = editor;
-        LangSourceViewer textViewer = editor.getSourceViewer_();
+	public Object getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, ITextViewer textViewer) {
         
 		fDelegate = getDelegate();
         if (fDelegate instanceof ITextHoverExtension2) {

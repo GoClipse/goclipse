@@ -1,28 +1,27 @@
 package melnorme.lang.ide.ui.editor.hover;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import java.util.Optional;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
+import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.tooling.common.ISourceBuffer;
 
 public interface ILangEditorTextHover<INFO> 
 	extends ITextHoverExtension, IInformationProviderExtension2
 {
 	
 	@SuppressWarnings("unused")
-	/**
-	 * @param editor the editor for this hover, non-null
-	 */
-	default INFO getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion, boolean canSaveEditor) {
-		assertNotNull(editor);
-		return getHoverInfo(editor, hoverRegion);
+	default INFO getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, 
+			Optional<ITextEditor> editor, ITextViewer textViewer, boolean allowedToSaveEditor) {
+		return getHoverInfo(sourceBuffer, hoverRegion, textViewer);
 	}
 	
-	INFO getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion);
+	INFO getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, ITextViewer textViewer);
 	
 	@Override
 	IInformationControlCreator getHoverControlCreator();

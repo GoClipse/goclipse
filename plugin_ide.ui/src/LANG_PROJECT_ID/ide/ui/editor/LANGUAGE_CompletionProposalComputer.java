@@ -10,9 +10,7 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import org.eclipse.core.runtime.CoreException;
-
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -22,8 +20,8 @@ import melnorme.utilbox.core.CommonException;
 public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
-			ICancelMonitor cm) throws CoreException, CommonException, OperationCancellation {
+	protected LangCompletionResult doComputeProposals(EditorOperationContext context, ICancelMonitor cm) 
+			throws CommonException, OperationCancellation {
 		return new LangCompletionResult("NOT IMPLEMENTED");
 	}
 	

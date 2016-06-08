@@ -52,8 +52,8 @@ import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.utils.EnablementCounter;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.ownership.Disposable;
 
@@ -282,10 +282,8 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		return saveActionsEnablement;
 	}
 	
-	public void saveWithoutSaveActions2(IOperationMonitor om) {
-		try(Disposable disposable = saveActionsEnablement().enterDisable()) {
-			doSave(EclipseUtils.pm(om));
-		}
+	public void saveWithoutSaveActions2(ICancelMonitor cm) {
+		saveWithoutSaveActions(EclipseUtils.pm(cm));
 	}
 	
 	public void saveWithoutSaveActions(IProgressMonitor pm) {
