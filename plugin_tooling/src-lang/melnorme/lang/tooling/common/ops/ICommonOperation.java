@@ -13,7 +13,13 @@ package melnorme.lang.tooling.common.ops;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public interface ICommonOperation {
+public interface ICommonOperation extends CommonOperation<Void> {
+	
+	@Override
+	default Void executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
+		execute(om);
+		return null;
+	}
 	
 	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
@@ -23,6 +29,7 @@ public interface ICommonOperation {
 	
 	/* -----------------  ----------------- */
 	
+	/* FIXME: review uses of this, remove*/
 	public static abstract class ResultCommonOperation<T> implements ICommonOperation {
 		
 		protected T result;

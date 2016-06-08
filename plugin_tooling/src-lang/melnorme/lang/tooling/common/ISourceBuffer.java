@@ -10,9 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.tooling.common;
 
+import static melnorme.utilbox.core.CoreUtil.option;
+
+import java.util.Optional;
+
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.misc.Location;
 
 public interface ISourceBuffer {
+	
+	public default Optional<Location> getLocation_opt() {
+		return option(getLocation_orNull());
+	}
 	
 	public abstract Location getLocation_orNull();
 	
@@ -23,5 +33,9 @@ public interface ISourceBuffer {
 	public abstract boolean isDirty();
 	
 	public abstract boolean trySaveBuffer();
+	
+	public default SourceOpContext getSourceOpContext(SourceRange range) {
+		return new SourceOpContext(getLocation_opt(), range.getOffset(), getSource(), isDirty());
+	}
 	
 }
