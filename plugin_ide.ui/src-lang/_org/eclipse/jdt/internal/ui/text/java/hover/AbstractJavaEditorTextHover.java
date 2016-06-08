@@ -17,12 +17,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 
@@ -50,7 +49,7 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 //	}
 	
 	@Override
-	public abstract Object getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion);
+	public abstract Object getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion);
 
 //	@Override
 //	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {

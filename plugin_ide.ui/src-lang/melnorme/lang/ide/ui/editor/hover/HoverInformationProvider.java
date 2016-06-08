@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -18,14 +19,15 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
+import org.eclipse.swt.widgets.Display;
 
 
 public class HoverInformationProvider 
 	implements IInformationProvider, IInformationProviderExtension, IInformationProviderExtension2 {
 	
-	protected final AbstractEditorTextHover editorHover;
+	protected final BestMatchHover editorHover;
 	
-	public HoverInformationProvider(AbstractEditorTextHover editorHover) {
+	public HoverInformationProvider(BestMatchHover editorHover) {
 		this.editorHover = assertNotNull(editorHover);
 	}
 
@@ -42,7 +44,8 @@ public class HoverInformationProvider
 	
 	@Override
 	public Object getInformation2(ITextViewer textViewer, IRegion subject) {
-		return editorHover.getHoverInfo2(textViewer, subject);
+		assertTrue(Display.getCurrent() != null);
+		return editorHover.getInformation(textViewer, subject, true);
 	}
 	
 	@Override

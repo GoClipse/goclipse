@@ -45,8 +45,7 @@ import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.ui.editor.ISourceViewerExt;
-import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
-import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.Indexable;
@@ -200,8 +199,7 @@ public class LangCompletionProposal implements
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
 		if(informationControlCreator == null) {
-			String statusFieldText = AbstractSimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
-			informationControlCreator = BrowserControlHover.createEnrichableBrowserControlCreator(statusFieldText);
+			informationControlCreator = new DocumentationHoverCreator().getInformationPresenterControlCreator();
 		}
 		return informationControlCreator;
 	}

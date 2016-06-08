@@ -7,9 +7,10 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextHoverExtension2;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 /**
@@ -47,12 +48,13 @@ implements ILangEditorTextHover<Object>{
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public Object getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion) {
-        fEditor = editor;
+	public Object getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
+		fEditor = editor;
+        LangSourceViewer textViewer = editor.getSourceViewer_();
         
 		fDelegate = getDelegate();
         if (fDelegate instanceof ITextHoverExtension2) {
-            return ((ITextHoverExtension2) fDelegate).getHoverInfo2(textViewer, hoverRegion);
+			return ((ITextHoverExtension2) fDelegate).getHoverInfo2(textViewer, hoverRegion);
         }
         // fall back to legacy method
         if (fDelegate != null) {
@@ -66,6 +68,12 @@ implements ILangEditorTextHover<Object>{
         if (fDelegate instanceof ITextHoverExtension) {
             return ((ITextHoverExtension) fDelegate).getHoverControlCreator();
         }
+        return null;
+    }
+    
+    @Override
+    public IInformationControlCreator getInformationPresenterControlCreator() {
+    	// The debug hover cannot be opened with getInformationPresenterControlCreator
         return null;
     }
     

@@ -19,36 +19,16 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
-import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.editors.text.EditorsUI;
 
 
-public abstract class BrowserControlHover 
-	implements ILangEditorTextHover<String>, IInformationProviderExtension2 
-{
+public abstract class BrowserControlHover {
 	
 	public BrowserControlHover() {
 		super();
 	}
 	
-	@Override
-	public IInformationControlCreator getHoverControlCreator() {
-		return createEnrichableBrowserControlCreator(EditorsUI.getTooltipAffordanceString());
-	}
-	
 	/* -----------------  ----------------- */
-	
-	@Override
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		return new BrowserControlCreator();
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static EnrichableBrowserControlCreator createEnrichableBrowserControlCreator(String statusFieldText) {
-		return new EnrichableBrowserControlCreator(new BrowserControlCreator(), statusFieldText);
-	}
 	
 	@SuppressWarnings("restriction")
 	public static class BrowserControlCreator extends AbstractReusableInformationControlCreator {
@@ -65,22 +45,24 @@ public abstract class BrowserControlHover
 		
 		@Override
 		public IInformationControl doCreateInformationControl(Shell parent) {
-			if(org.eclipse.jface.internal.text.html.BrowserInformationControl.isAvailable(parent)) {
-				String font = JFaceResources.DIALOG_FONT;
-				
-				if(statusFieldText == null) {
-					return new org.eclipse.jface.internal.text.html.BrowserInformationControl(parent, font, true);
-				} else {
-					return new org.eclipse.jface.internal.text.html.BrowserInformationControl(parent, font, 
-						statusFieldText) {
-						@Override
-						public IInformationControlCreator getInformationPresenterControlCreator() {
-							return getEnrichedInformationPresenterControlCreator();
-						}
-					};
-				}
-			} else {
+			if(!org.eclipse.jface.internal.text.html.BrowserInformationControl.isAvailable(parent)) {
 				return new DefaultInformationControl(parent, true);
+			} else {
+				return doCreateBrowserInformationControl(parent, JFaceResources.DIALOG_FONT);
+			}
+		}
+		
+		protected IInformationControl doCreateBrowserInformationControl(Shell parent, String font) {
+			if(statusFieldText == null) {
+				return new org.eclipse.jface.internal.text.html.BrowserInformationControl(parent, font, true);
+			} else {
+				return new org.eclipse.jface.internal.text.html.BrowserInformationControl(parent, font, 
+					statusFieldText) {
+					@Override
+					public IInformationControlCreator getInformationPresenterControlCreator() {
+						return getEnrichedInformationPresenterControlCreator();
+					}
+				};
 			}
 		}
 		
