@@ -86,6 +86,10 @@ public class SourceOperationContext {
 		return selection;
 	}
 	
+	public DocumentSourceOpContext getContext() {
+		return context;
+	}
+	
 	public Point getSelection_asPoint() {
 		return new Point(selection.getStartPos(), selection.getLength());
 	}
