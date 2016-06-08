@@ -23,16 +23,16 @@ public class SourceOpContext {
 	
 	public static final String MSG_NoFileLocationForThisOperation = "No file location for this operation";
 	
-	protected final Location fileLocation; // can be null
+	protected final Optional<Location> fileLocation;
 	protected final String source;
 	protected final SourceRange sourceRange;
 	protected final boolean isDirty;
 	
-	public SourceOpContext(Location fileLocation, int offset, String source, boolean isDirty) {
+	public SourceOpContext(Optional<Location> fileLocation, int offset, String source, boolean isDirty) {
 		this(fileLocation, new SourceRange(offset, 0),source, isDirty);
 	}
 	
-	public SourceOpContext(Location fileLocation, SourceRange sourceRange, String source, boolean isDirty) {
+	public SourceOpContext(Optional<Location> fileLocation, SourceRange sourceRange, String source, boolean isDirty) {
 		this.fileLocation = fileLocation;
 		this.sourceRange = assertNotNull(sourceRange);
 		this.source = assertNotNull(source);
@@ -45,14 +45,15 @@ public class SourceOpContext {
 	}
 	
 	public Optional<Location> getOptionalFileLocation() {
-		return Optional.ofNullable(fileLocation);
+		return fileLocation;
 	}
 	
 	public Location getFileLocation() throws CommonException {
-		if(fileLocation == null) {
+		if(fileLocation.isPresent()) {
+			return fileLocation.get();
+		} else {
 			throw new CommonException(MSG_NoFileLocationForThisOperation);
 		}
-		return fileLocation;
 	}
 	
 	public String getSource() {

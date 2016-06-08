@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
@@ -115,6 +116,13 @@ public class ResourceUtils {
 			}
 		}
 		
+		return null;
+	}
+	
+	public static IProject getProject(Optional<Location> location) {
+		if(location.isPresent()) {
+			return getProject(location.get()); 
+		}
 		return null;
 	}
 	

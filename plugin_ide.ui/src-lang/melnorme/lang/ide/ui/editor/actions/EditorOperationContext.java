@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.IDocument;
@@ -67,7 +68,7 @@ public class EditorOperationContext {
 			fileLocation = EditorUtils.getInputLocationOrNull(editor);
 			dirty = editor.isDirty();
 		}
-		context = new SourceOpContext(fileLocation, offset, document.get(), dirty);
+		context = new SourceOpContext(option(fileLocation), offset, document.get(), dirty);
 	}
 	
 	public IDocument getDocument() {
