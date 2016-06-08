@@ -81,12 +81,16 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 				return null;
 			}
 			
-			return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
+			return escapeToHTML(rawDocumentation);
 		} catch(CommonException ce) {
 			LangCore.logStatusException(ce.toStatusException());
 			// TODO: we could add a nicer HTML formatting:
 			return "<b>Error:</b> " + ce.getMessage() + StringUtil.asString(" ", ce.getCause());
 		}
+	}
+	
+	protected String escapeToHTML(String rawDocumentation) {
+		return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
 	}
 	
 	protected String getRawDocumentation(ISourceBuffer sourceBuffer, int offset) throws CommonException {
