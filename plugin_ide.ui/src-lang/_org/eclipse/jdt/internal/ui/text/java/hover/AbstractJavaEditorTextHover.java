@@ -21,7 +21,6 @@ import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 
@@ -48,8 +47,8 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 //		return null;
 //	}
 	
-	@Override
-	public abstract Object getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion);
+//	@Override
+//	public abstract Object getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion);
 
 //	@Override
 //	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {

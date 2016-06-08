@@ -40,7 +40,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.collections.ArrayList2;
@@ -206,13 +206,13 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	/* -----------------  ----------------- */
 	
-	protected SourceOperationContext createContext(ITextViewer viewer, int offset) {
-		return SourceOperationContext.create(viewer, offset, editor);
+	protected EditorOperationContext createContext(ITextViewer viewer, int offset) {
+		return EditorOperationContext.create(viewer, offset, editor);
 	}
 	
 	@Override
 	protected ICompletionProposal[] doComputeCompletionProposals(ITextViewer viewer, int offset) {
-		SourceOperationContext context = createContext(viewer, offset);
+		EditorOperationContext context = createContext(viewer, offset);
 		
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
@@ -240,7 +240,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	@Override
 	protected IContextInformation[] doComputeContextInformation(ITextViewer viewer, int offset) {
-		SourceOperationContext context = createContext(viewer, offset);
+		EditorOperationContext context = createContext(viewer, offset);
 		
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;

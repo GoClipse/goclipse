@@ -32,7 +32,7 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 		this.nonZeroExitIsFatal = nonZeroResultIsFatal;
 	}
 	
-	public RESULT execute(ICancelMonitor cm) throws CommonException, OperationCancellation, OperationSoftFailure {
+	public ToolOpResult<RESULT> execute(ICancelMonitor cm) throws CommonException, OperationCancellation {
 		ProcessBuilder pb = createProcessBuilder();
 		ExternalProcessResult result = opHelper.runProcess(pb, toolInput, cm);
 		return handleProcessResult(result);
@@ -41,13 +41,16 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 	protected abstract ProcessBuilder createProcessBuilder() throws CommonException;
 	
 	@Override
-	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
-		String nonZeroExitMsg = getToolName() + " did not complete successfully.";
-		if(nonZeroExitIsFatal) {
-			throw new CommonException(nonZeroExitMsg);
-		} else {
-			throw new OperationSoftFailure(nonZeroExitMsg);
+	public ToolOpResult<RESULT> handleProcessResult(ExternalProcessResult result)
+			throws CommonException, OperationCancellation {
+		if(!nonZeroExitIsFatal) {
+			try {
+				validateExitCode(result);
+			} catch(CommonException e) {
+				return new ToolOpResult<>(null, e.toStatusException());
+			}
 		}
+		return super.handleProcessResult(result);
 	}
 	
 	protected abstract String getToolName();

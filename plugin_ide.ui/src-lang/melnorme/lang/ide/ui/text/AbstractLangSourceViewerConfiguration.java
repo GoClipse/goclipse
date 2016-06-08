@@ -48,6 +48,8 @@ import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.EditorSourceModule;
+import melnorme.lang.ide.ui.editor.EditorSourceModule.SourceViewerSourceModule;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
@@ -61,6 +63,7 @@ import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.Indexable;
 
@@ -78,6 +81,14 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		return editor;
 	}
 	
+	protected ISourceBuffer getSourceBuffer(ISourceViewer sourceViewer) {
+		if(editor != null) {
+			return new EditorSourceModule(editor);
+		} else {
+			return new SourceViewerSourceModule(sourceViewer);
+		}
+	}
+	
 	/* ----------------- Hovers ----------------- */
 	
 	@Override
@@ -87,7 +98,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		return new BestMatchHover(getEditor());
+		return new BestMatchHover(getSourceBuffer(sourceViewer), getEditor());
 	}
 	
 	@Override
@@ -117,7 +128,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		
 		// Register information providers
 		for (String contentType : getConfiguredContentTypes(sourceViewer)) {
-			presenter.setInformationProvider(getInformationProvider(contentType), contentType);
+			presenter.setInformationProvider(getInformationProvider(contentType, sourceViewer), contentType);
 		}
 		
 		presenter.setSizeConstraints(100, 12, false, true);
@@ -127,8 +138,8 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	// ================ Information provider
 	
 	@SuppressWarnings("unused")
-	protected IInformationProvider getInformationProvider(String contentType) {
-		return new HoverInformationProvider(new BestMatchHover(getEditor()));
+	protected IInformationProvider getInformationProvider(String contentType, ISourceViewer sourceViewer) {
+		return new HoverInformationProvider(new BestMatchHover(getSourceBuffer(sourceViewer), getEditor()));
 	}
 	
 	protected IInformationControlCreator getInformationPresenterControlCreator(

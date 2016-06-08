@@ -20,6 +20,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.tooling.common.ops.IProcessRunner;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -27,6 +28,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.StatusException;
 
 public class GuruFindDefinitionOperation extends GuruDescribeOperation {
 	
@@ -34,24 +36,25 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation {
 		super(goOraclePath);
 	}
 	
-	public FindDefinitionResult execute(Location inputLoc, int byteOffset, GoEnvironment goEnv, IProcessRunner opRunner,
-			ICancelMonitor cm) throws OperationCancellation, CommonException, OperationSoftFailure {
+	public ToolOpResult<FindDefinitionResult> execute(Location inputLoc, int byteOffset, 
+			GoEnvironment goEnv, IProcessRunner opRunner, ICancelMonitor cm) 
+					throws OperationCancellation, CommonException {
 		ProcessBuilder pb = createProcessBuilder(goEnv, inputLoc, byteOffset);
 		
 		ExternalProcessResult result = opRunner.runProcess(pb, null, cm);
 		if(result.exitValue != 0) {
-			throw new OperationSoftFailure("`guru` did not complete successfully.");
+			return new ToolOpResult<>(null, new StatusException("`guru` did not complete successfully."));
 		}
 		
 		return parseToolResult(result);
 	}
 	
-	public FindDefinitionResult parseToolResult(ExternalProcessResult result) throws CommonException {
+	public ToolOpResult<FindDefinitionResult> parseToolResult(ExternalProcessResult result) throws CommonException {
 		if(result.exitValue != 0) {
 			throw new CommonException("Program exited with non-zero status: " + result.exitValue, null);
 		}
 		
-		return parseJsonResult(result.getStdOutBytes().toString());
+		return new ToolOpResult<>(parseJsonResult(result.getStdOutBytes().toString()));
 	}
 	
 	protected FindDefinitionResult parseJsonResult(String output) throws CommonException {

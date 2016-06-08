@@ -24,40 +24,35 @@ public abstract class AbstractToolOperation2<RESULT> implements ToolOutputParseH
 	}
 	
 	public RESULT parseResult(ExternalProcessResult result) throws CommonException, OperationCancellation {
-		try {
-			return handleProcessResult(result);
-		} catch(OperationSoftFailure e) {
-			throw e.toCommonException();
-		}
+		return handleProcessResult(result).get();
 	}
 	
-	public RESULT handleProcessResult(ExternalProcessResult result) 
-			throws CommonException, OperationCancellation, OperationSoftFailure {
-		if(result.exitValue != 0) {
-			handleNonZeroExitCode(result);
-		}
+	public ToolOpResult<RESULT> handleProcessResult(ExternalProcessResult result) 
+			throws CommonException, OperationCancellation {
+		validateExitCode(result);
 		
 		return doHandleProcessResult(result);
 	}
 	
-	protected void handleNonZeroExitCode(ExternalProcessResult result) 
-			throws CommonException, OperationSoftFailure {
-		throw new CommonException(
+	protected void validateExitCode(ExternalProcessResult result) throws CommonException {
+		if(result.exitValue != 0) {
+			throw new CommonException(
 			ToolingMessages.PROCESS_CompletedWithNonZeroValue(getToolProcessName(), result.exitValue));
+		}
 	}
 	
 	protected abstract String getToolProcessName();
 	
-	protected RESULT doHandleProcessResult(ExternalProcessResult result) 
-			throws CommonException, OperationCancellation, OperationSoftFailure {
+	protected ToolOpResult<RESULT> doHandleProcessResult(ExternalProcessResult result) 
+			throws CommonException {
 		return parseProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	public final RESULT parseProcessOutput(String source) 
-			throws CommonException, OperationCancellation, OperationSoftFailure {
+	public final ToolOpResult<RESULT> parseProcessOutput(String source) 
+			throws CommonException {
 		return parseProcessOutput(new StringCharSource(source));
 	}
 	
-	public abstract RESULT parseProcessOutput(StringCharSource outputParseSource) throws CommonException;
+	public abstract ToolOpResult<RESULT> parseProcessOutput(StringCharSource outputParseSource) throws CommonException;
 	
 }

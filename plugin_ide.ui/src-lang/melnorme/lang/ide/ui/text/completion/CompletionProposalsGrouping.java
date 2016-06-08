@@ -14,7 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -87,7 +87,7 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	}
 	
 	@Override
-	public Indexable<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) 
+	public Indexable<ICompletionProposal> computeCompletionProposals(EditorOperationContext context) 
 			throws CommonException {
 		clearErrorMessage();
 		
@@ -105,7 +105,7 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	}
 	
 	@Override
-	public Indexable<IContextInformation> computeContextInformation(SourceOperationContext context) {
+	public Indexable<IContextInformation> computeContextInformation(EditorOperationContext context) {
 		clearErrorMessage();
 		
 		ArrayList2<IContextInformation> proposals = new ArrayList2<>();

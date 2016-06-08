@@ -13,7 +13,7 @@
 package melnorme.lang.ide.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,12 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.text.JavaWordFinder;
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.lang.tooling.common.ISourceBuffer;
 
 /**
  * 'Fake' hover used to choose the best available hover.
@@ -38,13 +39,15 @@ import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 public class BestMatchHover extends AbstractEditorTextHover 
 	implements IInformationProviderExtension2 {
 	
-	protected final AbstractLangStructureEditor editor;
+	protected final ISourceBuffer sourceBuffer;
+	protected final ITextEditor editor; // can be null
 	
 	protected List<ILangEditorTextHover<?>> fInstantiatedTextHovers;
 	protected ILangEditorTextHover<?> matchedHover;
 	
-	public BestMatchHover(AbstractLangStructureEditor editor) {
-		this.editor = assertNotNull(editor);
+	public BestMatchHover(ISourceBuffer sourceBuffer, ITextEditor editor) {
+		this.sourceBuffer = assertNotNull(sourceBuffer);
+		this.editor = editor; // Note, editor not necessarily a lang editor, could be compare editor or null
 		prepareTextHovers();
 	}
 	
@@ -85,7 +88,6 @@ public class BestMatchHover extends AbstractEditorTextHover
 	}
 	
 	public Object getInformation(ITextViewer textViewer, IRegion hoverRegion, boolean canSaveEditor) {
-		assertTrue(textViewer == editor.getSourceViewer_());
 		
 		matchedHover = null;
 		
@@ -93,7 +95,7 @@ public class BestMatchHover extends AbstractEditorTextHover
 			if (hover == null) 
 				continue;
 			
-			Object info = hover.getHoverInfo(editor, hoverRegion, canSaveEditor);
+			Object info = hover.getHoverInfo(sourceBuffer, hoverRegion, option(editor), textViewer, canSaveEditor);
 			if (info != null) {
 				matchedHover = hover;
 				return info;

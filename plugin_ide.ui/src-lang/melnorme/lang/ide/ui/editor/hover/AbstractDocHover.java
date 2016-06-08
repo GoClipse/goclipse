@@ -12,18 +12,18 @@ package melnorme.lang.ide.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.Optional;
+
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
-import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.ProgressMonitorDialogOpRunner;
-import melnorme.lang.ide.ui.utils.operations.UIOperation;
-import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.utils.HTMLEscapeUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -41,45 +41,37 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 		return hoverCreator.getInformationPresenterControlCreator();
 	}
 	
-	protected boolean requiresSavedEditor() {
+	protected boolean requiresSavedBuffer() {
 		return true;
 	}
 	
 	@Override
-	public String getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion, boolean canSaveEditor) {
-		assertNotNull(editor);
+	public String getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, Optional<ITextEditor> editor,
+			ITextViewer textViewer, boolean allowedToSaveBuffer) {
+		assertNotNull(sourceBuffer);
 		
-		if(requiresSavedEditor() && editor.isDirty()) {
+		if(requiresSavedBuffer() && sourceBuffer.isDirty()) {
 			
-			if(!canSaveEditor) {
-				return null;
+			if(!allowedToSaveBuffer) {
+				return null; // Nothing we can do, quite
 			}
 			
-			Shell shell = editor.getSourceViewer_().getTextWidget().getShell();
-			UIOperation op = new UIOperation("Saving editor for hover information", editor::saveWithoutSaveActions2) {
-				@Override
-				protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
-					new ProgressMonitorDialogOpRunner(shell, editor::saveWithoutSaveActions2) {{ 
-						fork = false; 
-					}}.execute();
-				}
-			};
-			boolean success = op.executeAndHandle();
+			boolean success = sourceBuffer.trySaveBuffer();
 			if(!success) {
 				return null;
 			}
 			
 		}
 		
-		return getHoverInfo(editor, hoverRegion);
+		return getHoverInfo(sourceBuffer, hoverRegion, textViewer);
 	}
 	
 	@Override
-	public String getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
+	public String getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, ITextViewer textViewer) {
 		
 		try {
 			int offset = hoverRegion.getOffset();
-			String rawDocumentation = getRawDocumentation(editor, offset);
+			String rawDocumentation = getRawDocumentation(sourceBuffer, offset);
 			
 			if(rawDocumentation == null) {
 				return null;
@@ -93,25 +85,12 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 		}
 	}
 	
-	protected String getRawDocumentation(ITextEditor editor, int offset) throws CommonException {
-		CalculateValueUIOperation<String> op = getOpenDocumentationOperation(editor, offset);
+	protected String getRawDocumentation(ISourceBuffer sourceBuffer, int offset) throws CommonException {
+		CalculateValueUIOperation<String> op = getOpenDocumentationOperation(sourceBuffer, offset);
 		return op.executeAndGetValidatedResult();
 	}
 	
-	protected abstract CalculateValueUIOperation<String> getOpenDocumentationOperation(ITextEditor editor, int offset);
+	protected abstract CalculateValueUIOperation<String> getOpenDocumentationOperation(ISourceBuffer sourceBuffer, 
+			int offset);
 	
-	
-	public static class HTMLEscapeUtil {
-		
-		public static String escapeToToHTML(String string) {
-			String content = string;
-			content = content.replace("&", "&amp;");
-			content = content.replace("\"", "&quot;");
-			content = content.replace("<", "&lt;");
-			content = content.replace(">", "&gt;");
-			content = content.replace("\n", "<br/>");
-			return content;
-		}
-		
-	}
 }

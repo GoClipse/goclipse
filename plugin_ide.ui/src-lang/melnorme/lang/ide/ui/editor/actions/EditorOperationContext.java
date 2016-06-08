@@ -28,20 +28,20 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class SourceOperationContext {
+public class EditorOperationContext {
 	
-	public static SourceOperationContext create(ITextViewer viewer, int offset, ITextEditor editor) {
+	public static EditorOperationContext create(ITextViewer viewer, int offset, ITextEditor editor) {
 		SourceRange selection = viewer == null ? null : EditorUtils.getSelectedRange(viewer);
 		
 		return create(offset, selection, viewer, editor);
 	}
 	
-	public static SourceOperationContext create(int offset, SourceRange selection, ITextViewer viewer,
+	public static EditorOperationContext create(int offset, SourceRange selection, ITextViewer viewer,
 			ITextEditor editor) {
 		assertTrue(viewer != null || editor != null);
 		IDocument document = viewer != null ? viewer.getDocument() : EditorUtils.getEditorDocument(editor);
 		
-		return new SourceOperationContext(offset, selection, document, editor);
+		return new EditorOperationContext(offset, selection, document, editor);
 	}
 	
 	/* -----------------  ----------------- */
@@ -54,7 +54,7 @@ public class SourceOperationContext {
 	
 	protected final IEditorPart editor; // can be null
 	
-	public SourceOperationContext(int offset, SourceRange selection, IDocument document, IEditorPart editor) {
+	public EditorOperationContext(int offset, SourceRange selection, IDocument document, IEditorPart editor) {
 		this.offset = offset;
 		this.selection = selection != null ? selection : SourceRange.srStartToEnd(offset, offset);
 		this.document = assertNotNull(document);
@@ -78,7 +78,7 @@ public class SourceOperationContext {
 		return context.getSource();
 	}
 	
-	public int getInvocationOffset() {
+	public int getOffset() {
 		return context.getOffset();
 	}
 	

@@ -34,7 +34,7 @@ import _org.eclipse.jdt.internal.corext.template.java.CompilationUnitContextType
 import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -87,10 +87,10 @@ public class TemplateEngine {
 		return fProposals.toArray(new TemplateProposal[fProposals.size()]);
 	}
 
-	public void complete(SourceOperationContext sourceContext) throws CommonException {
+	public void complete(EditorOperationContext sourceContext) throws CommonException {
 		
 	    IDocument document = sourceContext.getDocument();
-		final int completionPosition = sourceContext.getInvocationOffset();
+		final int completionPosition = sourceContext.getOffset();
 		ISourceFile compilationUnit = sourceContext.getSourceFile();
 
 		if (!(fContextType instanceof CompilationUnitContextType))
@@ -146,7 +146,7 @@ public class TemplateEngine {
 		return LangUIPlugin.getTemplateRegistry().getTemplateStore().getTemplates();
 	}
 	
-	public List<ICompletionProposal> completeAndReturnResults(SourceOperationContext context) throws CommonException {
+	public List<ICompletionProposal> completeAndReturnResults(EditorOperationContext context) throws CommonException {
 		complete(context);
 		
 		TemplateProposal[] templateProposals = getResults();

@@ -22,8 +22,8 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
-import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -69,27 +69,36 @@ public abstract class GoFindDefinitionOperation {
 		}
 	}
 	
-	public FindDefinitionResult execute(IOperationMonitor cm) 
-			throws CommonException, OperationCancellation, OperationSoftFailure {
+	public ToolOpResult<FindDefinitionResult> execute(IOperationMonitor cm) 
+			throws CommonException, OperationCancellation {
 		Location fileLocation = getFileLocation();
 		
 		Charset charset = StringUtil.UTF8; // All Go source file must be encoded in UTF8, not another format.
 		int byteOffset = getByteOffsetFromEncoding(source, invocationOffset, charset);
 		
+		ToolOpResult<FindDefinitionResult> godefResult = null;
 		try {
 			String godefPath = getGodefPath();
-			return new GodefOperation(toolOperationService, godefPath, goEnv, fileLocation, byteOffset).execute(cm);
-		} catch(OperationSoftFailure | CommonException e) {
+			godefResult = new GodefOperation(toolOperationService, godefPath, goEnv, fileLocation, byteOffset)
+					.execute(cm);
+			
+			godefResult.get(); // ensure valid, throw otherwise
+			return godefResult;
+		} catch(CommonException e) {
 			
 			// Try go oracle as an alternative
 			try {
 				String goOraclePath = getGuruPath();
-				return new GuruFindDefinitionOperation(goOraclePath).execute(fileLocation, byteOffset, goEnv, 
-					toolOperationService, cm);
-			} catch(OperationSoftFailure | CommonException oracleError) {
+				ToolOpResult<FindDefinitionResult> result = new GuruFindDefinitionOperation(goOraclePath)
+						.execute(fileLocation, byteOffset, goEnv, toolOperationService, cm);
+				result.get(); // check that it is valid
+				return result;
+			} catch(CommonException e2) {
 				// Ignore oracle error, display previous godef error 
 			}
-			
+			if(godefResult != null) {
+				return godefResult;
+			}
 			throw e;
 		}
 	}

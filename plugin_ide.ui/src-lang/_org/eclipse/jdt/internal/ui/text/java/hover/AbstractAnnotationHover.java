@@ -12,12 +12,7 @@ package _org.eclipse.jdt.internal.ui.text.java.hover;
 
 import java.util.Iterator;
 
-import org.eclipse.core.filebuffers.FileBuffers;
-import org.eclipse.core.filebuffers.ITextFileBufferManager;
-import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
@@ -34,6 +29,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension2;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.PaintEvent;
@@ -51,11 +47,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.javaeditor.JavaAnnotationIterator;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.tooling.common.ISourceBuffer;
 
 
 /**
@@ -599,7 +594,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 	 * @since 3.4
 	 */
 	private IInformationControlCreator fPresenterControlCreator;
-	private ITextEditor editor;
+//	private ITextEditor editor;
 
 
 	public AbstractAnnotationHover(boolean allAnnotations) {
@@ -615,18 +610,16 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 //		return null;
 //	}
 
-	public ITextEditor getEditor() {
-		return editor;
-	}
-	
 	@Override
-	public Object getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
-		this.editor = editor;
+	public Object getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, ITextViewer textViewer) {
 		
-		ITextViewer textViewer = editor.getSourceViewer_();
+		if (!(textViewer instanceof ISourceViewer)) {
+			return null;
+		}
 		
-		IPath path = null;
-		IAnnotationModel model = editor.getSourceViewer_().getAnnotationModel();
+		ISourceViewer sourceViewer = (ISourceViewer) textViewer;
+//		IPath path = null;
+		IAnnotationModel model = sourceViewer.getAnnotationModel();
 //		if (editor.getSourceViewer_() instanceof ISourceViewer) {
 //			path= null;
 //			model= editor.getSourceViewer_().getAnnotationModel();
@@ -635,10 +628,10 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 //			path= getEditorInputPath();
 //			model= getAnnotationModel(path);
 //		}
-		if (model == null)
-			return null;
+//		if (model == null)
+//			return null;
 
-		try {
+//		try {
 			Iterator<Annotation> parent;
 			if (model instanceof IAnnotationModelExtension2)
 				parent= ((IAnnotationModelExtension2)model).getAnnotationIterator(hoverRegion.getOffset(), hoverRegion.getLength(), true, true);
@@ -672,16 +665,16 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 			if (layer > -1)
 				return createAnnotationInfo(annotation, position, textViewer);
 
-		} finally {
-			try {
-				if (path != null) {
-					ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
-					manager.disconnect(path, LocationKind.NORMALIZE, null);
-				}
-			} catch (CoreException ex) {
-				LangUIPlugin.logStatus(ex);
-			}
-		}
+//		} finally {
+//			try {
+//				if (path != null) {
+//					ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
+//					manager.disconnect(path, LocationKind.NORMALIZE, null);
+//				}
+//			} catch (CoreException ex) {
+//				LangUIPlugin.logStatus(ex);
+//			}
+//		}
 
 		return null;
 	}

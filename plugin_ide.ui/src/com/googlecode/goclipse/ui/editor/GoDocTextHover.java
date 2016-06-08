@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor;
 
+import java.util.Optional;
+
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.tooling.oracle.GoFindDefinitionOperation;
@@ -18,8 +22,9 @@ import com.googlecode.goclipse.ui.actions.GoOpenDefinitionOperation;
 
 import melnorme.lang.ide.ui.editor.hover.AbstractDocHover;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -29,11 +34,25 @@ import melnorme.utilbox.core.CommonException;
  */
 public class GoDocTextHover extends AbstractDocHover {
 	
+	protected ITextEditor editor;
+	
 	public GoDocTextHover() {
 	}
 	
 	@Override
-	protected CalculateValueUIOperation<String> getOpenDocumentationOperation(ITextEditor editor, int offset) {
+	public String getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, Optional<ITextEditor> _editor,
+			ITextViewer textViewer, boolean allowedToSaveBuffer) {
+		/* FIXME: use sourceBuffer*/
+		if(!_editor.isPresent()) {
+			return null;
+		}
+		this.editor = _editor.get();
+		return super.getHoverInfo(sourceBuffer, hoverRegion, _editor, textViewer, allowedToSaveBuffer);
+	}
+	
+	@Override
+	protected CalculateValueUIOperation<String> getOpenDocumentationOperation(ISourceBuffer sourceBuffer, int offset) {
+		/* FIXME: use sourceBuffer*/
 		return new GoOpenDocumentationOperation("Get Documentation", editor, offset);
 	}
 	
@@ -49,10 +68,10 @@ public class GoDocTextHover extends AbstractDocHover {
 		@Override
 		protected String doBackgroundValueComputation(IOperationMonitor om)
 				throws CommonException, OperationCancellation {
+			ToolOpResult<String> opResult = new GoFindDocOperation(findDefOperation).execute(om);
 			try {
-				return new GoFindDocOperation(findDefOperation).execute(om);
-				/* FIXME: refactor, don't use OperationSoftFailure */
-			} catch(OperationSoftFailure e) {
+				return opResult.get();
+			} catch(CommonException e) {
 				return e.getMessage();
 			}
 		}

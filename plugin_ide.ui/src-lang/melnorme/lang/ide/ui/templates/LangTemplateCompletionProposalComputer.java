@@ -12,16 +12,14 @@ package melnorme.lang.ide.ui.templates;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.TemplateContextType;
 
 import _org.eclipse.jdt.internal.ui.text.template.contentassist.TemplateEngine;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
-import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.ListView;
 import melnorme.utilbox.core.CommonException;
@@ -53,8 +51,8 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	}
 	
 	@Override
-	protected Indexable<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context, int offset)
-			throws CoreException, CommonException, OperationSoftFailure {
+	protected Indexable<ICompletionProposal> doComputeCompletionProposals(EditorOperationContext context)
+			throws CommonException {
 		
 		fEngine= computeCompletionEngine(context);
 		if (fEngine == null)
@@ -93,7 +91,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	}
 	
 	@SuppressWarnings("unused")
-	protected TemplateEngine computeCompletionEngine(SourceOperationContext context) {
+	protected TemplateEngine computeCompletionEngine(EditorOperationContext context) {
 		TemplateContextType contextType = LangUIPlugin.getTemplateRegistry().getContextType(getContextTypeId());
 		return new TemplateEngine(contextType);
 	}

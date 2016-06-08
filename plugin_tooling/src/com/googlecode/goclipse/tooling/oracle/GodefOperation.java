@@ -14,17 +14,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.toolchain.ops.AbstractSingleToolOperation;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
-import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.StatusException;
 
 public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionResult> {
 	
@@ -62,18 +65,21 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
-		String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
-		if(errOut.trim().contains("\n")) {
-			super.handleNonZeroExitCode(result);
-			return;
+	public ToolOpResult<FindDefinitionResult> handleProcessResult(ExternalProcessResult result)
+			throws CommonException, OperationCancellation {
+		if(result.exitValue != 0) {
+			String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
+			if(!errOut.trim().contains("\n")) {
+				return new ToolOpResult<>(null, new StatusException(errOut));
+			}
 		}
-		throw new OperationSoftFailure(errOut);
+		return super.handleProcessResult(result);
 	}
 	
 	@Override
-	public FindDefinitionResult parseProcessOutput(StringCharSource output) throws CommonException {
-		return ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
+	public ToolOpResult<FindDefinitionResult> parseProcessOutput(StringCharSource output) throws CommonException {
+		FindDefinitionResult findDefResult = ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
+		return new ToolOpResult<>(findDefResult);
 	}
 	
 }
