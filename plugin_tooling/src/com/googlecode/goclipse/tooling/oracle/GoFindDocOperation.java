@@ -13,6 +13,7 @@ package com.googlecode.goclipse.tooling.oracle;
 import java.io.IOException;
 
 import melnorme.lang.tooling.common.SourceLineColumnRange;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.parser.SourceLinesInfo;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
@@ -24,7 +25,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.status.StatusException;
 
-public class GoFindDocOperation  {
+public class GoFindDocOperation implements CommonOperation<ToolOpResult<String>> {
 	
 	protected final GoFindDefinitionOperation findDefOp;
 	
@@ -32,9 +33,10 @@ public class GoFindDocOperation  {
 		this.findDefOp = findDefOp;
 	}
 	
-	public ToolOpResult<String> execute(IOperationMonitor om) throws CommonException, OperationCancellation {
+	@Override
+	public ToolOpResult<String> executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
 		
-		ToolOpResult<FindDefinitionResult> findDefOpResult = findDefOp.execute(om);
+		ToolOpResult<FindDefinitionResult> findDefOpResult = findDefOp.executeOp(om);
 		
 		FindDefinitionResult findDefResult;
 		try {

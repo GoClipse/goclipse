@@ -19,6 +19,7 @@ import java.nio.charset.CharsetEncoder;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
@@ -29,7 +30,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
-public abstract class GoFindDefinitionOperation {
+public abstract class GoFindDefinitionOperation implements CommonOperation<ToolOpResult<FindDefinitionResult>> {
 	
 	protected final GoEnvironment goEnv;
 	protected final SourceOpContext opContext;
@@ -42,7 +43,7 @@ public abstract class GoFindDefinitionOperation {
 		this.goEnv = assertNotNull(goEnv);
 		this.opContext = assertNotNull(opContext);
 		this.invocationOffset = opContext.getOffset();
-		this.source = assertNotNull(opContext.source);
+		this.source = assertNotNull(opContext.getSource());
 		this.toolOperationService = assertNotNull(toolOperationService);
 	}
 	
@@ -69,7 +70,8 @@ public abstract class GoFindDefinitionOperation {
 		}
 	}
 	
-	public ToolOpResult<FindDefinitionResult> execute(IOperationMonitor cm) 
+	@Override
+	public ToolOpResult<FindDefinitionResult> executeOp(IOperationMonitor cm) 
 			throws CommonException, OperationCancellation {
 		Location fileLocation = getFileLocation();
 		

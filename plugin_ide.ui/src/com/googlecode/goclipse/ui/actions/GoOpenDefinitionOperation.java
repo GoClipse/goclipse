@@ -22,11 +22,12 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoFindDefinitionOperation;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
-import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
@@ -56,7 +57,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor cm) 
 			throws CommonException, OperationCancellation {
 		
-		ToolOpResult<FindDefinitionResult> opResult = getToolOperation().execute(cm);
+		ToolOpResult<FindDefinitionResult> opResult = getToolOperation().executeOp(cm);
 		try {
 			return opResult.get();
 		} catch(CommonException e) {
@@ -66,14 +67,15 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	}
 	
 	public GoFindDefinitionOperation getToolOperation() {
-		return getFindDefinitionOperation(editor, getOperationOffset());
+		return getFindDefinitionOperation(new EditorSourceBuffer(editor), getOperationOffset());
 	}
 	
-	public static GoFindDefinitionOperation getFindDefinitionOperation(ITextEditor editor, int offset) {
-		IProject project = EditorUtils.getAssociatedProject(editor.getEditorInput());
-		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+	public static GoFindDefinitionOperation getFindDefinitionOperation(ISourceBuffer sourceBuffer,
+			int offset) {
+		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
-		SourceOpContext opContext = AbstractEditorOperation2.getSourceContext(editor, new SourceRange(offset, 0));
+		IProject project = ResourceUtils.getProject(opContext.getOptionalFileLocation());
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		IToolOperationService toolsOpService = LangCore.getToolManager().getEngineToolsOperationService();
 		return GoOpenDefinitionOperation.getFindDefOperation(goEnv, opContext, toolsOpService);
