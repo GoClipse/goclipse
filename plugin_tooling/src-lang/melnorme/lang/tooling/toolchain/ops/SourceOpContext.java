@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Optional;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.parser.SourceLinesInfo;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -23,17 +24,20 @@ public class SourceOpContext {
 	public static final String MSG_NoFileLocationForThisOperation = "No file location for this operation";
 	
 	protected final Location fileLocation; // can be null
-	public final SourceRange sourceRange;
-	public final String source;
+	protected final String source;
+	protected final SourceRange sourceRange;
+	protected final boolean isDirty;
 	
-	public SourceOpContext(Location fileLocation, int offset, String source) {
-		this(fileLocation, new SourceRange(offset, 0),source);
+	public SourceOpContext(Location fileLocation, int offset, String source, boolean isDirty) {
+		this(fileLocation, new SourceRange(offset, 0),source, isDirty);
 	}
 	
-	public SourceOpContext(Location fileLocation, SourceRange sourceRange, String source) {
+	public SourceOpContext(Location fileLocation, SourceRange sourceRange, String source, boolean isDirty) {
 		this.fileLocation = fileLocation;
 		this.sourceRange = assertNotNull(sourceRange);
 		this.source = assertNotNull(source);
+		new SourceLinesInfo(source);
+		this.isDirty = isDirty;
 	}
 	
 	public int getOffset() {
@@ -55,8 +59,29 @@ public class SourceOpContext {
 		return source;
 	}
 	
-	public SourceRange getSourceRange() {
+	public SourceRange getOperationRange() {
 		return sourceRange;
+	}
+	
+	public boolean isDocumentDirty() {
+		return isDirty;
+	}
+	
+	private SourceLinesInfo sourceLinesInfo;
+	
+	public synchronized SourceLinesInfo getSourceLinesInfo() {
+		if(sourceLinesInfo == null) {
+			this.sourceLinesInfo = new SourceLinesInfo(source);
+		}
+		return sourceLinesInfo;
+	}
+	
+	public int getInvocationLine_0() throws CommonException {
+		return getSourceLinesInfo().getLineForOffset(getOffset());
+	}
+	
+	public int getInvocationColumn_0() throws CommonException {
+		return getSourceLinesInfo().getColumnForOffset(getOffset());
 	}
 	
 }

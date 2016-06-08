@@ -22,9 +22,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.ISourceFile;
-import melnorme.lang.ide.core.text.DocumentSourceOpContext;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -46,7 +46,7 @@ public class EditorOperationContext {
 	
 	/* -----------------  ----------------- */
 	
-	protected final DocumentSourceOpContext context;
+	protected final SourceOpContext context;
 	
 	protected final int offset;
 	protected final SourceRange selection;
@@ -67,7 +67,7 @@ public class EditorOperationContext {
 			fileLocation = EditorUtils.getInputLocationOrNull(editor);
 			dirty = editor.isDirty();
 		}
-		context = new DocumentSourceOpContext(fileLocation, offset, document, dirty);
+		context = new SourceOpContext(fileLocation, offset, document.get(), dirty);
 	}
 	
 	public IDocument getDocument() {
@@ -86,7 +86,7 @@ public class EditorOperationContext {
 		return selection;
 	}
 	
-	public DocumentSourceOpContext getContext() {
+	public SourceOpContext getContext() {
 		return context;
 	}
 	

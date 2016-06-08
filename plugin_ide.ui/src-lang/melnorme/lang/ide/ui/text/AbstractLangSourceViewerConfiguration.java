@@ -48,8 +48,8 @@ import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.EditorSourceModule;
-import melnorme.lang.ide.ui.editor.EditorSourceModule.SourceViewerSourceModule;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer.SourceViewerSourceModule;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
@@ -83,7 +83,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	
 	protected ISourceBuffer getSourceBuffer(ISourceViewer sourceViewer) {
 		if(editor != null) {
-			return new EditorSourceModule(editor);
+			return new EditorSourceBuffer(editor);
 		} else {
 			return new SourceViewerSourceModule(sourceViewer);
 		}
