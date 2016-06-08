@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -21,7 +22,9 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.ProgressMonitorDialogOpRunner;
 import melnorme.lang.ide.ui.utils.operations.UIOperation;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -30,11 +33,11 @@ import melnorme.utilbox.misc.Location;
 /**
  * An abstraction of the buffer of an editor, or af a source viewer. 
  */
-public class EditorSourceModule implements ISourceBuffer {
+public class EditorSourceBuffer implements ISourceBuffer {
 	
 	protected final ITextEditor editor;
 	
-	public EditorSourceModule(ITextEditor editor) {
+	public EditorSourceBuffer(ITextEditor editor) {
 		this.editor = assertNotNull(editor);
 	}
 	
@@ -81,6 +84,13 @@ public class EditorSourceModule implements ISourceBuffer {
 		} else {
 			editor.doSave(EclipseUtils.pm(cm));
 		}
+	}
+	
+	public static SourceOpContext getSourceOpContext(ITextEditor editor, SourceRange range) {
+		Location inputLoc = EditorUtils.getInputLocationOrNull(editor);
+		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		
+		return new SourceOpContext(inputLoc, range.getOffset(), document.get(), editor.isDirty());
 	}
 	
 	/* -----------------  ----------------- */

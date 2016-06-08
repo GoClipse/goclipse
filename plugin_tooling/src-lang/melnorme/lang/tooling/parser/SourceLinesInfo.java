@@ -12,6 +12,8 @@ package melnorme.lang.tooling.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Collections;
+
 import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
@@ -20,31 +22,25 @@ import melnorme.utilbox.core.CommonException;
 public class SourceLinesInfo {
 	
 	protected final String source;
-	protected ArrayList2<Integer> lines;
+	protected final ArrayList2<Integer> lines; // entries contain lineStart
 	
 	public SourceLinesInfo(String source) {
 		this.source = source;
-		
-		StringCharSource parser = new StringCharSource(source);
-		
-		calculateLines(parser);
+		this.lines = calculateLines(new StringCharSource(source));
 	}
 	
-	public String getSource() {
-		return source;
-	}
-	
-	protected void calculateLines(StringCharSource parser) {
-		lines = new ArrayList2<>();
+	protected ArrayList2<Integer> calculateLines(StringCharSource parser) {
+		ArrayList2<Integer> lines = new ArrayList2<>();
 		
 		int lineStartOffset = 0;
-		while(parser.hasCharAhead()) {
+		do {
 			consumeNewLine(parser);
 			
 			lines.add(lineStartOffset);
 			lineStartOffset = parser.getReadPosition();
-		}
+		} while(parser.hasCharAhead());
 		
+		return lines;
 	}
 	
 	protected void consumeNewLine(StringCharSource parser) {
@@ -60,10 +56,43 @@ public class SourceLinesInfo {
 		
 	}
 	
+	public String getSource() {
+		return source;
+	}
+	
+	/* -----------------  ----------------- */
+
+	public void validateOffset(int offset) throws CommonException {
+		if(offset > source.length()) {
+			throw CommonException.fromMsgFormat("Invalid offset {0}, it is out of bounds.", offset);
+		}
+	}
+	
+	public int getNumberOfLines() {
+		return lines.size();
+	}
+	
 	public int getOffsetForLine(int lineIndex) {
 		assertTrue(lineIndex >= 0 && lineIndex < lines.size());
 		return lines.get(lineIndex);
 	}
+	
+	public int getLineForOffset(int offset) throws CommonException {
+		validateOffset(offset);
+		
+		int binarySearchResult = Collections.binarySearch(lines, offset);
+		return binarySearchResult >= 0 ? binarySearchResult : -(binarySearchResult + 1) -1;
+	}
+	
+	public int getLineStartForOffset(int offset) throws CommonException {
+		return getOffsetForLine(getLineForOffset(offset));
+	}
+	
+	public int getColumnForOffset(int offset) throws CommonException {
+		return offset - getLineStartForOffset(offset);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public int getValidatedOffset_1(int line_1, int column_1) throws CommonException {
 		if(line_1 < 1) {
@@ -114,6 +143,8 @@ public class SourceLinesInfo {
 		}
 		return offset;
 	}
+	
+	/* -----------------  ----------------- */
 	
 	public int getIdentifierAt(int validatedOffset) {
 		StringCharSource parser = new StringCharSource(source);

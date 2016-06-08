@@ -30,11 +30,12 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.core.text.DocumentSourceOpContext;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -45,7 +46,7 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	
 	protected final IDocument doc;
 	protected final IProject project;
-	protected final DocumentSourceOpContext sourceOpContext;
+	protected final SourceOpContext sourceOpContext;
 	
 	
 	protected String statusErrorMessage;
@@ -61,26 +62,19 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 		
 		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
 		this.project = EditorUtils.getAssociatedProject(editor.getEditorInput());
-		this.sourceOpContext = getSourceContext(editor, range);
+		this.sourceOpContext = EditorSourceBuffer.getSourceOpContext(editor, range);
 	}
 	
-	public static DocumentSourceOpContext getSourceContext(ITextEditor editor, SourceRange range) {
-		Location inputLoc = EditorUtils.getInputLocationOrNull(editor);
-		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
-		
-		return new DocumentSourceOpContext(inputLoc, range.getOffset(), document, editor.isDirty());
-	}
-	
-	public DocumentSourceOpContext getContext2() {
+	public SourceOpContext getContext2() {
 		return sourceOpContext;
 	}
 	
 	public String getSource() {
-		return sourceOpContext.source;
+		return sourceOpContext.getSource();
 	}
 	
 	public SourceRange getOperationRange() {
-		return sourceOpContext.sourceRange;
+		return sourceOpContext.getOperationRange();
 	}
 	
 	public int getOperationOffset() {
