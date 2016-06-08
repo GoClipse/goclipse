@@ -25,6 +25,6 @@ test_indent
    // indent2
 test_indent2
 
-   /
-   // indent3
+	/
+	// indent3
 test_indent3

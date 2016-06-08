@@ -69,7 +69,7 @@ public class GoDocParser {
 	public String getCommentPrefix(String text, int lineStart) {
 		for(int ix = lineStart; ix+1 < text.length(); ix++) {
 			char ch = text.charAt(ix);
-			if(Character.isSpaceChar(ch)) {
+			if(Character.isSpaceChar(ch) || ch == '\t') {
 				continue;
 			}
 			if(ch == '/' && text.charAt(ix+1) == '/' ) {
