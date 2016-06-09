@@ -18,8 +18,8 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 import _org.eclipse.jdt.internal.ui.text.template.contentassist.TemplateEngine;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
+import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.ListView;
 import melnorme.utilbox.core.CommonException;
@@ -51,7 +51,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	}
 	
 	@Override
-	protected Indexable<ICompletionProposal> doComputeCompletionProposals(EditorOperationContext context)
+	protected Indexable<ICompletionProposal> doComputeCompletionProposals(CompletionContext context)
 			throws CommonException {
 		
 		fEngine= computeCompletionEngine(context);
@@ -91,7 +91,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	}
 	
 	@SuppressWarnings("unused")
-	protected TemplateEngine computeCompletionEngine(EditorOperationContext context) {
+	protected TemplateEngine computeCompletionEngine(CompletionContext context) {
 		TemplateContextType contextType = LangUIPlugin.getTemplateRegistry().getContextType(getContextTypeId());
 		return new TemplateEngine(contextType);
 	}

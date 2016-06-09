@@ -7,8 +7,8 @@ import melnorme.utilbox.misc.NumberUtil;
 
 public final class SourceRange implements Comparable<SourceRange> {
 	
-	private final int offset;
-	private final int length;
+	public final int offset;
+	public final int length;
 	
 	public SourceRange(int offset, int length) {
 		assertTrue(offset >= 0);

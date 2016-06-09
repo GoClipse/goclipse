@@ -10,7 +10,7 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
+import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -20,7 +20,7 @@ import melnorme.utilbox.core.CommonException;
 public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(EditorOperationContext context, ICancelMonitor cm) 
+	protected LangCompletionResult doComputeProposals(CompletionContext context, ICancelMonitor cm) 
 			throws CommonException, OperationCancellation {
 		return new LangCompletionResult("NOT IMPLEMENTED");
 	}

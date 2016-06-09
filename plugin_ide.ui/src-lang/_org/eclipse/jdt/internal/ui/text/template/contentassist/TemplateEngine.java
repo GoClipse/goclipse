@@ -27,15 +27,15 @@ import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateProposal;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 
 import _org.eclipse.jdt.internal.corext.template.java.CompilationUnitContext;
 import _org.eclipse.jdt.internal.corext.template.java.CompilationUnitContextType;
 import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
+import melnorme.lang.ide.ui.text.completion.CompletionContext;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -88,24 +88,23 @@ public class TemplateEngine {
 		return fProposals.toArray(new TemplateProposal[fProposals.size()]);
 	}
 
-	public void complete(EditorOperationContext sourceContext) throws CommonException {
+	public void complete(CompletionContext sourceContext) throws CommonException {
 		
 	    IDocument document = sourceContext.getDocument();
-		final int completionPosition = sourceContext.getOffset();
 		final Location sourceFileLoc = sourceContext.getContext().getFileLocation();
 
 		if (!(fContextType instanceof CompilationUnitContextType))
 			return;
 		CompilationUnitContextType compilationUnitContextType = (CompilationUnitContextType) fContextType;
 
-		Point selection= sourceContext.getSelection_asPoint();
-		Position position= new Position(completionPosition, selection.y);
+		SourceRange selection = sourceContext.getSelection();
+		Position position= new Position(selection.getStartPos(), selection.getLength());
 
 		// remember selected text
 		String selectedText= null;
-		if (selection.y != 0) {
+		if (selection.getLength() != 0) {
 			try {
-				selectedText= document.get(selection.x, selection.y);
+				selectedText= document.get(selection.getStartPos(), selection.getLength());
 				document.addPosition(position);
 				fPositions.put(document, position);
 			} catch (BadLocationException e) {}
@@ -125,7 +124,7 @@ public class TemplateEngine {
 
 		Template[] templates = getTemplates();
 
-		if (selection.y == 0) {
+		if (selection.getLength() == 0) {
 			for (Template template : templates) {
 				if (context.canEvaluate(template)) {
 					fProposals.add(new LangTemplateProposal(template, context, region, getImage(), 0));
@@ -153,7 +152,7 @@ public class TemplateEngine {
 		return LangUIPlugin.getTemplateRegistry().getTemplateStore().getTemplates();
 	}
 	
-	public List<ICompletionProposal> completeAndReturnResults(EditorOperationContext context) throws CommonException {
+	public List<ICompletionProposal> completeAndReturnResults(CompletionContext context) throws CommonException {
 		complete(context);
 		
 		TemplateProposal[] templateProposals = getResults();
@@ -173,16 +172,16 @@ public class TemplateEngine {
 	 * @return <code>true</code> if one or multiple lines are selected
 	 * @since 2.1
 	 */
-	protected boolean areMultipleLinesSelected(IDocument document, Point s) {
-		if (s.y == 0)
+	protected boolean areMultipleLinesSelected(IDocument document, SourceRange s) {
+		if (s.getLength() == 0)
 			return false;
 
 		try {
 			
-			int startLine= document.getLineOfOffset(s.x);
-			int endLine= document.getLineOfOffset(s.x + s.y);
+			int startLine= document.getLineOfOffset(s.getOffset());
+			int endLine= document.getLineOfOffset(s.getEndPos());
 			IRegion line= document.getLineInformation(startLine);
-			return startLine != endLine || (s.x == line.getOffset() && s.y == line.getLength());
+			return startLine != endLine || (s.getOffset() == line.getOffset() && s.getLength() == line.getLength());
 		} catch (BadLocationException x) {
 			return false;
 		}

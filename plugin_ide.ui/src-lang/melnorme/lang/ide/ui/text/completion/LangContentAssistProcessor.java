@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -40,9 +41,9 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -209,13 +210,18 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	/* -----------------  ----------------- */
 	
-	protected EditorOperationContext createContext(ITextViewer viewer, int offset) {
-		return EditorOperationContext.create(sourceBuffer, viewer, offset, editor);
+	protected CompletionContext createContext(ITextViewer viewer, int offset) {
+		assertNotNull(viewer);
+		
+		SourceRange selection = EditorUtils.getSelectedRange(viewer);
+		IDocument document = viewer.getDocument();
+		
+		return new CompletionContext(sourceBuffer, offset, selection, document);
 	}
 	
 	@Override
 	protected ICompletionProposal[] doComputeCompletionProposals(ITextViewer viewer, int offset) {
-		EditorOperationContext context = createContext(viewer, offset);
+		CompletionContext context = createContext(viewer, offset);
 		
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
@@ -243,7 +249,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	@Override
 	protected IContextInformation[] doComputeContextInformation(ITextViewer viewer, int offset) {
-		EditorOperationContext context = createContext(viewer, offset);
+		CompletionContext context = createContext(viewer, offset);
 		
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;

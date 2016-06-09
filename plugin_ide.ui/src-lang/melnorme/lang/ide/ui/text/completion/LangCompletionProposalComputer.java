@@ -22,7 +22,6 @@ import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
@@ -38,7 +37,7 @@ import melnorme.utilbox.core.CommonException;
 public abstract class LangCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
 	@Override
-	protected Indexable<ICompletionProposal> doComputeCompletionProposals(EditorOperationContext context) 
+	protected Indexable<ICompletionProposal> doComputeCompletionProposals(CompletionContext context) 
 			throws CommonException, OperationSoftFailure {
 		
 		if(needsEditorSave()) {
@@ -64,11 +63,11 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return false;
 	}
 	
-	protected void doEditorSave(EditorOperationContext context) throws CommonException {
+	protected void doEditorSave(CompletionContext context) throws CommonException {
 		context.getSourceBuffer().trySaveBuffer(); 
 	}
 	
-	protected Indexable<ICompletionProposal> computeProposals(EditorOperationContext context, ICancelMonitor cm)
+	protected Indexable<ICompletionProposal> computeProposals(CompletionContext context, ICancelMonitor cm)
 			throws CommonException, OperationCancellation, OperationSoftFailure
 	{
 		
@@ -83,13 +82,13 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return proposals;
 	}
 	
-	protected abstract LangCompletionResult doComputeProposals(EditorOperationContext context,
+	protected abstract LangCompletionResult doComputeProposals(CompletionContext context,
 			ICancelMonitor cm) 
 			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
-	protected ICompletionProposal adaptToolProposal(EditorOperationContext context, ToolCompletionProposal proposal) {
+	protected ICompletionProposal adaptToolProposal(CompletionContext context, ToolCompletionProposal proposal) {
 		IContextInformation ctxInfo = null; // TODO: context information
 		return new LangCompletionProposal(context.getSourceBuffer(), proposal, getImage(proposal), ctxInfo);
 	}
