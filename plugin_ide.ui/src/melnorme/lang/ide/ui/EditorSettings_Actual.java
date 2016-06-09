@@ -27,7 +27,6 @@ import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
-import melnorme.util.swt.jface.text.ColorManager2;
 
 public class EditorSettings_Actual {
 	
@@ -63,8 +62,7 @@ public class EditorSettings_Actual {
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
-		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new SimpleSourceViewerConfiguration(store, colorManager) {
+		return new SimpleSourceViewerConfiguration(store) {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(

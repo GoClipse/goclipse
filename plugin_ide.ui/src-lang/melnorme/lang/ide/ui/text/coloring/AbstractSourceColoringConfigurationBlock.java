@@ -378,8 +378,18 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 	}
 	
 	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfig( 
-			IPreferenceStore preferenceStore, ColorManager2 colorManager) {
-		return new SimpleSourceViewerConfiguration(preferenceStore, colorManager, overlayStylingPrefs);
+			IPreferenceStore preferenceStore, ColorManager2 _colorManager) {
+		return new SimpleSourceViewerConfiguration(preferenceStore) {
+			@Override
+			protected ColorManager2 init_ColorManager() {
+				return _colorManager;
+			}
+			
+			@Override
+			protected StylingPreferences init_StylePreferences() {
+				return overlayStylingPrefs;
+			}
+		};
 	}
 	
 }

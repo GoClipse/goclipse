@@ -23,10 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
-import melnorme.util.swt.jface.text.ColorManager2;
 
 public class LangTextMergeViewer extends TextMergeViewer {
 	
@@ -68,9 +66,7 @@ public class LangTextMergeViewer extends TextMergeViewer {
 	}
 	
 	protected SourceViewerConfiguration getSourceViewerConfiguration() {
-		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new LangSourceViewerConfiguration(getPreferenceStore(), colorManager, null,
-			EditorSettings_Actual.getStylingPreferences());
+		return new LangSourceViewerConfiguration(getPreferenceStore(), null);
 	}
 	
 }

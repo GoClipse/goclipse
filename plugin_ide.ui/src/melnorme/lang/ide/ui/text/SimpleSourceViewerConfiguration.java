@@ -20,21 +20,13 @@ import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.tooling.LANG_SPECIFIC;
-import melnorme.util.swt.jface.text.ColorManager2;
 
 @LANG_SPECIFIC
 public class SimpleSourceViewerConfiguration extends LangSourceViewerConfiguration {
 	
-	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
-		super(preferenceStore, colorManager, null, EditorSettings_Actual.getStylingPreferences());
-	}
-	
-	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
-			StylingPreferences stylingPrefs) {
-		super(preferenceStore, colorManager, null, stylingPrefs);
+	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore) {
+		super(preferenceStore, null);
 	}
 	
 	@Override

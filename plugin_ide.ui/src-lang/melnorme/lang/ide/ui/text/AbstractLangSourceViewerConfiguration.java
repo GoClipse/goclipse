@@ -58,22 +58,20 @@ import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
-import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.Indexable;
 
-public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimpleLangSourceViewerConfiguration {
+public abstract class AbstractLangSourceViewerConfiguration extends LangCommonSourceViewerConfiguration {
 	
 	protected final AbstractLangStructureEditor editor;
 	
-	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
-			StylingPreferences stylingPrefs, AbstractLangStructureEditor editor) {
-		super(preferenceStore, colorManager, stylingPrefs);
+	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
+			AbstractLangStructureEditor editor) {
+		super(preferenceStore);
 		this.editor = editor;
 	}
 	
@@ -157,7 +155,15 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	@Override 
 	protected Map<String, IAdaptable> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
 		Map<String, IAdaptable> targets = super.getHyperlinkDetectorTargets(sourceViewer);
-		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, editor); 
+		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, new IAdaptable() {
+			
+			@Override
+			public <T> T getAdapter(Class<T> adapter) {
+				System.out.println("foo");
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}); 
 		return targets;
 	} 
 	

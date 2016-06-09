@@ -1,53 +1,19 @@
 package melnorme.lang.ide.ui.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Display;
 
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_CompletionProposalComputer;
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
-import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
-import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
-import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import melnorme.lang.tooling.LANG_SPECIFIC;
-import melnorme.util.swt.jface.text.ColorManager2;
 
 @LANG_SPECIFIC
 public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
-			AbstractLangStructureEditor editor, StylingPreferences stylingPrefs) {
-		super(preferenceStore, colorManager, stylingPrefs, editor);
-	}
-	
-	@Override
-	protected AbstractLangScanner createScannerFor(Display current, LangPartitionTypes partitionType, 
-			TokenRegistry tokenStore) {
-		switch (partitionType) {
-		case CODE: 
-			return new LANGUAGE_CodeScanner(tokenStore);
-		
-		case LINE_COMMENT: 
-		case BLOCK_COMMENT: 
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.COMMENTS);
-		
-		case DOC_LINE_COMMENT:
-		case DOC_BLOCK_COMMENT:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.DOC_COMMENTS);
-		
-		case STRING:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.STRINGS);
-		
-		case CHARACTER:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.CHARACTER);
-		}
-		throw assertUnreachable();
+	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
+			AbstractLangStructureEditor editor) {
+		super(preferenceStore, editor);
 	}
 	
 	@Override

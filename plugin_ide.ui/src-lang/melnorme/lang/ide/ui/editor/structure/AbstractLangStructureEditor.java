@@ -35,8 +35,6 @@ import melnorme.lang.ide.core.engine.LocationKey;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
@@ -44,7 +42,6 @@ import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.fields.Field;
@@ -64,9 +61,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	
 	@Override
 	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
-		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new LangSourceViewerConfiguration(getPreferenceStore(), colorManager, this, 
-			EditorSettings_Actual.getStylingPreferences());
+		return new LangSourceViewerConfiguration(getPreferenceStore(), this);
 	}
 	
 	/* -----------------  ----------------- */
