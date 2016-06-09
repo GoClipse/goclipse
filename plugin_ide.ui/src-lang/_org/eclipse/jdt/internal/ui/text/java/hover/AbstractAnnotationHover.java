@@ -628,8 +628,8 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 //			path= getEditorInputPath();
 //			model= getAnnotationModel(path);
 //		}
-//		if (model == null)
-//			return null;
+		if (model == null)
+			return null;
 
 //		try {
 			Iterator<Annotation> parent;

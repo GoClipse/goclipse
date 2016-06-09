@@ -36,6 +36,7 @@ import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
@@ -61,7 +62,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	
 	@Override
 	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new LangSourceViewerConfiguration(getPreferenceStore(), this);
+		return new LangSourceViewerConfiguration(getPreferenceStore(), new EditorSourceBuffer(this), this);
 	}
 	
 	/* -----------------  ----------------- */
