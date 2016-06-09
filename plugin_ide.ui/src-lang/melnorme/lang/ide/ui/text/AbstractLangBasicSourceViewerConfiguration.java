@@ -54,13 +54,13 @@ import melnorme.utilbox.ownership.IDisposable;
  * Abstract SourceViewConfiguration
  * Has code to help manage the configured scanners, and let respond to preference changes.
  */
-public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSourceViewerConfiguration {
+public abstract class AbstractLangBasicSourceViewerConfiguration extends TextSourceViewerConfiguration {
 	
 	protected final IPreferenceStore preferenceStore;
 	protected final ColorManager2 colorManager;
 	protected final StylingPreferences stylingPrefs;
 	
-	public AbstractSimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore) {
+	public AbstractLangBasicSourceViewerConfiguration(IPreferenceStore preferenceStore) {
 		super(assertNotNull(preferenceStore));
 		this.preferenceStore = preferenceStore;
 		this.colorManager = assertNotNull(init_ColorManager());

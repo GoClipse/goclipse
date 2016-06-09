@@ -20,7 +20,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
 
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
-import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.AbstractLangBasicSourceViewerConfiguration;
 
 
 public class TemplateInformationControlCreator 
@@ -73,7 +73,7 @@ public class TemplateInformationControlCreator
 class JavaPlugin {
 
 	public static String getAdditionalInfoAffordanceString() {
-		return AbstractSimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+		return AbstractLangBasicSourceViewerConfiguration.getAdditionalInfoAffordanceString();
 	}
 	
 }
