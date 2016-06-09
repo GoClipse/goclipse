@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
-import melnorme.lang.tooling.structure.SourceFileStructure;
-
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.jface.text.IRegion;
@@ -20,14 +18,17 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 
+import melnorme.lang.ide.core.text.ISourceBufferExt;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+
 public class StructureElementInformationProvider 
 	implements IInformationProvider, IInformationProviderExtension 
 {
 	
-	protected final AbstractLangStructureEditor editor;
+	protected final ISourceBufferExt sourceBuffer;
 	
-	public StructureElementInformationProvider(AbstractLangStructureEditor editor) {
-		this.editor = assertNotNull(editor);
+	public StructureElementInformationProvider(ISourceBufferExt sourceBuffer) {
+		this.sourceBuffer = assertNotNull(sourceBuffer);
 	}
 	
 	@Override
@@ -42,8 +43,7 @@ public class StructureElementInformationProvider
 	
 	@Override
 	public SourceFileStructure getInformation2(ITextViewer textViewer, IRegion subject) {
-		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(editor);
-		return op.executeAndGetHandledResult();
+		return GetUpdatedStructureUIOperation.run_GetUpdatedStructure_UserOperation(sourceBuffer);
 	}
 	
 }

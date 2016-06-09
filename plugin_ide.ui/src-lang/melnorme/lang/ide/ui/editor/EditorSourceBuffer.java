@@ -13,24 +13,26 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.ProgressMonitorDialogOpRunner;
 import melnorme.lang.ide.ui.utils.operations.UIOperation;
-import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 /**
- * An abstraction of the buffer of an editor, or af a source viewer. 
+ * An abstraction of the buffer of an editor, or af a source viewer.
+ * Note that location is not immutable! 
  */
-public class EditorSourceBuffer implements ISourceBuffer {
+public class EditorSourceBuffer implements ISourceBufferExt {
 	
 	protected final ITextEditor editor;
 	
@@ -44,8 +46,8 @@ public class EditorSourceBuffer implements ISourceBuffer {
 	}
 	
 	@Override
-	public String getSource() {
-		return EditorUtils.getEditorDocument(editor).get();
+	public IDocument getDocument() {
+		return EditorUtils.getEditorDocument(editor);
 	}
 	
 	@Override
@@ -85,7 +87,7 @@ public class EditorSourceBuffer implements ISourceBuffer {
 	
 	/* -----------------  ----------------- */
 	
-	public static class SourceViewerSourceBuffer implements ISourceBuffer {
+	public static class SourceViewerSourceBuffer implements ISourceBufferExt {
 		
 		protected final ISourceViewer sourceViewer;
 		
@@ -99,8 +101,8 @@ public class EditorSourceBuffer implements ISourceBuffer {
 		}
 		
 		@Override
-		public String getSource() {
-			return sourceViewer.getDocument().get();
+		public IDocument getDocument() {
+			return sourceViewer.getDocument();
 		}
 		
 		@Override

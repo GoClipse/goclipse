@@ -46,6 +46,7 @@ public class LocationKey {
 		return location;
 	}
 	
+	/** @return a label for this location key. Used only for debugging or logging. */
 	public String getLabel() {
 		return location != null ? location.toString() : alternativeLabel;
 	}
