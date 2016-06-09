@@ -39,7 +39,7 @@ import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -189,7 +189,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	protected boolean doBuildForLaunch(ProcessLaunchInfo config, ILaunchConfiguration configuration, String mode,
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		ICommonOperation buildOperation = config.getBuildOperation();
+		CommonOperation buildOperation = config.getBuildOperation();
 		if(buildOperation != null) {
 			buildOperation.execute(EclipseUtils.om(pm));
 			return false;

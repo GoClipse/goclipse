@@ -8,27 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.utils.operations;
+package melnorme.lang.tooling.common.ops;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import melnorme.lang.tooling.common.ops.CommonOperation;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class UIOperation extends AbstractUIOperation {
+public interface CommonResultOperation<RESULT> {
 	
-	protected final CommonOperation backgroundOp;
+	public abstract RESULT executeOp(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
-	public UIOperation(String operationName, CommonOperation backgroundOp) {
-		super(operationName);
-		this.backgroundOp = assertNotNull(backgroundOp);
-	}
+	/* -----------------  ----------------- */
 	
-	@Override
-	protected void doBackgroundComputation(IOperationMonitor om) throws CommonException, OperationCancellation {
-		backgroundOp.execute(om);
-	}
+	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
 	
 }

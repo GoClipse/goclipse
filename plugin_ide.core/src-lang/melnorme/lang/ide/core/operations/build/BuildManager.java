@@ -40,7 +40,7 @@ import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -488,7 +488,7 @@ public abstract class BuildManager {
 		return new BuildOperationCreator(project, opMonitor);
 	}
 	
-	public ICommonOperation newProjectClearMarkersOperation(IToolOperationMonitor opMonitor, IProject project) {
+	public CommonOperation newProjectClearMarkersOperation(IToolOperationMonitor opMonitor, IProject project) {
 		return createBuildOperationCreator(opMonitor, project).newClearBuildMarkersOperation();
 	}
 	
@@ -503,11 +503,11 @@ public abstract class BuildManager {
 		return newBuildOperation(buildOp, project, true, targetsToBuild);
 	}
 	
-	public final ICommonOperation newProjectBuildOperation(IToolOperationMonitor opMonitor, IProject project,
+	public final CommonOperation newProjectBuildOperation(IToolOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, boolean isAuto) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets(!isAuto);
 		if(isAuto && enabledTargets.isEmpty()) {
-			return ICommonOperation.NULL_COMMON_OPERATION;
+			return CommonOperation.NULL_COMMON_OPERATION;
 		}
 		return newBuildOperation(opMonitor, project, clearMarkers, enabledTargets);
 	}
@@ -517,14 +517,14 @@ public abstract class BuildManager {
 	public CompositeBuildOperation newBuildOperation(IToolOperationMonitor opMonitor, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
 		assertNotNull(opMonitor);
-		ArrayList2<ICommonOperation> buildCommands = 
+		ArrayList2<CommonOperation> buildCommands = 
 				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(toolManager, opMonitor));
 		
 		return newTopLevelBuildOperation(opMonitor, project, clearMarkers, buildCommands);
 	}
 	
 	public CompositeBuildOperation newTopLevelBuildOperation(IToolOperationMonitor opMonitor, IProject project,
-			boolean clearMarkers, Collection2<ICommonOperation> buildCommands) throws CommonException {
+			boolean clearMarkers, Collection2<CommonOperation> buildCommands) throws CommonException {
 		BuildOperationCreator buildOpCreator = createBuildOperationCreator(opMonitor, project);
 		
 		return buildOpCreator.newProjectBuildOperation(buildCommands, clearMarkers);
