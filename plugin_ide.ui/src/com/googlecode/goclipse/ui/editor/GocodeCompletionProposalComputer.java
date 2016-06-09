@@ -12,6 +12,7 @@ import com.googlecode.goclipse.tooling.gocode.GocodeOutputParser2;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
@@ -26,7 +27,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 	@Override
 	protected LangCompletionResult doComputeProposals(EditorOperationContext context, ICancelMonitor cm) 
 			throws CommonException, OperationCancellation {
-		Location fileLoc = context.getEditorInputLocation();
+		Location fileLoc = context.getContext().getFileLocation();
 		IDocument document = context.getDocument();
 		int offset = context.getOffset();
 		
@@ -35,7 +36,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		if (gocodePath == null) {
 			throw new CommonException("Error: gocode path not provided.");
 		}
-		IProject project = context.getProject();
+		IProject project = ResourceUtils.getProject(context.getContext().getOptionalFileLocation());
 		
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
