@@ -20,6 +20,7 @@ import melnorme.utilbox.status.StatusException;
 /**
  * A generic status exception.
  * Has an associated message, and optionally an associated Exception cause.
+ * Knows how to render a message suitable for user display.
  */
 public class CommonException extends Exception {
 	

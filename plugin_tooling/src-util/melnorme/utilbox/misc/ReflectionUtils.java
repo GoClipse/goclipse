@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -153,28 +155,45 @@ public class ReflectionUtils {
 	}
 	
 	/** Write the field with given fieldName in given object to given value. */
-	public static <T> void writeField(Object object, String fieldName, Object value) throws NoSuchFieldException {
+	public static <T> void writeField(Object object, String fieldName, Object value) 
+			throws NoSuchFieldException, IllegalFieldValue {
 		writeAvailableField(object.getClass(), object, fieldName, value);
 	}
 	
 	/** Write the static field with given fieldName in given klass to given value. */
-	public static void writeStaticField(Class<?> klass, String fieldName, Object value) throws NoSuchFieldException {
+	public static void writeStaticField(Class<?> klass, String fieldName, Object value) 
+			throws NoSuchFieldException, IllegalFieldValue {
 		writeAvailableField(klass, null, fieldName, value);
 	}
 	
 	private static <T> void writeAvailableField(Class<?> klass, T object, String fieldName, T value) 
-			throws NoSuchFieldException {
+			throws NoSuchFieldException, IllegalFieldValue {
 		Field field = getAvailableField(klass, fieldName);
 		if (field == null) 
 			throw new NoSuchFieldException();
-
+		
 		try {
 			field.set(object, value);
 		} catch (IllegalArgumentException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			throw new IllegalFieldValue(e.getMessage());
 		} catch (IllegalAccessException e) {
+			// Should not happen, because we set field.setAccessible(true);
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class IllegalFieldValue extends Exception {
+
+		public IllegalFieldValue(String message) {
+			super(assertNotNull(message));
+		}
+		
+		@Override
+		public String getMessage() {
+			return super.getMessage();
+		}
+		
 	}
 	
 	private static Field getAvailableField(Class<?> klass, String fieldName) {
