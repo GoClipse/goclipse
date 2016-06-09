@@ -18,14 +18,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 
-import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfo {
 	
 	public final IProject project;
-	public final ICommonOperation buildOperation;
+	public final CommonOperation buildOperation;
 	public final Location programFileLocation;
 	public final String[] programArguments;
 	public final IPath workingDir;
@@ -35,7 +35,7 @@ public class ProcessLaunchInfo {
 	
 	public ProcessLaunchInfo(
 			IProject project, 
-			ICommonOperation buildOperation, 
+			CommonOperation buildOperation, 
 			Location programLocation, 
 			String[] programArguments, 
 			IPath workingDir, 
@@ -60,7 +60,7 @@ public class ProcessLaunchInfo {
 		return DebugPlugin.renderArguments(programArguments, null);
 	}
 	
-	public ICommonOperation getBuildOperation() throws CommonException {
+	public CommonOperation getBuildOperation() throws CommonException {
 		return buildOperation;
 	}
 	

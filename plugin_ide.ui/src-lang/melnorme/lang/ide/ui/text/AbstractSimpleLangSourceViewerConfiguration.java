@@ -38,7 +38,9 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
@@ -58,15 +60,22 @@ public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSo
 	protected final ColorManager2 colorManager;
 	protected final StylingPreferences stylingPrefs;
 	
-	public AbstractSimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
-			ColorManager2 colorManager, StylingPreferences stylingPrefs) {
+	public AbstractSimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore) {
 		super(assertNotNull(preferenceStore));
 		this.preferenceStore = preferenceStore;
-		this.colorManager = assertNotNull(colorManager);
-		this.stylingPrefs = assertNotNull(stylingPrefs);
+		this.colorManager = assertNotNull(init_ColorManager());
+		this.stylingPrefs = assertNotNull(init_StylePreferences());
 	}
 	
-	protected ColorManager2 getColorManager() {
+	protected ColorManager2 init_ColorManager() {
+		return LangUIPlugin.getInstance().getColorManager();
+	}
+	
+	protected StylingPreferences init_StylePreferences() {
+		return EditorSettings_Actual.getStylingPreferences();
+	}
+	
+	protected final ColorManager2 getColorManager() {
 		return colorManager;
 	}
 	

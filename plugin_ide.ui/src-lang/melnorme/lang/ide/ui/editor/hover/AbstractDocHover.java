@@ -23,7 +23,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.lang.tooling.utils.HTMLEscapeUtil;
@@ -81,12 +81,16 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 				return null;
 			}
 			
-			return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
+			return escapeToHTML(rawDocumentation);
 		} catch(CommonException ce) {
 			LangCore.logStatusException(ce.toStatusException());
 			// TODO: we could add a nicer HTML formatting:
 			return "<b>Error:</b> " + ce.getMessage() + StringUtil.asString(" ", ce.getCause());
 		}
+	}
+	
+	protected String escapeToHTML(String rawDocumentation) {
+		return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
 	}
 	
 	protected String getRawDocumentation(ISourceBuffer sourceBuffer, int offset) throws CommonException {
@@ -99,10 +103,10 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 	
 	public static class OpenDocumentationOperation extends CalculateValueUIOperation<String> {
 		
-		protected final CommonOperation<ToolOpResult<String>> findDocOperation;
+		protected final CommonResultOperation<ToolOpResult<String>> findDocOperation;
 		
 		public OpenDocumentationOperation(String operationName,
-				CommonOperation<ToolOpResult<String>> findDocOperation) {
+				CommonResultOperation<ToolOpResult<String>> findDocOperation) {
 			super(operationName, true);
 			this.findDocOperation = assertNotNull(findDocOperation);
 		}

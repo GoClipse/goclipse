@@ -90,7 +90,7 @@ public abstract class LangTemplatePreferencePage extends TemplatePreferencePage 
 	}
 	
 	protected SourceViewerConfiguration createPreviewerSourceViewerConfiguration() {
-		return new SimpleSourceViewerConfiguration(getPreferenceStore(), getColorManager());
+		return new SimpleSourceViewerConfiguration(getPreferenceStore());
 	}
 	
 	// Note: Mostly copied from parent, in the future we might need to modify this code.

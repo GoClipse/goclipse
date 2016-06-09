@@ -19,7 +19,7 @@ import java.nio.charset.CharsetEncoder;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
@@ -30,7 +30,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
-public abstract class GoFindDefinitionOperation implements CommonOperation<ToolOpResult<FindDefinitionResult>> {
+public abstract class GoFindDefinitionOperation implements CommonResultOperation<ToolOpResult<FindDefinitionResult>> {
 	
 	protected final GoEnvironment goEnv;
 	protected final SourceOpContext opContext;

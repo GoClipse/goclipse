@@ -23,15 +23,15 @@ import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class RunnableWithProgressOperationAdapter {
 	
-	protected final ICommonOperation coreOperation;
+	protected final CommonOperation coreOperation;
 	
-	public RunnableWithProgressOperationAdapter(ICommonOperation coreOperation) {
+	public RunnableWithProgressOperationAdapter(CommonOperation coreOperation) {
 		this.coreOperation = assertNotNull(coreOperation);
 	}
 	
@@ -74,7 +74,7 @@ public abstract class RunnableWithProgressOperationAdapter {
 		protected final ProgressMonitorDialog progressMonitorDialog;
 		protected boolean fork = true;
 		
-		public ProgressMonitorDialogOpRunner(Shell shell, ICommonOperation coreOperation) {
+		public ProgressMonitorDialogOpRunner(Shell shell, CommonOperation coreOperation) {
 			super(coreOperation);
 			progressMonitorDialog = assertNotNull(new ProgressMonitorDialog(shell));
 		}
@@ -87,7 +87,7 @@ public abstract class RunnableWithProgressOperationAdapter {
 	}
 	
 	public static class WorkbenchProgressServiceOpRunner extends RunnableWithProgressOperationAdapter {
-		public WorkbenchProgressServiceOpRunner(ICommonOperation coreOperation) {
+		public WorkbenchProgressServiceOpRunner(CommonOperation coreOperation) {
 			super(coreOperation);
 		}
 		

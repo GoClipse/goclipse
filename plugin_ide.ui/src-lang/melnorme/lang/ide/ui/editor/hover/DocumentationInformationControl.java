@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.utilbox.misc.ReflectionUtils;
+import melnorme.utilbox.misc.ReflectionUtils.IllegalFieldValue;
 
 // TODO: DefaultInformationControl has several limitations, it should be rewritten
 public class DocumentationInformationControl extends DefaultInformationControl {
@@ -41,7 +42,7 @@ public class DocumentationInformationControl extends DefaultInformationControl {
 	protected void createContent(Composite parent) {
 		try {
 			ReflectionUtils.writeField(this, "fAdditionalTextStyles", SWT.NONE | SWT.WRAP);
-		} catch(NoSuchFieldException e) {
+		} catch(NoSuchFieldException | IllegalFieldValue e) {
 			// Ignore
 		}
 		super.createContent(parent);

@@ -16,7 +16,7 @@ import org.eclipse.ui.PlatformUI;
 import melnorme.lang.ide.core.operations.RunToolOperationOnResource;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.ui.utils.operations.UIOperation;
-import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -31,7 +31,7 @@ public class ToolSourceModifyingOperation extends UIOperation {
 		this(operationName, new RunToolOperationOnResource(project, commands, opViewOptions));
 	}
 	
-	public ToolSourceModifyingOperation(String operationName, ICommonOperation backgroundOp) {
+	public ToolSourceModifyingOperation(String operationName, CommonOperation backgroundOp) {
 		super(operationName, backgroundOp);
 	}
 	

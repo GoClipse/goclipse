@@ -13,8 +13,14 @@ package melnorme.lang.tooling.common.ops;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public interface CommonOperation<RESULT> {
+public interface CommonOperation extends CommonResultOperation<Void> {
 	
-	public abstract RESULT executeOp(IOperationMonitor om) throws CommonException, OperationCancellation;
+	@Override
+	default Void executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
+		execute(om);
+		return null;
+	}
+	
+	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
 }
