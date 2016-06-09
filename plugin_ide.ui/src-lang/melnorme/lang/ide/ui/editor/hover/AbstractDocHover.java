@@ -19,18 +19,14 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.text.DocDisplayInfoSupplier;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
-import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonResultOperation;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
-import melnorme.lang.tooling.utils.HTMLEscapeUtil;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 
+/**
+ * Standard documentation hover.
+ * (used in editor hovers extensions, and editor information provider (F2))
+ */
 public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 	
 	protected final DocumentationHoverCreator hoverCreator = new DocumentationHoverCreator(); 
@@ -72,56 +68,7 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 	
 	@Override
 	public String getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, ITextViewer textViewer) {
-		
-		try {
-			int offset = hoverRegion.getOffset();
-			String rawDocumentation = getRawDocumentation(sourceBuffer, offset);
-			
-			if(rawDocumentation == null) {
-				return null;
-			}
-			
-			return escapeToHTML(rawDocumentation);
-		} catch(CommonException ce) {
-			LangCore.logStatusException(ce.toStatusException());
-			// TODO: we could add a nicer HTML formatting:
-			return "<b>Error:</b> " + ce.getMessage() + StringUtil.asString(" ", ce.getCause());
-		}
-	}
-	
-	protected String escapeToHTML(String rawDocumentation) {
-		return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
-	}
-	
-	protected String getRawDocumentation(ISourceBuffer sourceBuffer, int offset) throws CommonException {
-		CalculateValueUIOperation<String> op = getOpenDocumentationOperation(sourceBuffer, offset);
-		return op.executeAndGetValidatedResult();
-	}
-	
-	protected abstract OpenDocumentationOperation getOpenDocumentationOperation(ISourceBuffer sourceBuffer, 
-			int offset);
-	
-	public static class OpenDocumentationOperation extends CalculateValueUIOperation<String> {
-		
-		protected final CommonResultOperation<ToolOpResult<String>> findDocOperation;
-		
-		public OpenDocumentationOperation(String operationName,
-				CommonResultOperation<ToolOpResult<String>> findDocOperation) {
-			super(operationName, true);
-			this.findDocOperation = assertNotNull(findDocOperation);
-		}
-		
-		@Override
-		protected String doBackgroundValueComputation(IOperationMonitor om)
-				throws CommonException, OperationCancellation {
-			ToolOpResult<String> opResult = findDocOperation.executeOp(om);
-			try {
-				return opResult.get();
-			} catch(CommonException e) {
-				return e.getMessage();
-			}
-		}
-		
+		return new DocDisplayInfoSupplier(sourceBuffer, hoverRegion.getOffset()).get();
 	}
 	
 }

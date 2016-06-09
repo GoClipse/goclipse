@@ -39,6 +39,7 @@ import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.Location;
 
 
 public class TemplateEngine {
@@ -91,7 +92,7 @@ public class TemplateEngine {
 		
 	    IDocument document = sourceContext.getDocument();
 		final int completionPosition = sourceContext.getOffset();
-		ISourceFile compilationUnit = sourceContext.getSourceFile();
+		final Location sourceFileLoc = sourceContext.getContext().getFileLocation();
 
 		if (!(fContextType instanceof CompilationUnitContextType))
 			return;
@@ -110,6 +111,12 @@ public class TemplateEngine {
 			} catch (BadLocationException e) {}
 		}
 
+		ISourceFile compilationUnit = new ISourceFile() {
+			@Override
+			public Location getLocation() {
+				return sourceFileLoc;
+			}
+		};
 		CompilationUnitContext context= compilationUnitContextType.createContext(document, position, compilationUnit);
 		context.setVariable("selection", selectedText); //$NON-NLS-1$
 		int start= context.getStart();

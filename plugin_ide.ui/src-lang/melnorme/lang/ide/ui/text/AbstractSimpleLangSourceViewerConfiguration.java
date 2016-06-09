@@ -79,7 +79,8 @@ public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSo
 		return colorManager;
 	}
 	
-	public IPreferenceStore getPreferenceStore() {
+	public final IPreferenceStore getPreferenceStore() {
+		assertTrue(fPreferenceStore == preferenceStore);
 		return preferenceStore;
 	}
 	

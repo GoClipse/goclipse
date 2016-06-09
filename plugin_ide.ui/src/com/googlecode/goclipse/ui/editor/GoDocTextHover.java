@@ -10,26 +10,11 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor;
 
-import com.googlecode.goclipse.tooling.oracle.GoFindDocOperation;
-import com.googlecode.goclipse.ui.actions.GoOpenDefinitionOperation;
-
 import melnorme.lang.ide.ui.editor.hover.AbstractDocHover;
-import melnorme.lang.tooling.common.ISourceBuffer;
 
-/**
- * Standard documentation hover.
- * (used in editor hovers extensions, and editor information provider (F2))
- */
 public class GoDocTextHover extends AbstractDocHover {
 	
 	public GoDocTextHover() {
-	}
-	
-	@Override
-	protected OpenDocumentationOperation getOpenDocumentationOperation(ISourceBuffer sourceBuffer, int offset) {
-		GoFindDocOperation goFindDocOperation = new GoFindDocOperation(
-			GoOpenDefinitionOperation.getFindDefinitionOperation(sourceBuffer, offset));
-		return new OpenDocumentationOperation("Get Documentation", goFindDocOperation);
 	}
 	
 }

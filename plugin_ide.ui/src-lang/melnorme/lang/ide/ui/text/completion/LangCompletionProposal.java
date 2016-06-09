@@ -48,6 +48,7 @@ import melnorme.lang.ide.ui.editor.ISourceViewerExt;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.collections.Indexable;
 
 public class LangCompletionProposal implements 
@@ -60,9 +61,11 @@ public class LangCompletionProposal implements
 	ICompletionProposalExtension6 
 {
 	
+	protected final ISourceBuffer sourceBuffer;
 	protected final ToolCompletionProposal proposal;
 	
-	protected final String additionalProposalInfo;
+	protected volatile String additionalProposalInfo;
+	
 	protected final Image image;
 	protected final IContextInformation contextInformation;
 	
@@ -70,10 +73,11 @@ public class LangCompletionProposal implements
 	protected int replaceLength;
 	protected StyledString styledDisplayString;
 	
-	public LangCompletionProposal(ToolCompletionProposal proposal,
+	public LangCompletionProposal(ISourceBuffer sourceBuffer, ToolCompletionProposal proposal,
 			Image image, 
 			IContextInformation contextInformation) {
 		super();
+		this.sourceBuffer = assertNotNull(sourceBuffer);
 		this.proposal = assertNotNull(proposal);
 		this.additionalProposalInfo = proposal.getDocumentation();
 		this.image = image;

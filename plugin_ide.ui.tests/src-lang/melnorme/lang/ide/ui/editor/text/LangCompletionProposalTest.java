@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
@@ -18,9 +20,48 @@ import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
 import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.utilbox.misc.Location;
 
 public class LangCompletionProposalTest extends CommonUITest {
-
+	
+	public static class TestsSourceBuffer implements ISourceBuffer {
+		
+		protected final String source;
+		
+		public TestsSourceBuffer(String source) {
+			this.source = assertNotNull(source);
+		}
+		
+		@Override
+		public Location getLocation_orNull() {
+			return null;
+		}
+		
+		@Override
+		public String getSource() {
+			return source;
+		}
+		
+		@Override
+		public boolean trySaveBuffer() {
+			return false;
+		}
+		
+		@Override
+		public boolean isEditable() {
+			return false;
+		}
+		
+		@Override
+		public boolean isDirty() {
+			return false;
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
 	@Test
 	public void testApply() throws Exception { testApply$(); }
 	public void testApply$() throws Exception {
@@ -30,7 +71,8 @@ public class LangCompletionProposalTest extends CommonUITest {
 		
 		ToolCompletionProposal tcp = new ToolCompletionProposal(source.indexOf("Int"), 3, "interface", 
 			"label", CompletionProposalKind.values()[0], new ElementAttributes(null), null, "moduleName", null);
-		LangCompletionProposal completionProposal = new LangCompletionProposal(tcp, null, null);
+		LangCompletionProposal completionProposal = new LangCompletionProposal(
+			new TestsSourceBuffer(source), tcp, null, null);
 		
 		Document document = new Document(source);
 		completionProposal.doApply(document, true);

@@ -11,21 +11,17 @@
 package melnorme.lang.ide.ui.text.completion;
 
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IEditorPart;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
@@ -45,11 +41,12 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	protected Indexable<ICompletionProposal> doComputeCompletionProposals(EditorOperationContext context) 
 			throws CommonException, OperationSoftFailure {
 		
+		if(needsEditorSave()) {
+			doEditorSave(context);
+		}
+		
 		final TimeoutCancelMonitor cm = new TimeoutCancelMonitor(5000);
 		try {
-			if(needsEditorSave()) {
-				doEditorSave(context, EclipseUtils.pm(cm));
-			}
 			
 			return computeProposals(context, cm);
 			
@@ -61,21 +58,14 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 			// as OperationCancellation should only occur when the timeout is reached.
 			throw new OperationSoftFailure(LangUIMessages.ContentAssist_Cancelled); 
 		}
-		
 	}
 	
 	protected boolean needsEditorSave() {
 		return false;
 	}
 	
-	protected void doEditorSave(EditorOperationContext context, IProgressMonitor pm) throws CommonException {
-		IEditorPart editor = context.getEditor_nonNull();
-		if(editor instanceof AbstractLangEditor) {
-			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
-			langEditor.saveWithoutSaveActions(pm);
-		} else {
-			editor.doSave(pm);
-		}
+	protected void doEditorSave(EditorOperationContext context) throws CommonException {
+		context.getSourceBuffer().trySaveBuffer(); 
 	}
 	
 	protected Indexable<ICompletionProposal> computeProposals(EditorOperationContext context, ICancelMonitor cm)
@@ -87,7 +77,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		for (ToolCompletionProposal proposal : resultProposals) {
-			proposals.add(adaptToolProposal(proposal));
+			proposals.add(adaptToolProposal(context, proposal));
 		}
 		
 		return proposals;
@@ -99,9 +89,9 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	
 	/* -----------------  ----------------- */
 	
-	protected ICompletionProposal adaptToolProposal(ToolCompletionProposal proposal) {
+	protected ICompletionProposal adaptToolProposal(EditorOperationContext context, ToolCompletionProposal proposal) {
 		IContextInformation ctxInfo = null; // TODO: context information
-		return new LangCompletionProposal(proposal, getImage(proposal), ctxInfo);
+		return new LangCompletionProposal(context.getSourceBuffer(), proposal, getImage(proposal), ctxInfo);
 	}
 	
 	protected Image getImage(ToolCompletionProposal proposal) {
