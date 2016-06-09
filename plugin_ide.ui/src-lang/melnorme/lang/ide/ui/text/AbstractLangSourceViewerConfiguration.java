@@ -79,6 +79,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 		return editor;
 	}
 	
+	/* FIXME: refactor: turn into final field */
 	protected ISourceBuffer getSourceBuffer(ISourceViewer sourceViewer) {
 		if(editor != null) {
 			return new EditorSourceBuffer(editor);
@@ -248,7 +249,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 		if(sourceViewer instanceof LangSourceViewer) {
 			LangSourceViewer langSourceViewer = (LangSourceViewer) sourceViewer;
 			
-			ContentAssistantExt assistant = createContentAssitant();
+			ContentAssistantExt assistant = createContentAssitant(langSourceViewer);
 			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 			
 			assistant.setRestoreCompletionProposalSize(LangUIPlugin.getDialogSettings("completion_proposal_size"));
@@ -257,9 +258,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
 			assistant.enableColoredLabels(true);
 			
-			configureContentAssistantProcessors(assistant);
+			ISourceBuffer sourceBuffer = getSourceBuffer(langSourceViewer);
+			configureContentAssistantProcessors(assistant, sourceBuffer);
 			// Note: configuration must come after processors are created
-			assistant.configure(fPreferenceStore, langSourceViewer);
+			assistant.configure();
 			
 			return assistant;
 		}
@@ -267,19 +269,19 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 		return null;
 	}
 	
-	protected ContentAssistantExt createContentAssitant() {
-		return new ContentAssistantExt(getPreferenceStore());
+	protected ContentAssistantExt createContentAssitant(LangSourceViewer langSourceViewer) {
+		return new ContentAssistantExt(getPreferenceStore(), langSourceViewer);
 	}
 	
-	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
+	protected void configureContentAssistantProcessors(ContentAssistantExt assistant, ISourceBuffer sourceBuffer) {
 		Indexable<CompletionProposalsGrouping> categories = getContentAssistCategoriesProvider().getCategories();
-		IContentAssistProcessor cap = createContentAssistProcessor(assistant, categories);
+		IContentAssistProcessor cap = createContentAssistProcessor(assistant, categories, sourceBuffer);
 		assistant.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
 	}
 	
-	protected LangContentAssistProcessor createContentAssistProcessor(ContentAssistant assistant,
-			Indexable<CompletionProposalsGrouping> categories) {
-		return new LangContentAssistProcessor(assistant, categories, getEditor());
+	protected LangContentAssistProcessor createContentAssistProcessor(ContentAssistantExt assistant,
+			Indexable<CompletionProposalsGrouping> categories, ISourceBuffer sourceBuffer) {
+		return new LangContentAssistProcessor(assistant, categories, sourceBuffer, getEditor());
 	}
 	
 	protected abstract ContentAssistCategoriesBuilder getContentAssistCategoriesProvider();

@@ -185,6 +185,19 @@ public class EditorUtils {
 		}
 	}
 	
+	public static Location getInputLocationOrNull(IEditorPart editor) {
+		Path inputPath = getFilePathFromEditorInput(editor.getEditorInput());
+		return Location.createValidOrNull(inputPath);
+	}
+	
+	public static Location getInputLocation(IEditorPart editor) throws CommonException {
+		Location inputLocationOrNull = getInputLocationOrNull(editor);
+		if(inputLocationOrNull == null) {
+			throw new CommonException("Error, invalid location for editor input.");
+		}
+		return inputLocationOrNull;
+	}
+	
 	/* -----------------  Editor opening utils  ----------------- */
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING, NEVER }
@@ -277,11 +290,6 @@ public class EditorUtils {
 		}
 	
 		return new Region(viewerSelection.x, viewerSelection.y);
-	}
-	
-	public static Location getInputLocationOrNull(IEditorPart editor) {
-		Path inputPath = getFilePathFromEditorInput(editor.getEditorInput());
-		return Location.createValidOrNull(inputPath);
 	}
 	
 }

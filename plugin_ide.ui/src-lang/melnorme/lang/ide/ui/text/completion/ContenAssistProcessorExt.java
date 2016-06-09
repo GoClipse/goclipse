@@ -61,7 +61,7 @@ public abstract class ContenAssistProcessorExt implements IContentAssistProcesso
 	public final ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		resetComputeState();
 		
-		// The code below has been comment, it causes a bug with templates with "${word_selection} " usage,
+		// The code below has been commented, it causes a bug with templates with "${word_selection} " usage,
 		// and it's not clear this functionality made sense in the first place.
 		
 //		if(viewer instanceof LangSourceViewer) {

@@ -24,17 +24,24 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class ContentAssistantExt extends ContentAssistant {
 	
+	protected final LangSourceViewer langSourceViewer;
 	protected final IPreferenceStore prefStore;
 	
 	protected String statusMessage;
 	protected String additionalStatusMessage;
 	
-	public ContentAssistantExt(IPreferenceStore prefStore) {
+	
+	public ContentAssistantExt(IPreferenceStore prefStore, LangSourceViewer langSourceViewer) {
+		this.langSourceViewer = assertNotNull(langSourceViewer);
 		this.prefStore = assertNotNull(prefStore);
 		setSorter(new ContentAssistSorter());
 	}
 	
-	public void configure(IPreferenceStore prefStore, LangSourceViewer langSourceViewer) {
+	public LangSourceViewer getSourceViewer() {
+		return langSourceViewer;
+	}
+	
+	public void configure() {
 		new ContentAssistPreferenceHandler(this, prefStore, langSourceViewer).configureViewer();
 	}
 	

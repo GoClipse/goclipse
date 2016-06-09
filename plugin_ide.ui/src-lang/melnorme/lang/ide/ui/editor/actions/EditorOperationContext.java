@@ -15,38 +15,40 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.option;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
+/* FIXME: refactor this class, simplify and remove */
 public class EditorOperationContext {
 	
-	public static EditorOperationContext create(ITextViewer viewer, int offset, ITextEditor editor) {
+	public static EditorOperationContext create(ISourceBuffer sourceBuffer, ITextViewer viewer, int offset, ITextEditor editor) {
+		assertNotNull(sourceBuffer);
 		SourceRange selection = viewer == null ? null : EditorUtils.getSelectedRange(viewer);
 		
-		return create(offset, selection, viewer, editor);
+		return create(sourceBuffer, offset, selection, viewer, editor);
 	}
 	
-	public static EditorOperationContext create(int offset, SourceRange selection, ITextViewer viewer,
+	public static EditorOperationContext create(ISourceBuffer sourceBuffer, int offset, SourceRange selection, ITextViewer viewer,
 			ITextEditor editor) {
 		assertTrue(viewer != null || editor != null);
 		IDocument document = viewer != null ? viewer.getDocument() : EditorUtils.getEditorDocument(editor);
 		
-		return new EditorOperationContext(offset, selection, document, editor);
+		return new EditorOperationContext(sourceBuffer, offset, selection, document, editor);
 	}
 	
 	/* -----------------  ----------------- */
 	
+	protected final ISourceBuffer sourceBuffer;
 	protected final SourceOpContext context;
 	
 	protected final int offset;
@@ -55,7 +57,8 @@ public class EditorOperationContext {
 	
 	protected final IEditorPart editor; // can be null
 	
-	public EditorOperationContext(int offset, SourceRange selection, IDocument document, IEditorPart editor) {
+	public EditorOperationContext(ISourceBuffer sourceBuffer, int offset, SourceRange selection, IDocument document, IEditorPart editor) {
+		this.sourceBuffer = assertNotNull(sourceBuffer);
 		this.offset = offset;
 		this.selection = selection != null ? selection : SourceRange.srStartToEnd(offset, offset);
 		this.document = assertNotNull(document);
@@ -69,6 +72,10 @@ public class EditorOperationContext {
 			dirty = editor.isDirty();
 		}
 		context = new SourceOpContext(option(fileLocation), offset, document.get(), dirty);
+	}
+	
+	public ISourceBuffer getSourceBuffer() {
+		return assertNotNull(sourceBuffer);
 	}
 	
 	public IDocument getDocument() {
@@ -95,42 +102,19 @@ public class EditorOperationContext {
 		return new Point(selection.getStartPos(), selection.getLength());
 	}
 	
-	public IEditorPart getEditor_maybeNull() {
-		return editor;
-	}
-	
-	public IEditorPart getEditor_nonNull() throws CommonException {
-		if(editor == null) {
-			throw new CommonException("Error, no editor available.");
-		}
-		return editor;
-	}
+//	public IEditorPart getEditor_maybeNull() {
+//		return editor;
+//	}
+//	
+//	public IEditorPart getEditor_nonNull() throws CommonException {
+//		if(editor == null) {
+//			throw new CommonException("Error, no editor available.");
+//		}
+//		return editor;
+//	}
 	
 	public Location getEditorInputLocation() throws CommonException {
-		Location fileLocation = EditorUtils.getLocationFromEditorInput(getEditor_nonNull().getEditorInput());
-		if(fileLocation == null) {
-			throw new CommonException("Error, invalid location for editor input.");
-		}
-		return fileLocation;
-	}
-	
-	/** Can be null. */
-	public IProject getProject() throws CommonException {
-		return EditorUtils.getAssociatedProject(getEditor_nonNull().getEditorInput());
-	}
-	
-	public boolean isSourceDocumentDirty() throws CommonException {
-		return getEditor_nonNull().isDirty();
-	}
-	
-	public ISourceFile getSourceFile() throws CommonException {
-		final Location sourceFileLoc = getEditorInputLocation();
-		return new ISourceFile() {
-			@Override
-			public Location getLocation() {
-				return sourceFileLoc;
-			}
-		};
+		return getContext().getFileLocation();
 	}
 	
 }

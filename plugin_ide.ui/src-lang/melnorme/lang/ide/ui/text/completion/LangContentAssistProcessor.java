@@ -43,6 +43,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -51,15 +52,17 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	protected final ContentAssistant contentAssistant;
 	protected final Indexable<CompletionProposalsGrouping> categories;
+	protected final ISourceBuffer sourceBuffer;
 	protected final ITextEditor editor; // can be null
 	protected final IProject project; // can be null
 	
-	public LangContentAssistProcessor(ContentAssistant contentAssistant, 
-			Indexable<CompletionProposalsGrouping> groupings, ITextEditor editor) {
+	public LangContentAssistProcessor(ContentAssistantExt contentAssistant, 
+			Indexable<CompletionProposalsGrouping> groupings, ISourceBuffer sourceBuffer, ITextEditor editor) {
 		this.contentAssistant = assertNotNull(contentAssistant);
 		this.categories = groupings;
 		assertTrue(categories != null && categories.size() > 0);
 		
+		this.sourceBuffer = assertNotNull(sourceBuffer);
 		this.editor = editor;
 		this.project = editor == null ? null : EditorUtils.getAssociatedProject(editor.getEditorInput()); 
 		
@@ -207,7 +210,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	/* -----------------  ----------------- */
 	
 	protected EditorOperationContext createContext(ITextViewer viewer, int offset) {
-		return EditorOperationContext.create(viewer, offset, editor);
+		return EditorOperationContext.create(sourceBuffer, viewer, offset, editor);
 	}
 	
 	@Override

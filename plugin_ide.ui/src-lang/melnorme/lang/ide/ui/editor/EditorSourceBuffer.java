@@ -61,7 +61,7 @@ public class EditorSourceBuffer implements ISourceBuffer {
 	@Override
 	public boolean trySaveBuffer() {
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-		UIOperation op = new UIOperation("Saving editor for hover information", this::saveContents) {
+		UIOperation op = new UIOperation("Saving editor for hover information", this::saveBuffer) {
 			@Override
 			protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
 				// Execute under ProgressMonitorDialog, but not on a background thread.
@@ -74,7 +74,7 @@ public class EditorSourceBuffer implements ISourceBuffer {
 		return op.executeAndHandle();
 	}
 	
-	public void saveContents(ICancelMonitor cm) {
+	public void saveBuffer(ICancelMonitor cm) {
 		if(editor instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
 			langEditor.saveWithoutSaveActions2(cm);
