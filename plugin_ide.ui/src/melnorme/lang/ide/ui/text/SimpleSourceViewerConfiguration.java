@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.text;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.formatter.IContentFormatter;
@@ -29,11 +28,6 @@ public class SimpleSourceViewerConfiguration extends LangSourceViewerConfigurati
 		super(preferenceStore, null);
 	}
 
-	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		return null;
-	}
-	
 	@Override
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
 		return null;

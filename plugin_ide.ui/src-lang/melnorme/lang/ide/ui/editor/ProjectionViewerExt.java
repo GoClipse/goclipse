@@ -19,7 +19,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.AbstractLangBasicSourceViewerConfiguration;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.IOwner;
 import melnorme.utilbox.ownership.OwnedObjects;
@@ -60,8 +60,8 @@ public class ProjectionViewerExt extends ProjectionViewer {
 	public void doConfigure(SourceViewerConfiguration configuration) {
 		super.configure(configuration);
 		
-		if(configuration instanceof AbstractSimpleLangSourceViewerConfiguration) {
-			AbstractSimpleLangSourceViewerConfiguration svc = (AbstractSimpleLangSourceViewerConfiguration) configuration;
+		if(configuration instanceof AbstractLangBasicSourceViewerConfiguration) {
+			AbstractLangBasicSourceViewerConfiguration svc = (AbstractLangBasicSourceViewerConfiguration) configuration;
 			svc.configureViewer(this);
 		}
 	}

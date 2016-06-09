@@ -40,7 +40,6 @@ import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TextStyling.TextStylingData;
@@ -372,12 +371,12 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		ColorManager2 colorManager = new ColorManager2();
 		sourceViewer.addOwned(colorManager);
 		
-		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfig(store, colorManager);
+		SimpleSourceViewerConfiguration configuration = createSimpleSourceViewerConfig(store, colorManager);
 		sourceViewer.configure(configuration);
 		return sourceViewer;
 	}
 	
-	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfig( 
+	protected SimpleSourceViewerConfiguration createSimpleSourceViewerConfig( 
 			IPreferenceStore preferenceStore, ColorManager2 _colorManager) {
 		return new SimpleSourceViewerConfiguration(preferenceStore) {
 			@Override

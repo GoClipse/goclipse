@@ -65,7 +65,7 @@ import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAs
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.collections.Indexable;
 
-public abstract class AbstractLangSourceViewerConfiguration extends LangCommonSourceViewerConfiguration {
+public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSourceViewerConfiguration {
 	
 	protected final AbstractLangStructureEditor editor;
 	
