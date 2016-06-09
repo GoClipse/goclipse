@@ -25,23 +25,30 @@ public class SourceOpContext {
 	
 	protected final Optional<Location> fileLocation;
 	protected final String source;
-	protected final SourceRange sourceRange;
+	protected final int offset;
+	protected final SourceRange selection;
 	protected final boolean isDirty;
 	
 	public SourceOpContext(Optional<Location> fileLocation, int offset, String source, boolean isDirty) {
-		this(fileLocation, new SourceRange(offset, 0),source, isDirty);
+		this(fileLocation, offset, new SourceRange(offset, 0),source, isDirty);
 	}
 	
-	public SourceOpContext(Optional<Location> fileLocation, SourceRange sourceRange, String source, boolean isDirty) {
+	public SourceOpContext(Optional<Location> fileLocation, int offset, SourceRange selection, String source, 
+			boolean isDirty) {
 		this.fileLocation = fileLocation;
-		this.sourceRange = assertNotNull(sourceRange);
+		this.offset = offset;
+		this.selection = assertNotNull(selection);
 		this.source = assertNotNull(source);
 		new SourceLinesInfo(source);
 		this.isDirty = isDirty;
 	}
 	
 	public int getOffset() {
-		return sourceRange.getOffset();
+		return offset;
+	}
+	
+	public SourceRange getSelection() {
+		return selection;
 	}
 	
 	public Optional<Location> getOptionalFileLocation() {
@@ -61,7 +68,7 @@ public class SourceOpContext {
 	}
 	
 	public SourceRange getOperationRange() {
-		return sourceRange;
+		return selection;
 	}
 	
 	public boolean isDocumentDirty() {

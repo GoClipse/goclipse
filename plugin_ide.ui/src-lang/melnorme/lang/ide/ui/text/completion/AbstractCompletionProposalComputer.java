@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.text.completion;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -42,12 +41,12 @@ public abstract class AbstractCompletionProposalComputer implements ILangComplet
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Indexable<IContextInformation> computeContextInformation(EditorOperationContext context) {
+	public Indexable<IContextInformation> computeContextInformation(CompletionContext context) {
 		return null;
 	}
 	
 	@Override
-	public Indexable<ICompletionProposal> computeCompletionProposals(EditorOperationContext context) 
+	public Indexable<ICompletionProposal> computeCompletionProposals(CompletionContext context) 
 		throws CommonException 
 	{
 		errorMessage = null;
@@ -60,7 +59,7 @@ public abstract class AbstractCompletionProposalComputer implements ILangComplet
 		return null;
 	}
 	
-	protected abstract Indexable<ICompletionProposal> doComputeCompletionProposals(EditorOperationContext context) 
+	protected abstract Indexable<ICompletionProposal> doComputeCompletionProposals(CompletionContext context) 
 			throws CommonException, OperationSoftFailure;
 	
 }

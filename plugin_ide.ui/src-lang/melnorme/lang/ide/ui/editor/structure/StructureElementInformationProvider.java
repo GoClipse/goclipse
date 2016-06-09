@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.editor.structure;
 
 import melnorme.lang.tooling.structure.SourceFileStructure;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
@@ -25,7 +27,7 @@ public class StructureElementInformationProvider
 	protected final AbstractLangStructureEditor editor;
 	
 	public StructureElementInformationProvider(AbstractLangStructureEditor editor) {
-		this.editor = editor;
+		this.editor = assertNotNull(editor);
 	}
 	
 	@Override

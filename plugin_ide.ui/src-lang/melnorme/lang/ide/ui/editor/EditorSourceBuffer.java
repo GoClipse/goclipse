@@ -85,11 +85,11 @@ public class EditorSourceBuffer implements ISourceBuffer {
 	
 	/* -----------------  ----------------- */
 	
-	public static class SourceViewerSourceModule implements ISourceBuffer {
+	public static class SourceViewerSourceBuffer implements ISourceBuffer {
 		
 		protected final ISourceViewer sourceViewer;
 		
-		public SourceViewerSourceModule(ISourceViewer sourceViewer) {
+		public SourceViewerSourceBuffer(ISourceViewer sourceViewer) {
 			this.sourceViewer = assertNotNull(sourceViewer);
 		}
 		
@@ -110,7 +110,7 @@ public class EditorSourceBuffer implements ISourceBuffer {
 		
 		@Override
 		public boolean isDirty() {
-			return true; /* FIXME: */
+			return true; // a source buffer with not location in the filesystem is always considered dirty
 		}
 		
 		@Override

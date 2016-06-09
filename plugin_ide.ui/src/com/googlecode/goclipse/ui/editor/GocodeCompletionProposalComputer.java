@@ -13,7 +13,7 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
+import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -25,7 +25,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(EditorOperationContext context, ICancelMonitor cm) 
+	protected LangCompletionResult doComputeProposals(CompletionContext context, ICancelMonitor cm) 
 			throws CommonException, OperationCancellation {
 		Location fileLoc = context.getContext().getFileLocation();
 		IDocument document = context.getDocument();

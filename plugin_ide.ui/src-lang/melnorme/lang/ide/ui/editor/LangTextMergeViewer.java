@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor;
 
+import java.util.function.Supplier;
+
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -24,7 +26,9 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer.SourceViewerSourceBuffer;
 import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
+import melnorme.utilbox.misc.Location;
 
 public class LangTextMergeViewer extends TextMergeViewer {
 	
@@ -52,8 +56,9 @@ public class LangTextMergeViewer extends TextMergeViewer {
 	protected void configureTextViewer(TextViewer textViewer) {
 		if(textViewer instanceof SourceViewer) {
 			SourceViewer sourceViewer = (SourceViewer) textViewer;
-			sourceViewer.configure(getSourceViewerConfiguration());
+			sourceViewer.configure(getSourceViewerConfiguration(sourceViewer));
 		}
+		sourceViewerNumber = (sourceViewerNumber + 1) % 3;
 	}
 	
 	@Override
@@ -65,8 +70,34 @@ public class LangTextMergeViewer extends TextMergeViewer {
 		return LangUIPlugin.getDefault().getCombinedPreferenceStore();
 	}
 	
-	protected SourceViewerConfiguration getSourceViewerConfiguration() {
-		return new LangSourceViewerConfiguration(getPreferenceStore(), null);
+	private int sourceViewerNumber = 0;
+	
+	protected SourceViewerConfiguration getSourceViewerConfiguration(SourceViewer sourceViewer) {
+		
+		Supplier<Boolean> isDirtyPred;
+		
+		if(sourceViewerNumber == 0) {
+			isDirtyPred = () -> false;
+		} else if(sourceViewerNumber == 1) {
+			isDirtyPred = this::isLeftDirty;
+		} else {
+			isDirtyPred = this::isRightDirty;
+		}
+		
+		SourceViewerSourceBuffer sourceBuffer = new SourceViewerSourceBuffer(sourceViewer) {
+			@Override
+			public Location getLocation_orNull() {
+				return EditorUtils.getLocationOrNull(getEditorInput(sourceViewer));
+			}
+			
+			@Override
+			public boolean isDirty() {
+				return isDirtyPred.get();
+			}
+			
+		};
+		
+		return new LangSourceViewerConfiguration(getPreferenceStore(), sourceBuffer, null);
 	}
 	
 }
