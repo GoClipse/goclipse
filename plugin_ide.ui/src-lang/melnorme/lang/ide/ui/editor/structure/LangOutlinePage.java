@@ -155,7 +155,7 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	public StructureElement getStructureElementFor(ISelection selection) {
 		if(selection instanceof ITextSelection) {
 			ITextSelection textSelection = (ITextSelection) selection;
-			return GetUpdatedStructureUIOperation.getUpdatedStructureElementAt(editor, textSelection.getOffset());
+			return GetUpdatedStructureUIOperation.run_GetUpdatedStructureElementAt(editor, textSelection.getOffset());
 		} 
 		else if(selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;

@@ -32,7 +32,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
-import org.eclipse.jface.text.reconciler.AbstractReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationHover;
@@ -41,8 +40,8 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
+import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
@@ -53,33 +52,29 @@ import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
 import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
-import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
-import melnorme.lang.ide.ui.editor.text.LangReconciler;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
-import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.collections.Indexable;
 
 public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSourceViewerConfiguration {
 	
-	protected final ISourceBuffer sourceBuffer;
+	protected final ISourceBufferExt sourceBuffer;
 	/** Editor for this configuration. Can be null. It is preferred that sourceBuffer be used instead of this, 
 	 * but some legacy or third-party API requires the editor itself */
-	protected final AbstractLangStructureEditor editor_opt; // can be null
+	protected final ITextEditor editor_opt; // can be null
 	
 	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
-			ISourceBuffer sourceBuffer, AbstractLangStructureEditor editor) {
+			ISourceBufferExt sourceBuffer, ITextEditor editor) {
 		super(preferenceStore);
 		this.sourceBuffer = assertNotNull(sourceBuffer);
 		this.editor_opt = editor;
 	}
 	
-	/* FIXME: review this */
-	public AbstractLangStructureEditor getEditor_orNull() {
+	public ITextEditor getEditor_orNull() {
 		return editor_opt;
 	}
 	
@@ -92,6 +87,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
+		return getBestMatchHover();
+	}
+	
+	protected BestMatchHover getBestMatchHover() {
 		return new BestMatchHover(sourceBuffer, getEditor_orNull());
 	}
 	
@@ -133,7 +132,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	
 	@SuppressWarnings("unused")
 	protected IInformationProvider getInformationProvider(String contentType, ISourceViewer sourceViewer) {
-		return new HoverInformationProvider(new BestMatchHover(sourceBuffer, getEditor_orNull()));
+		return new HoverInformationProvider(getBestMatchHover());
 	}
 	
 	protected IInformationControlCreator getInformationPresenterControlCreator(
@@ -164,17 +163,13 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	} 
 	
 	public void installOutlinePresenter(final LangSourceViewer sourceViewer) {
-		AbstractLangStructureEditor editor = getEditor_orNull();
-		if(editor == null) {
-			return;
-		}
 		
 		InformationPresenter presenter = new InformationPresenter(getOutlinePresenterControlCreator(sourceViewer));
 		
 		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 		presenter.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
 		
-		IInformationProvider provider = new StructureElementInformationProvider(editor); 
+		IInformationProvider provider = new StructureElementInformationProvider(sourceBuffer); 
 		
 		for(String contentType : getConfiguredContentTypes(sourceViewer)) {
 			presenter.setInformationProvider(provider, contentType);
@@ -289,25 +284,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	
 	@Override
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
-		ITextEditor editor = getEditor_orNull();
-		if(editor != null && editor.isEditable()) {
-			AbstractReconciler reconciler = doCreateReconciler(editor);
-			reconciler.setIsAllowedToModifyDocument(false);
-			reconciler.setDelay(500); // Can't use zero
-			
-			return reconciler;
-		}
-		return null;
-	}
-	
-	protected final LangReconciler doCreateReconciler(ITextEditor editor) {
-		CompositeReconcilingStrategy strategy = getReconciler_createCompositeStrategy(editor);
-		return new LangReconciler(strategy, false, editor);
-	}
-	
-	@SuppressWarnings({ "unused", "static-method" })
-	protected final CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
-		return new CompositeReconcilingStrategy();
+		return null; // not used, disable the textual spellchecker too
 	}
 	
 	/* -----------------  ----------------- */
