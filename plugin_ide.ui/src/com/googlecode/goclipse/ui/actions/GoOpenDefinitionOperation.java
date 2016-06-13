@@ -10,16 +10,14 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoFindDefinitionOperation;
+import com.googlecode.goclipse.tooling.oracle.GoOperationContext;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -46,11 +44,49 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	}
 	
 	@Override
-	protected void prepareOperation() throws CommonException {
-		super.prepareOperation();
-		assertNotNull(getInputLocation());
-		saveEditor(new NullProgressMonitor());
+	protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
+		if(true) {
+			super.executeBackgroundOperation();
+			return;
+		}
+		/* FIXME: need to review this code, add this save logic to  GoFindDefinitionOperation2 */
 		
+//		CommonException originalException = null;
+//		
+//		try {
+//			super.executeBackgroundOperation();
+//			if(statusErrorMessage == null) {
+//				return; // godef completed successfully
+//			}
+//		} catch(CommonException e) {
+//			originalException = e;
+//		}
+//		
+//		// retry with guru
+//		GoOpenDefinitionOperation guruOp = new GoOpenDefinitionOperation(editor, getOperationRange(), openEditorMode) {
+//			@Override
+//			protected void handleComputationResult() throws CommonException {
+//				// Ignore 
+//				//super.handleComputationResult();
+//			}
+//		};
+//		try {
+//			saveEditor(new NullProgressMonitor());
+//			guruOp.prepareOperation();
+//			guruOp.executeBackgroundOperation();
+//			if(guruOp.statusErrorMessage == null)  {
+//				result = guruOp.result;
+//				// Use guruOp result
+//				return;
+//			}
+//		} catch(CommonException e) {
+//			// Ignore, use original result
+//		}
+//		
+//		if(originalException != null) {
+//			throw originalException;
+//		}
+//		
 	}
 	
 	@Override
@@ -72,28 +108,43 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	
 	public static GoFindDefinitionOperation getFindDefinitionOperation(ISourceBuffer sourceBuffer,
 			int offset) {
+		return GoOpenDefinitionOperation.getFindDefOperation(getOperationContext(sourceBuffer, offset));
+	}
+	
+	public static GoOperationContext getOperationContext(ISourceBuffer sourceBuffer, int offset) {
 		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
 		IProject project = ResourceUtils.getProject(opContext.getOptionalFileLocation());
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		IToolOperationService toolsOpService = LangCore.getToolManager().getEngineToolsOperationService();
-		return GoOpenDefinitionOperation.getFindDefOperation(goEnv, opContext, toolsOpService);
+		return new GoOperationContext(sourceBuffer, opContext, toolsOpService, goEnv);
 	}
 	
-	public static GoFindDefinitionOperation getFindDefOperation(GoEnvironment goEnv, SourceOpContext sourceOpContext,
-			IToolOperationService toolService) {
-		return new GoFindDefinitionOperation(goEnv, sourceOpContext, toolService) {
-			@Override
-			protected String getGodefPath() throws StatusException {
-				return GoToolPreferences.GODEF_Path.getDerivedValue().toString();
-			};
-			
-			@Override
-			protected String getGuruPath() throws StatusException {
-				return GoToolPreferences.GO_GURU_Path.getDerivedValue().toString();
-			};
-		};
+	public static GoFindDefinitionOperation getFindDefOperation(GoOperationContext operationContext) {
+		return new GoFindDefinitionOperation2(operationContext);
+	}
+	
+	public static class GoFindDefinitionOperation2 extends GoFindDefinitionOperation {
+		public GoFindDefinitionOperation2(GoOperationContext goOperationContext) {
+			super(goOperationContext);
+		}
+		
+		@Override
+		protected String getGodefPath() throws StatusException {
+			return GoToolPreferences.GODEF_Path.getDerivedValue().toString();
+		}
+		
+		@Override
+		protected String getGuruPath() throws StatusException {
+			return GoToolPreferences.GO_GURU_Path.getDerivedValue().toString();
+		}
+		
+		@Override
+		public ToolOpResult<FindDefinitionResult> executeOp(IOperationMonitor cm)
+				throws CommonException, OperationCancellation {
+			return super.executeOp(cm);
+		}
 	}
 	
 }

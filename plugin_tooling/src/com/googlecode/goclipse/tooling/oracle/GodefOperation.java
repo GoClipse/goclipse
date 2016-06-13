@@ -17,6 +17,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.tooling.toolchain.ops.AbstractSingleToolOperation;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.utils.parse.StringCharSource;
@@ -31,14 +32,14 @@ import melnorme.utilbox.status.StatusException;
 public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionResult> {
 	
 	protected GoEnvironment goEnv;
-	protected Location fileLocation;
+	protected SourceOpContext opContext;
 	protected int byteOffset;
 	
 	public GodefOperation(IToolOperationService opService, String godefPath, GoEnvironment goEnv, 
-			Location fileLocation, int byteOffset) {
+			SourceOpContext opContext, int byteOffset) {
 		super(opService, godefPath, false);
 		this.goEnv = assertNotNull(goEnv);
-		this.fileLocation = fileLocation;
+		this.opContext = assertNotNull(opContext);
 		this.byteOffset = byteOffset;
 	}
 	
@@ -57,9 +58,12 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 		Location toolLoc = Location.create(toolPath);
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			toolLoc.toPathString(),
-			"-f", fileLocation.toPathString(),
+			/* FIXME: review this*/
+			"-f", opContext.getFileLocation().toPathString(),
+			"-i",
 			"-o", Integer.toString(byteOffset)
 		);
+		toolInput = opContext.getSource();
 		return goEnv.createProcessBuilder(commandLine, null, true);
 	}
 	

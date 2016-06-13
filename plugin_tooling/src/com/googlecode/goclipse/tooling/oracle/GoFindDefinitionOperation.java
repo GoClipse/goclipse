@@ -19,6 +19,7 @@ import java.nio.charset.CharsetEncoder;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
@@ -32,19 +33,24 @@ import melnorme.utilbox.misc.StringUtil;
 
 public abstract class GoFindDefinitionOperation implements CommonResultOperation<ToolOpResult<FindDefinitionResult>> {
 	
+	protected final GoOperationContext goOperationContext;
 	protected final GoEnvironment goEnv;
 	protected final SourceOpContext opContext;
 	protected final int invocationOffset;
 	protected final String source;
-	protected final IToolOperationService toolOperationService;
+	protected final IToolOperationService toolOpService;
 	
-	public GoFindDefinitionOperation(GoEnvironment goEnv, SourceOpContext opContext, 
-			IToolOperationService toolOperationService) {
-		this.goEnv = assertNotNull(goEnv);
-		this.opContext = assertNotNull(opContext);
+	public GoFindDefinitionOperation(GoOperationContext goOperationContext) {
+		this.goOperationContext = assertNotNull(goOperationContext);
+		this.goEnv = assertNotNull(goOperationContext.goEnv);
+		this.opContext = assertNotNull(goOperationContext.opContext);
 		this.invocationOffset = opContext.getOffset();
 		this.source = assertNotNull(opContext.getSource());
-		this.toolOperationService = assertNotNull(toolOperationService);
+		this.toolOpService = assertNotNull(goOperationContext.toolOpService);
+	}
+	
+	public ISourceBuffer getSourceBuffer() {
+		return goOperationContext.getSourceBuffer();
 	}
 	
 	public int getInvocationOffset() {
@@ -73,7 +79,7 @@ public abstract class GoFindDefinitionOperation implements CommonResultOperation
 	@Override
 	public ToolOpResult<FindDefinitionResult> executeOp(IOperationMonitor cm) 
 			throws CommonException, OperationCancellation {
-		Location fileLocation = getFileLocation();
+		Location fileLocation = getFileLocation(); // Validate early
 		
 		Charset charset = StringUtil.UTF8; // All Go source file must be encoded in UTF8, not another format.
 		int byteOffset = getByteOffsetFromEncoding(source, invocationOffset, charset);
@@ -81,8 +87,7 @@ public abstract class GoFindDefinitionOperation implements CommonResultOperation
 		ToolOpResult<FindDefinitionResult> godefResult = null;
 		try {
 			String godefPath = getGodefPath();
-			godefResult = new GodefOperation(toolOperationService, godefPath, goEnv, fileLocation, byteOffset)
-					.execute(cm);
+			godefResult = new GodefOperation(toolOpService, godefPath, goEnv, opContext, byteOffset).execute(cm);
 			
 			godefResult.get(); // ensure valid, throw otherwise
 			return godefResult;
@@ -90,9 +95,9 @@ public abstract class GoFindDefinitionOperation implements CommonResultOperation
 			
 			// Try go oracle as an alternative
 			try {
-				String goOraclePath = getGuruPath();
-				ToolOpResult<FindDefinitionResult> result = new GuruFindDefinitionOperation(goOraclePath)
-						.execute(fileLocation, byteOffset, goEnv, toolOperationService, cm);
+				String guruPath = getGuruPath();
+				ToolOpResult<FindDefinitionResult> result = new GuruFindDefinitionOperation(guruPath)
+						.execute(fileLocation, byteOffset, goEnv, toolOpService, cm);
 				result.get(); // check that it is valid
 				return result;
 			} catch(CommonException e2) {
