@@ -19,7 +19,9 @@
 If you already have LANG_IDE_NAME installed, and want to update it to a newer release, click `Help -> Check for Updates...`.
 
 #### :cn: *Note for users in China*
-Note: if you are behind the Great Firewall of China, you are very likely to encounter problems installing LANG_IDE_NAME: blocked connections, timeouts, or slow downloads. This is because the update site is hosted in Github, which is blocked or has limited access. These alternative steps should help you perform the installation:
+Note: if you are behind the Great Firewall of China, you are very likely to encounter problems installing LANG_IDE_NAME: blocked connections, timeouts, or slow downloads. This is because the update site is hosted in Github, which is blocked or has limited access. These alternative instructions should let you perform the installation:
 
-* Download the website from LANG_IDE_WEBSITE_GIT_REPO/archive/master.zip, unpack the archive and use the `releases` directory as a Local repository instead of the Update Site URL. However, you will need to redownload the archive above whenever you want to update LANG_IDE_NAME to a newer version.
-* Download an Eclipse installation which already contains CDT (C Development Tools), so it doesn't have to be installed at the same time as LANG_IDE_NAME.
+ 1. Download an Eclipse installation which already contains CDT (such as the "Eclipse IDE for C/C++ Developers" package), so CDT doesn't have to be downloaded during installation.
+ 1. Download the website from LANG_IDE_WEBSITE_GIT_REPO/archive/master.zip, unpack the archive and use the `releases` directory as a Local repository instead of the Update Site URL. Uncheck the option "Contact all updates sites during installation to find required software" so only the local repository is used. 
+
+  * Note however: you will likely need to re-download the archive above whenever you want to update LANG_IDE_NAME to a newer version.
