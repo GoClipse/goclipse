@@ -92,7 +92,7 @@ public abstract class BasicUIOperation implements Runnable {
 	
 	/* -----------------  ----------------- */
 	
-	public final void execute() throws CommonException {
+	public void execute() throws CommonException {
 		prepareOperation();
 		try {
 			doOperation();
@@ -106,7 +106,8 @@ public abstract class BasicUIOperation implements Runnable {
 	
 	protected abstract void doOperation() throws CommonException, OperationCancellation;
 	
-	protected void handleOperationCancellation() throws CommonException {
+	/* FIXME: TODO remove this */
+	protected final void handleOperationCancellation() throws CommonException {
 	}
 	
 }

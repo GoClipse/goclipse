@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class Result<DATA, EXC extends Throwable> {
 	
-	protected volatile DATA resultValue = null;
+	protected final DATA resultValue;
 	/** Note: resultException is either a EXC, or a RuntimeException. */
-	protected volatile Throwable resultException;
+	protected final Throwable resultException;
 	
 	public Result(DATA resultValue) {
 		this(resultValue, null);

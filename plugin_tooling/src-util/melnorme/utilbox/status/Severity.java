@@ -28,6 +28,10 @@ public enum Severity {
 		return ordinal() > other.ordinal();
 	}
 	
+	public boolean isHigherOrEqualSeverity(Severity other) {
+		return ordinal() >= other.ordinal();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static Severity fromString(String severityString) throws CommonException {

@@ -87,7 +87,7 @@ public abstract class AbstractLangPropertyPage2<WIDGET extends IValidatableWidge
 				// We don't use the standard WorkbenchProgressServiceOpRunner 
 				// because of a bug with the workbench progess service:
 				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=495015
-				new ProgressMonitorDialogOpRunner(getShell(), this::runBackgroundComputation).execute();
+				new ProgressMonitorDialogOpRunner(getShell(), getBackgroundOperation()).execute();
 			}
 		};
 		return op.executeAndHandle();
