@@ -13,14 +13,25 @@ package melnorme.lang.tooling.common.ops;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public interface CommonOperation extends CommonResultOperation<Void> {
-	
-	@Override
-	default Void executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
-		execute(om);
-		return null;
-	}
+public interface CommonOperation {
 	
 	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
+	
+	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
+	
+	/* -----------------  ----------------- */
+	
+	default CommonOperation namedOperation(String taskName) {
+		return namedOperation(taskName, this);
+	}
+	
+	public static CommonOperation namedOperation(String taskName, CommonOperation subOp) {
+		return new CommonOperation() {
+			@Override
+			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
+				om.runSubTask(taskName, subOp);
+			}
+		};
+	}
 	
 }

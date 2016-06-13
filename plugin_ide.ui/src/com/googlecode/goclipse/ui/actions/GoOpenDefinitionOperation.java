@@ -30,7 +30,7 @@ import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.status.StatusException;
@@ -93,9 +93,9 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor cm) 
 			throws CommonException, OperationCancellation {
 		
-		ToolOpResult<FindDefinitionResult> opResult = getToolOperation().executeOp(cm);
+		ToolResponse<FindDefinitionResult> opResult = getToolOperation().executeOp(cm);
 		try {
-			return opResult.get();
+			return opResult.getValidResult();
 		} catch(CommonException e) {
 			statusErrorMessage = e.getMessage();
 			return null;
@@ -141,7 +141,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 		}
 		
 		@Override
-		public ToolOpResult<FindDefinitionResult> executeOp(IOperationMonitor cm)
+		public ToolResponse<FindDefinitionResult> executeOp(IOperationMonitor cm)
 				throws CommonException, OperationCancellation {
 			return super.executeOp(cm);
 		}

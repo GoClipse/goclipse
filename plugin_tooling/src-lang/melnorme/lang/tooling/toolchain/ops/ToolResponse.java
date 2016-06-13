@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.toolchain.ops;
 
-import melnorme.utilbox.core.fntypes.Result;
+import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.StatusException;
 
 /**
@@ -23,14 +23,29 @@ import melnorme.utilbox.status.StatusException;
  * these should be handled with a different class.
  *
  */
-public class ToolOpResult<DATA> extends Result<DATA, StatusException> {
+public class ToolResponse<DATA> {
 	
-	public ToolOpResult(DATA resultValue, StatusException resultException) {
-		super(resultValue, resultException);
+	protected final DATA resultData; // can be null
+	protected final IStatusMessage statusMessage;
+	
+	public ToolResponse(DATA resultValue) {
+		this(resultValue, null);
 	}
 	
-	public ToolOpResult(DATA resultValue) {
-		super(resultValue);
+	public ToolResponse(DATA resultData, IStatusMessage statusMessaage) {
+		this.resultData = resultData;
+		this.statusMessage = statusMessaage;
+	}
+	
+	public DATA getValidResult() throws StatusException {
+		if(statusMessage != null) {
+			throw statusMessage.toStatusException();
+		}
+		return resultData;
+	}
+	
+	public IStatusMessage getStatusMessage() {
+		return statusMessage;
 	}
 	
 }

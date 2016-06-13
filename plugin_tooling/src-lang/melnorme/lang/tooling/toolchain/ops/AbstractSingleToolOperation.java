@@ -17,6 +17,8 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.IStatusMessage.StatusMessage;
+import melnorme.utilbox.status.Severity;
 
 public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOperation2<RESULT> {
 	
@@ -32,7 +34,7 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 		this.nonZeroExitIsFatal = nonZeroResultIsFatal;
 	}
 	
-	public ToolOpResult<RESULT> execute(ICancelMonitor cm) throws CommonException, OperationCancellation {
+	public ToolResponse<RESULT> execute(ICancelMonitor cm) throws CommonException, OperationCancellation {
 		ProcessBuilder pb = createProcessBuilder();
 		ExternalProcessResult result = opHelper.runProcess(pb, toolInput, cm);
 		return handleProcessResult(result);
@@ -41,13 +43,13 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 	protected abstract ProcessBuilder createProcessBuilder() throws CommonException;
 	
 	@Override
-	public ToolOpResult<RESULT> handleProcessResult(ExternalProcessResult result)
+	public ToolResponse<RESULT> handleProcessResult(ExternalProcessResult result)
 			throws CommonException, OperationCancellation {
 		if(!nonZeroExitIsFatal) {
 			try {
 				validateExitCode(result);
 			} catch(CommonException e) {
-				return new ToolOpResult<>(null, e.toStatusException());
+				return new ToolResponse<>(null, new StatusMessage(Severity.ERROR, e.getMessage()));
 			}
 		}
 		return super.handleProcessResult(result);

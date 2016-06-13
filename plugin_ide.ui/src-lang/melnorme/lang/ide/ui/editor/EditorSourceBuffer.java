@@ -67,7 +67,7 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 			@Override
 			protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
 				// Execute under ProgressMonitorDialog, but not on a background thread.
-				new ProgressMonitorDialogOpRunner(shell, this::runBackgroundComputation) {{ 
+				new ProgressMonitorDialogOpRunner(shell, getBackgroundOperation()) {{ 
 					fork = false; 
 				}}.execute();
 			}

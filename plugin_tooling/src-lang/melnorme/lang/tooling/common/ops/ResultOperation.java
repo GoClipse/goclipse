@@ -10,15 +10,30 @@
  *******************************************************************************/
 package melnorme.lang.tooling.common.ops;
 
+import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public interface CommonResultOperation<RESULT> {
+public interface ResultOperation<RESULT> {
 	
 	public abstract RESULT executeOp(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
-	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
+	public default ResultOperation<RESULT> namedOperation(String taskName) {
+		return namedOperation(taskName, this);
+	}
+	
+	public static <R> ResultOperation<R> namedOperation(String taskName, ResultOperation<R> subOp) {
+		return new ResultOperation<R>() {
+			@Override
+			public R executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
+				try(IOperationSubMonitor subMonitor = om.enterSubTask(taskName)) {
+					/* FIXME: test this*/
+					return subOp.executeOp(subMonitor);
+				}
+			}
+		};
+	}
 	
 }

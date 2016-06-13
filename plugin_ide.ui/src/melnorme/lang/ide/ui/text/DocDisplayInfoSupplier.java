@@ -16,6 +16,8 @@ import com.googlecode.goclipse.ui.actions.GoOpenDefinitionOperation;
 import melnorme.lang.ide.ui.editor.hover.AbstractDocDisplayInfoSupplier;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.common.ops.ResultOperation;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 
 @LANG_SPECIFIC
 public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
@@ -25,10 +27,10 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	}
 	
 	@Override
-	protected OpenDocumentationOperation getOpenDocumentationOperation(ISourceBuffer sourceBuffer, int offset) {
-		GoFindDocOperation goFindDocOperation = new GoFindDocOperation(
+	protected ResultOperation<ToolResponse<String>> getOpenDocumentationOperation2(ISourceBuffer sourceBuffer,
+			int offset) {
+		return new GoFindDocOperation(
 			GoOpenDefinitionOperation.getFindDefinitionOperation(sourceBuffer, offset));
-		return new OpenDocumentationOperation("Get Documentation", goFindDocOperation);
 	}
 	
 }

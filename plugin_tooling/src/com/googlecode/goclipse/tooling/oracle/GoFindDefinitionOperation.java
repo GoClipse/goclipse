@@ -20,18 +20,18 @@ import java.nio.charset.CharsetEncoder;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
-public abstract class GoFindDefinitionOperation implements CommonResultOperation<ToolOpResult<FindDefinitionResult>> {
+public abstract class GoFindDefinitionOperation implements ResultOperation<ToolResponse<FindDefinitionResult>> {
 	
 	protected final GoOperationContext goOperationContext;
 	protected final GoEnvironment goEnv;
@@ -77,28 +77,28 @@ public abstract class GoFindDefinitionOperation implements CommonResultOperation
 	}
 	
 	@Override
-	public ToolOpResult<FindDefinitionResult> executeOp(IOperationMonitor cm) 
+	public ToolResponse<FindDefinitionResult> executeOp(IOperationMonitor cm) 
 			throws CommonException, OperationCancellation {
 		Location fileLocation = getFileLocation(); // Validate early
 		
 		Charset charset = StringUtil.UTF8; // All Go source file must be encoded in UTF8, not another format.
 		int byteOffset = getByteOffsetFromEncoding(source, invocationOffset, charset);
 		
-		ToolOpResult<FindDefinitionResult> godefResult = null;
+		ToolResponse<FindDefinitionResult> godefResult = null;
 		try {
 			String godefPath = getGodefPath();
 			godefResult = new GodefOperation(toolOpService, godefPath, goEnv, opContext, byteOffset).execute(cm);
 			
-			godefResult.get(); // ensure valid, throw otherwise
+			godefResult.getValidResult(); // ensure valid, throw otherwise
 			return godefResult;
 		} catch(CommonException e) {
 			
 			// Try go oracle as an alternative
 			try {
 				String guruPath = getGuruPath();
-				ToolOpResult<FindDefinitionResult> result = new GuruFindDefinitionOperation(guruPath)
+				ToolResponse<FindDefinitionResult> result = new GuruFindDefinitionOperation(guruPath)
 						.execute(fileLocation, byteOffset, goEnv, toolOpService, cm);
-				result.get(); // check that it is valid
+				result.getValidResult(); // check that it is valid
 				return result;
 			} catch(CommonException e2) {
 				// Ignore oracle error, display previous godef error 

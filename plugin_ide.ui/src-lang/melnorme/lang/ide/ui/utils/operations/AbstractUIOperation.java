@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.WorkbenchProgressServiceOpRunner;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -45,15 +46,15 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		if(!isBackgroundComputationNecessary()) {
 			return;
 		}
-		new WorkbenchProgressServiceOpRunner(this::runBackgroundComputation).execute();
+		new WorkbenchProgressServiceOpRunner(getBackgroundOperation()).execute();
+	}
+	
+	protected CommonOperation getBackgroundOperation() {
+		return CommonOperation.namedOperation(getTaskName(), this::doBackgroundComputation);
 	}
 	
 	protected boolean isBackgroundComputationNecessary() throws CommonException {
 		return true;
-	}
-	
-	protected void runBackgroundComputation(IOperationMonitor om) throws CommonException, OperationCancellation {
-		om.runSubTask(getTaskName(), this::doBackgroundComputation);
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */

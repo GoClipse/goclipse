@@ -22,7 +22,7 @@ import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation2;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -58,7 +58,7 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 	}
 	
 	@Override
-	public ToolOpResult<ArrayList2<ToolCompletionProposal>> parseProcessOutput(StringCharSource parseSource)
+	public ToolResponse<ArrayList2<ToolCompletionProposal>> parseProcessOutput(StringCharSource parseSource)
 			throws CommonException {
 	
 		String stdout = parseSource.getSource();
@@ -78,7 +78,7 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 			}
 		}
 		
-		return new ToolOpResult<>(baseResults);
+		return new ToolResponse<>(baseResults);
 	}
 	
 	protected void handleParseError(CommonException ce) throws CommonException {

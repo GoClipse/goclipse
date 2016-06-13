@@ -18,8 +18,8 @@ import melnorme.lang.tooling.toolchain.ops.AbstractSingleToolOperation;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -68,21 +68,21 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	public ToolOpResult<FindDefinitionResult> handleProcessResult(ExternalProcessResult result)
+	public ToolResponse<FindDefinitionResult> handleProcessResult(ExternalProcessResult result)
 			throws CommonException, OperationCancellation {
 		if(result.exitValue != 0) {
 			String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
 			if(!errOut.trim().contains("\n")) {
-				return new ToolOpResult<>(null, new StatusException(errOut));
+				return new ToolResponse<>(null, new StatusException(errOut));
 			}
 		}
 		return super.handleProcessResult(result);
 	}
 	
 	@Override
-	public ToolOpResult<FindDefinitionResult> parseProcessOutput(StringCharSource output) throws CommonException {
+	public ToolResponse<FindDefinitionResult> parseProcessOutput(StringCharSource output) throws CommonException {
 		FindDefinitionResult findDefResult = ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
-		return new ToolOpResult<>(findDefResult);
+		return new ToolResponse<>(findDefResult);
 	}
 	
 }

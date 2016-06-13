@@ -26,6 +26,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.SourceLineColumnRange;
@@ -35,6 +36,7 @@ import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.status.Severity;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> {
 	
@@ -74,7 +76,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		if(result.getInfoMessage() != null) {
-			dialogInfo(result.getInfoMessage());
+			UIOperationsStatusHandler.displayStatusMessage(operationName, Severity.INFO, result.getInfoMessage());
 		}
 		
 		SourceLineColumnRange sourceRange = result.getSourceRange();

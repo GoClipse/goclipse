@@ -13,11 +13,11 @@ package com.googlecode.goclipse.tooling.oracle;
 import java.io.IOException;
 
 import melnorme.lang.tooling.common.SourceLineColumnRange;
-import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.lang.tooling.parser.SourceLinesInfo;
 import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
@@ -25,7 +25,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.status.StatusException;
 
-public class GoFindDocOperation implements CommonResultOperation<ToolOpResult<String>> {
+public class GoFindDocOperation implements ResultOperation<ToolResponse<String>> {
 	
 	protected final GoFindDefinitionOperation findDefOp;
 	
@@ -34,15 +34,15 @@ public class GoFindDocOperation implements CommonResultOperation<ToolOpResult<St
 	}
 	
 	@Override
-	public ToolOpResult<String> executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
+	public ToolResponse<String> executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
 		
-		ToolOpResult<FindDefinitionResult> findDefOpResult = findDefOp.executeOp(om);
+		ToolResponse<FindDefinitionResult> findDefOpResult = findDefOp.executeOp(om);
 		
 		FindDefinitionResult findDefResult;
 		try {
-			findDefResult = findDefOpResult.get();
+			findDefResult = findDefOpResult.getValidResult();
 		} catch(StatusException e) {
-			return new ToolOpResult<>(null, e);
+			return new ToolResponse<>(null, e);
 		}
 		
 		String fileContents = readFileContents(findDefResult.getFileLocation());
@@ -51,7 +51,7 @@ public class GoFindDocOperation implements CommonResultOperation<ToolOpResult<St
 		SourceLineColumnRange sourceLCRange = findDefResult.getSourceRange();
 		int offset = linesInfo.getOffsetForLine(sourceLCRange.getValidLineIndex()) + sourceLCRange.getValidColumnIndex();
 		
-		return new ToolOpResult<>(new GoDocParser().parseDocForDefinitionAt(fileContents, offset));
+		return new ToolResponse<>(new GoDocParser().parseDocForDefinitionAt(fileContents, offset));
 	}
 	
 	public static String readFileContents(Location location) throws CommonException {

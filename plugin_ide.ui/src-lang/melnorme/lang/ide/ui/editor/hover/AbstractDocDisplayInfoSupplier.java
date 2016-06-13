@@ -12,18 +12,24 @@ package melnorme.lang.ide.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import org.eclipse.swt.widgets.Display;
+
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.WorkbenchProgressServiceOpRunner;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonResultOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
+import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.lang.tooling.common.ops.ResultOperation;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.lang.tooling.utils.HTMLEscapeUtil;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String> {
 	
@@ -37,18 +43,25 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 	
 	@Override
 	public String get() {
+		ToolResponse<String> rawDocumentationResult;
 		try {
-			String rawDocumentation = getRawDocumentation(sourceBuffer, offset);
-			
-			if(rawDocumentation == null) {
-				return null;
-			}
-			
-			return escapeToHTML(rawDocumentation);
+			rawDocumentationResult = getRawDocumentation(sourceBuffer, offset);
 		} catch(CommonException ce) {
 			LangCore.logStatusException(ce.toStatusException());
 			// TODO: we could add a nicer HTML formatting:
-			return "<b>Error:</b> " + ce.getMessage() + StringUtil.asString(" ", ce.getCause());
+			return "<b>Operation Error:</b> " + ce.getMessage() + StringUtil.asString(" ", ce.getCause());
+		} catch(OperationCancellation e) {
+			return null;
+		}
+		
+		try {
+			String rawDocumentation = rawDocumentationResult.getValidResult();
+			if(rawDocumentation == null) {
+				return null;
+			}
+			return escapeToHTML(rawDocumentation);
+		} catch(StatusException e) {
+			return "<b>Error:</b> " + e.getMessage();
 		}
 	}
 	
@@ -56,35 +69,37 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 		return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
 	}
 	
-	protected String getRawDocumentation(ISourceBuffer sourceBuffer, int offset) throws CommonException {
-		CalculateValueUIOperation<String> op = getOpenDocumentationOperation(sourceBuffer, offset);
-		return op.executeAndGetValidatedResult();
+	protected ToolResponse<String> getRawDocumentation(ISourceBuffer sourceBuffer, int offset) 
+			throws CommonException, OperationCancellation {
+		ResultOperation<ToolResponse<String>> openDocOp = getOpenDocumentationOperation2(sourceBuffer, offset);
+		return invokeInBackground(openDocOp.namedOperation("Get Documentation"));
 	}
 	
-	protected abstract OpenDocumentationOperation getOpenDocumentationOperation(ISourceBuffer sourceBuffer, 
-			int offset);
+	protected abstract ResultOperation<ToolResponse<String>> getOpenDocumentationOperation2(
+			ISourceBuffer sourceBuffer, int offset);
 	
-	public static class OpenDocumentationOperation extends CalculateValueUIOperation<String> {
+	public <R> R invokeInBackground(ResultOperation<R> op) throws CommonException, OperationCancellation {
 		
-		protected final CommonResultOperation<ToolOpResult<String>> findDocOperation;
+		AtomicReference<R> resultHolder = new AtomicReference<>();
 		
-		public OpenDocumentationOperation(String operationName,
-				CommonResultOperation<ToolOpResult<String>> findDocOperation) {
-			super(operationName, true);
-			this.findDocOperation = assertNotNull(findDocOperation);
-		}
-		
-		@Override
-		protected String doBackgroundValueComputation(IOperationMonitor om)
-				throws CommonException, OperationCancellation {
-			ToolOpResult<String> opResult = findDocOperation.executeOp(om);
-			try {
-				return opResult.get();
-			} catch(CommonException e) {
-				return e.getMessage();
+		runInBackground(new CommonOperation() {
+			@Override
+			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
+				R result = op.executeOp(om);
+				resultHolder.set(result);
 			}
-		}
+		});
 		
+		return resultHolder.get();
+	}
+	
+	public void runInBackground(CommonOperation op) throws CommonException, OperationCancellation {
+		if(Display.getCurrent() == null) {
+			// Perform computation directly in this thread, but cancellation won't be possible.
+			op.execute(new NullOperationMonitor());
+		} else {
+			new WorkbenchProgressServiceOpRunner(op).execute();
+		}
 	}
 	
 }
