@@ -16,9 +16,10 @@ import org.json.JSONException;
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
+import com.googlecode.goclipse.tooling.oracle.GuruFindDefinitionOperation.GuruFindDefinitionResultParser;
 
 import melnorme.lang.tooling.common.SourceLineColumnRange;
-import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
+import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.utilbox.core.CommonException;
 
 public class GuruFindDefinitionOperation_Test extends CommonGoToolingTest {
@@ -28,13 +29,13 @@ public class GuruFindDefinitionOperation_Test extends CommonGoToolingTest {
 	public void test$() throws Exception {
 		
 		testParseResult(fixTestsPaths(getClassResource("oracle_result.var_ref.json")),
-			new FindDefinitionResult(loc(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/newmath/sqrt.go")), 
-				new SourceLineColumnRange(5, 6), null)
+			new SourceLocation(loc(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/newmath/sqrt.go")), 
+				new SourceLineColumnRange(5, 6))
 			);
 		
 		testParseResult(fixTestsPaths(getClassResource("oracle_result.type1_ref.json")),
-			new FindDefinitionResult(loc(fixTestsPaths("D:/devel/tools.Go/GoTest/src/other/blah.go")),
-				new SourceLineColumnRange(16, 6), null)
+			new SourceLocation(loc(fixTestsPaths("D:/devel/tools.Go/GoTest/src/other/blah.go")),
+				new SourceLineColumnRange(16, 6))
 			);
 		
 		testParseResult(getClassResource("oracle_result.type2_def.json"), 
@@ -44,12 +45,10 @@ public class GuruFindDefinitionOperation_Test extends CommonGoToolingTest {
 			null);
 	}
 	
-	protected void testParseResult(String toolOutput, FindDefinitionResult expectedResult) throws JSONException,
+	protected void testParseResult(String toolOutput, SourceLocation expectedResult) throws JSONException,
 			CommonException {
-		GuruFindDefinitionOperation op = new GuruFindDefinitionOperation("gopath");
-		
 		try {
-			FindDefinitionResult result = op.parseJsonResult(toolOutput);
+			SourceLocation result = new GuruFindDefinitionResultParser().parseJsonResult(toolOutput);
 			assertAreEqual(result, expectedResult);
 		} catch(CommonException ce) {
 			assertTrue(expectedResult == null);

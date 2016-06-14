@@ -15,7 +15,10 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -47,12 +50,20 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		String source = document.get();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);
 		
-		return new LangCompletionResult(new GocodeOutputParser2(offset, source){
+		GocodeOutputParser2 gocodeOutputParser = new GocodeOutputParser2(offset, source){
 			@Override
 			protected void logWarning(String message) {
 				LangCore.logWarning(message);
 			}
-		} .parseResult(processResult));
+		};
+		ToolResponse<ArrayList2<ToolCompletionProposal>> parseResult = 
+				gocodeOutputParser.handleProcessResult(processResult);
+		
+		if(parseResult.getStatusMessage() != null) {
+			/* FIXME: need to review this */
+			return new LangCompletionResult(parseResult.getStatusMessage().getMessage());
+		}
+		return new LangCompletionResult(parseResult.getResultData());
 	}
 	
 }

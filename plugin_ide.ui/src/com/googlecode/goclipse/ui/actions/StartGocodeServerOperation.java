@@ -31,7 +31,7 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
 			return; // stop operation
 		}
@@ -42,7 +42,7 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 			return;
 		}
 		
-		super.doOperation();
+		super.execute();
 	}
 	
 	@Override

@@ -25,15 +25,30 @@ import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
+import com.googlecode.goclipse.tooling.oracle.GoOperationContext;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class GoProjectEnvironment implements GoEnvironmentConstants {
+	
+	public static GoOperationContext getGoOperationContext(ISourceBuffer sourceBuffer, int offset) {
+		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
+		
+		IProject project = ResourceUtils.getProject(opContext.getOptionalFileLocation());
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+		
+		IToolOperationService toolsOpService = LangCore.getToolManager().getEngineToolsOperationService();
+		return new GoOperationContext(sourceBuffer, opContext, toolsOpService, goEnv);
+	}
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
 		String prefValue = LangCore.settings().SDK_LOCATION.getRawValue(project);

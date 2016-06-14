@@ -12,11 +12,19 @@ package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.StringUtil;
 
 public class GoOperationContext {
 	
@@ -43,6 +51,26 @@ public class GoOperationContext {
 	
 	public GoEnvironment getGoEnv() {
 		return goEnv;
+	}
+	
+	public Location getFileLocation() throws CommonException {
+		return opContext.getFileLocation();
+	}
+	
+	public int getByteOffsetFromEncoding(int charOffset) throws CommonException {
+		Charset charset = StringUtil.UTF8; // All Go source file must be encoded in UTF8, not another format.
+		return getByteOffsetFromEncoding(sourceBuffer.getSource(), charOffset, charset);
+	}
+
+	public static int getByteOffsetFromEncoding(String source, int charOffset, Charset charset) throws CommonException {
+		CharsetEncoder encoder = charset.newEncoder();
+		
+		CharBuffer src = CharBuffer.wrap(source, 0, charOffset);
+		try {
+			return encoder.encode(src).limit();
+		} catch(CharacterCodingException e) {
+			throw new CommonException("Could not determine byte offset for Unicode string.", e);
+		}
 	}
 	
 }

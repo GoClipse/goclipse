@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.oracle;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.json.JSONException;
@@ -17,12 +18,12 @@ import org.json.JSONObject;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.common.ops.IProcessRunner;
-import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ResultOperation;
+import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
-import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -31,18 +32,26 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.status.IStatusMessage.StatusMessage;
 import melnorme.utilbox.status.Severity;
 
-public class GuruFindDefinitionOperation extends GuruDescribeOperation {
+public class GuruFindDefinitionOperation extends GuruDescribeOperation implements 
+		ResultOperation<ToolResponse<SourceLocation>> {
 	
-	public GuruFindDefinitionOperation(String goOraclePath) {
+	protected final GoOperationContext goOperationContext;
+	
+	public GuruFindDefinitionOperation(GoOperationContext goOperationContext, String goOraclePath) {
 		super(goOraclePath);
+		this.goOperationContext = assertNotNull(goOperationContext);
 	}
 	
-	public ToolResponse<FindDefinitionResult> execute(Location inputLoc, int byteOffset, 
-			GoEnvironment goEnv, IProcessRunner opRunner, ICancelMonitor cm) 
-					throws OperationCancellation, CommonException {
+	@Override
+	public ToolResponse<SourceLocation> executeOp(IOperationMonitor om) 
+			throws CommonException, OperationCancellation {
+		Location inputLoc = goOperationContext.getFileLocation();
+		int byteOffset = goOperationContext.getByteOffsetFromEncoding(goOperationContext.opContext.getOffset());
+		
+		GoEnvironment goEnv = goOperationContext.goEnv;
 		ProcessBuilder pb = createProcessBuilder(goEnv, inputLoc, byteOffset);
 		
-		ExternalProcessResult result = opRunner.runProcess(pb, null, cm);
+		ExternalProcessResult result = goOperationContext.getToolOpService().runProcess(pb, null, om);
 		if(result.exitValue != 0) {
 			return new ToolResponse<>(null, new StatusMessage(Severity.ERROR, "`guru` did not complete successfully."));
 		}
@@ -50,15 +59,18 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation {
 		return parseToolResult(result);
 	}
 	
-	public ToolResponse<FindDefinitionResult> parseToolResult(ExternalProcessResult result) throws CommonException {
+	public ToolResponse<SourceLocation> parseToolResult(ExternalProcessResult result) throws CommonException {
 		if(result.exitValue != 0) {
 			throw new CommonException("Program exited with non-zero status: " + result.exitValue, null);
 		}
 		
-		return new ToolResponse<>(parseJsonResult(result.getStdOutBytes().toString()));
+		String resultMessage = result.getStdOutBytes().toString();
+		return new ToolResponse<>(new GuruFindDefinitionResultParser().parseJsonResult(resultMessage));
 	}
 	
-	protected FindDefinitionResult parseJsonResult(String output) throws CommonException {
+	public static class GuruFindDefinitionResultParser {
+	
+	protected SourceLocation parseJsonResult(String output) throws CommonException {
 		try {
 			return doParseJsonResult(output);
 		} catch(JSONException e) {
@@ -68,7 +80,7 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation {
 		}
 	}
 	
-	protected FindDefinitionResult doParseJsonResult(String output) 
+	protected SourceLocation doParseJsonResult(String output) 
 			throws JSONException, CommonException, OperationSoftFailure {
 		JSONObject describe = new JSONObject(output);
 		
@@ -118,5 +130,7 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation {
 		}
 		return null;
 	}
-	
+
+	}
+
 }

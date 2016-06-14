@@ -36,7 +36,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	}
 	
 	@Override
-	protected void prepareOperation() throws CommonException {
+	public void prepareOperation() throws CommonException {
 		super.prepareOperation();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
@@ -59,7 +59,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CommonException {
+	protected void handleComputationResult(String result) throws CommonException {
 		assertNotNull(result);
 		
 		setEditorTextPreservingCarret(result);

@@ -15,8 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.toolchain.ops.AbstractSingleToolOperation;
-import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
-import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
+import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
@@ -29,18 +28,17 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.status.StatusException;
 
-public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionResult> {
+public class GodefOperation extends AbstractSingleToolOperation<SourceLocation> {
 	
+	protected GoOperationContext goOpContext;
 	protected GoEnvironment goEnv;
 	protected SourceOpContext opContext;
-	protected int byteOffset;
 	
-	public GodefOperation(IToolOperationService opService, String godefPath, GoEnvironment goEnv, 
-			SourceOpContext opContext, int byteOffset) {
-		super(opService, godefPath, false);
-		this.goEnv = assertNotNull(goEnv);
-		this.opContext = assertNotNull(opContext);
-		this.byteOffset = byteOffset;
+	public GodefOperation(GoOperationContext goOpContext, String godefPath) {
+		super(goOpContext.getToolOpService(), godefPath, false);
+		this.goOpContext = assertNotNull(goOpContext);
+		this.goEnv = assertNotNull(goOpContext.getGoEnv());
+		this.opContext = assertNotNull(goOpContext.opContext);
 	}
 	
 	@Override
@@ -56,6 +54,8 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	@Override
 	protected ProcessBuilder createProcessBuilder() throws CommonException {
 		Location toolLoc = Location.create(toolPath);
+		int byteOffset = goOpContext.getByteOffsetFromEncoding(goOpContext.opContext.getOffset());
+		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			toolLoc.toPathString(),
 			/* FIXME: review this*/
@@ -68,7 +68,7 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	public ToolResponse<FindDefinitionResult> handleProcessResult(ExternalProcessResult result)
+	public ToolResponse<SourceLocation> handleProcessResult(ExternalProcessResult result)
 			throws CommonException, OperationCancellation {
 		if(result.exitValue != 0) {
 			String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
@@ -80,8 +80,8 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	public ToolResponse<FindDefinitionResult> parseProcessOutput(StringCharSource output) throws CommonException {
-		FindDefinitionResult findDefResult = ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
+	public ToolResponse<SourceLocation> parseProcessOutput(StringCharSource output) throws CommonException {
+		SourceLocation findDefResult = ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
 		return new ToolResponse<>(findDefResult);
 	}
 	
