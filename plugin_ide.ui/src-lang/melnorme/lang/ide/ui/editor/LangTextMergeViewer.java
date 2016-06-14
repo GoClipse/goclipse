@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.EditorSourceBuffer.SourceViewerSourceBuffer;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer.DocumentSourceBuffer;
 import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
 import melnorme.utilbox.misc.Location;
 
@@ -84,7 +84,7 @@ public class LangTextMergeViewer extends TextMergeViewer {
 			isDirtyPred = this::isRightDirty;
 		}
 		
-		SourceViewerSourceBuffer sourceBuffer = new SourceViewerSourceBuffer(sourceViewer) {
+		DocumentSourceBuffer sourceBuffer = new DocumentSourceBuffer(sourceViewer.getDocument()) {
 			@Override
 			public Location getLocation_orNull() {
 				return EditorUtils.getLocationOrNull(getEditorInput(sourceViewer));
@@ -94,7 +94,6 @@ public class LangTextMergeViewer extends TextMergeViewer {
 			public boolean isDirty() {
 				return isDirtyPred.get();
 			}
-			
 		};
 		
 		return new LangSourceViewerConfiguration(getPreferenceStore(), sourceBuffer, null);

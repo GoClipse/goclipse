@@ -28,7 +28,7 @@ public abstract class AbstractJobUIOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		
 		Display display = Display.getCurrent();
 		
@@ -41,7 +41,7 @@ public abstract class AbstractJobUIOperation extends AbstractUIOperation {
 				try {
 					backgroundOp.execute(EclipseUtils.om(monitor));
 					
-					display.asyncExec(() -> handleComputationResult_handled());
+					display.asyncExec(() -> asynchronous_handleComputationResult());
 					
 				} catch(CommonException ce) {
 					display.asyncExec(() -> handleError(ce));
@@ -58,12 +58,7 @@ public abstract class AbstractJobUIOperation extends AbstractUIOperation {
 	
 	/* -----------------  ----------------- */
 	
-	protected void handleComputationResult_handled()  {
-		try {
-			handleComputationResult();
-		} catch(CommonException ce) {
-			handleError(ce);
-		}
+	protected void asynchronous_handleComputationResult()  {
 	}
 	
 }

@@ -17,51 +17,43 @@ import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-
-public class FindDefinitionResult {
+public class SourceLocation {
 	
+	// XXX: need to refactor this, and SourceLineColumnRange to a more generic range 
 	protected final Location fileLocation;
 	protected final SourceLineColumnRange sourceRange;
-	protected final String infoMessage;
 	
-	public FindDefinitionResult(Location fileLocation, SourceLineColumnRange sourceRange, String infoMessage) {
+	public SourceLocation(Location fileLocation, SourceLineColumnRange sourceRange) {
 		this.fileLocation = assertNotNull(fileLocation);
-		this.infoMessage = infoMessage;
 		this.sourceRange = assertNotNull(sourceRange);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
-		if(!(obj instanceof FindDefinitionResult)) return false;
+		if(!(obj instanceof SourceLocation)) return false;
 		
-		FindDefinitionResult other = (FindDefinitionResult) obj;
+		SourceLocation other = (SourceLocation) obj;
 		
 		return 
 				areEqual(fileLocation, other.fileLocation) &&
-				areEqual(infoMessage, other.infoMessage) &&
 				areEqual(sourceRange, other.sourceRange);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(infoMessage, sourceRange);
+		return HashcodeUtil.combinedHashCode(fileLocation, sourceRange);
 	}
 	
 	@Override
 	public String toString() {
-		return "ResolveResult[" + 
-			(infoMessage != null ? infoMessage +"," : "") +
-			fileLocation + " " +
+		return "SourceLocation[" + 
+			fileLocation + " @ " +
 			sourceRange.toString() + 
 		"]";
 	}
 	
 	/* -----------------  ----------------- */
-	
-	public String getInfoMessage() {
-		return infoMessage;
-	}
 	
 	public SourceLineColumnRange getSourceRange() {
 		return sourceRange;

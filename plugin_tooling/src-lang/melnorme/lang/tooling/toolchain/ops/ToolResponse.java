@@ -10,8 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.tooling.toolchain.ops;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.utilbox.status.IStatusMessage;
-import melnorme.utilbox.status.StatusException;
+import melnorme.utilbox.status.Severity;
 
 /**
  * Result for a tool operation. 
@@ -37,15 +39,49 @@ public class ToolResponse<DATA> {
 		this.statusMessage = statusMessaage;
 	}
 	
-	public DATA getValidResult() throws StatusException {
-		if(statusMessage != null) {
-			throw statusMessage.toStatusException();
-		}
+	public DATA getResultData() {
 		return resultData;
 	}
 	
 	public IStatusMessage getStatusMessage() {
 		return statusMessage;
+	}
+	
+	public boolean isValidResult() {
+		return resultData != null;
+	}
+	
+	public DATA getValidResult() throws StatusValidation {
+		if(!isValidResult()) {
+			throw new StatusValidation(statusMessage.getSeverity(), statusMessage.getMessage());
+		}
+		return resultData;
+	}
+	
+	@SuppressWarnings("serial")
+	public static class StatusValidation extends Throwable implements IStatusMessage {
+		
+		protected final Severity severity;
+		
+		public StatusValidation(String message) {
+			this(Severity.ERROR, message);
+		}
+		
+		public StatusValidation(Severity severity, String message) {
+			super(message, null);
+			this.severity = assertNotNull(severity);
+		}
+		
+		@Override
+		public Severity getSeverity() {
+			return severity;
+		}
+		
+		@Override
+		public String getMessage() {
+			return super.getMessage();
+		}
+		
 	}
 	
 }

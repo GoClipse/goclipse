@@ -64,7 +64,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	}
 	
 	protected void doEditorSave(CompletionContext context) throws CommonException {
-		context.getSourceBuffer().trySaveBuffer(); 
+		context.getSourceBuffer().trySaveBufferIfDirty(); 
 	}
 	
 	protected Indexable<ICompletionProposal> computeProposals(CompletionContext context, ICancelMonitor cm)

@@ -37,9 +37,8 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	 * and always runs in the UI thread.
 	 */
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		executeBackgroundOperation();
-		handleComputationResult();
 	}
 	
 	protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
@@ -60,12 +59,5 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	/** Perform the long running computation. Runs in a background thread. */
 	protected abstract void doBackgroundComputation(IOperationMonitor om) 
 			throws CommonException, OperationCancellation;
-	
-	/* -----------------  ----------------- */
-	
-	/** Handle long running computation result. This runs in UI thread. */
-	protected void handleComputationResult() throws CommonException {
-		// Default: do nothing
-	}
 	
 }

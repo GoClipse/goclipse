@@ -14,7 +14,6 @@ package melnorme.lang.ide.ui.editor;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -23,6 +22,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.ProgressMonitorDialogOpRunner;
 import melnorme.lang.ide.ui.utils.operations.UIOperation;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -51,17 +51,12 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 	}
 	
 	@Override
-	public boolean isEditable() {
-		return editor.isEditable();
-	}
-	
-	@Override
 	public boolean isDirty() {
 		return editor.isDirty();
 	}
 	
 	@Override
-	public boolean trySaveBuffer() {
+	public boolean doTrySaveBuffer() {
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		UIOperation op = new UIOperation("Saving editor for hover information", this::saveBuffer) {
 			@Override
@@ -85,14 +80,24 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 		}
 	}
 	
+	@Override
+	public ISourceBuffer getReadOnlyView() {
+		return new EditorSourceBuffer(editor) {
+			@Override
+			public boolean doTrySaveBuffer() {
+				return false;
+			}
+		};
+	}
+	
 	/* -----------------  ----------------- */
 	
-	public static class SourceViewerSourceBuffer implements ISourceBufferExt {
+	public static class DocumentSourceBuffer implements ISourceBufferExt {
 		
-		protected final ISourceViewer sourceViewer;
+		protected final IDocument document;
 		
-		public SourceViewerSourceBuffer(ISourceViewer sourceViewer) {
-			this.sourceViewer = assertNotNull(sourceViewer);
+		public DocumentSourceBuffer(IDocument document) {
+			this.document = assertNotNull(document);
 		}
 		
 		@Override
@@ -102,22 +107,24 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 		
 		@Override
 		public IDocument getDocument() {
-			return sourceViewer.getDocument();
-		}
-		
-		@Override
-		public boolean isEditable() {
-			return sourceViewer.isEditable();
+			return document;
 		}
 		
 		@Override
 		public boolean isDirty() {
-			return true; // a source buffer with not location in the filesystem is always considered dirty
+			// a source buffer with no location in the filesystem is always considered dirty
+			// note: subclasses may override this
+			return true; 
 		}
 		
 		@Override
-		public boolean trySaveBuffer() {
-			return false;
+		public boolean doTrySaveBuffer() {
+			return false; // Cannot save buffer contents
+		}
+		
+		@Override
+		public ISourceBuffer getReadOnlyView() {
+			return this; // This buffer is already readOnly
 		}
 		
 	}

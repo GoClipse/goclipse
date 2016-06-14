@@ -24,19 +24,17 @@ import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -49,8 +47,6 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	protected final IProject project;
 	protected final SourceOpContext sourceOpContext;
 	
-	
-	protected String statusErrorMessage;
 	
 	public AbstractEditorOperation2(String operationName, ITextEditor editor) {
 		this(operationName, editor, new SourceRange(0, 0));
@@ -87,13 +83,7 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
-		prepareOperation();
-		
-		super.doOperation();
-	}
-	
-	protected void prepareOperation() throws CommonException {
+	public void prepareOperation() throws CommonException {
 		if(!getContext2().getOptionalFileLocation().isPresent()) {
 			throw new CommonException("No file available for editor contents.");
 		}
@@ -111,27 +101,18 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	}
 	
 	/* -----------------  ----------------- */ 
-		
-	@Override
-	protected void handleComputationResult() throws CommonException {
-		if(statusErrorMessage != null) {
-			handleStatusErrorMessage(statusErrorMessage);
-		}
-	}
 	
-	protected void handleStatusErrorMessage(String statusErrorMessage) throws CommonException {
-		if(editor instanceof AbstractTextEditor) {
-			AbstractTextEditor abstractTextEditor = (AbstractTextEditor) editor;
-			EditorUtils.setStatusLineErrorMessage(abstractTextEditor, statusErrorMessage, null);
-			Display.getCurrent().beep();
-		} else {
-			throw new CommonException(statusErrorMessage);
-		}
+	@Override
+	protected abstract void handleComputationResult(RESULT result) throws CommonException;
+	
+	protected void handleStatusErrorMessage(String statusErrorMessage) {
+		EditorUtils.setStatusLineErrorMessage(editor, statusErrorMessage, null);
+		Display.getCurrent().beep();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected LangSourceViewer getEditorSourceViewer() throws CommonException {
+	protected SourceViewer getEditorSourceViewer() throws CommonException {
 		if(editor instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
 			return langEditor.getSourceViewer_();
@@ -145,7 +126,7 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 			return;
 		}
 		
-		LangSourceViewer sourceViewer = getEditorSourceViewer();
+		SourceViewer sourceViewer = getEditorSourceViewer();
 		
 		ISelection sel = sourceViewer.getSelectionProvider().getSelection();
 		
@@ -160,7 +141,7 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 			} catch(BadLocationException e) {
 				// Ignore
 			}
-		} 
+		}
 		
 		IDocument document = sourceViewer.getDocument();
 		

@@ -60,7 +60,7 @@ public final class LangUIPlugin_Actual {
 	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
 		return new BasicUIOperation() {
 			@Override
-			protected void doOperation() throws CommonException, OperationCancellation {
+			public void execute() throws CommonException, OperationCancellation {
 				// TODO: LANG: Format operation
 				throw new CommonException("Operation not implemented");
 			}

@@ -17,10 +17,10 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
+import melnorme.lang.tooling.toolchain.ops.SourceLocation;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
 public class LANGUAGE_OpenDefinitionOperation extends AbstractOpenElementOperation {
 	
@@ -30,21 +30,9 @@ public class LANGUAGE_OpenDefinitionOperation extends AbstractOpenElementOperati
 	}
 	
 	@Override
-	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor monitor)
-			throws OperationCancellation {
-		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-			
-		}
-		return null; // TODO: Lang
-	}
-	
-	@Override
-	protected void handleComputationResult() throws CommonException  {
-		if(result == null) {
-			throw new CommonException("Feature not implemented.");
-		}
-		
-		super.handleComputationResult();
+	protected ToolResponse<SourceLocation> doBackgroundValueComputation(IOperationMonitor om)
+			throws CommonException, OperationCancellation {
+		throw new CommonException("Feature not implemented.");
 	}
 	
 }

@@ -44,14 +44,14 @@ public interface ToolOutputParseHelper {
 		return Location.create(pathString);
 	}
 	
-	public static FindDefinitionResult parsePathLineColumn(String sourceString, String separator) 
+	public static SourceLocation parsePathLineColumn(String sourceString, String separator) 
 			throws CommonException {
 		
 		Pair<String, LineColumnPosition> pair = parsePathLineColumn2(sourceString, separator);
 		Location loc = Location.create(pair.getFirst());
 		LineColumnPosition lcPos = pair.getSecond();
 		
-		return new FindDefinitionResult(loc, new SourceLineColumnRange(lcPos.line, lcPos.column), null);
+		return new SourceLocation(loc, new SourceLineColumnRange(lcPos.line, lcPos.column));
 	}
 	
 	/**

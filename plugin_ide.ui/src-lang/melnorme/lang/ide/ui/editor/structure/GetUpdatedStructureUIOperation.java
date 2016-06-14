@@ -58,11 +58,11 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	protected StructureInfo structureInfo;
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void doExecute() throws CommonException, OperationCancellation {
 		StructureModelRegistration registration = modelManager.connectStructureUpdates(locationKey, document, (__) -> { });
 		structureInfo = registration.structureInfo;
 		try {
-			super.doOperation();
+			super.doExecute();
 		} finally {
 			registration.dispose();
 		}
@@ -90,7 +90,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CommonException {
+	protected void handleComputationResult(SourceFileStructure result) throws CommonException {
 		if(result == null) {
 			throw new CommonException(
 				"Could not retrieve source file structure for: " + structureInfo.getKey2().getLabel());

@@ -44,18 +44,18 @@ public class LangCompletionProposalTest extends CommonUITest {
 		}
 		
 		@Override
-		public boolean trySaveBuffer() {
-			return false;
-		}
-		
-		@Override
-		public boolean isEditable() {
-			return false;
-		}
-		
-		@Override
 		public boolean isDirty() {
 			return false;
+		}
+		
+		@Override
+		public boolean doTrySaveBuffer() {
+			return false;
+		}
+		
+		@Override
+		public ISourceBuffer getReadOnlyView() {
+			return this;
 		}
 		
 	}

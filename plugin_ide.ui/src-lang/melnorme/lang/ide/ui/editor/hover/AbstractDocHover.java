@@ -10,14 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.hover;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Optional;
-
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.text.DocDisplayInfoSupplier;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
@@ -39,31 +34,6 @@ public abstract class AbstractDocHover implements ILangEditorTextHover<String> {
 	@Override
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		return hoverCreator.getInformationPresenterControlCreator();
-	}
-	
-	protected boolean requiresSavedBuffer() {
-		return true;
-	}
-	
-	@Override
-	public String getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, Optional<ITextEditor> editor,
-			ITextViewer textViewer, boolean allowedToSaveBuffer) {
-		assertNotNull(sourceBuffer);
-		
-		if(requiresSavedBuffer() && sourceBuffer.isDirty()) {
-			
-			if(!allowedToSaveBuffer) {
-				return null; // Nothing we can do, quite
-			}
-			
-			boolean success = sourceBuffer.trySaveBuffer();
-			if(!success) {
-				return null;
-			}
-			
-		}
-		
-		return getHoverInfo(sourceBuffer, hoverRegion, textViewer);
 	}
 	
 	@Override

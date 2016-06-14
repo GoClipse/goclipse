@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.editor.actions;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.runtime.CoreException;
@@ -31,14 +32,15 @@ import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
+import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.IStatusMessage;
 
-public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> {
+public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<ToolResponse<SourceLocation>> {
 	
 	protected final OpenNewEditorMode openEditorMode;
 	
@@ -58,30 +60,43 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected FindDefinitionResult doBackgroundValueComputation(IOperationMonitor om)
-			throws CommonException, OperationCancellation {
-		return performLongRunningComputation_doAndGetResult(om);
-	}
-	
-	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor monitor) 
+	protected abstract ToolResponse<SourceLocation> doBackgroundValueComputation(IOperationMonitor om)
 			throws CommonException, OperationCancellation;
 	
 	@Override
-	protected void handleComputationResult() throws CommonException {
-		super.handleComputationResult();
+	public void prepareAndCalculateResult() throws CommonException, OperationCancellation {
+		super.prepareAndCalculateResult();
+		assertNotNull(result);
+	}
+	
+	@Override
+	protected void handleComputationResult(ToolResponse<SourceLocation> response) throws CommonException {
+		assertNotNull(result);
 		
-		if(result == null) {
+		if(response.getResultData() != null) {
+			SourceLocation resultData = response.getResultData();
+			
+			SourceLineColumnRange sourceRange = resultData.getSourceRange();
+			
+			EclipseUtils.run(() -> openEditorForLocation(resultData.getFileLocation(), sourceRange));
+		}
+		
+		IStatusMessage status = response.getStatusMessage();
+		if(status != null) {
+			handleStatus(status);
+		}
+	}
+	
+	protected void handleStatus(IStatusMessage status) {
+		String statusMsg = status.getMessage();
+		if(statusMsg.contains("\n")) {
+			// Use a dialog
+			UIOperationsStatusHandler.displayStatusMessage(operationName, status.getSeverity(), statusMsg);
+		} else {
+			// Just use status
+			EditorUtils.setStatusLineErrorMessage(editor, statusMsg, null);
 			Display.getCurrent().beep();
-			return;
 		}
-		
-		if(result.getInfoMessage() != null) {
-			UIOperationsStatusHandler.displayStatusMessage(operationName, Severity.INFO, result.getInfoMessage());
-		}
-		
-		SourceLineColumnRange sourceRange = result.getSourceRange();
-		
-		EclipseUtils.run(() -> openEditorForLocation(result.getFileLocation(), sourceRange));
 	}
 	
 	protected void openEditorForLocation(Location fileLoc, SourceLineColumnRange sourceRange) 

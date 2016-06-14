@@ -35,7 +35,7 @@ public abstract class BasicEditorOperation extends BasicUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		if(editorPart instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editorPart;
 			doRunWithEditor(langEditor);

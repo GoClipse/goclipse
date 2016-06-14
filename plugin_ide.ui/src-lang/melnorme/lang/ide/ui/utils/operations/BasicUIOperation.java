@@ -94,10 +94,6 @@ public abstract class BasicUIOperation implements Runnable {
 	
 	/* -----------------  ----------------- */
 	
-	public void execute() throws CommonException, OperationCancellation {
-		doOperation();
-	}
-	
-	protected abstract void doOperation() throws CommonException, OperationCancellation;
+	public abstract void execute() throws CommonException, OperationCancellation;
 	
 }

@@ -95,7 +95,8 @@ public class BestMatchHover extends AbstractEditorTextHover
 			if (hover == null) 
 				continue;
 			
-			Object info = hover.getHoverInfo(sourceBuffer, hoverRegion, option(editor), textViewer, canSaveEditor);
+			ISourceBuffer hoverSourceBuffer = canSaveEditor ? sourceBuffer : sourceBuffer.getReadOnlyView();
+			Object info = hover.getHoverInfo(hoverSourceBuffer, hoverRegion, option(editor), textViewer);
 			if (info != null) {
 				matchedHover = hover;
 				return info;

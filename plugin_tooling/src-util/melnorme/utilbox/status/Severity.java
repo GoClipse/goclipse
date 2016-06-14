@@ -32,6 +32,15 @@ public enum Severity {
 		return ordinal() >= other.ordinal();
 	}
 	
+	public String getLabel() {
+		switch (this) {
+		case WARNING: return "Warning";
+		case ERROR: return "Error";
+		case INFO: return "Info";
+		}
+		throw assertFail();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static Severity fromString(String severityString) throws CommonException {

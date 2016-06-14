@@ -36,13 +36,13 @@ public class ToolSourceModifyingOperation extends UIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		boolean result = PlatformUI.getWorkbench().saveAllEditors(true);
 		if(result == false) {
 			throw new OperationCancellation();
 		}
 		
-		super.doOperation();
+		super.execute();
 	}
 	
 }
