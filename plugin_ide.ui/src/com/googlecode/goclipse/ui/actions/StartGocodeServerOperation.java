@@ -31,14 +31,18 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected boolean isBackgroundComputationNecessary() throws CommonException {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
-			return false; // stop operation
+			return; // stop operation
 		}
 		
 		gocodePath = GocodeServerManager.getGocodePath();
 		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
-		return needsStart;
+		if(!needsStart) {
+			return;
+		}
+		
+		super.doOperation();
 	}
 	
 	@Override
