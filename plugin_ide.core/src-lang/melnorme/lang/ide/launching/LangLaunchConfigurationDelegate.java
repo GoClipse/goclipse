@@ -13,6 +13,7 @@ package melnorme.lang.ide.launching;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
@@ -35,14 +37,13 @@ import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.common.ops.CommonOperation;
-import melnorme.lang.tooling.utils.ArgumentsParser;
+import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -63,12 +64,14 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	/* ----------------- Launch ----------------- */
 	
-	protected ProcessLaunchInfo launchInfo;
+	protected CompositeBuildTargetSettings buildTargetSettings;
+	protected EclipseProcessLauncher processLauncher;
 	
 	@Override
 	public final ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
 		try {
-			launchInfo = getValidLaunchInfo(configuration);
+			buildTargetSettings = getBuildTargetSettings(configuration);
+			processLauncher = getValidLaunchInfo(configuration, buildTargetSettings);
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
@@ -95,23 +98,8 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		throw abort_UnsupportedMode(mode);
 	}
 	
-	/* -----------------  Launch check ----------------- */ 
-	
-	@Override
-	public final boolean preLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
-			throws CoreException {
-		
-		if (monitor != null) {
-			monitor.subTask(LaunchMessages.LCD_PreparingLaunch);
-		}
-		
-		doPreLaunchCheck(launchInfo, configuration, mode, monitor);
-		
-		return super.preLaunchCheck(configuration, mode, monitor);
-	}
-	
-	protected ProcessLaunchInfo getValidLaunchInfo(ILaunchConfiguration configuration)
-			throws CommonException, CoreException {
+	protected CompositeBuildTargetSettings getBuildTargetSettings(ILaunchConfiguration configuration)
+			throws CoreException, CommonException {
 		BuildTargetLaunchCreator launchSettings = new BuildTargetLaunchCreator(configuration);
 		
 		BuildTargetSource buildTargetSource = new BuildTargetSource() {
@@ -131,7 +119,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			}
 		};
 		
-		CompositeBuildTargetSettings buildTargetSettings = new CompositeBuildTargetSettings(buildTargetSource) {
+		return new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
 			public String getExecutablePath() {
 				return launchSettings.getExecutablePath();
@@ -142,40 +130,61 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 				return launchSettings.getBuildCommand();
 			}
 		};
-		
-		boolean appendEnv = configuration.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
-		
-		String programArguments = evaluateStringVars(configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
-		
-		String workingDirectoryString = evaluateStringVars(configuration.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, ""));
+	}
+	
+	protected EclipseProcessLauncher getValidLaunchInfo(
+			ILaunchConfiguration configuration, CompositeBuildTargetSettings buildTargetSettings)
+			throws CommonException, CoreException {
 		
 		BuildManager buildManager = LangCore.getBuildManager();
 		
-		IProject project = buildTargetSource.getValidProject();
+		IProject project = buildTargetSettings.getBuildTargetSupplier().getValidProject();
+		
 		BuildTarget buildTarget = buildTargetSettings.getValidBuildTarget();
 		CommonOperation buildOperation = buildTarget == null ? 
 				null : buildManager.newBuildTargetOperation(project, buildTarget);
 		
+		String workingDirectoryString = evaluateStringVars(
+			configuration.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, (String) null));
+
+		IPath workingDirectory = workingDirectoryString == null ? 
+				project.getLocation() : 
+				new Path(workingDirectoryString);
+		
 		Location programLoc = buildTarget.getValidExecutableLocation(); // not null
 		
-		String[] processArgs = ArgumentsParser.parse(programArguments).toArray(String.class);
+		String programArguments = configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
+		String commandLine = programLoc.toString() + " " + programArguments;
 		
-		IPath workingDirectory = workingDirectoryString.isEmpty() ? null : new org.eclipse.core.runtime.Path(workingDirectoryString);
+		Map<String, String> configEnv = configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, 
+			new HashMap<>(0));
+		boolean appendEnv = configuration.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
 		
-		if(workingDirectory == null) {
-			workingDirectory = project.getLocation();
-		}
+		CommandInvocation programInvocation = new CommandInvocation(commandLine, new HashMap2<>(configEnv), appendEnv);
 		
-		Map<String, String> configEnv = configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
-		
-		return new ProcessLaunchInfo(
+		return new EclipseProcessLauncher(
 			project, 
 			buildOperation, 
 			programLoc,
-			processArgs, 
 			workingDirectory, 
-			configEnv, 
-			appendEnv);
+			programInvocation,
+			LaunchConstants.PROCESS_TYPE_ID
+		);
+	}
+	
+	/* -----------------  Launch check ----------------- */ 
+	
+	@Override
+	public final boolean preLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
+			throws CoreException {
+		
+		if (monitor != null) {
+			monitor.subTask(LaunchMessages.LCD_PreparingLaunch);
+		}
+		
+		doPreLaunchCheck(configuration, mode, monitor);
+		
+		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
 	protected IStringVariableManager getVariableManager() {
@@ -189,9 +198,8 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		return getVariableManager().performStringSubstitution(expression);
 	}
 	
-	@SuppressWarnings("unused")
-	protected boolean doPreLaunchCheck(ProcessLaunchInfo config, ILaunchConfiguration configuration, String mode,
-			IProgressMonitor monitor) throws CoreException {
+	protected boolean doPreLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) 
+			throws CoreException {
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
@@ -199,7 +207,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	protected IProject[] getProjectsForProblemSearch(ILaunchConfiguration configuration, String mode)
 			throws CoreException {
 		// XXX: This could perhaps be improved in the future
-		return array(launchInfo.getProject());
+		return array(processLauncher.project);
 	}
 	
 	/* ----------------- Build ----------------- */
@@ -208,7 +216,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	public boolean buildForLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
 			throws CoreException {
 		try {
-			return doBuildForLaunch(launchInfo, configuration, mode, monitor);
+			return doBuildForLaunch(configuration, mode, monitor);
 		} catch(CommonException e) {
 			throw LangCore.createCoreException(e);
 		} catch(OperationCancellation e) {
@@ -216,9 +224,9 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		}
 	}
 	
-	protected boolean doBuildForLaunch(ProcessLaunchInfo config, ILaunchConfiguration configuration, String mode,
+	protected boolean doBuildForLaunch(ILaunchConfiguration configuration, String mode,
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		CommonOperation buildOperation = config.getBuildOperation();
+		CommonOperation buildOperation = processLauncher.buildOperation;
 		if(buildOperation != null) {
 			buildOperation.execute(EclipseUtils.om(pm));
 			return false;
@@ -229,7 +237,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	@Override
 	protected IProject[] getBuildOrder(ILaunchConfiguration configuration, String mode) throws CoreException {
-		return array(launchInfo.project);
+		return array(processLauncher.project);
 	}
 	
 	
@@ -245,8 +253,8 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			
 			launchProcess(configuration, launch, new SubProgressMonitor(monitor, 7));
 			
-		} catch (CoreException ce) {
-			throw ce;
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
 		} finally {
 			monitor.done();
 		}
@@ -254,17 +262,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	@SuppressWarnings("unused")
 	protected void launchProcess(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor)
-			throws CoreException {
-			
-		EclipseProcessLauncher processLauncher = new EclipseProcessLauncher(
-			launchInfo.programFileLocation,
-			launchInfo.workingDir,
-			launchInfo.programArguments,
-			launchInfo.environment,
-			launchInfo.appendEnv,
-			LaunchConstants.PROCESS_TYPE_ID
-		);
-		
+			throws CoreException, CommonException {
 		processLauncher.launchProcess(launch);
 	}
 	

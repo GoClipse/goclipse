@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: Eclipse variables not being substituted in environment-variable values for launch configurations.
+
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
  * Fixed: Eclipse variables not being substituted in environment-variable values.
 

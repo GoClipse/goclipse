@@ -72,7 +72,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 			commandArgumentsField.set("");
 			return; // Ignore
 		}
-		commandArgumentsField.set(commandInvocation.getCommandArguments());
+		commandArgumentsField.set(commandInvocation.getCommandLine());
 	}
 	
 	protected void updateCommandInvocationField() {
@@ -165,7 +165,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		}
 		
 		setFieldValue(new CommandInvocation(
-			cmd.getCommandArguments(),
+			cmd.getCommandLine(),
 			envSettings.envVars.copy(),
 			envSettings.appendEnv
 		));
