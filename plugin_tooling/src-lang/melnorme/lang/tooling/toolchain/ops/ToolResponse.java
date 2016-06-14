@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.toolchain.ops;
 
-import melnorme.utilbox.status.IStatusMessage.StatusMessage;
+import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.StatusException;
 
 /**
@@ -26,13 +26,13 @@ import melnorme.utilbox.status.StatusException;
 public class ToolResponse<DATA> {
 	
 	protected final DATA resultData; // can be null
-	protected final StatusMessage statusMessage;
+	protected final IStatusMessage statusMessage;
 	
 	public ToolResponse(DATA resultValue) {
 		this(resultValue, null);
 	}
 	
-	public ToolResponse(DATA resultData, StatusMessage statusMessaage) {
+	public ToolResponse(DATA resultData, IStatusMessage statusMessaage) {
 		this.resultData = resultData;
 		this.statusMessage = statusMessaage;
 	}
@@ -44,7 +44,7 @@ public class ToolResponse<DATA> {
 		return resultData;
 	}
 	
-	public StatusMessage getStatusMessage() {
+	public IStatusMessage getStatusMessage() {
 		return statusMessage;
 	}
 	

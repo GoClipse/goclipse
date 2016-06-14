@@ -69,16 +69,17 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	}
 	
 	@Override
-	protected boolean isBackgroundComputationNecessary() throws CommonException {
-		if(structureInfo.isStale()) {
-			return true;
-		} else {
+	protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
+		if(!structureInfo.isStale()) {
 			Result<SourceFileStructure, CommonException> structureResult = structureInfo.getStoredData();
 			if(structureResult.isException()) {
 				// TODO: retry computation if in error
 			}
+			// No need for background op
 			result = structureResult.get();
-			return false;
+			return;
+		} else {
+			super.executeBackgroundOperation();
 		}
 	}
 	

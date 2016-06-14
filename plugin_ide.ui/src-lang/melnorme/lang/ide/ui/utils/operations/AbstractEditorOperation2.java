@@ -36,6 +36,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -86,10 +87,12 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	}
 	
 	@Override
-	protected void prepareOperation() throws CommonException {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		if(!getContext2().getOptionalFileLocation().isPresent()) {
 			throw new CommonException("No file available for editor contents.");
 		}
+		
+		super.doOperation();
 	}
 	
 	public void saveEditor(NullProgressMonitor pm) {

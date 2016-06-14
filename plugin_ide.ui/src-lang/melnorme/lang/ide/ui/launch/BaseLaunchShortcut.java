@@ -112,8 +112,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 				handleFoundLaunchables(result, mode);
 			}
 			
-		}
-		.executeAndGetHandledResult();
+		}.executeAndHandle();
 	}
 	
 	

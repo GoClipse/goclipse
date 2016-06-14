@@ -43,18 +43,11 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	}
 	
 	protected void executeBackgroundOperation() throws CommonException, OperationCancellation {
-		if(!isBackgroundComputationNecessary()) {
-			return;
-		}
 		new WorkbenchProgressServiceOpRunner(getBackgroundOperation()).execute();
 	}
 	
 	protected CommonOperation getBackgroundOperation() {
 		return CommonOperation.namedOperation(getTaskName(), this::doBackgroundComputation);
-	}
-	
-	protected boolean isBackgroundComputationNecessary() throws CommonException {
-		return true;
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */

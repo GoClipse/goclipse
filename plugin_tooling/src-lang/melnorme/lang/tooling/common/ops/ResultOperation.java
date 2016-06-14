@@ -29,7 +29,6 @@ public interface ResultOperation<RESULT> {
 			@Override
 			public R executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
 				try(IOperationSubMonitor subMonitor = om.enterSubTask(taskName)) {
-					/* FIXME: test this*/
 					return subOp.executeOp(subMonitor);
 				}
 			}
