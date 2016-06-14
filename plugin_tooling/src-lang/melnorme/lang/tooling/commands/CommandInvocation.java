@@ -29,16 +29,16 @@ import melnorme.utilbox.status.StatusException;
 
 public class CommandInvocation {
 	
-	protected final String commandArguments;
+	protected final String commandLine;
 	protected final MapAccess<String, String> environmentVars; // Can be null
 	protected final boolean appendEnvironment;
 	
-	public CommandInvocation(String commandArguments) {
-		this(commandArguments, null, true);
+	public CommandInvocation(String commandLine) {
+		this(commandLine, null, true);
 	}
 	
-	public CommandInvocation(String commandArguments, MapAccess<String, String> envVars, boolean appendEnv) {
-		this.commandArguments = assertNotNull(commandArguments);
+	public CommandInvocation(String commandLine, MapAccess<String, String> envVars, boolean appendEnv) {
+		this.commandLine = assertNotNull(commandLine);
 		this.environmentVars = envVars != null ? envVars : new HashMap2<>();
 		this.appendEnvironment = appendEnv;
 	}
@@ -51,18 +51,22 @@ public class CommandInvocation {
 		CommandInvocation other = (CommandInvocation) obj;
 		
 		return 
-			areEqual(commandArguments, other.commandArguments) &&
+			areEqual(commandLine, other.commandLine) &&
 			areEqual(environmentVars, other.environmentVars) &&
 			areEqual(appendEnvironment, other.appendEnvironment);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(commandArguments, environmentVars);
+		return HashcodeUtil.combinedHashCode(commandLine, environmentVars);
 	}
 	
-	public String getCommandArguments() {
-		return commandArguments;
+	public String getCommandLine() {
+		return commandLine;
+	}
+	
+	public Indexable<String> parseCommandLineArguments() {
+		return ArgumentsParser.parse(this.commandLine);
 	}
 	
 	public MapAccess<String, String> getEnvironmentVars() {
@@ -75,40 +79,52 @@ public class CommandInvocation {
 	
 	/* -----------------  ----------------- */
 	
-	public ProcessBuilder getProcessBuilder(IVariablesResolver variablesResolver) throws CommonException {
-		Indexable<String> CommandLine = validateCommandArguments(variablesResolver);
+	public CommandInvocation getResolvedCommandInvocation(IVariablesResolver variablesResolver)
+			throws StatusException, CommonException {
+		String commandLine = evaluateCommandArguments(variablesResolver);
 		
-		ProcessBuilder pb = ProcessUtils.createProcessBuilder(CommandLine, null);
+		HashMap2<String, String> resolvedEnvVars = new HashMap2<>();
+		for (Entry<String, String> envVar : getEnvironmentVars()) {
+			String newValue = variablesResolver.performStringSubstitution(envVar.getValue());
+			resolvedEnvVars.put(envVar.getKey(), newValue);
+		}
 		
-		setupEnvironment(pb.environment(), variablesResolver);
-		
-		return pb;
+		return new CommandInvocation(commandLine, resolvedEnvVars, isAppendEnvironment());
 	}
 	
-	public void setupEnvironment(Map<String, String> environment, IVariablesResolver variablesResolver) 
-			throws CommonException {
+	public ProcessBuilder getProcessBuilder(IVariablesResolver variablesResolver) throws CommonException {
+		return getResolvedCommandInvocation(variablesResolver).getProcessBuilder();
+	}
+	
+	public ProcessBuilder getProcessBuilder() {
+		Indexable<String> commandLine = parseCommandLineArguments();
+		
+		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, null);
+		Map<String, String> environment = pb.environment();
+		
 		if(!isAppendEnvironment()) {
 			environment.clear();			
 		}
 		for (Entry<String, String> envVar : getEnvironmentVars()) {
-			String newValue = variablesResolver.performStringSubstitution(envVar.getValue());
-			environment.put(envVar.getKey(), newValue);
+			environment.put(envVar.getKey(), envVar.getValue());
 		}
+		
+		return pb;
 	}
 	
 	public void validate(IVariablesResolver variablesResolver) throws StatusException {
-		validateCommandArguments(variablesResolver);
+		evaluateCommandArguments(variablesResolver);
 	}
 	
-	public Indexable<String> validateCommandArguments(IVariablesResolver variablesResolver) throws StatusException {
+	public String evaluateCommandArguments(IVariablesResolver variablesResolver) throws StatusException {
 		return getValidatedCommandArguments(variablesResolver).getValidatedValue();
 	}
 	
 	protected ValidatedCommandArgumentsSource getValidatedCommandArguments(IVariablesResolver variablesResolver) {
-		return new ValidatedCommandArgumentsSource(commandArguments, variablesResolver);
+		return new ValidatedCommandArgumentsSource(commandLine, variablesResolver);
 	}
 	
-	public static class ValidatedCommandArgumentsSource implements ValidatedValueSource<Indexable<String>> {
+	public static class ValidatedCommandArgumentsSource implements ValidatedValueSource<String> {
 		
 		public static final String MSG_NO_COMMAND_SPECIFIED = "No command specified.";
 		
@@ -121,7 +137,7 @@ public class CommandInvocation {
 		}
 		
 		@Override
-		public Indexable<String> getValidatedValue() throws StatusException {
+		public String getValidatedValue() throws StatusException {
 			try {
 				return doGetValidatedValue(variablesResolver);
 			} catch(CommonException e) {
@@ -129,7 +145,7 @@ public class CommandInvocation {
 			}
 		}
 		
-		public Indexable<String> doGetValidatedValue(IVariablesResolver variablesResolver) throws CommonException {
+		public String doGetValidatedValue(IVariablesResolver variablesResolver) throws CommonException {
 			if(commandArguments == null) {
 				handleNoCommandLine();
 			}
@@ -140,7 +156,7 @@ public class CommandInvocation {
 				handleNoCommandLine();
 			}
 			
-			return ArgumentsParser.parse(evaluatedCommandLine);
+			return evaluatedCommandLine;
 		}
 		
 		protected void handleNoCommandLine() throws CommonException {

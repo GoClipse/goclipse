@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
+
  * Added documentation hover (`F2` or mouse-over a reference). Also added to code completion. #TODO doc
  * Added insertion of function parameters for function completion proposals.
  * Enabled gocode `propose-builtins` option, which isn't enabled by default.

@@ -41,6 +41,7 @@ import org.eclipse.debug.core.model.ISourceLocator;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
+import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
@@ -96,14 +97,13 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		// Setup CDT config parameters
 		
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME,
-			launchInfo.programFileLocation.toString());
-		// Need to pass raw args, because CDT will reevaluate variables.
+			processLauncher.programFileLocation.toString());
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-			launchInfo.getProgramArgumentsString());
+			workingCopy.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
-			launchInfo.workingDir.toString());
+			processLauncher.workingDir.toString());
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-			launchInfo.project.getName());
+			processLauncher.project.getName());
 		
 		if(!workingCopy.hasAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN)) {
 			workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN, false);

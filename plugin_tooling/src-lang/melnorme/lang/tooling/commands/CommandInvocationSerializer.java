@@ -48,7 +48,7 @@ public class CommandInvocationSerializer extends DocumentSerializerHelper<Comman
 	}
 	
 	public void writeToElement(Element targetElem, CommandInvocation buildCommand) {
-		setAttribute(targetElem, PROP_ARGUMENTS, buildCommand.commandArguments);
+		setAttribute(targetElem, PROP_ARGUMENTS, buildCommand.commandLine);
 		setAttribute(targetElem, PROP_APPEND_ENV, Boolean.toString(buildCommand.appendEnvironment));
 		
 		Element envVars = addChild(targetElem, ELEM_ENV_VARS);

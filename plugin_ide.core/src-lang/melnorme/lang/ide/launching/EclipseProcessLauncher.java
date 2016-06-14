@@ -15,54 +15,55 @@ package melnorme.lang.ide.launching;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IProcess;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.lang.ide.core.operations.build.VariablesResolver;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IProcess;
 
 /**
  * Helper class to launch an Eclipse IProcess.
  */
 public class EclipseProcessLauncher {
 	
-	protected final Location programFileLocation;
-	protected final IPath workingDir;
-	protected final String[] processArguments;
-	protected final Map<String, String> environment;
-	protected final boolean appendEnvironment;
-	protected String processType;
+	public final IProject project;
+	public final CommonOperation buildOperation;
+	public final Location programFileLocation;
+	public final IPath workingDir;
+	public final CommandInvocation unresolvedProgramInvocation;
+	public String processType;
 	
 	public EclipseProcessLauncher(
+			IProject project, 
+			CommonOperation buildOperation, 
 			Location programFileLocation, 
 			IPath workingDir, 
-			String[] processArgs,
-			Map<String, 
-			String> environment, 
-			boolean appendEnvironment, 
+			CommandInvocation unresolvedProgramInvocation,
 			String processType
 	) {
+		this.project = assertNotNull(project);
+		this.buildOperation = buildOperation; // can be null
 		this.programFileLocation = assertNotNull(programFileLocation);
 		this.workingDir = workingDir;
-		this.processArguments = processArgs;
-		this.environment = environment;
-		this.appendEnvironment = appendEnvironment;
+		this.unresolvedProgramInvocation = assertNotNull(unresolvedProgramInvocation);
 		
 		this.processType = processType;
 	}
@@ -75,7 +76,7 @@ public class EclipseProcessLauncher {
 		throw abort(MessageFormat.format(messagePattern, arguments), null);
 	}
 	
-	protected IProcess launchProcess(final ILaunch launch) throws CoreException {
+	protected IProcess launchProcess(final ILaunch launch) throws CoreException, CommonException {
 		if(workingDir != null && !workingDir.toFile().exists()) {
 			fail(LaunchMessages.errWorkingDirectoryDoesntExist, workingDir);
 		}
@@ -83,21 +84,25 @@ public class EclipseProcessLauncher {
 			fail(LaunchMessages.errExecutableFileDoesntExist, programFileLocation);
 		}
 		
-		String[] cmdLine = getCommandLine();
-		Process sp = newSystemProcess(cmdLine);
+		CommandInvocation programInvocation = unresolvedProgramInvocation.getResolvedCommandInvocation(
+			new VariablesResolver(VariablesPlugin.getDefault().getStringVariableManager()));
+		
+		Indexable<String> cmdLine = programInvocation.parseCommandLineArguments();
+		Process sp = newSystemProcess(programInvocation);
 		
 		return newEclipseProcessWithLabelUpdater(launch, cmdLine, sp);
 	}
 	
-	/** Create the {@link java.lang.Process}. */
-	protected Process newSystemProcess(String[] cmdLine) throws CoreException {
+	protected Process newSystemProcess(CommandInvocation resolvedProgramInvocation) throws CoreException {
 		
-		File workingDirectory = workingDir.toFile();
+		ProcessBuilder processBuilder = resolvedProgramInvocation.getProcessBuilder();
+		if(workingDir != null) {
+			processBuilder.directory(workingDir.toFile());
+		}
+		
 		Process sp= null;
 		try {
 			
-			ProcessBuilder processBuilder = new ProcessBuilder(cmdLine).directory(workingDirectory);
-			setupEnvironment(processBuilder);
 			
 			sp = processBuilder.start();
 		} catch (IOException e) {
@@ -106,39 +111,7 @@ public class EclipseProcessLauncher {
 		return sp;
 	}
 	
-	protected void setupEnvironment(ProcessBuilder processBuilder) throws CoreException {
-		try {
-			// This is a non-standard map that can throw some exceptions, see doc
-			Map<String, String> env = processBuilder.environment();
-			if(!appendEnvironment) {
-				env.clear();
-			}
-			
-			if(environment != null) {
-				for (String key : environment.keySet()) {
-					String value = environment.get(key);
-					env.put(key, value);
-				}
-			}
-		} catch (UnsupportedOperationException e) {
-			abort(LaunchMessages.errFailedToSetupProcessEnvironment, e);
-		} catch (IllegalArgumentException e) {
-			abort(LaunchMessages.errFailedToSetupProcessEnvironment, e);
-		}
-	}
-	
-	protected final String[] getCommandLine() {
-		List<String> items = new ArrayList<String>();
-		prepareCommandLine(items);
-		return ArrayUtil.createFrom(items, String.class);
-	}
-	
-	protected void prepareCommandLine(List<String> commandLine) {
-		commandLine.add(programFileLocation.toString());
-		commandLine.addAll(Arrays.asList(processArguments));
-	}
-	
-	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, String[] cmdLine, Process sp)
+	public IProcess newEclipseProcessWithLabelUpdater(ILaunch launch, Indexable<String> cmdLine, Process sp)
 			throws CoreException {
 		
 		final String cmdLineLabel = renderCommandLineLabel(cmdLine);
@@ -173,7 +146,7 @@ public class EclipseProcessLauncher {
 		return MessageFormat.format("{0} ({1})", processFilePath, timestampLabel);
 	}
 	
-	protected static String renderCommandLineLabel(String[] commandLine) {
+	protected static String renderCommandLineLabel(Indexable<String> commandLine) {
 		return StringUtil.collToString(commandLine, "\n");
 	}
 	
