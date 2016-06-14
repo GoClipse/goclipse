@@ -88,11 +88,15 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	
 	@Override
 	protected void doOperation() throws CommonException, OperationCancellation {
+		prepareOperation();
+		
+		super.doOperation();
+	}
+	
+	protected void prepareOperation() throws CommonException {
 		if(!getContext2().getOptionalFileLocation().isPresent()) {
 			throw new CommonException("No file available for editor contents.");
 		}
-		
-		super.doOperation();
 	}
 	
 	public void saveEditor(NullProgressMonitor pm) {
