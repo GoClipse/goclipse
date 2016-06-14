@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -44,12 +45,15 @@ import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer.DocumentSourceBuffer;
 import melnorme.lang.ide.ui.editor.ISourceViewerExt;
+import melnorme.lang.ide.ui.text.DocDisplayInfoSupplier;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.Location;
 
 public class LangCompletionProposal implements 
 	ICompletionProposal, 
@@ -203,6 +207,7 @@ public class LangCompletionProposal implements
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
 		if(informationControlCreator == null) {
+			/* FIXME: control creator */
 			informationControlCreator = new DocumentationHoverCreator().getInformationPresenterControlCreator();
 		}
 		return informationControlCreator;
@@ -214,9 +219,36 @@ public class LangCompletionProposal implements
 		return info != null ? info.toString() : null;
 	};
 	
+	protected final Object additionalProposalInfo_mutex = new Object();
+	
 	@Override
 	public Object getAdditionalProposalInfo(IProgressMonitor monitor) {
+		synchronized (additionalProposalInfo_mutex) {
+			if(additionalProposalInfo == null) {
+				additionalProposalInfo = doGetAdditionalProposalInfo(monitor);
+			}
+		}
 		return additionalProposalInfo;
+	}
+	
+	/* FIXME: use the progress monitor */
+	@SuppressWarnings("unused")
+	protected String doGetAdditionalProposalInfo( IProgressMonitor monitor) {
+		Document tempDocument = new Document(sourceBuffer.getSource());
+		doApply(tempDocument, false);
+		try {
+			tempDocument.replace(endPositionAfterApply, 0, " ");
+		} catch(BadLocationException e) {
+			
+		}
+		
+		DocumentSourceBuffer tempSourceBuffer = new DocumentSourceBuffer(tempDocument) {
+			@Override
+			public Location getLocation_orNull() {
+				return sourceBuffer.getLocation_orNull();
+			}
+		};
+		return new DocDisplayInfoSupplier(tempSourceBuffer, getReplaceOffset()).get();
 	}
 	
 	/* ----------------- Application ----------------- */

@@ -32,6 +32,25 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	}
 	
 	@Override
+	public final void execute() throws CommonException, OperationCancellation {
+		doExecute();
+	}
+	
+	protected void doExecute() throws CommonException, OperationCancellation {
+		prepareAndCalculateResult();
+		handleComputationResult(result);
+	}
+	
+	public void prepareAndCalculateResult() throws CommonException, OperationCancellation {
+		prepareOperation();
+		executeBackgroundOperation();
+	}
+	
+	public void prepareOperation() throws CommonException {
+		// Default: do nothing
+	}
+	
+	@Override
 	protected final void doBackgroundComputation(IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		result = doBackgroundValueComputation(om);
@@ -39,5 +58,9 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	
 	protected abstract RESULT doBackgroundValueComputation(IOperationMonitor om) 
 			throws CommonException, OperationCancellation;
+	
+	
+	/** Handle long-running computation result. This runs in UI thread. */
+	protected abstract void handleComputationResult(RESULT result) throws CommonException;
 	
 }

@@ -33,7 +33,6 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.IBindingService;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
@@ -267,10 +266,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	protected void setAndDisplayErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
-		if(editor instanceof AbstractTextEditor) {
-			AbstractTextEditor abstractTextEditor = (AbstractTextEditor) editor;
-			EditorUtils.setStatusLineErrorMessage(abstractTextEditor, errorMessage, null);
-		}
+		EditorUtils.setStatusLineErrorMessage(editor, errorMessage, null);
 	}
 	
 	/* ----------------- Messages ----------------- */

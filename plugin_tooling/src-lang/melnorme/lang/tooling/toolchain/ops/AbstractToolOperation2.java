@@ -24,8 +24,8 @@ public abstract class AbstractToolOperation2<RESULT> implements ToolOutputParseH
 		super();
 	}
 	
-	public RESULT parseResult(ExternalProcessResult result) throws CommonException, OperationCancellation {
-		return handleProcessResult(result).getValidResult();
+	public ToolResponse<RESULT> parseResult(ExternalProcessResult result) throws CommonException, OperationCancellation {
+		return handleProcessResult(result);
 	}
 	
 	public ToolResponse<RESULT> handleProcessResult(ExternalProcessResult result) 

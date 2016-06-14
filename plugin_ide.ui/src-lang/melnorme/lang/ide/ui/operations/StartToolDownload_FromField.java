@@ -47,7 +47,7 @@ public abstract class StartToolDownload_FromField extends StartBundleDownloadOpe
 	protected String toolBinPath;
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		ProcessBuilder pb = getProcessToStart_andSetToolPath();
 		assertNotNull(toolBinPath);
 		

@@ -108,7 +108,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 			};
 			
 			@Override
-			protected void handleComputationResult() throws CommonException {
+			protected void handleComputationResult(ILaunchable[] result) throws CommonException {
 				handleFoundLaunchables(result, mode);
 			}
 			
@@ -180,7 +180,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	public void launchTarget(ILaunchable launchTarget, String mode) {
 		new BasicUIOperation("Preparing launch") {
 			@Override
-			protected void doOperation() throws CommonException, OperationCancellation {
+			public void execute() throws CommonException, OperationCancellation {
 				try {
 					doLaunchTarget(launchTarget, mode);
 				} catch(CoreException e) {

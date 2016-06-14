@@ -50,7 +50,7 @@ implements ILangEditorTextHover<Object>{
 	
 	@Override
 	public Object getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, Optional<ITextEditor> editor,
-			ITextViewer textViewer, boolean allowedToSaveEditor) {
+			ITextViewer textViewer) {
 		fEditor = editor.orElse(null);		
 		return getHoverInfo(sourceBuffer, hoverRegion, textViewer);
 	}

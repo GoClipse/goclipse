@@ -28,11 +28,24 @@ public interface ISourceBuffer {
 	
 	public abstract String getSource();
 	
-	public abstract boolean isEditable();
-	
 	public abstract boolean isDirty();
 	
-	public abstract boolean trySaveBuffer();
+	/**
+	 * Try to save a buffer if it is dirty.
+	 * 
+	 * @return success if buffer is now non-dirty 
+	 * (either because it was saved, or because it was never dirty in the first place), false otherwise 
+	 */
+	default boolean trySaveBufferIfDirty() {
+		if(!isDirty()) {
+			return true;
+		}
+		return doTrySaveBuffer();
+	}
+	
+	public abstract boolean doTrySaveBuffer();
+	
+	public abstract ISourceBuffer getReadOnlyView();
 	
 	public default SourceOpContext getSourceOpContext(SourceRange range) {
 		return new SourceOpContext(getLocation_opt(), range.getOffset(), getSource(), isDirty());

@@ -12,24 +12,17 @@ package melnorme.lang.ide.ui.editor.hover;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import org.eclipse.swt.widgets.Display;
-
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.utils.operations.RunnableWithProgressOperationAdapter.WorkbenchProgressServiceOpRunner;
+import melnorme.lang.ide.ui.utils.operations.ComputeValueUIOperation;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonOperation;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
-import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.lang.tooling.utils.HTMLEscapeUtil;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.status.StatusException;
+import melnorme.utilbox.status.IStatusMessage;
 
 public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String> {
 	
@@ -54,15 +47,22 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 			return null;
 		}
 		
-		try {
-			String rawDocumentation = rawDocumentationResult.getValidResult();
-			if(rawDocumentation == null) {
-				return null;
-			}
-			return escapeToHTML(rawDocumentation);
-		} catch(StatusException e) {
-			return "<b>Error:</b> " + e.getMessage();
+		String documentationInfo;
+		
+		String rawDocumentation = rawDocumentationResult.getResultData();
+		if(rawDocumentation == null) {
+			documentationInfo = null;
+		} else {
+			documentationInfo = escapeToHTML(rawDocumentation);
 		}
+		
+		IStatusMessage statusMessage = rawDocumentationResult.getStatusMessage();
+		if(statusMessage != null) {
+			documentationInfo = documentationInfo == null ? "" : "</br> </hr>";
+			documentationInfo += 
+				"<b>" + statusMessage.getSeverity().getLabel() + ":</b> " + escapeToHTML(statusMessage.getMessage());
+		}
+		return documentationInfo;
 	}
 	
 	protected String escapeToHTML(String rawDocumentation) {
@@ -71,35 +71,10 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 	
 	protected ToolResponse<String> getRawDocumentation(ISourceBuffer sourceBuffer, int offset) 
 			throws CommonException, OperationCancellation {
-		ResultOperation<ToolResponse<String>> openDocOp = getOpenDocumentationOperation2(sourceBuffer, offset);
-		return invokeInBackground(openDocOp.namedOperation("Get Documentation"));
+		return getOpenDocumentationOperation2(sourceBuffer, offset).call();
 	}
 	
-	protected abstract ResultOperation<ToolResponse<String>> getOpenDocumentationOperation2(
+	protected abstract ComputeValueUIOperation<ToolResponse<String>> getOpenDocumentationOperation2(
 			ISourceBuffer sourceBuffer, int offset);
-	
-	public <R> R invokeInBackground(ResultOperation<R> op) throws CommonException, OperationCancellation {
-		
-		AtomicReference<R> resultHolder = new AtomicReference<>();
-		
-		runInBackground(new CommonOperation() {
-			@Override
-			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
-				R result = op.executeOp(om);
-				resultHolder.set(result);
-			}
-		});
-		
-		return resultHolder.get();
-	}
-	
-	public void runInBackground(CommonOperation op) throws CommonException, OperationCancellation {
-		if(Display.getCurrent() == null) {
-			// Perform computation directly in this thread, but cancellation won't be possible.
-			op.execute(new NullOperationMonitor());
-		} else {
-			new WorkbenchProgressServiceOpRunner(op).execute();
-		}
-	}
 	
 }

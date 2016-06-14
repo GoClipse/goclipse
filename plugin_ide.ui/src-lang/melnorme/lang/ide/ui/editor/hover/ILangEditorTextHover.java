@@ -17,7 +17,7 @@ public interface ILangEditorTextHover<INFO>
 	
 	@SuppressWarnings("unused")
 	default INFO getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, 
-			Optional<ITextEditor> editor, ITextViewer textViewer, boolean allowedToSaveEditor) {
+			Optional<ITextEditor> editor, ITextViewer textViewer) {
 		return getHoverInfo(sourceBuffer, hoverRegion, textViewer);
 	}
 	

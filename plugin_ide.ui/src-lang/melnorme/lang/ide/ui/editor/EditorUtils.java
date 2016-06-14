@@ -16,13 +16,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -49,9 +42,15 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public class EditorUtils {
 	
@@ -262,7 +261,7 @@ public class EditorUtils {
 	
 	/* ----------------- ----------------- */
 	
-	public static void setStatusLineErrorMessage(AbstractTextEditor editor, String message, Image image) {
+	public static void setStatusLineErrorMessage(ITextEditor editor, String message, Image image) {
 		IEditorStatusLine statusLine= (IEditorStatusLine)editor.getAdapter(IEditorStatusLine.class);
 		if(statusLine != null) {
 			statusLine.setMessage(true, message, image);

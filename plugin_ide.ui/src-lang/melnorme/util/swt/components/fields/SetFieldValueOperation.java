@@ -29,7 +29,7 @@ public class SetFieldValueOperation<T> extends BasicUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		T result = getNewFieldValue();
 		if(result != null) {
 			field.setFieldValue(result);
