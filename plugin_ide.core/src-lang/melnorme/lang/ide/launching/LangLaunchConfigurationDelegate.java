@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -35,13 +36,16 @@ import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
-import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.utils.ArgumentsParser;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public abstract class LangLaunchConfigurationDelegate extends LaunchConfigurationDelegate {
 	
@@ -64,7 +68,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	@Override
 	public final ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
 		try {
-			launchInfo = getLaunchValidator(configuration).getValidProcessLaunchInfo();
+			launchInfo = getValidLaunchInfo(configuration);
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
@@ -106,10 +110,9 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
-	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) 
+	protected ProcessLaunchInfo getValidLaunchInfo(ILaunchConfiguration configuration)
 			throws CommonException, CoreException {
-		
-		BuildTargetLaunchCreator launchSettings = new BuildTargetLaunchCreator(config);
+		BuildTargetLaunchCreator launchSettings = new BuildTargetLaunchCreator(configuration);
 		
 		BuildTargetSource buildTargetSource = new BuildTargetSource() {
 			@Override
@@ -140,13 +143,39 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			}
 		};
 		
-		return new ProcessLaunchInfoValidator(
-			buildTargetSettings, 
-			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "")),
-			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "")),
-			config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null),
-			config.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true)
-		);
+		boolean appendEnv = configuration.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
+		
+		String programArguments = evaluateStringVars(configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
+		
+		String workingDirectoryString = evaluateStringVars(configuration.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, ""));
+		
+		BuildManager buildManager = LangCore.getBuildManager();
+		
+		IProject project = buildTargetSource.getValidProject();
+		BuildTarget buildTarget = buildTargetSettings.getValidBuildTarget();
+		CommonOperation buildOperation = buildTarget == null ? 
+				null : buildManager.newBuildTargetOperation(project, buildTarget);
+		
+		Location programLoc = buildTarget.getValidExecutableLocation(); // not null
+		
+		String[] processArgs = ArgumentsParser.parse(programArguments).toArray(String.class);
+		
+		IPath workingDirectory = workingDirectoryString.isEmpty() ? null : new org.eclipse.core.runtime.Path(workingDirectoryString);
+		
+		if(workingDirectory == null) {
+			workingDirectory = project.getLocation();
+		}
+		
+		Map<String, String> configEnv = configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
+		
+		return new ProcessLaunchInfo(
+			project, 
+			buildOperation, 
+			programLoc,
+			processArgs, 
+			workingDirectory, 
+			configEnv, 
+			appendEnv);
 	}
 	
 	protected IStringVariableManager getVariableManager() {
