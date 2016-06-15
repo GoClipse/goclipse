@@ -11,11 +11,9 @@
 package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.DocumentRewriteSessionType;
@@ -86,17 +84,6 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	public void prepareOperation() throws CommonException {
 		if(!getContext2().getOptionalFileLocation().isPresent()) {
 			throw new CommonException("No file available for editor contents.");
-		}
-	}
-	
-	public void saveEditor(NullProgressMonitor pm) {
-		assertTrue(Display.getCurrent() != null);
-		
-		if(editor instanceof AbstractLangEditor) {
-			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
-			langEditor.saveWithoutSaveActions(pm);
-		} else {
-			editor.doSave(pm);
 		}
 	}
 	

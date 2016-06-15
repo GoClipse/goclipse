@@ -27,8 +27,8 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.utilbox.status.IStatusMessage;
-import melnorme.utilbox.status.IStatusMessage.StatusMessage;
 import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusMessage;
 
 public class StatusMessageWidget extends AbstractDisableableWidget {
 	

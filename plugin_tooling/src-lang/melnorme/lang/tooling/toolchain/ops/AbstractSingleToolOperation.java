@@ -19,9 +19,10 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.IStatusMessage.StatusMessage;
 import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusMessage;
 
+@Deprecated
 public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOperation2<RESULT> 
 	implements ResultOperation<ToolResponse<RESULT>> {
 	

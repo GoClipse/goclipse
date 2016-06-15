@@ -38,6 +38,7 @@ public interface ContentAssistPreferences_Default {
 			new IntPreference(PLUGIN_ID, "AUTO_ACTIVATE__Delay", 200);
 	
 	
+	/* FIXME: remove this preference */
 	IProjectPreference<Boolean> ShowDialogIfContentAssistErrors = 
 			new BooleanPreference(PLUGIN_ID, "daemon_showDialogIfErrors", true,
 				ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();

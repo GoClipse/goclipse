@@ -10,28 +10,28 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
+import melnorme.lang.ide.core.text.ISourceBufferExt;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
 public interface ILangCompletionProposalComputer {
 	
-	void sessionStarted();
+	public default void sessionStarted() { }
 	
-	Indexable<ICompletionProposal> computeCompletionProposals(CompletionContext context) throws CommonException;
+	public default void sessionEnded() { }
 	
-	Indexable<IContextInformation> computeContextInformation(CompletionContext context);
+	@SuppressWarnings("unused")
+	public default Indexable<IContextInformation> computeContextInformation(ISourceBufferExt sourceBuffer, 
+			ITextViewer viewer, int offset) throws OperationSoftFailure {
+		return null;
+	}
 	
-	void sessionEnded();
-	
-	/**
-	 * Returns the reason why this computer was unable to produce any completion proposals or
-	 * context information.
-	 *
-	 * @return an error message or <code>null</code> if no error occurred
-	 */
-	String getErrorMessage();
+	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer, 
+			ITextViewer viewer, int offset) throws CommonException, OperationSoftFailure; 
 	
 }

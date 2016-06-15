@@ -11,14 +11,17 @@
 package melnorme.lang.ide.ui.text.completion;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
+import melnorme.lang.ide.core.text.ISourceBufferExt;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
-public class CompletionProposalsGrouping implements ILangCompletionProposalComputer {
+public class CompletionProposalsGrouping {
 	
 	protected final String id;
 	protected final String name;
@@ -50,7 +53,6 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	
 	protected String lastErrorMessage = null;
 	
-	@Override
 	public String getErrorMessage() {
 		return lastErrorMessage;
 	}
@@ -65,57 +67,58 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 		 }
 	}
 	
-	@Override
 	public void sessionStarted() {
 		clearErrorMessage();
 		for (ILangCompletionProposalComputer computer : computers) {
 			computer.sessionStarted();
-			
-			updateErrorMessage(computer.getErrorMessage());
 		}
 	}
 	
-	@Override
 	public void sessionEnded() {
 		clearErrorMessage();
 		for (ILangCompletionProposalComputer computer : computers) {
 			computer.sessionEnded();
-			
-			updateErrorMessage(computer.getErrorMessage());
 		}
 	}
 	
-	@Override
-	public Indexable<ICompletionProposal> computeCompletionProposals(CompletionContext context) 
+	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer, 
+			ITextViewer viewer, int offset) 
 			throws CommonException {
 		clearErrorMessage();
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		
 		for (ILangCompletionProposalComputer computer : computers) {
-			Indexable<ICompletionProposal> computerProposals = computer.computeCompletionProposals(context);
-			if(computerProposals != null) {
-				proposals.addAll2(computerProposals);
+			try {
+				Indexable<ICompletionProposal> computerProposals = 
+						computer.computeCompletionProposals(sourceBuffer, viewer, offset);
+				if(computerProposals != null) {
+					proposals.addAll2(computerProposals);
+				}
+			} catch(OperationSoftFailure e) {
+				updateErrorMessage(e.getMessage());
 			}
 			
-			updateErrorMessage(computer.getErrorMessage());
 		}
 		return proposals;
 	}
 	
-	@Override
-	public Indexable<IContextInformation> computeContextInformation(CompletionContext context) {
+	public Indexable<IContextInformation> computeContextInformation(ISourceBufferExt sourceBuffer, 
+			ITextViewer viewer, int offset) {
 		clearErrorMessage();
 		
 		ArrayList2<IContextInformation> proposals = new ArrayList2<>();
 		
 		for (ILangCompletionProposalComputer computer : computers) {
-			Indexable<IContextInformation> computerProposals = computer.computeContextInformation(context);
-			if(computerProposals != null) {
-				proposals.addAll2(computerProposals);
+			try {
+				Indexable<IContextInformation> computerProposals = computer.computeContextInformation(
+					sourceBuffer, viewer, offset);
+				if(computerProposals != null) {
+					proposals.addAll2(computerProposals);
+				}
+			} catch(OperationSoftFailure e) {
+				updateErrorMessage(e.getMessage());
 			}
-			
-			updateErrorMessage(computer.getErrorMessage());
 		}
 		return proposals;
 	}
