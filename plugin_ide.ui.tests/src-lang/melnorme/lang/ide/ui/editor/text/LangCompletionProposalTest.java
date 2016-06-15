@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.Optional;
+
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
@@ -21,6 +23,7 @@ import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.misc.Location;
 
 public class LangCompletionProposalTest extends CommonUITest {
@@ -69,10 +72,12 @@ public class LangCompletionProposalTest extends CommonUITest {
 		
 		String source = "void foo(); Int blah";
 		
-		ToolCompletionProposal tcp = new ToolCompletionProposal(source.indexOf("Int"), 3, "interface", 
+		int offset = source.indexOf("Int");
+		ToolCompletionProposal tcp = new ToolCompletionProposal(offset, 3, "interface", 
 			"label", CompletionProposalKind.values()[0], new ElementAttributes(null), null, "moduleName", null);
-		LangCompletionProposal completionProposal = new LangCompletionProposal(
-			new TestsSourceBuffer(source), tcp, null, null);
+		SourceOpContext sourceOpContext = new SourceOpContext(Optional.empty(), offset, source, true);
+		LangCompletionProposal completionProposal = new LangCompletionProposal(sourceOpContext, tcp, null, null);
+		
 		
 		Document document = new Document(source);
 		completionProposal.doApply(document, true);

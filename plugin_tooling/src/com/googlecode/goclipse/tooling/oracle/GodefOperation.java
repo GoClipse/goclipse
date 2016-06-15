@@ -14,21 +14,21 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.toolchain.ops.AbstractSingleToolOperation;
+import melnorme.lang.tooling.toolchain.ops.AbstractToolInvocationOperation;
 import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse.StatusValidation;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.status.StatusException;
 
-public class GodefOperation extends AbstractSingleToolOperation<SourceLocation> {
+public class GodefOperation extends AbstractToolInvocationOperation<SourceLocation, ToolResponse<SourceLocation>> {
 	
 	protected GoOperationContext goOpContext;
 	protected GoEnvironment goEnv;
@@ -39,16 +39,6 @@ public class GodefOperation extends AbstractSingleToolOperation<SourceLocation> 
 		this.goOpContext = assertNotNull(goOpContext);
 		this.goEnv = assertNotNull(goOpContext.getGoEnv());
 		this.opContext = assertNotNull(goOpContext.opContext);
-	}
-	
-	@Override
-	protected String getToolName() {
-		return "godef";
-	}
-	
-	@Override
-	protected String getToolProcessName() {
-		return getToolName();
 	}
 	
 	@Override
@@ -68,21 +58,27 @@ public class GodefOperation extends AbstractSingleToolOperation<SourceLocation> 
 	}
 	
 	@Override
-	public ToolResponse<SourceLocation> handleProcessResult(ExternalProcessResult result)
-			throws CommonException, OperationCancellation {
+	protected ToolResponse<SourceLocation> doHandleProcessResult(ExternalProcessResult result, ProcessBuilder pb)
+			throws StatusValidation, CommonException {
 		if(result.exitValue != 0) {
 			String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
 			if(!errOut.trim().contains("\n")) {
 				return new ToolResponse<>(null, new StatusException(errOut));
 			}
 		}
-		return super.handleProcessResult(result);
+		
+		return super.doHandleProcessResult(result, pb);
 	}
 	
 	@Override
 	public ToolResponse<SourceLocation> parseProcessOutput(StringCharSource output) throws CommonException {
 		SourceLocation findDefResult = ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
 		return new ToolResponse<>(findDefResult);
+	}
+	
+	@Override
+	protected ToolResponse<SourceLocation> createErrorResponse(String errorMessage) {
+		return createErrorToolResponse(errorMessage);
 	}
 	
 }

@@ -20,8 +20,8 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.ResultOperation;
-import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -29,8 +29,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.IStatusMessage.StatusMessage;
-import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusMessage;
 
 public class GuruFindDefinitionOperation extends GuruDescribeOperation implements 
 		ResultOperation<ToolResponse<SourceLocation>> {
@@ -53,7 +52,7 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation implement
 		
 		ExternalProcessResult result = goOperationContext.getToolOpService().runProcess(pb, null, om);
 		if(result.exitValue != 0) {
-			return new ToolResponse<>(null, new StatusMessage(Severity.ERROR, "`guru` did not complete successfully."));
+			return new ToolResponse<>(null, new StatusMessage("`guru` did not complete successfully."));
 		}
 		
 		return parseToolResult(result);

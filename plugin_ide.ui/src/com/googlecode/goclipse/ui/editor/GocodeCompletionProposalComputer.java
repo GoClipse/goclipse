@@ -2,7 +2,6 @@ package com.googlecode.goclipse.ui.editor;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.text.IDocument;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
@@ -13,10 +12,10 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -28,18 +27,17 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(CompletionContext context, ICancelMonitor cm) 
+	protected LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
-		Location fileLoc = context.getContext().getFileLocation();
-		IDocument document = context.getDocument();
-		int offset = context.getOffset();
+		Location fileLoc = sourceContext.getFileLocation();
+		int offset = sourceContext.getOffset();
 		
 		GoUIPlugin.prepareGocodeManager_inUI();
 		IPath gocodePath = GocodeServerManager.getGocodePath();
 		if (gocodePath == null) {
 			throw new CommonException("Error: gocode path not provided.");
 		}
-		IProject project = ResourceUtils.getProject(context.getContext().getOptionalFileLocation());
+		IProject project = ResourceUtils.getProject(sourceContext.getOptionalFileLocation());
 		
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
@@ -47,7 +45,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		GocodeCompletionOperation client = new GocodeCompletionOperation(
 			getEngineToolRunner(), goEnvironment, gocodePath.toOSString(), cm);
 		
-		String source = document.get();
+		String source = sourceContext.getSource();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);
 		
 		GocodeOutputParser2 gocodeOutputParser = new GocodeOutputParser2(offset, source){

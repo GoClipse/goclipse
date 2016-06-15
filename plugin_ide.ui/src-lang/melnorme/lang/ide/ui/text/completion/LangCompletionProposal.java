@@ -51,7 +51,7 @@ import melnorme.lang.ide.ui.text.DocDisplayInfoSupplier;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Location;
 
@@ -65,7 +65,7 @@ public class LangCompletionProposal implements
 	ICompletionProposalExtension6 
 {
 	
-	protected final ISourceBuffer sourceBuffer;
+	protected final SourceOpContext sourceOpContext;
 	protected final ToolCompletionProposal proposal;
 	
 	protected volatile String additionalProposalInfo;
@@ -77,11 +77,11 @@ public class LangCompletionProposal implements
 	protected int replaceLength;
 	protected StyledString styledDisplayString;
 	
-	public LangCompletionProposal(ISourceBuffer sourceBuffer, ToolCompletionProposal proposal,
+	public LangCompletionProposal(SourceOpContext sourceOpContext, ToolCompletionProposal proposal,
 			Image image, 
 			IContextInformation contextInformation) {
 		super();
-		this.sourceBuffer = assertNotNull(sourceBuffer);
+		this.sourceOpContext = assertNotNull(sourceOpContext);
 		this.proposal = assertNotNull(proposal);
 		this.additionalProposalInfo = proposal.getDocumentation();
 		this.image = image;
@@ -234,7 +234,7 @@ public class LangCompletionProposal implements
 	/* FIXME: use the progress monitor */
 	@SuppressWarnings("unused")
 	protected String doGetAdditionalProposalInfo( IProgressMonitor monitor) {
-		Document tempDocument = new Document(sourceBuffer.getSource());
+		Document tempDocument = new Document(sourceOpContext.getSource());
 		doApply(tempDocument, false);
 		try {
 			tempDocument.replace(endPositionAfterApply, 0, " ");
@@ -245,7 +245,7 @@ public class LangCompletionProposal implements
 		DocumentSourceBuffer tempSourceBuffer = new DocumentSourceBuffer(tempDocument) {
 			@Override
 			public Location getLocation_orNull() {
-				return sourceBuffer.getLocation_orNull();
+				return sourceOpContext.getOptionalFileLocation().orElse(null);
 			}
 		};
 		return new DocDisplayInfoSupplier(tempSourceBuffer, getReplaceOffset()).get();

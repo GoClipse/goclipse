@@ -13,34 +13,33 @@ package melnorme.lang.tooling.completion;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.status.StatusMessage;
 
-public class LangCompletionResult {
-	
-	protected final String errorMessage;
-	protected final Indexable<ToolCompletionProposal> proposals;
+/**
+ * This is a tool response with either a valid result data, or an error message, but never both.
+ */
+public class LangCompletionResult extends ToolResponse<Indexable<ToolCompletionProposal>> {
 	
 	public LangCompletionResult(String errorMessage) {
-		super();
-		this.errorMessage = assertNotNull(errorMessage);
-		this.proposals = null;
+		super(null, new StatusMessage(errorMessage));
 	}
 	
 	public LangCompletionResult(Indexable<ToolCompletionProposal> proposals) {
-		this.errorMessage = null;
-		this.proposals = proposals;
+		super(assertNotNull(proposals));
 	}
 	
 	public boolean isErrorResult() {
-		return errorMessage != null;
+		return !isValidResult();
 	}
 	
 	public String getErrorMessage() {
-		return errorMessage;
+		return getStatusMessageText();
 	}
 	
 	public Indexable<ToolCompletionProposal> getProposals_maybeNull() {
-		return proposals;
+		return getResultData();
 	}
 	
 	public Indexable<ToolCompletionProposal> getValidatedProposals() throws OperationSoftFailure {

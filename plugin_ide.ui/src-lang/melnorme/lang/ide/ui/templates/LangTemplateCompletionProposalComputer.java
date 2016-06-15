@@ -12,14 +12,17 @@ package melnorme.lang.ide.ui.templates;
 
 import java.util.List;
 
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.TemplateContextType;
 
 import _org.eclipse.jdt.internal.ui.text.template.contentassist.TemplateEngine;
+import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
-import melnorme.lang.ide.ui.text.completion.CompletionContext;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.ListView;
 import melnorme.utilbox.core.CommonException;
@@ -39,10 +42,6 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	protected TemplateEngine fEngine;
 	
 	@Override
-	public void sessionStarted() {
-	}
-	
-	@Override
 	public void sessionEnded() {
 		if (fEngine != null) {
 			fEngine.reset();
@@ -51,15 +50,16 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	}
 	
 	@Override
-	protected Indexable<ICompletionProposal> doComputeCompletionProposals(CompletionContext context)
-			throws CommonException {
+	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer,
+			ITextViewer viewer, int offset) throws CommonException {
 		
-		fEngine= computeCompletionEngine(context);
+		fEngine= computeCompletionEngine();
 		if (fEngine == null)
 			return null;
 		
 		fEngine.reset();
-		List<ICompletionProposal> result= fEngine.completeAndReturnResults(context);
+		SourceOpContext sourceOpContext = sourceBuffer.getSourceOpContext(offset, EditorUtils.getSelectedRange(viewer));
+		List<ICompletionProposal> result= fEngine.completeAndReturnResults(sourceOpContext, viewer.getDocument());
 		
 //		IJavaCompletionProposal[] keyWordResults= javaContext.getKeywordProposals();
 //		if (keyWordResults.length == 0)
@@ -90,8 +90,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 		return EditorSettings_Actual.TEMPLATE_CONTEXT_TYPE_ID;
 	}
 	
-	@SuppressWarnings("unused")
-	protected TemplateEngine computeCompletionEngine(CompletionContext context) {
+	protected TemplateEngine computeCompletionEngine() {
 		TemplateContextType contextType = LangUIPlugin.getTemplateRegistry().getContextType(getContextTypeId());
 		return new TemplateEngine(contextType);
 	}

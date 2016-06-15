@@ -19,6 +19,9 @@ import melnorme.lang.tooling.parser.SourceLinesInfo;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
+/**
+ * Parameters for a source operation. This data from this class is immutable.
+ */
 public class SourceOpContext {
 	
 	public static final String MSG_NoFileLocationForThisOperation = "No file location for this operation";
@@ -39,7 +42,6 @@ public class SourceOpContext {
 		this.offset = offset;
 		this.selection = assertNotNull(selection);
 		this.source = assertNotNull(source);
-		new SourceLinesInfo(source);
 		this.isDirty = isDirty;
 	}
 	

@@ -34,8 +34,8 @@ import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
-import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -88,16 +88,23 @@ public class TemplateEngine {
 		return fProposals.toArray(new TemplateProposal[fProposals.size()]);
 	}
 
-	public void complete(CompletionContext sourceContext) throws CommonException {
+	public List<ICompletionProposal> completeAndReturnResults(SourceOpContext sourceOpContext, IDocument document) 
+			throws CommonException {
+		complete(sourceOpContext, document);
 		
-	    IDocument document = sourceContext.getDocument();
-		final Location sourceFileLoc = sourceContext.getContext().getFileLocation();
+		TemplateProposal[] templateProposals = getResults();
+		return CollectionUtil.<ICompletionProposal>createArrayList(templateProposals);
+	}
 
+	public void complete(SourceOpContext sourceOpContext, IDocument document) throws CommonException {
+		
+		final Location sourceFileLoc = sourceOpContext.getFileLocation();
+		
 		if (!(fContextType instanceof CompilationUnitContextType))
 			return;
 		CompilationUnitContextType compilationUnitContextType = (CompilationUnitContextType) fContextType;
 
-		SourceRange selection = sourceContext.getSelection();
+		SourceRange selection = sourceOpContext.getSelection();
 		Position position= new Position(selection.getStartPos(), selection.getLength());
 
 		// remember selected text
@@ -152,13 +159,6 @@ public class TemplateEngine {
 		return LangUIPlugin.getTemplateRegistry().getTemplateStore().getTemplates();
 	}
 	
-	public List<ICompletionProposal> completeAndReturnResults(CompletionContext context) throws CommonException {
-		complete(context);
-		
-		TemplateProposal[] templateProposals = getResults();
-		return CollectionUtil.<ICompletionProposal>createArrayList(templateProposals);
-	}
-
 	protected Image getImage() {
 		return LangElementImages.CA_SNIPPET.getImage();
 	}

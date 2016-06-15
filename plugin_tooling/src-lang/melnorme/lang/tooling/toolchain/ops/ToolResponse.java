@@ -47,6 +47,14 @@ public class ToolResponse<DATA> {
 		return statusMessage;
 	}
 	
+	public String getStatusMessageText() {
+		if(getStatusMessage() == null) {
+			return null;
+		} else {
+			return getStatusMessage().getMessage();
+		}
+	}
+	
 	public boolean isValidResult() {
 		return resultData != null;
 	}

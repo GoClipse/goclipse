@@ -12,21 +12,25 @@ package melnorme.lang.ide.ui.text.completion;
 
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner;
+import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -36,18 +40,28 @@ import melnorme.utilbox.core.CommonException;
 
 public abstract class LangCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
+	protected boolean needsEditorSave() {
+		return false;
+	}
+	
 	@Override
-	protected Indexable<ICompletionProposal> doComputeCompletionProposals(CompletionContext context) 
+	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer, 
+			ITextViewer viewer, int offset) 
 			throws CommonException, OperationSoftFailure {
 		
 		if(needsEditorSave()) {
-			doEditorSave(context);
+			boolean success = sourceBuffer.trySaveBufferIfDirty(); 
+			if(!success) {
+				throw new CommonException("Unable to save editor file.");
+			}
 		}
+		
+		SourceOpContext sourceOpContext = sourceBuffer.getSourceOpContext(offset, EditorUtils.getSelectedRange(viewer));
 		
 		final TimeoutCancelMonitor cm = new TimeoutCancelMonitor(5000);
 		try {
 			
-			return computeProposals(context, cm);
+			return computeProposals(sourceOpContext, cm);
 			
 		} catch (OperationCancellation e) {
 			if(cm.isCanceled()) {
@@ -59,38 +73,29 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		}
 	}
 	
-	protected boolean needsEditorSave() {
-		return false;
-	}
-	
-	protected void doEditorSave(CompletionContext context) throws CommonException {
-		context.getSourceBuffer().trySaveBufferIfDirty(); 
-	}
-	
-	protected Indexable<ICompletionProposal> computeProposals(CompletionContext context, ICancelMonitor cm)
+	protected Indexable<ICompletionProposal> computeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
 			throws CommonException, OperationCancellation, OperationSoftFailure
 	{
 		
-		LangCompletionResult result = doComputeProposals(context, cm);
+		LangCompletionResult result = doComputeProposals(sourceContext, cm);
 		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		for (ToolCompletionProposal proposal : resultProposals) {
-			proposals.add(adaptToolProposal(context, proposal));
+			proposals.add(adaptToolProposal(sourceContext, proposal));
 		}
 		
 		return proposals;
 	}
 	
-	protected abstract LangCompletionResult doComputeProposals(CompletionContext context,
-			ICancelMonitor cm) 
+	protected abstract LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm) 
 			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
-	protected ICompletionProposal adaptToolProposal(CompletionContext context, ToolCompletionProposal proposal) {
+	protected ICompletionProposal adaptToolProposal(SourceOpContext sourceContext, ToolCompletionProposal proposal) {
 		IContextInformation ctxInfo = null; // TODO: context information
-		return new LangCompletionProposal(context.getSourceBuffer(), proposal, getImage(proposal), ctxInfo);
+		return new LangCompletionProposal(sourceContext, proposal, getImage(proposal), ctxInfo);
 	}
 	
 	protected Image getImage(ToolCompletionProposal proposal) {
