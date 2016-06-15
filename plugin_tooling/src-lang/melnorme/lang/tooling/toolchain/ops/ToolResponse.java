@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusMessage;
 
 /**
  * Result for a tool operation. 
@@ -37,6 +38,10 @@ public class ToolResponse<DATA> {
 	public ToolResponse(DATA resultData, IStatusMessage statusMessaage) {
 		this.resultData = resultData;
 		this.statusMessage = statusMessaage;
+	}
+	
+	public static <DATA> ToolResponse<DATA> newError(String message) {
+		return new ToolResponse<DATA>(null, new StatusMessage(Severity.ERROR, message));
 	}
 	
 	public DATA getResultData() {

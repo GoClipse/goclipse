@@ -30,9 +30,9 @@ public abstract class ComputeValueUIOperation<RESULT> implements OperationCallab
 		super();
 	}
 	
-	protected <R> R invokeInBackground(ResultOperation<R> godefOp)
+	protected <R> R invokeInBackground(ResultOperation<R> resultOp)
 			throws CommonException, OperationCancellation {
-		return new WorkbenchBackgroundExecutor().invokeInBackground(godefOp);
+		return new WorkbenchBackgroundExecutor().invokeInBackground(resultOp);
 	}
 
 }
