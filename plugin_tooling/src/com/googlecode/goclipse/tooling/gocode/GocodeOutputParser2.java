@@ -21,16 +21,19 @@ import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation2;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse;
+import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.toolchain.ops.AbstractToolResultParser;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse.StatusValidation;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayList2<ToolCompletionProposal>> {
+public abstract class GocodeOutputParser2 extends AbstractToolResultParser<ArrayList2<ToolCompletionProposal>> {
 	
 	protected final int offset;
 	protected final String source;
@@ -53,18 +56,28 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 	}
 	
 	@Override
-	protected String getToolProcessName() {
+	protected String getToolName() {
 		return "gocode";
 	}
 	
+	public LangCompletionResult parseProcessResult(ExternalProcessResult result) throws OperationCancellation {
+		try {
+			return new LangCompletionResult(doParseResult(result));
+		} catch(StatusValidation e) {
+			return new LangCompletionResult(e.getMessage());
+		} catch(CommonException e) {
+			return new LangCompletionResult(e.getMultiLineRender());
+		}
+	}
+	
 	@Override
-	public ToolResponse<ArrayList2<ToolCompletionProposal>> parseProcessOutput(StringCharSource parseSource)
-			throws CommonException {
+	public ArrayList2<ToolCompletionProposal> parseOutput(StringCharSource parseSource)
+			throws StatusValidation {
 	
 		String stdout = parseSource.getSource();
 		
 		if (stdout.startsWith("PANIC")) {
-			handleParseError(new CommonException("PANIC from gocode - likely go/gocode version mismatch?"));
+			handleParseError(new StatusValidation("PANIC from gocode - likely go/gocode version mismatch?"));
 		}
 		
 		List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
@@ -78,16 +91,16 @@ public abstract class GocodeOutputParser2 extends AbstractToolOperation2<ArrayLi
 			}
 		}
 		
-		return new ToolResponse<>(baseResults);
+		return baseResults;
 	}
 	
-	protected void handleParseError(CommonException ce) throws CommonException {
+	protected void handleParseError(StatusValidation ce) throws StatusValidation {
 		throw ce;
 	}
 	
 	protected abstract void logWarning(String message);
 	
-	protected ToolCompletionProposal parseCompletion(final String completionEntry) throws CommonException {
+	protected ToolCompletionProposal parseCompletion(final String completionEntry) {
 		String line = completionEntry;
 		
 		String kindString = StringUtil.segmentUntilMatch(line, ",,");

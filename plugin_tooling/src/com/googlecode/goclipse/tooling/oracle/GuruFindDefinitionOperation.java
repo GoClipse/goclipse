@@ -29,7 +29,6 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.StatusMessage;
 
 public class GuruFindDefinitionOperation extends GuruDescribeOperation implements 
 		ResultOperation<ToolResponse<SourceLocation>> {
@@ -52,7 +51,7 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation implement
 		
 		ExternalProcessResult result = goOperationContext.getToolOpService().runProcess(pb, null, om);
 		if(result.exitValue != 0) {
-			return new ToolResponse<>(null, new StatusMessage("`guru` did not complete successfully."));
+			return ToolResponse.newError("`guru` did not complete successfully.");
 		}
 		
 		return parseToolResult(result);

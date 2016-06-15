@@ -107,7 +107,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	
 	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) 
 			throws CommonException {
-		ArrayList<ToolSourceMessage> buildMessages = buildProcessor.parseMessages(stderr);
+		ArrayList<ToolSourceMessage> buildMessages = buildProcessor.parseOutput(stderr);
 		assertEquals(buildMessages, expected);
 	}
 	
@@ -126,7 +126,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 			}
 		};
 		
-		buildProcessor.parseMessages("libbar\blah.go:");
+		buildProcessor.parseOutput("libbar\blah.go:");
 	}
 	
 }

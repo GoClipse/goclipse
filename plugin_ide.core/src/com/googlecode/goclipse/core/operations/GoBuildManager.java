@@ -285,7 +285,7 @@ public class GoBuildManager extends BuildManager {
 					LangCore.logError(ce.getMessage(), ce.getCause());
 				}
 			};
-			ArrayList<ToolSourceMessage> buildMessages = buildOutput.parseResult(buildAllResult);
+			ArrayList<ToolSourceMessage> buildMessages = buildOutput.doParseResult(buildAllResult);
 			
 			new ToolMarkersHelper(true).addErrorMarkers(buildMessages, workingDirectory, om);
 		}

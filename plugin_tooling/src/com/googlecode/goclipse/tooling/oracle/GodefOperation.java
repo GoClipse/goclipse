@@ -26,7 +26,6 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.StatusException;
 
 public class GodefOperation extends AbstractToolInvocationOperation<SourceLocation, ToolResponse<SourceLocation>> {
 	
@@ -35,10 +34,15 @@ public class GodefOperation extends AbstractToolInvocationOperation<SourceLocati
 	protected SourceOpContext opContext;
 	
 	public GodefOperation(GoOperationContext goOpContext, String godefPath) {
-		super(goOpContext.getToolOpService(), godefPath, false);
+		super(goOpContext.getToolOpService(), godefPath);
 		this.goOpContext = assertNotNull(goOpContext);
 		this.goEnv = assertNotNull(goOpContext.getGoEnv());
 		this.opContext = assertNotNull(goOpContext.opContext);
+	}
+	
+	@Override
+	protected String getToolName() throws CommonException {
+		return "godef";
 	}
 	
 	@Override
@@ -58,27 +62,21 @@ public class GodefOperation extends AbstractToolInvocationOperation<SourceLocati
 	}
 	
 	@Override
-	protected ToolResponse<SourceLocation> doHandleProcessResult(ExternalProcessResult result, ProcessBuilder pb)
-			throws StatusValidation, CommonException {
-		if(result.exitValue != 0) {
-			String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
-			if(!errOut.trim().contains("\n")) {
-				return new ToolResponse<>(null, new StatusException(errOut));
-			}
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws StatusValidation {
+		String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
+		if(!errOut.trim().contains("\n")) {
+			throw new StatusValidation(errOut);
 		}
-		
-		return super.doHandleProcessResult(result, pb);
 	}
 	
 	@Override
-	public ToolResponse<SourceLocation> parseProcessOutput(StringCharSource output) throws CommonException {
-		SourceLocation findDefResult = ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
-		return new ToolResponse<>(findDefResult);
+	public SourceLocation parseOutput(StringCharSource output) throws CommonException {
+		return ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
 	}
 	
 	@Override
-	protected ToolResponse<SourceLocation> createErrorResponse(String errorMessage) {
-		return createErrorToolResponse(errorMessage);
+	protected ToolResponse<SourceLocation> createToolResponse(SourceLocation resultData, String errorMessage) {
+		return createDefaultToolResponse(resultData, errorMessage);
 	}
 	
 }
