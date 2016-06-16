@@ -13,7 +13,7 @@ package lang_project_id.jvmcheck;
 
 public interface JvmCheckConstants_Actual {
 	
-	String FEATURE_NAME = "LANG_IDE_NAME";
+	String FEATURE_NAME = "Goclipse";
 	int REQUIRED_JAVA_VERSION = 8;
 	
 }

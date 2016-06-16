@@ -13,14 +13,14 @@ package melnorme.lang.ide.ui;
 public class WizardMessages_Actual {
 	
 	public static String LangNewProject_wizardTitle = 
-			"New LANG_NAME Project";
+			"New Go Project";
 	
 	public static String LangNewProject_projectType = 
-			"LANG_NAME project";
+			"Go project";
 	
 	public static String LangNewProject_Page1_pageTitle =
-			"Create a new LANG_NAME project.";
+			"Create a new Go project.";
 	public static String LangNewProject_Page1_pageDescription =
-			"Create a new LANG_NAME project from scratch, or from an existing project or location.";
+			"Create a new Go project from scratch, or from an existing project or location.";
 	
 }

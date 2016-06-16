@@ -1,0 +1,16 @@
+{
+		"desc": "definition of package \"util/MyUtilFoo/libfoo\"",
+		"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:1:9",
+		"detail": "package",
+		"package": {
+			"path": "util/MyUtilFoo/libfoo",
+			"members": [
+				{
+					"name": "HelloA",
+					"type": "func()",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:0:0",
+					"kind": "func"
+				}
+			]
+		}
+}

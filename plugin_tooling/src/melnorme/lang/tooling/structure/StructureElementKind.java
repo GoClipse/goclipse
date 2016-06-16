@@ -16,16 +16,19 @@ import melnorme.lang.tooling.LANG_SPECIFIC;
 
 
 @LANG_SPECIFIC
+// TODO: needs review by a Go expert, this might be missing some Go archetypes
 public enum StructureElementKind {
 	
 	VARIABLE,
+	CONST,
 	
 	FUNCTION,
-	CONSTRUCTOR,
+	METHOD,
 	
-	CLASS,
+//	CLASS,
 	INTERFACE,
 	STRUCT,
+	TYPE_DECL,
 	
 	MODULEDEC
 	;
@@ -37,13 +40,15 @@ public enum StructureElementKind {
 	public static <RET> RET switchOnKind(StructureElementKind kind, StructureElementKindVisitor<RET> visitor) {
 		switch(kind) {
 		case VARIABLE: return visitor.visitVariable();
+		case CONST: return visitor.visitConst();
 		
 		case FUNCTION: return visitor.visitFunction();
-		case CONSTRUCTOR: return visitor.visitConstructor();
+		case METHOD: return visitor.visitMethod();
 		
-		case CLASS: return visitor.visitClass();
+//		case CLASS: return visitor.visitClass();
 		case INTERFACE: return visitor.visitInterface();
 		case STRUCT: return visitor.visitStruct();
+		case TYPE_DECL: return visitor.visitTypeDecl();
 		
 		case MODULEDEC: return visitor.visitModule();
 		
@@ -52,6 +57,12 @@ public enum StructureElementKind {
 	}
 	
 	public static interface StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
+		
+		RET visitMethod();
+		
+		RET visitConst();
+		
+		RET visitTypeDecl();
 		
 	}
 	

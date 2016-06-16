@@ -1,102 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
+
+   <!-- launch config -->
+	<extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
             class="melnorme.lang.ide.debug.core.LangSourceLookupDirector"
-            id="LANG_PROJECT_ID.ide.debug.SourceLocator"
-            name="Source Locator">
+            id="com.googlecode.goclipse.debug.sourceLocator"
+            name="Go Source Locator">
       </sourceLocator>
-   </extension>
+	</extension>
+	
    <extension
          point="org.eclipse.debug.core.launchDelegates">
       <launchDelegate
-            delegate="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_DebugLaunchConfigurationDelegate"
-            id="LANG_PROJECT_ID.ide.debug.launchDelegate"
+            delegate="com.googlecode.goclipse.debug.core.GoDebugLaunchConfigurationDelegate"
+            id="com.googlecode.goclipse.debug.launchDelegate"
             modes="debug"
-            sourceLocatorId="LANG_PROJECT_ID.ide.debug.SourceLocator"
-            type="LANG_PROJECT_ID.ide.core.LaunchConfigurationType">
+            sourceLocatorId="com.googlecode.goclipse.debug.sourceLocator"
+            type="com.googlecode.goclipse.launch.goLaunchType">
       </launchDelegate>
    </extension>
    
-
-   <!-- launch UI -->
-
+   
+   <!-- launch/debug UI -->
+   
    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_DebugTabGroup"
-            description="%DebugTabGroup.description"
-            id="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_DebugTabGroup"
-            type="LANG_PROJECT_ID.ide.core.LaunchConfigurationType">
+            class="com.googlecode.goclipse.debug.ui.GoDebugTabGroup"
+            description="Debug a Go application"
+            id="com.googlecode.goclipse.debug.launchConfigurationTabGroup_debug"
+            type="com.googlecode.goclipse.launch.goLaunchType">
          <launchMode mode="debug" />
       </launchConfigurationTabGroup>
    </extension>
-
+   
    <extension point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
       <toggleTargetFactory
             class="melnorme.lang.ide.debug.ui.LangToggleBreakpointsTargetFactory"
-            id="LANG_PROJECT_ID.ide.debug.toggleTargetFactory">
+            id="com.googlecode.goclipse.debug.toggleTargetFactory">
          <enablement>
-            <instanceof value="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor" />
+            <instanceof value="com.googlecode.goclipse.ui.editor.GoEditor" />
          </enablement>
       </toggleTargetFactory>
    </extension>
 
    <extension point="org.eclipse.ui.editorActions">
       <editorContribution
-         targetID="LANG_PROJECT_ID.ide.ui.Editors.SourceEditor"
-         id="LANG_PROJECT_ID.ide.debug.ui.EditorBreakpointRulerActions">
-
-         <action label="%dummyLabel"
-            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-            actionID="RulerDoubleClick"
-            id="Editor.rulerDoubleClickAction" />
+            targetID="com.googlecode.goclipse.editors.Editor"
+            id="com.googlecode.goclipse.debug.breakpointActions">
+         <action
+               label="Toggle Breakpoint"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               actionID="RulerDoubleClick"
+               id="com.googlecode.goclipse.debug.breakpointActions.toggle">
+         </action>
       </editorContribution>
    </extension>
 
    <extension
-      point="org.eclipse.ui.menus">
-      <menuContribution
-             locationURI="popup:#LANGUAGE_RulerContext?after=debug">
-         <menu 
-              id="breakpointTypes.LANG_PROJECT_ID" 
-              label="%BreakpointTypes.label">
-            <dynamic
-                   class="org.eclipse.debug.ui.actions.BreakpointTypesContribution"
-                   id="org.eclipse.debug.ui.actions.BreakpointTypesContribution">
-            </dynamic>
-         </menu>
-      </menuContribution>
-   </extension>
-
+		point="org.eclipse.ui.menus">
+	    <menuContribution
+	          locationURI="popup:#GoEditorRulerContext?after=debug">
+			<menu 
+		         id="breakpointTypes.go" 
+		    	 label="%BreakpointTypes.label">
+		       <dynamic
+		             class="org.eclipse.debug.ui.actions.BreakpointTypesContribution"
+		             id="org.eclipse.debug.ui.actions.BreakpointTypesContribution">
+		       </dynamic>
+			</menu>
+		</menuContribution>
+	</extension>
+   
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            targetID="#LANGUAGE_RulerContext"
-            id="LANG_PROJECT_ID.ide.debug.ui.EditorRulerDebugPopupActions">
+            targetID="#GoEditorRulerContext"
+            id="com.googlecode.goclipse.debug.GoEditorRulerDebugPopupActions">
          <action
                label="%RulerBreakpointProperties.label"
                helpContextId="breakpoint_properties_action_context"
                class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CBreakpointPropertiesRulerActionDelegate"
                menubarPath="debug"
-               id="LANG_PROJECT_ID.debug.internal.ui.actions.CBreakpointPropertiesRulerActionDelegate">
+               id="com.googlecode.goclipse.debug.ui.actions.menuEnableDisable">
          </action>
          <action
                label="%AddBreakpointInteractive.label"
                helpContextId="add_breakpoint_interactive_action_context"
                class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CAddBreakpointInteractiveRulerActionDelegate"
                menubarPath="debug"
-               id="LANG_PROJECT_ID.debug.ui.actions.RulerCreateBreakpointInteractiveAction">
-         </action>
+               id="com.googlecode.goclipse.debug.ui.actions.RulerCreateBreakpointInteractiveAction">
+         </action>         
          <action
                label="%EnableBreakpoint.label"
                helpContextId="enable_disable_breakpoint_action_context"
                class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
                menubarPath="debug"
-               id="LANG_PROJECT_ID.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
+               id="com.googlecode.goclipse.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
          </action>
-          <action
+         <action
                label="%AddDynamicPrintfInteractive.label"
                helpContextId="add_breakpoint_interactive_action_context"
                class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CAddDynamicPrintfInteractiveRulerActionDelegate"
@@ -108,17 +112,17 @@
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.ToggleBreakpoint"
                menubarPath="debug"
-               id="LANG_PROJECT_ID.ide.debug.ui.actions.RulerToggleBreakpointAction">
+               id="com.googlecode.goclipse.debug.ui.actions.RulerToggleBreakpointAction">
          </action>
       </viewerContribution>
    </extension>
-
-   <!-- Add Watch, Run to, Resume, Move to, etc. -->
    
-   <extension point="org.eclipse.ui.popupMenus">
+   <!-- Add Watch, Run to, Resume, Move to, etc. -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            targetID="#LANGUAGE_EditorContext"
-            id="LANG_PROJECT_ID.ide.debug.ui.EditorDebugPopupActions">
+            targetID="#GoEditorContext"
+            id="com.googlecode.goclipse.debug.ui.actions.GoEditorDebugPopupActions">
          <visibility>
             <and>
                <systemProperty
@@ -163,11 +167,11 @@
          </action>
       </viewerContribution>
    </extension>
-   
-   <extension point="org.eclipse.core.runtime.adapters">
+   <extension
+         point="org.eclipse.core.runtime.adapters">
       <factory
             class="org.eclipse.cdt.debug.internal.ui.actions.RetargettableActionAdapterFactory"
-            adaptableType="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor">
+            adaptableType="com.googlecode.goclipse.ui.editor.GoEditor">
          <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IResumeAtLineTarget"/>
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IMoveToLineTarget"/>
@@ -176,14 +180,14 @@
    
    <extension point="org.eclipse.core.runtime.adapters">
       <factory 
-        	class="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_GdbAdapterFactory" 
-	        adaptableType="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_GdbLaunch">
+        	class="com.googlecode.goclipse.debug.ui.GoGdbAdapterFactory" 
+	        adaptableType="com.googlecode.goclipse.debug.core.GoGdbLaunch">
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider"/>
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory"/>
          <adapter type="org.eclipse.debug.ui.contexts.ISuspendTrigger"/>
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentationFactory"/>
 	  </factory>         
-   </extension>
+   </extension>	
    
 	<extension point="org.eclipse.core.runtime.adapters">
 		<factory 

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model.view;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
@@ -28,7 +30,8 @@ public class DependenciesContainer extends AbstractDependenciesContainer<Abstrac
 	@Override
 	protected IBundleModelElement[] createChildren() {
 		ArrayList<IBundleModelElement> newChildren = new ArrayList<>();
-		
+		assertFail();
+		// Not applicable to Go. Although maybe we could refactor GOPATH element to fit this.
 		return ArrayUtil.createFrom(newChildren, IBundleModelElement.class);
 	}
 	

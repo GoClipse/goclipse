@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: LANG_PROJECT_ID.jvmcheck;singleton:=true
+Bundle-SymbolicName: com.googlecode.goclipse.jvmcheck;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: LANG_IDE_NAME Team
-Bundle-Name: LANG_IDE_NAME
+Bundle-Vendor: github.com/Goclipse
+Bundle-Name: GoClipse
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

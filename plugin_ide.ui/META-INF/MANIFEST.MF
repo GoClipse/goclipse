@@ -1,33 +1,40 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: LANG_PROJECT_ID.ide.ui;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: com.googlecode.goclipse.ui;singleton:=true
+Bundle-Version: 0.15.0.qualifier
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPlugin
+Bundle-Activator: com.googlecode.goclipse.ui.GoUIPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: LANG_PROJECT_ID.ide.core,
- org.eclipse.core.runtime;bundle-version="3.6.0",
- org.eclipse.jface.text;bundle-version="3.6.0",
- org.eclipse.ui;bundle-version="3.6.0",
- org.eclipse.ui.editors;bundle-version="3.6.0";visibility:=reexport,
- org.eclipse.ui.workbench.texteditor;bundle-version="3.8.0";visibility:=reexport,
- org.eclipse.ui.ide;bundle-version="3.6.0",
- org.eclipse.ui.navigator;bundle-version="3.5.0",
- org.eclipse.ui.console;bundle-version="3.5.0",
+Require-Bundle: com.googlecode.goclipse.core,
+ org.eclipse.core.runtime;bundle-version="3.9.0",
+ org.eclipse.core.resources;bundle-version="3.8.100",
+ org.eclipse.jface.text;bundle-version="3.8.100",
+ org.eclipse.ui;bundle-version="3.105.0",
+ org.eclipse.ui.editors;bundle-version="3.8.100";visibility:=reexport,
+ org.eclipse.ui.ide;bundle-version="3.9.0",
+ org.eclipse.ui.navigator;bundle-version="3.5.300",
+ org.eclipse.ui.console;bundle-version="3.5.200",
  org.eclipse.ui.intro;bundle-version="3.4.300",
- org.eclipse.search;bundle-version="3.6.0",
- org.eclipse.debug.ui;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,
+ org.eclipse.search;bundle-version="3.9.0",
+ org.eclipse.debug.ui;bundle-version="3.9.0";visibility:=reexport,
  org.eclipse.core.filesystem;bundle-version="1.4.0",
  org.eclipse.ui.views;bundle-version="3.6.0",
  org.eclipse.e4.ui.css.swt.theme;bundle-version="0.10.0",
  org.eclipse.osgi.services;bundle-version="3.5.0",
- org.eclipse.compare;bundle-version="3.5.0"
-Export-Package: LANG_PROJECT_ID.ide.ui.launch,
- melnorme.lang.ide.ui;x-friends:="LANG_PROJECT_ID.ide.debug",
- melnorme.lang.ide.ui.editor;x-friends:="LANG_PROJECT_ID.ide.debug",
+ org.eclipse.compare;bundle-version="3.5.0",
+ org.eclipse.ui.workbench.texteditor;visibility:=reexport
+Export-Package: com.googlecode.goclipse.ui,
+ com.googlecode.goclipse.ui.editor,
+ com.googlecode.goclipse.ui.launch,
+ melnorme.lang.ide.ui,
+ melnorme.lang.ide.ui.actions,
+ melnorme.lang.ide.ui.editor,
  melnorme.lang.ide.ui.editor.hover,
- melnorme.lang.ide.ui.launch
-Bundle-ClassPath: .
+ melnorme.lang.ide.ui.launch,
+ melnorme.lang.ide.ui.tools.console,
+ melnorme.lang.ide.ui.utils,
+ melnorme.util.swt,
+ melnorme.util.swt.jface

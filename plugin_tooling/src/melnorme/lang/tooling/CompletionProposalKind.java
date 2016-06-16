@@ -19,18 +19,21 @@ public enum CompletionProposalKind {
 	KEYWORD,
 	ERROR,
 	
-	MODULEDEC,
+	PACKAGE,
 	
 	VARIABLE,
 	
 	FUNCTION,
-	CONSTRUCTOR,
+	//CONSTRUCTOR, 
 	
-	CLASS,
+	//CLASS, 
 	INTERFACE,
 	STRUCT,
 	
-	ALIAS
+	TYPE_DECL,
+	NATIVE,
+	
+	//ALIAS 
 	
 	/* ----------------- Language-specific: ----------------- */
 	;
@@ -42,18 +45,19 @@ public enum CompletionProposalKind {
 		case KEYWORD: return visitor.visitKeyword();
 		case ERROR: return visitor.visitError();
 		
-		case MODULEDEC: return visitor.visitModule();
+		case PACKAGE: return visitor.visitPackage();
 		
 		case VARIABLE: return visitor.visitVariable();
 		
 		case FUNCTION: return visitor.visitFunction();
-		case CONSTRUCTOR: return visitor.visitConstructor();
+//		case CONSTRUCTOR: return visitor.visitConstructor();
 		
 		case STRUCT: return visitor.visitStruct();
-		case CLASS: return visitor.visitClass();
 		case INTERFACE: return visitor.visitInterface();
+		case TYPE_DECL: return visitor.visitTypeDecl();
+		case NATIVE: return visitor.visitNative();
 		
-		case ALIAS: return visitor.visitAlias();
+//		case ALIAS: return visitor.visitAlias();
 		
 		/* ----------------- Language-specific: ----------------- */
 		
@@ -64,6 +68,10 @@ public enum CompletionProposalKind {
 	public static interface ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
 		RET visitError();
+		
+		RET visitPackage();
+		
+		RET visitTypeDecl();
 		
 	}
 	

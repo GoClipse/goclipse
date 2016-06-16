@@ -1,26 +1,26 @@
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.utilbox.misc.ArrayUtil;
+
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
-import LANG_PROJECT_ID.ide.core.text.LANGUAGE_DocumentSetupParticipant;
-import LANG_PROJECT_ID.ide.core.text.LANGUAGE_PartitionScanner;
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.utilbox.misc.ArrayUtil;
+import com.googlecode.goclipse.core.text.GoDocumentSetupParticipant;
+import com.googlecode.goclipse.core.text.GoPartitionScanner;
 
 
 public class TextSettings_Actual {
 	
-	public static final String PARTITIONING_ID = "LANG_PROJECT_ID.Partitioning";
+	public static final String PARTITIONING_ID = "___go_partioning";
 	
 	public static enum LangPartitionTypes {
 		CODE, 
-		LINE_COMMENT, 
-		BLOCK_COMMENT, 
-		DOC_LINE_COMMENT, 
-		DOC_BLOCK_COMMENT, 
-		STRING, 
-		CHARACTER;
+		LINE_COMMENT,
+		BLOCK_COMMENT,
+		CHARACTER,
+		STRING,
+		MULTILINE_STRING; 
 		
 		public String getId() {
 			if(ordinal() == 0) {
@@ -32,11 +32,11 @@ public class TextSettings_Actual {
 	}
 	
 	public static IPartitionTokenScanner createPartitionScanner() {
-		return new LANGUAGE_PartitionScanner();
+		return new GoPartitionScanner();
 	}
 	
 	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
-		return new LANGUAGE_DocumentSetupParticipant();
+		return new GoDocumentSetupParticipant();
 	}
 	
 	/* ----------------- Common code ----------------- */

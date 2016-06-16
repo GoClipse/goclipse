@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>LANG_PROJECT_ID</groupId>
+		<groupId>com.googlecode.goclipse</groupId>
 		<artifactId>ide-aggregator</artifactId>
 		<version>1-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
@@ -26,7 +26,7 @@
 				<artifactId>tycho-p2-repository-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<repositoryName>LANG_IDE_NAME Site</repositoryName>
+					<repositoryName>GoClipse Site</repositoryName>
 				</configuration>
 			</plugin>
 		</plugins>

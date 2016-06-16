@@ -11,13 +11,14 @@
 package melnorme.lang.ide.ui.text;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
+import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
+import com.googlecode.goclipse.ui.text.GoScanner;
+
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
@@ -29,27 +30,25 @@ public abstract class LangBasicSourceViewerConfiguration extends AbstractLangBas
 	}
 	
 	@Override
-	protected AbstractLangScanner createScannerFor(Display current, LangPartitionTypes partitionType, 
+	protected AbstractLangScanner createScannerFor(Display current, LangPartitionTypes partitionType,
 			TokenRegistry tokenStore) {
 		switch (partitionType) {
-		case CODE: 
-			return new LANGUAGE_CodeScanner(tokenStore);
-		
-		case LINE_COMMENT: 
-		case BLOCK_COMMENT: 
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.COMMENTS);
-		
-		case DOC_LINE_COMMENT:
-		case DOC_BLOCK_COMMENT:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.DOC_COMMENTS);
-		
-		case STRING:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.STRINGS);
-		
+		case CODE:
+			return new GoScanner(tokenStore);
+					
+		case LINE_COMMENT:
+		case BLOCK_COMMENT:
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.COMMENT);
+			
 		case CHARACTER:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.CHARACTER);
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.CHARACTER);
+		case STRING:
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.STRING);
+		case MULTILINE_STRING:
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.MULTILINE_STRING);
 		}
-		throw assertUnreachable();
+		
+		throw assertFail();
 	}
 	
 }

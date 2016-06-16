@@ -10,14 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text;
 
+import com.googlecode.goclipse.tooling.tools.GoFindDocOperation;
+import com.googlecode.goclipse.ui.actions.GoOpenDefinitionOperation;
+
 import melnorme.lang.ide.ui.editor.hover.AbstractDocDisplayInfoSupplier;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation;
-import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
 
 @LANG_SPECIFIC
 public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
@@ -28,14 +27,8 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	
 	@Override
 	protected AbstractToolOperation<String> getFindDocOperation(ISourceBuffer sourceBuffer, int offset) {
-		return new AbstractToolOperation<String>() {
-
-			@Override
-			public String executeToolOperation(IOperationMonitor om)
-					throws CommonException, OperationCancellation, OperationSoftFailure {
-				throw new CommonException("NOT IMPLEMENTED");
-			}
-		};
+		return new GoFindDocOperation(
+			GoOpenDefinitionOperation.getFindDefinitionOperation(sourceBuffer, offset));
 	}
 	
 }

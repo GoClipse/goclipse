@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.project_model.view;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 
 @LANG_SPECIFIC
@@ -20,6 +22,7 @@ public enum BundleModelElementKind {
 	DEP_REFERENCE,
 	
 	ERROR_ELEMENT,
+	
 	;
 	
 	

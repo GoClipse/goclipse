@@ -1,9 +1,9 @@
 package melnorme.lang.ide.core.tests;
 
 
-import LANG_PROJECT_ID.tests.CommonLANGUAGE_WorkspaceTest;
+import com.googlecode.goclipse.core.CommonGoCoreTest;
 
-public abstract class CommonCoreTest_ActualClass extends CommonLANGUAGE_WorkspaceTest {
+public abstract class CommonCoreTest_ActualClass extends CommonGoCoreTest {
 	
 	public CommonCoreTest_ActualClass() {
 		super();

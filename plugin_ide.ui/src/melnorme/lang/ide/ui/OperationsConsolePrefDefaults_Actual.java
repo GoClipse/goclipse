@@ -14,9 +14,10 @@ import org.eclipse.swt.graphics.RGB;
 
 public interface OperationsConsolePrefDefaults_Actual {
 	
-	public static final RGB INFO_COLOR_Default = new RGB(0, 0, 200);
-	public static final RGB INFO_COLOR_DefaultDark = new RGB(150,190,220);
-	public static final RGB BACKGROUND_COLOR_Default = new RGB(124, 232, 52);
-	public static final RGB BACKGROUND_COLOR_DefaultDark = new RGB(0, 0 ,0);
-
+	static RGB INFO_COLOR_Default = new RGB(0, 0, 200);
+	static RGB BACKGROUND_COLOR_Default = new RGB(244, 252, 252);
+	
+	static RGB INFO_COLOR_DefaultDark = new RGB(150,190,220);
+	static RGB BACKGROUND_COLOR_DefaultDark = new RGB(20, 20, 20);
+	
 }

@@ -1,75 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.2"?>
+<?eclipse version="3.4"?>
 <plugin>
-	
+
 	<extension point="org.eclipse.core.resources.natures"
-		id="nature">
+		id="goNature"
+		name="Go">
 		<runtime>
-			<run class="LANG_PROJECT_ID.ide.core.LANGUAGE_Nature"/>
+			<run class="com.googlecode.goclipse.core.GoNature" />
 		</runtime>
-		<builder id="LANG_PROJECT_ID.ide.core.Builder" />
+		<builder id="com.googlecode.goclipse.goBuilder" />
 	</extension>
 	
 	<extension point="org.eclipse.core.expressions.definitions">
-		<definition id="LANG_PROJECT_ID.ide.core.expressions.isNatureProject">
-			<adapt type="org.eclipse.core.resources.IProject">
+		<definition id="com.googlecode.goclipse.core.expressions.isGoProject">
+			 <adapt type="org.eclipse.core.resources.IProject">
 				<test
 					property="org.eclipse.core.resources.projectNature"
-					value="LANG_PROJECT_ID.ide.core.nature">
+					value="com.googlecode.goclipse.core.goNature">
 				</test>
 			</adapt>
 		</definition>
-		<definition id="LANG_PROJECT_ID.ide.core.expressions.isResourceInLangProject">
-			<and>
-				<instanceof value="org.eclipse.core.resources.IResource"/>
+		<definition id="com.googlecode.goclipse.core.expressions.isNatureProject">
+			 <adapt type="org.eclipse.core.resources.IProject">
 				<test
 					property="org.eclipse.core.resources.projectNature"
-					value="LANG_PROJECT_ID.ide.core.nature">
+					value="com.googlecode.goclipse.core.goNature">
+				</test>
+			</adapt>
+		</definition>
+		
+		<definition id="com.googlecode.goclipse.core.expressions.isResourceInIDEProject">
+			<and>
+				<instanceof value="org.eclipse.core.resources.IResource" />
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="com.googlecode.goclipse.core.goNature">
 				</test>
 			</and>
 		</definition>
+		
 	</extension>
 	
 	<!-- ============ TEXT ============= -->
 	
-	<extension point="org.eclipse.core.contenttype.contentTypes">
+	<extension point="org.eclipse.core.contenttype.contentTypes"> 
 		<content-type
+			id="com.googlecode.goclipse.gosourcefile"
+			name="Go source file"
+			file-extensions="go"
 			base-type="org.eclipse.core.runtime.text"
-			default-charset="UTF-8"
-			file-extensions="%contentType_FileExtensions_actual"
-			id="LANG_PROJECT_ID.ide.core.content.source"
-			name="%contentType_Name_actual"
-			priority="high">
+			default-charset="UTF-8">
+		</content-type>
+		
+		<content-type
+			id="com.googlecode.goclipse.goPackageFile"
+			name="Go package object"
+			file-extensions="a">
 		</content-type>
 	</extension>
-	
+		
 	<extension point="org.eclipse.core.filebuffers.documentSetup"
-		id="LANG_PROJECT_ID.DocumentSetupParticipant"
-		name="LANG_NAME Document Setup Participant"
-		>
+		id="GoDocumentSetupParticipant"
+		name="Go Document Setup Participant"
+		>	
 		<participant
-			class="LANG_PROJECT_ID.ide.core.text.LANGUAGE_DocumentSetupParticipant"
-			contentTypeId="LANG_PROJECT_ID.ide.core.content.source">
+			class="com.googlecode.goclipse.core.text.GoDocumentSetupParticipant"
+			contentTypeId="com.googlecode.goclipse.gosourcefile">
 		</participant>
 	</extension>
 	
-	
-	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	
-	<extension point="org.eclipse.core.resources.builders"
-		id="Builder"
-		name="%Builder_Name">
+	<extension
+		id="com.googlecode.goclipse.goBuilder"
+		name="Go Project Builder"
+		point="org.eclipse.core.resources.builders">
 		<builder
 			callOnEmptyDelta="true"
 			isConfigurable="true">
-			<run class="LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder" />
+			<run class="com.googlecode.goclipse.core.operations.GoBuilder"/>
 		</builder>
 	</extension>
 	
 	<extension point="org.eclipse.core.resources.markers"
-		id="build_problem"
-		name="%ProblemMarker_Name">
+		id="goProblem"
+		name="Go Problem">
 		<super type="org.eclipse.core.resources.problemmarker" />
 		<persistent value="true" />
 	</extension>
@@ -77,20 +92,21 @@
 	<extension point="org.eclipse.core.resources.markers"
 		id="source_problem"
 		name="%ProblemMarker_Name">
-		<super type="LANG_PROJECT_ID.ide.core.build_problem" />
+		<super type="com.googlecode.goclipse.core.goProblem" />
 		<persistent value="false" />
 	</extension>
 	
 	<!-- ============ Launch configuration type ============= -->
 	
-	<extension
-		 point="org.eclipse.debug.core.launchConfigurationTypes">
-		<launchConfigurationType
-			 delegate="LANG_PROJECT_ID.ide.core.launch.LANGUAGE_LaunchConfigDelegate"
-			 id="LANG_PROJECT_ID.ide.core.LaunchConfigurationType"
-			 modes="run"
-			name="%localApplication">
-		</launchConfigurationType>
-	</extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.googlecode.goclipse.core.launch.GoLaunchConfigurationDelegate"
+            delegateName="Goclipse Launcher"
+            id="com.googlecode.goclipse.launch.goLaunchType"
+            modes="run"
+            name="Go Application">
+      </launchConfigurationType>
+   </extension>
 	
 </plugin>

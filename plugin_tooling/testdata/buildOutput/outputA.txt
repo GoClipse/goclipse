@@ -1,0 +1,6 @@
+# MyGoLibFoo/libfoo
+MyGoLibFoo/libfoo/blah.go:7: undefined: asdfsd
+MyGoLibFoo/libfoo/blah.go:10: not enough arguments in call to fmt.Printf
+# MyGoLibFoo
+MyGoLibFoo/foo.go:3: undefined: ziggy
+$$TESTRESOURCE_SAMPLE_GOPATH_ENTRY$$/src/samplePackage/foo.go:5: undefined: ziggy2

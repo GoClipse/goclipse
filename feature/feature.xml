@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="LANG_PROJECT_ID"
+      id="goclipse_feature"
       label="%featureName"
-      version="0.1.0.qualifier"
+      version="0.15.0.qualifier"
       provider-name="%providerName"
-      plugin="LANG_PROJECT_ID.jvmcheck">
+      plugin="com.googlecode.goclipse.jvmcheck">
 
    <description>
       %description
@@ -25,35 +25,42 @@
    </requires>
 
    <plugin
-         id="LANG_PROJECT_ID.ide.core"
+         id="com.googlecode.goclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="LANG_PROJECT_ID.ide.ui"
+         id="com.googlecode.goclipse.debug"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="LANG_PROJECT_ID.tooling"
+         id="com.googlecode.goclipse.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="LANG_PROJECT_ID.jvmcheck"
+         id="com.googlecode.goclipse.tooling"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="LANG_PROJECT_ID.ide.debug"
+         id="org.json"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.googlecode.goclipse.jvmcheck"
          download-size="0"
          install-size="0"
          version="0.0.0"

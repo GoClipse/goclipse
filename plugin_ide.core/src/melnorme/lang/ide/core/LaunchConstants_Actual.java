@@ -6,6 +6,6 @@ import melnorme.lang.tooling.LANG_SPECIFIC;
 @LANG_SPECIFIC
 public interface LaunchConstants_Actual extends LaunchConstants_Default {
 	
-	public static final String PROCESS_TYPE_ID = "LANGUAGE_Process";
-
+	public static final String PROCESS_TYPE_ID = "GoProcess";
+	
 }

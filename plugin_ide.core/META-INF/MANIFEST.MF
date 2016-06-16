@@ -1,29 +1,30 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: LANG_PROJECT_ID.ide.core;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: com.googlecode.goclipse.core;singleton:=true
+Bundle-Version: 0.15.0.qualifier
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: LANG_PROJECT_ID.ide.core.LANGUAGE_CorePlugin
+Bundle-Activator: com.googlecode.goclipse.core.GoCorePlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: LANG_PROJECT_ID.tooling;visibility:=reexport,
- org.eclipse.core.runtime;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,
- org.eclipse.core.resources;bundle-version="[3.8.0,4.0.0)";visibility:=reexport,
+Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
+ org.eclipse.core.runtime;bundle-version="3.9.0";visibility:=reexport,
+ org.eclipse.core.resources;bundle-version="3.9.0";visibility:=reexport,
  org.eclipse.core.variables;bundle-version="3.2.0";visibility:=reexport,
- org.eclipse.core.filesystem;bundle-version="1.4.0",
- org.eclipse.core.filebuffers;bundle-version="3.5.0",
- org.eclipse.core.expressions;bundle-version="3.4.0",
+ org.eclipse.debug.core;visibility:=reexport,
+ org.eclipse.core.filesystem,
  org.eclipse.jface.text;bundle-version="3.9.1",
  org.eclipse.jface;bundle-version="3.9.1",
- org.eclipse.debug.core;bundle-version="3.6.0"
+ com.googlecode.goclipse.tooling;visibility:=reexport,
+ org.eclipse.core.filebuffers
 Bundle-ClassPath: .
-Export-Package: LANG_PROJECT_ID.ide.core,
- LANG_PROJECT_ID.ide.core.bundle_model,
- LANG_PROJECT_ID.ide.core.launch,
- LANG_PROJECT_ID.ide.core.operations,
- LANG_PROJECT_ID.ide.core.text,
+Export-Package: com.googlecode.goclipse.core,
+ com.googlecode.goclipse.core.engine,
+ com.googlecode.goclipse.core.launch,
+ com.googlecode.goclipse.core.operations,
+ com.googlecode.goclipse.core.text,
+ com.googlecode.goclipse.core.tools,
  melnorme.lang.ide.core,
  melnorme.lang.ide.core.engine,
  melnorme.lang.ide.core.launch,

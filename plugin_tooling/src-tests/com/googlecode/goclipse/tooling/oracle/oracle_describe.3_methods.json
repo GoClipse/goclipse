@@ -1,0 +1,22 @@
+{
+		"desc": "definition of package \"util//MyUtilFoo//libfoo//other\"",
+		"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/other/hello_other.go:1:9",
+		"detail": "package",
+		"package": {
+			"path": "util/MyUtilFoo/libfoo/other",
+			"members": [
+				{
+					"name": "MainController",
+					"type": "struct{}",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/other/some_types.go:3:6",
+					"kind": "type",
+					"methods": [
+						{
+							"name": "method (*MainController) RegisterJson()",
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/other/hello_other.go:2:2"
+						}
+					]
+				}
+			]
+		}
+}

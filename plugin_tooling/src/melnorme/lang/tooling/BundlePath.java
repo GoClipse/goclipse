@@ -21,7 +21,7 @@ public class BundlePath extends AbstractBundlePath {
 	
 	@Override
 	public Location getManifestLocation(boolean provideDefault) {
-		return getLocation().resolve_fromValid("lang.bundle"); // TODO: Lang
+		return null; // Not applicable
 	}
 	
 }

@@ -12,8 +12,41 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.util.swt.jface.IManagedImage;
+
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 @LANG_SPECIFIC
 public class LangImageProvider extends AbstractLangImageProvider {
+	
+	@Override
+	public IManagedImage visitFunction() {
+		return GoPluginImages.SOURCE_FUNCTION;
+	}
+	
+	@Override
+	public IManagedImage visitMethod() {
+		return GoPluginImages.SOURCE_METHOD;
+	}
+	
+	@Override
+	public IManagedImage visitVariable() {
+		return GoPluginImages.SOURCE_VARIABLE;
+	}
+	
+	@Override
+	public IManagedImage visitConst() {
+		return GoPluginImages.SOURCE_VARIABLE;
+	}
+	
+	@Override
+	public IManagedImage visitTypeDecl() {
+		return LangElementImages.T_TYPE;
+	}
+	
+	@Override
+	public IManagedImage visitPackage() {
+		return LangElementImages.PACKAGE;
+	}
 	
 }

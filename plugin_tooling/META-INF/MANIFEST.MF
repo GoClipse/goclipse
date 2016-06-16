@@ -1,15 +1,21 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: LANG_PROJECT_ID.tooling;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: com.googlecode.goclipse.tooling;singleton:=true
+Bundle-Version: 0.15.0.qualifier
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional
+Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
+ org.json;bundle-version="1.0.0";visibility:=reexport
 Bundle-ClassPath: .
-Export-Package: LANG_PROJECT_ID.tooling.toolchain,
+Export-Package: com.googlecode.goclipse.tooling,
+ com.googlecode.goclipse.tooling.env,
+ com.googlecode.goclipse.tooling.gocode,
+ com.googlecode.goclipse.tooling.lexer,
+ com.googlecode.goclipse.tooling.oracle,
+ com.googlecode.goclipse.tooling.tools,
  melnorme.lang.tests,
  melnorme.lang.tooling,
  melnorme.lang.tooling.ast,

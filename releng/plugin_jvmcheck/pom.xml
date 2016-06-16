@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>LANG_PROJECT_ID</groupId>
+		<groupId>com.googlecode.goclipse</groupId>
 		<artifactId>ide-aggregator</artifactId>
 		<version>1-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
@@ -15,7 +15,7 @@
 		<parentBaseDirRelPath>../..</parentBaseDirRelPath>
 	</properties>
 
-	<artifactId>LANG_PROJECT_ID.jvmcheck</artifactId>
+	<artifactId>com.googlecode.goclipse.jvmcheck</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	

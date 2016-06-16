@@ -1,32 +1,32 @@
-## LANG_IDE_NAME :
-
-(LANG_OTHER: create screenshots linked in this file)
-
 ### Features:
 
- * LANG_NAME source code editor, with:
-   * Configurable Syntax highlighting. 
+ * Go source code editor, with:
+   * Syntax highlighting (configurable). 
    * Automatic indent/de-indent and brace completion on certain keypresses (Enter, Backspace).
-   * Editor outline and Quick-Outline (`Ctrl+O`). (LANG_OTHER remove or change as appropriate)
- * LANG_NAME Project wizard.
- * LANG_NAME project builder.
+ * Go Project wizard and project builder.
    * With in-editor build errors reporting.
 
 | [![sample_basic](screenshots/sample_basic.thumb.png)](screenshots/sample_basic.png?raw=true)<br/>`Workbench and editor` |
 |----|
 
- * Content Assist and Find Definition using (LANG_OTHER remove or change as appropriate).
- * Configurable Content Assist code snippets.
+   * Editor outline and Quick-Outline (`Ctrl+O`).
+   
+| [![sample_basic](screenshots/Feature_QuickOutline.thumb.png)](screenshots/Feature_QuickOutline.png?raw=true)<br/>`Outline (right) and Quick-Outline (filtered to "pr")` |
+|----|
+
+ * Open Definition (and "Ctrl-click") via `guru` or `godef`.
+ * Content Assist (auto-complete) via `gocode`. 
+  * Content Assist code snippets (configurable).
 
 | [![sample_basic](screenshots/Feature_ContentAssist.thumb.png)](screenshots/Feature_ContentAssist.png?raw=true)<br/>`Content Assist` |
 |----| 
-   
-##### Debugging functionality. 
-Fully featured GDB debugger support (uses Eclipse CDT's GDB integration)
+
+#### Debugging functionality. 
+Fully featured GDB debugger support (reusing Eclipse CDT's GDB integration)
   * Stop/resume program execution. Listing program threads and stack frame contents.
   * Setting breakpoints, watchpoints (breakpoint on data/variables), tracepoints. Breakpoint conditions.
   * Stack variables inspection view. Expression watch and view. Disassembly view.
   * Non-stop mode (for supported GBDs). Reverse debugging (for supported GDB targets).
 
-| [![sample_debug1](screenshots/sample_debug.thumb.png)](screenshots/sample_debug.png?raw=true)<br/>`Execution stopped on a conditional breakpoint` |
+| [![sample_debug](screenshots/sample_debug.thumb.png)](screenshots/sample_debug.png?raw=true)<br/>`Execution stopped on a breakpoint` |
 |----|

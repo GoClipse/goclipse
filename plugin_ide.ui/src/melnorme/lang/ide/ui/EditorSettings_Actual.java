@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,10 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
-import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor;
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
+import com.googlecode.goclipse.ui.editor.GoEditor;
+import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
+import com.googlecode.goclipse.ui.text.GoColorPreferences;
+
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
@@ -30,13 +32,13 @@ import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
 
 public class EditorSettings_Actual {
 	
-	public static final String EDITOR_ID = LangUIPlugin.PLUGIN_ID + ".Editors.SourceEditor";
+	public static final String EDITOR_ID = "com.googlecode.goclipse.editors.Editor";
 	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
-	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.HyperlinkCodeTarget";
+	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.CodeTarget";
 	
-	public static Class<LANGUAGE_Editor> editorKlass() {
-		return LANGUAGE_Editor.class;
+	public static Class<GoEditor> editorKlass() {
+		return GoEditor.class;
 	}
 	
 	public static interface EditorPrefConstants extends EditorPrefConstants_Common {
@@ -45,20 +47,27 @@ public class EditorSettings_Actual {
 	
 	public static StylingPreferences getStylingPreferences() {
 		return new StylingPreferences(
-			LANGUAGE_ColorPreferences.COMMENTS,
-			LANGUAGE_ColorPreferences.DOC_COMMENTS,
-			LANGUAGE_ColorPreferences.STRINGS,
-			LANGUAGE_ColorPreferences.CHARACTER,
+			GoColorPreferences.DEFAULT,
 			
-			LANGUAGE_ColorPreferences.DEFAULT,
-			LANGUAGE_ColorPreferences.KEYWORDS,
-			LANGUAGE_ColorPreferences.KEYWORDS_VALUES
+			GoColorPreferences.COMMENT,
+			
+			GoColorPreferences.KEYWORD,
+			GoColorPreferences.KW_NATIVE_TYPES,
+			GoColorPreferences.KW_LITERAL,
+			GoColorPreferences.BUILTIN_FUNCTION,
+			GoColorPreferences.OPERATOR,
+			GoColorPreferences.STRUCTURAL_SYMBOLS,
+			
+			GoColorPreferences.NUMBER,
+			GoColorPreferences.CHARACTER,
+			GoColorPreferences.STRING,
+			GoColorPreferences.MULTILINE_STRING
 		);
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
 	
-	public static final ThemedTextStylingPreference CODE_DEFAULT_COLOR = LANGUAGE_ColorPreferences.DEFAULT;
+	public static final ThemedTextStylingPreference CODE_DEFAULT_COLOR = GoColorPreferences.DEFAULT;
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
@@ -68,14 +77,12 @@ public class EditorSettings_Actual {
 				return setupSimpleContentAssistant(templateCAP, array(
 					LangPartitionTypes.CODE.getId(), 
 					LangPartitionTypes.LINE_COMMENT.getId(), 
-					LangPartitionTypes.BLOCK_COMMENT.getId(), 
-					LangPartitionTypes.DOC_LINE_COMMENT.getId(),
-					LangPartitionTypes.DOC_BLOCK_COMMENT.getId() 
+					LangPartitionTypes.STRING.getId(),
+					LangPartitionTypes.BLOCK_COMMENT.getId() 
 				));
 			}
 		};
 	}
-	
 	/* ----------------- actions ----------------- */
 	
 	public static interface EditorCommandIds {
@@ -91,7 +98,7 @@ public class EditorSettings_Actual {
 	}
 	
 	public static LangEditorContextMenuContributor createCommandsContribHelper(IServiceLocator svcLocator) {
-		return new LangEditorContextMenuContributor(svcLocator) { };
+		return new GoEditorContextMenuContributor(svcLocator);
 	}
 	
 }
