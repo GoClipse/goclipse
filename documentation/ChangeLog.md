@@ -1,6 +1,9 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Removed preference "Show error dialog if gocode failures occur" as it's no longer necessary.
+   * Content Assist will now distinguish between setup errors (errors that the user can fix, which are related to configuration and not the source) and other tool errors. For setup errors, a dialog will always be shown. For the other errors, if Content Assist was invoked manually, a dialog will also be shown, but if it was activated automatically the error will only be displayed in the editor status line. 
+ * Improved `gofmt` error message text.
  * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
 
  * Added documentation hover (`F2` or mouse-over a reference). Also added to code completion. #TODO doc

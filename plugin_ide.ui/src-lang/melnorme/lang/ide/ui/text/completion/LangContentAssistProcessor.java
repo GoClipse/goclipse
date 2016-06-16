@@ -13,42 +13,49 @@ package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.option;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionListener;
 import org.eclipse.jface.text.contentassist.ICompletionListenerExtension;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposalExtension3;
+import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension3;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.ISourceBufferExt;
-import melnorme.lang.ide.ui.ContentAssistPreferences;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlHover.BrowserControlCreator;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.utils.HTMLHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
 public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
-	protected final ContentAssistant contentAssistant;
+	protected final ContentAssistantExt contentAssistant;
 	protected final Indexable<CompletionProposalsGrouping> categories;
 	protected final ISourceBufferExt sourceBuffer;
 	protected final ITextEditor editor; // can be null
@@ -112,6 +119,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	/* -----------------  ----------------- */
 	
 	protected int invocationIteration = 0;
+	protected boolean isAutoActivation = false;
 	
 	protected class CompletionSessionListener implements ICompletionListener, ICompletionListenerExtension {
 		
@@ -124,6 +132,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 				return;
 			
 			invocationIteration = 0;
+			isAutoActivation = event.isAutoActivated;
 			
 			if (event.assistant instanceof IContentAssistantExtension2) {
 				IContentAssistantExtension2 extension = (IContentAssistantExtension2) event.assistant;
@@ -217,15 +226,20 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		try {
 			proposals = cat.computeCompletionProposals(sourceBuffer, viewer, offset);
 		} catch(CommonException ce) {
-			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(option(project))) {
-				handleExceptionInUI(ce);
-			} else {
-				LangCore.logError(LangUIMessages.ContentAssistProcessor_opName, ce);
-			}
-			setAndDisplayErrorMessage(ce.getMessage());
+			handleExceptionInUI(ce);
 			return null;
 		}
-		setAndDisplayErrorMessage(cat.getErrorMessage());
+		String errorMessage = cat.getErrorMessage();
+		if(errorMessage != null) {
+			if(isAutoActivation) {
+				// don't popup, just display status line error
+				setAndDisplayStatusLineErrorMessage("Error: " + errorMessage);
+				return null;
+			} else {
+				Display.getCurrent().beep();
+				return array(new ErrorCompletionProposal(errorMessage));
+			}
+		}
 		
 		return proposals.toArray(ICompletionProposal.class);
 	}
@@ -241,7 +255,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		invocationIteration++;
 		
 		Indexable<IContextInformation> proposals = cat.computeContextInformation(sourceBuffer, viewer, offset);
-		setAndDisplayErrorMessage(cat.getErrorMessage());
+		setAndDisplayStatusLineErrorMessage(cat.getErrorMessage());
 		
 		return proposals.toArray(IContextInformation.class);
 	}
@@ -251,9 +265,69 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		return null; // TODO: need to add proper support for this
 	}
 	
-	protected void setAndDisplayErrorMessage(String errorMessage) {
+	protected void setAndDisplayStatusLineErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 		EditorUtils.setStatusLineErrorMessage(editor, errorMessage, null);
+		Display.getCurrent().beep();
+	}
+	
+	public class ErrorCompletionProposal 
+		implements ICompletionProposal, ICompletionProposalExtension3, ICompletionProposalExtension4 {
+		
+		protected final String errorMessage;
+		
+		public ErrorCompletionProposal(String errorMessage) {
+			this.errorMessage = assertNotNull(errorMessage);
+		}
+		
+		@Override
+		public Image getImage() {
+			return LangImages.NAV_Error.createImage();
+		}
+		
+		@Override
+		public String getDisplayString() {
+			return "An error occured during Content Assist.";
+		}
+		
+		@Override
+		public String getAdditionalProposalInfo() {
+			return new HTMLHelper().wrapHTMLBody("<b>Error:</b><hr/> " + HTMLHelper.escapeToToHTML(errorMessage));
+		}
+		
+		@Override
+		public Point getSelection(IDocument document) {
+			return null;
+		}
+		@Override
+		public IContextInformation getContextInformation() {
+			return null;
+		}
+		
+		@Override
+		public boolean isAutoInsertable() {
+			return true;
+		}
+		
+		@Override
+		public void apply(IDocument document) {
+			handleExceptionInUI(new CommonException(errorMessage));
+		}
+		
+		@Override
+		public IInformationControlCreator getInformationControlCreator() {
+			return new BrowserControlCreator();
+		}
+		
+		@Override
+		public CharSequence getPrefixCompletionText(IDocument document, int completionOffset) {
+			return null;
+		}
+		
+		@Override
+		public int getPrefixCompletionStart(IDocument document, int completionOffset) {
+			return completionOffset;
+		}
 	}
 	
 	/* ----------------- Messages ----------------- */
