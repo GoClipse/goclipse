@@ -20,6 +20,7 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.StatusMessage;
 
 public abstract class AbstractToolInvocationOperation<RESULTDATA, RESPONSE extends ToolResponse<RESULTDATA>>
@@ -62,7 +63,8 @@ public abstract class AbstractToolInvocationOperation<RESULTDATA, RESPONSE exten
 	protected abstract RESPONSE createToolResponse(RESULTDATA resultData, String errorMessage);
 	
 	protected ToolResponse<RESULTDATA> createDefaultToolResponse(RESULTDATA resultData, String errorMessage) {
-		return new ToolResponse<RESULTDATA>(resultData, new StatusMessage(errorMessage));
+		IStatusMessage status = errorMessage == null ? null : new StatusMessage(errorMessage);
+		return new ToolResponse<RESULTDATA>(resultData, status);
 	}
 	
 }

@@ -18,7 +18,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.utils.operations.ComputeValueUIOperation;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
-import melnorme.lang.tooling.utils.HTMLEscapeUtil;
+import melnorme.lang.tooling.utils.HTMLHelper;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -66,7 +66,7 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 	}
 	
 	protected String escapeToHTML(String rawDocumentation) {
-		return HTMLEscapeUtil.escapeToToHTML(rawDocumentation);
+		return HTMLHelper.escapeToToHTML(rawDocumentation);
 	}
 	
 	protected ToolResponse<String> getRawDocumentation(ISourceBuffer sourceBuffer, int offset) 

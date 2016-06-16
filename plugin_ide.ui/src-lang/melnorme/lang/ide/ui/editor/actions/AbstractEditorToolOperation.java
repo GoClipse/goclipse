@@ -69,7 +69,7 @@ public abstract class AbstractEditorToolOperation<RESULT> extends AbstractEditor
 	protected abstract void handleResultData(RESULT resultData) throws CommonException;
 	
 	protected void handleStatus(IStatusMessage status) {
-		String statusMsg = status.getMessage();
+		String statusMsg = status.getMessage().trim();
 		if(statusMsg.contains("\n")) {
 			// Use a dialog
 			UIOperationsStatusHandler.displayStatusMessage(operationName, status.getSeverity(), statusMsg);

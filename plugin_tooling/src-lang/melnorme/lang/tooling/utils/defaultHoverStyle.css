@@ -1,0 +1,14 @@
+body	     { color: #000000; background-color: #FFFFD0 }
+
+/* Font definitions 
+html         { font-family: sans-serif; font-size: 9pt; font-style: normal; font-weight: normal; }
+h1           { font-size: 1.8em; }
+h2           { font-size: 1.2em; }
+h3           { font-size: 1.1em; }
+body, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt { font-size: 1em; }
+pre          { font-family: monospace; }
+*/
+
+/* Margins */
+body	     { font-size: 1em; margin: 0.5em; }
+body2	     { overflow: auto; margin-top: 0px; margin-bottom: 0.5em; margin-left: 0.3em; margin-right: 0px; }

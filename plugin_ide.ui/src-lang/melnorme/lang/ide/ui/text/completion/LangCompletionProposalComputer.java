@@ -65,7 +65,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 			
 		} catch (OperationCancellation e) {
 			if(cm.isCanceled()) {
-				throw new CommonException(LangUIMessages.ContentAssist_Timeout);
+				throw new OperationSoftFailure(LangUIMessages.ContentAssist_Timeout);
 			}
 			// This shouldn't be possible in most concrete implementations,
 			// as OperationCancellation should only occur when the timeout is reached.

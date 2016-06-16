@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.preferences.pages;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.AbstractCompositePreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
@@ -45,8 +44,6 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 		
 		protected final FieldWidget<Boolean> startServerAutomatically = new CheckBoxField(
 			"Start " + getEngineToolName() + " server automatically");
-		protected final FieldWidget<Boolean> showErrorsDialog = new CheckBoxField(
-			"Show error dialog if " + getEngineToolName() + " failures occur during Content Assist");
 		
 		public EngineToolGroup() {
 			super(getEngineToolName() + ": ", 3);
@@ -62,11 +59,8 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 			
 			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.DAEMON_PATH);
 			prefContext.bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
-			prefContext.bindToPreference(showErrorsDialog, ContentAssistPreferences.ShowDialogIfContentAssistErrors
-				.getGlobalPreference());
 			
 			addChildWidget(startServerAutomatically);
-			addChildWidget(showErrorsDialog);
 		}
 		
 		protected ButtonTextField initToolLocationField() {
