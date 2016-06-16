@@ -25,6 +25,7 @@ import melnorme.lang.ide.ui.preferences.pages.LanguageToolsBlock;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField2;
@@ -130,6 +131,16 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		protected String getDefaultFieldValue() throws CommonException {
 			Location rootLoc = Location.create(LangCore.settings().SDK_LOCATION.getGlobalPreference().get());
 			return GoFmtOperation.getGofmtLocationFromGoRoot(rootLoc).toPathString();
+		}
+		
+		@Override
+		protected void updateChildrenEnablement() {
+			for (IDisableableWidget childWidget : getChildWidgets()) {
+				if(childWidget == enablementField || childWidget == formatOnSaveField) {
+					continue;
+				}
+				childWidget.setEnabled(!isUseDefault());
+			}
 		}
 		
 	}
