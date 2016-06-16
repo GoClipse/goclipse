@@ -45,10 +45,11 @@ import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.editor.EditorSourceBuffer.DocumentSourceBuffer;
 import melnorme.lang.ide.ui.editor.ISourceViewerExt;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlCreator;
 import melnorme.lang.ide.ui.text.DocDisplayInfoSupplier;
-import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
@@ -207,8 +208,7 @@ public class LangCompletionProposal implements
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
 		if(informationControlCreator == null) {
-			/* FIXME: control creator */
-			informationControlCreator = new DocumentationHoverCreator().getInformationPresenterControlCreator();
+			informationControlCreator = new BrowserControlCreator();
 		}
 		return informationControlCreator;
 	}
@@ -231,9 +231,7 @@ public class LangCompletionProposal implements
 		return additionalProposalInfo;
 	}
 	
-	/* FIXME: use the progress monitor */
-	@SuppressWarnings("unused")
-	protected String doGetAdditionalProposalInfo( IProgressMonitor monitor) {
+	protected String doGetAdditionalProposalInfo(IProgressMonitor monitor) {
 		Document tempDocument = new Document(sourceOpContext.getSource());
 		doApply(tempDocument, false);
 		try {
@@ -248,7 +246,13 @@ public class LangCompletionProposal implements
 				return sourceOpContext.getOptionalFileLocation().orElse(null);
 			}
 		};
-		return new DocDisplayInfoSupplier(tempSourceBuffer, getReplaceOffset()).get();
+		String doc = new DocDisplayInfoSupplier(tempSourceBuffer, getReplaceOffset())
+				.doGetDocumentation(EclipseUtils.om(monitor));
+		
+		if(doc == null) {
+			return null;
+		}
+		return BrowserControlCreator.wrapHTMLBody(doc);
 	}
 	
 	/* ----------------- Application ----------------- */

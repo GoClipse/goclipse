@@ -21,18 +21,13 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
 import org.eclipse.swt.widgets.Shell;
 
+import melnorme.lang.tooling.utils.HTMLHelper;
+import melnorme.utilbox.misc.MiscUtil;
 
-public abstract class BrowserControlHover {
+
+@SuppressWarnings("restriction")
+public class BrowserControlCreator extends AbstractReusableInformationControlCreator {
 	
-	public BrowserControlHover() {
-		super();
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@SuppressWarnings("restriction")
-	public static class BrowserControlCreator extends AbstractReusableInformationControlCreator {
-		
 		protected final String statusFieldText;
 		
 		public BrowserControlCreator() {
@@ -69,7 +64,6 @@ public abstract class BrowserControlHover {
 		public IInformationControlCreator getEnrichedInformationPresenterControlCreator() {
 			return null;
 		}
-	}
 	
 	public static class EnrichableBrowserControlCreator extends BrowserControlCreator {
 		
@@ -99,6 +93,14 @@ public abstract class BrowserControlHover {
 			return true;
 		}
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static String DEFAULT_CSS = MiscUtil.getClassResource(BrowserControlCreator.class, "defaultHoverStyle.css"); 
+	
+	public static String wrapHTMLBody(String content) {
+		return new HTMLHelper().wrapHTMLBody(content, DEFAULT_CSS);
 	}
 	
 }

@@ -15,14 +15,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.function.Supplier;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.utils.operations.ComputeValueUIOperation;
+import melnorme.lang.ide.ui.utils.operations.WorkbenchBackgroundExecutor;
 import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.lang.tooling.utils.HTMLHelper;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.Severity;
 
 public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String> {
 	
@@ -36,9 +38,13 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 	
 	@Override
 	public String get() {
+		return new WorkbenchBackgroundExecutor().callInBackground(this::doGetDocumentation);
+	}
+	
+	public String doGetDocumentation(IOperationMonitor om) {
 		ToolResponse<String> rawDocumentationResult;
 		try {
-			rawDocumentationResult = getRawDocumentation(sourceBuffer, offset);
+			rawDocumentationResult = getRawDocumentation(om, sourceBuffer, offset);
 		} catch(CommonException ce) {
 			LangCore.logStatusException(ce.toStatusException());
 			// TODO: we could add a nicer HTML formatting:
@@ -56,11 +62,16 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 			documentationInfo = escapeToHTML(rawDocumentation);
 		}
 		
-		IStatusMessage statusMessage = rawDocumentationResult.getStatusMessage();
-		if(statusMessage != null) {
+		String errorMessage = rawDocumentationResult.getErrorMessage();
+		if(errorMessage != null) {
 			documentationInfo = documentationInfo == null ? "" : "</br> </hr>";
+			Severity severity = Severity.ERROR;
 			documentationInfo += 
-				"<b>" + statusMessage.getSeverity().getLabel() + ":</b> " + escapeToHTML(statusMessage.getMessage());
+				"<b>" + severity.getLabel() + ":</b> " + escapeToHTML(errorMessage);
+
+		}
+		if(documentationInfo == null) {
+			return null;
 		}
 		return documentationInfo;
 	}
@@ -69,12 +80,12 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 		return HTMLHelper.escapeToToHTML(rawDocumentation);
 	}
 	
-	protected ToolResponse<String> getRawDocumentation(ISourceBuffer sourceBuffer, int offset) 
+	protected ToolResponse<String> getRawDocumentation(IOperationMonitor om, ISourceBuffer sourceBuffer, int offset) 
 			throws CommonException, OperationCancellation {
-		return getOpenDocumentationOperation2(sourceBuffer, offset).call();
+		AbstractToolOperation<String> findDefinitionOp = getFindDocOperation(sourceBuffer, offset);
+		return findDefinitionOp.toResultOperation().executeOp(om);
 	}
 	
-	protected abstract ComputeValueUIOperation<ToolResponse<String>> getOpenDocumentationOperation2(
-			ISourceBuffer sourceBuffer, int offset);
+	protected abstract AbstractToolOperation<String> getFindDocOperation(ISourceBuffer sourceBuffer, int offset);
 	
 }

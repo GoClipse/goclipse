@@ -10,12 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.toolchain.ops;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import melnorme.utilbox.status.IStatusMessage;
-import melnorme.utilbox.status.Severity;
-import melnorme.utilbox.status.StatusMessage;
-
 /**
  * Result for a tool operation. 
  * An exception result should be only be used for non-critical failures, that is,
@@ -29,72 +23,46 @@ import melnorme.utilbox.status.StatusMessage;
 public class ToolResponse<DATA> {
 	
 	protected final DATA resultData; // can be null
-	protected final IStatusMessage statusMessage;
+	protected final String errorMessage;
 	
 	public ToolResponse(DATA resultValue) {
 		this(resultValue, null);
 	}
 	
-	public ToolResponse(DATA resultData, IStatusMessage statusMessaage) {
+	public ToolResponse(DATA resultData, String errorMessaage) {
 		this.resultData = resultData;
-		this.statusMessage = statusMessaage;
+		this.errorMessage = errorMessaage;
 	}
 	
-	public static <DATA> ToolResponse<DATA> newError(String message) {
-		return new ToolResponse<DATA>(null, new StatusMessage(Severity.ERROR, message));
+	public static <DATA> ToolResponse<DATA> newError(String errorMessage) {
+		return new ToolResponse<DATA>(null, errorMessage);
 	}
 	
 	public DATA getResultData() {
 		return resultData;
 	}
 	
-	public IStatusMessage getStatusMessage() {
-		return statusMessage;
+	public String getErrorMessage() {
+		return getStatusMessageText();
 	}
 	
 	public String getStatusMessageText() {
-		if(getStatusMessage() == null) {
-			return null;
-		} else {
-			return getStatusMessage().getMessage();
-		}
+		return errorMessage;
 	}
 	
-	public boolean isValidResult() {
-		return resultData != null;
+	public boolean isErrorResult() {
+		return errorMessage != null;
 	}
 	
-	public DATA getValidResult() throws StatusValidation {
-		if(!isValidResult()) {
-			throw new StatusValidation(statusMessage.getSeverity(), statusMessage.getMessage());
-		}
-		return resultData;
+	public final boolean isValidResult() {
+		return !isErrorResult();
 	}
 	
-	@SuppressWarnings("serial")
-	public static class StatusValidation extends Throwable implements IStatusMessage {
-		
-		protected final Severity severity;
-		
-		public StatusValidation(String message) {
-			this(Severity.ERROR, message);
+	public DATA getValidResult() throws OperationSoftFailure {
+		if(isErrorResult()) {
+			throw new OperationSoftFailure(getErrorMessage());
 		}
-		
-		public StatusValidation(Severity severity, String message) {
-			super(message, null);
-			this.severity = assertNotNull(severity);
-		}
-		
-		@Override
-		public Severity getSeverity() {
-			return severity;
-		}
-		
-		@Override
-		public String getMessage() {
-			return super.getMessage();
-		}
-		
+		return getResultData();
 	}
 	
 }

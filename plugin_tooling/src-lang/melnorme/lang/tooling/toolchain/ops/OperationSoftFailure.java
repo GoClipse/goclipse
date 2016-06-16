@@ -32,6 +32,11 @@ public class OperationSoftFailure extends Exception {
 		return super.getMessage();
 	}
 	
+	@Override
+	public final Throwable getCause() {
+		return null;
+	}
+	
 	public CommonException toCommonException() {
 		return new CommonException(getMessage());
 	}

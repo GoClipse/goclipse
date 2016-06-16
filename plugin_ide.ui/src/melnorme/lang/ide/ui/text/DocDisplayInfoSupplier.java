@@ -11,10 +11,11 @@
 package melnorme.lang.ide.ui.text;
 
 import melnorme.lang.ide.ui.editor.hover.AbstractDocDisplayInfoSupplier;
-import melnorme.lang.ide.ui.utils.operations.ComputeValueUIOperation;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -26,11 +27,12 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	}
 	
 	@Override
-	protected ComputeValueUIOperation<ToolResponse<String>> getOpenDocumentationOperation2(ISourceBuffer sourceBuffer,
-			int offset) {
-		return new ComputeValueUIOperation<ToolResponse<String>>() {
+	protected AbstractToolOperation<String> getFindDocOperation(ISourceBuffer sourceBuffer, int offset) {
+		return new AbstractToolOperation<String>() {
+
 			@Override
-			public ToolResponse<String> call() throws CommonException, OperationCancellation {
+			public String executeToolOperation(IOperationMonitor om)
+					throws CommonException, OperationCancellation, OperationSoftFailure {
 				throw new CommonException("NOT IMPLEMENTED");
 			}
 		};

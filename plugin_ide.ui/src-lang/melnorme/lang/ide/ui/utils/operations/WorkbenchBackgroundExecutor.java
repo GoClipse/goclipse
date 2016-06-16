@@ -10,7 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.eclipse.swt.widgets.Display;
 
@@ -23,6 +26,26 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class WorkbenchBackgroundExecutor {
+	
+	public <R> R callInBackground(Function<IOperationMonitor, R> op) {
+		
+		AtomicReference<R> resultHolder = new AtomicReference<>();
+		
+		CommonOperation opWrapper = new CommonOperation() {
+			@Override
+			public void execute(IOperationMonitor om) {
+				R result = op.apply(om);
+				resultHolder.set(result);
+			}
+		};
+		try {
+			runInBackground(opWrapper);
+		} catch(CommonException | OperationCancellation e) {
+			throw assertFail();
+		}
+		
+		return resultHolder.get();
+	}
 	
 	public <R> R invokeInBackground(ResultOperation<R> op) throws CommonException, OperationCancellation {
 		

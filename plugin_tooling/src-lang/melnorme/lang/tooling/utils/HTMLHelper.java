@@ -10,11 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.utils;
 
-import melnorme.utilbox.misc.MiscUtil;
-
 public class HTMLHelper {
-	
-	public static String DEFAULT_CSS = MiscUtil.getClassResource(HTMLHelper.class, "defaultHoverStyle.css"); 
 	
 	public static String escapeToToHTML(String string) {
 		String content = string;
@@ -24,10 +20,6 @@ public class HTMLHelper {
 		content = content.replace(">", "&gt;");
 		content = content.replace("\n", "<br/>");
 		return content;
-	}
-	
-	public String wrapHTMLBody(String content) {
-		return wrapHTMLBody(content, DEFAULT_CSS);
 	}
 	
 	public String wrapHTMLBody(String content, String styleSheet) {

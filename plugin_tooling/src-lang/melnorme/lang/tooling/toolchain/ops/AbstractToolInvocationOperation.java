@@ -14,18 +14,13 @@ package melnorme.lang.tooling.toolchain.ops;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.common.ops.ResultOperation;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse.StatusValidation;
-import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.IStatusMessage;
-import melnorme.utilbox.status.StatusMessage;
 
-public abstract class AbstractToolInvocationOperation<RESULTDATA, RESPONSE extends ToolResponse<RESULTDATA>>
+public abstract class AbstractToolInvocationOperation<RESULTDATA>
 	extends AbstractToolResultParser<RESULTDATA>
-	implements ResultOperation<RESPONSE> {
+	implements AbstractToolOperation<RESULTDATA> {
 	
 	protected final IToolOperationService opHelper;
 	protected final String toolPath;
@@ -38,33 +33,13 @@ public abstract class AbstractToolInvocationOperation<RESULTDATA, RESPONSE exten
 	}
 	
 	@Override
-	public final RESPONSE executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
-		return execute(om);
-	}
-	
-	public RESPONSE execute(ICancelMonitor cm) throws CommonException, OperationCancellation {
+	public RESULTDATA executeToolOperation(IOperationMonitor om)
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		ProcessBuilder pb = createProcessBuilder();
-		ExternalProcessResult result = opHelper.runProcess(pb, toolInput, cm);
-		return parseProcessResultToResponse(result);
+		ExternalProcessResult processResult = opHelper.runProcess(pb, toolInput, om);
+		return doParseResult(processResult);
 	}
 	
 	protected abstract ProcessBuilder createProcessBuilder() throws CommonException;
-	
-	public RESPONSE parseProcessResultToResponse(ExternalProcessResult result) {
-		try {
-			return createToolResponse(doParseResult(result), null);
-		} catch(StatusValidation e) {
-			return createToolResponse(null, e.getMessage());
-		} catch(CommonException e) {
-			return createToolResponse(null, e.getSingleLineRender());
-		}
-	}
-	
-	protected abstract RESPONSE createToolResponse(RESULTDATA resultData, String errorMessage);
-	
-	protected ToolResponse<RESULTDATA> createDefaultToolResponse(RESULTDATA resultData, String errorMessage) {
-		IStatusMessage status = errorMessage == null ? null : new StatusMessage(errorMessage);
-		return new ToolResponse<RESULTDATA>(resultData, status);
-	}
 	
 }

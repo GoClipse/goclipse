@@ -27,7 +27,10 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.SourceLineColumnRange;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceLocation;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -49,6 +52,10 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorToolOpe
 	protected ToolManager getToolManager() {
 		return LangCore.getToolManager();
 	}
+	
+	@Override
+	protected abstract SourceLocation doBackgroundToolResultComputation(IOperationMonitor om)
+			throws CommonException, OperationCancellation, OperationSoftFailure;
 	
 	@Override
 	protected void handleResultData(SourceLocation resultData) throws CommonException {

@@ -45,7 +45,7 @@ import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.hover.BrowserControlHover.BrowserControlCreator;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlCreator;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.utils.HTMLHelper;
@@ -292,7 +292,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		
 		@Override
 		public String getAdditionalProposalInfo() {
-			return new HTMLHelper().wrapHTMLBody("<b>Error:</b><hr/> " + HTMLHelper.escapeToToHTML(errorMessage));
+			return BrowserControlCreator.wrapHTMLBody("<b>Error:</b><hr/> " + HTMLHelper.escapeToToHTML(errorMessage));
 		}
 		
 		@Override

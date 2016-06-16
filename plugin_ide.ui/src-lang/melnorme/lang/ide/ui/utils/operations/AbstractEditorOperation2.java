@@ -41,6 +41,7 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	protected final ITextEditor editor;
 	protected final IWorkbenchWindow window;
 	
+	protected final EditorSourceBuffer sourceBuffer;
 	protected final IDocument doc;
 	protected final IProject project;
 	protected final SourceOpContext sourceOpContext;
@@ -57,7 +58,8 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 		
 		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
 		this.project = EditorUtils.getAssociatedProject(editor.getEditorInput());
-		this.sourceOpContext = new EditorSourceBuffer(editor).getSourceOpContext(range);
+		this.sourceBuffer = new EditorSourceBuffer(editor);
+		this.sourceOpContext = sourceBuffer.getSourceOpContext(range); /* FIXME: review this code because of dirty */
 	}
 	
 	public SourceOpContext getContext2() {

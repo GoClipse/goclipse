@@ -23,10 +23,12 @@ import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.StatusMessage;
 
 public abstract class AbstractEditorToolOperation<RESULT> extends AbstractEditorOperation2<ToolResponse<RESULT>> {
 	
@@ -43,8 +45,17 @@ public abstract class AbstractEditorToolOperation<RESULT> extends AbstractEditor
 	}
 	
 	@Override
-	protected abstract ToolResponse<RESULT> doBackgroundValueComputation(IOperationMonitor om)
-			throws CommonException, OperationCancellation;
+	protected final ToolResponse<RESULT> doBackgroundValueComputation(IOperationMonitor om)
+			throws CommonException, OperationCancellation {
+		try {
+			return new ToolResponse<>(doBackgroundToolResultComputation(om));
+		} catch(OperationSoftFailure e) {
+			return new ToolResponse<>(null, e.getMessage());
+		}
+	};
+	
+	protected abstract RESULT doBackgroundToolResultComputation(IOperationMonitor om)
+			throws CommonException, OperationCancellation, OperationSoftFailure;
 	
 	@Override
 	public void prepareAndCalculateResult() throws CommonException, OperationCancellation {
@@ -60,9 +71,9 @@ public abstract class AbstractEditorToolOperation<RESULT> extends AbstractEditor
 			handleResultData(response.getResultData());
 		}
 		
-		IStatusMessage status = response.getStatusMessage();
-		if(status != null) {
-			handleStatus(status);
+		String errorMessage = response.getStatusMessageText();
+		if(errorMessage != null) {
+			handleStatus(new StatusMessage(errorMessage));
 		}
 	}
 	

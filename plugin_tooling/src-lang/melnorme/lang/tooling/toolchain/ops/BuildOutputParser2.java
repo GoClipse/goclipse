@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.lang.tooling.common.ToolSourceMessage;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse.StatusValidation;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -51,7 +50,7 @@ public abstract class BuildOutputParser2 extends AbstractToolResultParser<ArrayL
 			validateExitCode(result);
 			
 			return parseOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
-		} catch(StatusValidation e) {
+		} catch(OperationSoftFailure e) {
 			// There shouldn't even be a StatusValidation error for build, 
 			// because the source should always be able to be analyis. (might need  to refactor this)
 			throw new CommonException(e.getMessage());

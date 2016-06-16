@@ -17,8 +17,8 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceLocation;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -30,8 +30,8 @@ public class LANGUAGE_OpenDefinitionOperation extends AbstractOpenElementOperati
 	}
 	
 	@Override
-	protected ToolResponse<SourceLocation> doBackgroundValueComputation(IOperationMonitor om)
-			throws CommonException, OperationCancellation {
+	protected SourceLocation doBackgroundToolResultComputation(IOperationMonitor om)
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		throw new CommonException("Feature not implemented.");
 	}
 	

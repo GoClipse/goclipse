@@ -12,7 +12,6 @@ package melnorme.lang.tooling.toolchain.ops;
 
 
 import melnorme.lang.tooling.ToolingMessages;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse.StatusValidation;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -27,36 +26,36 @@ public abstract class AbstractToolResultParser<RESULT> {
 	public ToolResponse<RESULT> parseResult(ExternalProcessResult result) {
 		try {
 			return new ToolResponse<>(doParseResult(result));
-		} catch(StatusValidation e) {
-			return new ToolResponse<>(null, e);
+		} catch(OperationSoftFailure e) {
+			return ToolResponse.newError(e.getMessage());
 		} catch(CommonException e) {
 			return ToolResponse.newError(e.getMultiLineRender());
 		}
 	}
 	
-	public RESULT doParseResult(ExternalProcessResult result) throws StatusValidation, CommonException {
+	public RESULT doParseResult(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
 		validateExitCode(result);
 		
 		return parseOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected void validateExitCode(ExternalProcessResult result) throws CommonException, StatusValidation {
+	protected void validateExitCode(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
 		if(result.exitValue != 0) {
 			handleNonZeroExitCode(result);
 		}
 	}
 	
-	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, StatusValidation {
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
 		throw new CommonException(
 			ToolingMessages.PROCESS_CompletedWithNonZeroValue(getToolName(), result.exitValue));
 	}
 	
 	protected abstract String getToolName() throws CommonException;
 	
-	public RESULT parseOutput(String output) throws StatusValidation, CommonException {
+	public RESULT parseOutput(String output) throws CommonException, OperationSoftFailure {
 		return parseOutput(new StringCharSource(output));
 	}
 	
-	public abstract RESULT parseOutput(StringCharSource output) throws StatusValidation, CommonException;
+	public abstract RESULT parseOutput(StringCharSource output) throws CommonException, OperationSoftFailure;
 	
 }
