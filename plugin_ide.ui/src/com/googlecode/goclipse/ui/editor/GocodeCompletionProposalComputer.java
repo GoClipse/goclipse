@@ -13,8 +13,10 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -24,8 +26,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
-			throws CommonException, OperationCancellation {
+	protected Indexable<ToolCompletionProposal> doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		Location fileLoc = sourceContext.getFileLocation();
 		int offset = sourceContext.getOffset();
 		
@@ -51,7 +53,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 				LangCore.logWarning(message);
 			}
 		};
-		return gocodeOutputParser.parseProcessResult(processResult);
+		return gocodeOutputParser.doParseResult(processResult);
 	}
 	
 }

@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -42,16 +43,18 @@ public interface ISourceBuffer {
 	 * Try to save a buffer if it is dirty.
 	 * 
 	 * @return success if buffer is now non-dirty 
-	 * (either because it was saved, or because it was never dirty in the first place), false otherwise 
+	 * (either because it was saved, or because it was never dirty in the first place), false otherwise
+	 * 
+	 *  Warning, it might be necessary to obtain a new SourceOpContext to update dirty status.
 	 */
-	default boolean trySaveBufferIfDirty() {
+	default void trySaveBufferIfDirty() throws CommonException, OperationCancellation {
 		if(!isDirty()) {
-			return true;
+			return;
 		}
-		return doTrySaveBuffer();
+		doTrySaveBuffer();
 	}
 	
-	public abstract boolean doTrySaveBuffer();
+	public abstract void doTrySaveBuffer() throws CommonException, OperationCancellation;
 	
 	public abstract ISourceBuffer getReadOnlyView();
 	

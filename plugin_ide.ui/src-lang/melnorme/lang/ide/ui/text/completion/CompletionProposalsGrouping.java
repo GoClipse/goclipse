@@ -19,6 +19,7 @@ import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class CompletionProposalsGrouping {
@@ -83,20 +84,16 @@ public class CompletionProposalsGrouping {
 	
 	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer, 
 			ITextViewer viewer, int offset) 
-			throws CommonException {
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		clearErrorMessage();
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		
 		for (ILangCompletionProposalComputer computer : computers) {
-			try {
-				Indexable<ICompletionProposal> computerProposals = 
-						computer.computeCompletionProposals(sourceBuffer, viewer, offset);
-				if(computerProposals != null) {
-					proposals.addAll2(computerProposals);
-				}
-			} catch(OperationSoftFailure e) {
-				updateErrorMessage(e.getMessage());
+			Indexable<ICompletionProposal> computerProposals = 
+					computer.computeCompletionProposals(sourceBuffer, viewer, offset);
+			if(computerProposals != null) {
+				proposals.addAll2(computerProposals);
 			}
 			
 		}

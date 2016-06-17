@@ -58,20 +58,18 @@ public abstract class GoFindDefinitionOperation {
 			throw e;
 		}
 	}
-
+	
+	
 	protected abstract Path getGuruPath() throws StatusException;
 	
 	protected abstract Path getGoDefPath() throws StatusException;
 	
+	
 	protected SourceLocation findWithGuru(String guruPath, IOperationMonitor om) 
 			throws CommonException, OperationCancellation, OperationSoftFailure {
 		GuruFindDefinitionOperation guruOp = new GuruFindDefinitionOperation(goOpContext, guruPath);
-		boolean saveSuccess = goOpContext.getSourceBuffer().trySaveBufferIfDirty();
-		if(saveSuccess) {
-			return guruOp.executeToolOperation(om);
-		} else {
-			throw new CommonException("Unable to save editor");
-		}
+		goOpContext.getSourceBuffer().trySaveBufferIfDirty();
+		return guruOp.executeToolOperation(om);
 	}
 	
 }

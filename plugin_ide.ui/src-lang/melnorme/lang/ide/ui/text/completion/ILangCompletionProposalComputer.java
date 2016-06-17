@@ -17,6 +17,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public interface ILangCompletionProposalComputer {
@@ -32,6 +33,6 @@ public interface ILangCompletionProposalComputer {
 	}
 	
 	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer, 
-			ITextViewer viewer, int offset) throws CommonException, OperationSoftFailure; 
+			ITextViewer viewer, int offset) throws CommonException, OperationSoftFailure, OperationCancellation; 
 	
 }

@@ -21,17 +21,13 @@ import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.toolchain.ops.AbstractToolResultParser;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class GocodeOutputParser2 extends AbstractToolResultParser<ArrayList2<ToolCompletionProposal>> {
 	
@@ -58,16 +54,6 @@ public abstract class GocodeOutputParser2 extends AbstractToolResultParser<Array
 	@Override
 	protected String getToolName() {
 		return "gocode";
-	}
-	
-	public LangCompletionResult parseProcessResult(ExternalProcessResult result) throws OperationCancellation {
-		try {
-			return new LangCompletionResult(doParseResult(result));
-		} catch(OperationSoftFailure e) {
-			return new LangCompletionResult(e.getMessage());
-		} catch(CommonException e) {
-			return new LangCompletionResult(e.getMultiLineRender());
-		}
 	}
 	
 	@Override

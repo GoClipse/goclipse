@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.function.Supplier;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.utils.operations.WorkbenchBackgroundExecutor;
+import melnorme.lang.ide.ui.utils.operations.WorkbenchOperationExecutor;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation;
@@ -38,7 +38,7 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 	
 	@Override
 	public String get() {
-		return new WorkbenchBackgroundExecutor().callInBackground(this::doGetDocumentation);
+		return new WorkbenchOperationExecutor().callInBackground(this::doGetDocumentation);
 	}
 	
 	public String doGetDocumentation(IOperationMonitor om) {
