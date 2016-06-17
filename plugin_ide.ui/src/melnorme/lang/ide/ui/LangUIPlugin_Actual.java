@@ -12,7 +12,6 @@ import com.googlecode.goclipse.ui.editor.actions.GoFmtEditorOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
@@ -57,7 +56,7 @@ public final class LangUIPlugin_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	public static AbstractEditorToolOperation<?> getFormatOperation(ITextEditor editor) {
+	public static GoFmtEditorOperation getFormatOperation(ITextEditor editor) {
 		return new GoFmtEditorOperation(editor);
 	}
 	
