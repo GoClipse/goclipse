@@ -31,11 +31,11 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class GoFmtOperation extends AbstractEditorToolOperation<String> {
+public class GoFmtEditorOperation extends AbstractEditorToolOperation<String> {
 	
 	protected static final String RUN_GOFMT_OpName = "Run 'gofmt'";
 	
-	public GoFmtOperation(ITextEditor editor) {
+	public GoFmtEditorOperation(ITextEditor editor) {
 		super(RUN_GOFMT_OpName, editor);
 	}
 	
