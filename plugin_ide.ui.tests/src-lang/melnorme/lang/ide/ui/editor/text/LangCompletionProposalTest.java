@@ -24,6 +24,7 @@ import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class LangCompletionProposalTest extends CommonUITest {
@@ -52,8 +53,8 @@ public class LangCompletionProposalTest extends CommonUITest {
 		}
 		
 		@Override
-		public boolean doTrySaveBuffer() {
-			return false;
+		public void doTrySaveBuffer() throws CommonException {
+			throw new CommonException("Not supported");
 		}
 		
 		@Override

@@ -11,8 +11,9 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -20,9 +21,9 @@ import melnorme.utilbox.core.CommonException;
 public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
+	protected Indexable<ToolCompletionProposal> doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
-		return new LangCompletionResult("NOT IMPLEMENTED");
+		throw new CommonException("NOT IMPLEMENTED");
 	}
 	
 }

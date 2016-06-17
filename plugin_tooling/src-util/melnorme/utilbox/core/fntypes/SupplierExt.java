@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.completion;
+package melnorme.utilbox.core.fntypes;
 
-public abstract class AbstractCompletionProposalComputer implements ILangCompletionProposalComputer {
+import java.util.function.Supplier;
+
+public interface SupplierExt<RET> extends Supplier<RET>, CallableX<RET, RuntimeException> {
 	
-	public AbstractCompletionProposalComputer() {
+	@Override
+	default RET call() throws RuntimeException {
+		return get();
 	}
 	
 }

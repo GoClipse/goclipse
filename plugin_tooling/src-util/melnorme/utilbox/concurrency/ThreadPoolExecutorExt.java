@@ -107,7 +107,7 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	
 	@Override
 	public <RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable) {
-		return submitTo(this, new CommonResultFutureTask<>(opCallable.toResultCallable()));
+		return submitTo(this, new CommonResultFutureTask<>(opCallable.toResultSupplier()));
 	}
 	
 	// This adapter is only needed because CommonFuture is not a true alias.

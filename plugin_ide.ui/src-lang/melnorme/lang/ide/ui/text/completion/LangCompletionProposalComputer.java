@@ -28,7 +28,6 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
@@ -47,13 +46,10 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	@Override
 	public Indexable<ICompletionProposal> computeCompletionProposals(ISourceBufferExt sourceBuffer, 
 			ITextViewer viewer, int offset) 
-			throws CommonException, OperationSoftFailure {
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		
 		if(needsEditorSave()) {
-			boolean success = sourceBuffer.trySaveBufferIfDirty(); 
-			if(!success) {
-				throw new CommonException("Unable to save editor file.");
-			}
+			sourceBuffer.trySaveBufferIfDirty(); 
 		}
 		
 		SourceOpContext sourceOpContext = sourceBuffer.getSourceOpContext(offset, EditorUtils.getSelectedRange(viewer));
@@ -77,8 +73,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 			throws CommonException, OperationCancellation, OperationSoftFailure
 	{
 		
-		LangCompletionResult result = doComputeProposals(sourceContext, cm);
-		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
+		Indexable<ToolCompletionProposal> resultProposals = doComputeProposals(sourceContext, cm);
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		for (ToolCompletionProposal proposal : resultProposals) {
@@ -88,8 +83,8 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return proposals;
 	}
 	
-	protected abstract LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm) 
-			throws CommonException, OperationCancellation;
+	protected abstract Indexable<ToolCompletionProposal> doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm) 
+			throws CommonException, OperationCancellation, OperationSoftFailure;
 	
 	/* -----------------  ----------------- */
 	

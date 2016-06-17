@@ -48,9 +48,11 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.hover.BrowserControlCreator;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.utils.HTMLHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class LangContentAssistProcessor extends ContenAssistProcessorExt {
@@ -225,27 +227,22 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		Indexable<ICompletionProposal> proposals;
 		try {
 			proposals = cat.computeCompletionProposals(sourceBuffer, viewer, offset);
-		} catch(CommonException ce) {
-			handleExceptionInUI(ce);
+			return proposals.toArray(ICompletionProposal.class);
+		} catch(OperationCancellation e) {
 			return null;
-		}
-		String errorMessage = cat.getErrorMessage();
-		if(errorMessage != null) {
+		} catch(CommonException ce) {
+			return returnErrorResult(ce.getMultiLineRender());
+		} catch(OperationSoftFailure e) {
+			String errorMessage = e.getMessage();
 			if(isAutoActivation) {
 				// don't popup, just display status line error
 				setAndDisplayStatusLineErrorMessage("Error: " + errorMessage);
 				return null;
 			} else {
-				Display.getCurrent().beep();
-				return array(new ErrorCompletionProposal(errorMessage));
+				return returnErrorResult(errorMessage);
 			}
 		}
 		
-		return proposals.toArray(ICompletionProposal.class);
-	}
-	
-	protected void handleExceptionInUI(CommonException ce) {
-		UIOperationsStatusHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
 	}
 	
 	@Override
@@ -254,15 +251,24 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
 		
+		// TODO: make this method like doComputeCompletionProposals
 		Indexable<IContextInformation> proposals = cat.computeContextInformation(sourceBuffer, viewer, offset);
 		setAndDisplayStatusLineErrorMessage(cat.getErrorMessage());
-		
 		return proposals.toArray(IContextInformation.class);
 	}
 	
 	@Override
 	public IContextInformationValidator getContextInformationValidator() {
 		return null; // TODO: need to add proper support for this
+	}
+	
+	protected ICompletionProposal[] returnErrorResult(String errorMessage) {
+		Display.getCurrent().beep();
+		return array(new ErrorCompletionProposal(errorMessage));
+	}
+	
+	protected void showErrorDialog(CommonException ce) {
+		UIOperationsStatusHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
 	}
 	
 	protected void setAndDisplayStatusLineErrorMessage(String errorMessage) {
@@ -311,7 +317,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		
 		@Override
 		public void apply(IDocument document) {
-			handleExceptionInUI(new CommonException(errorMessage));
+			showErrorDialog(new CommonException(errorMessage));
 		}
 		
 		@Override
