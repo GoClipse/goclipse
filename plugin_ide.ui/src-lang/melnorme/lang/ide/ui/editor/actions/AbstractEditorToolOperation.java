@@ -32,6 +32,8 @@ import melnorme.utilbox.status.StatusMessage;
 
 public abstract class AbstractEditorToolOperation<RESULT> extends AbstractEditorOperation2<ToolResponse<RESULT>> {
 	
+	public boolean handleSoftFailureWithDialog = true;
+	
 	public AbstractEditorToolOperation(String operationName, ITextEditor editor) {
 		super(operationName, editor);
 	}
@@ -80,13 +82,14 @@ public abstract class AbstractEditorToolOperation<RESULT> extends AbstractEditor
 	protected abstract void handleResultData(RESULT resultData) throws CommonException;
 	
 	protected void handleStatus(IStatusMessage status) {
-		String statusMsg = status.getMessage().trim();
-		if(statusMsg.contains("\n")) {
+		String statusMessage = status.getMessage().trim();
+		
+		if(handleSoftFailureWithDialog) {
 			// Use a dialog
-			UIOperationsStatusHandler.displayStatusMessage(operationName, status.getSeverity(), statusMsg);
+			UIOperationsStatusHandler.displayStatusMessage(operationName, status.getSeverity(), statusMessage);
 		} else {
-			// Just use status
-			EditorUtils.setStatusLineErrorMessage(editor, statusMsg, null);
+			// Note, message may have newlines, if so, only first line will be displayed
+			EditorUtils.setStatusLineErrorMessage(editor, statusMessage, null);
 			Display.getCurrent().beep();
 		}
 	}

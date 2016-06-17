@@ -7,13 +7,12 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
+import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_FormatEditorOperation;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -56,15 +55,8 @@ public final class LangUIPlugin_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	@SuppressWarnings("unused") 
-	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
-		return new BasicUIOperation() {
-			@Override
-			public void execute() throws CommonException, OperationCancellation {
-				// TODO: LANG: Format operation
-				throw new CommonException("Operation not implemented");
-			}
-		};
+	public static AbstractEditorToolOperation<?> getFormatOperation(ITextEditor editor) {
+		return new LANGUAGE_FormatEditorOperation("Format with `fmt`", editor);
 	}
 	
 }

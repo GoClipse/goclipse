@@ -38,7 +38,7 @@ import melnorme.utilbox.core.CommonException;
 public class WorkbenchOperationExecutor {
 	
 	protected final boolean allowBackgroundAlready;
-	protected final boolean fork;
+	protected final boolean executeInUIOnly;
 	
 	public WorkbenchOperationExecutor() {
 		this(false);
@@ -46,7 +46,7 @@ public class WorkbenchOperationExecutor {
 	
 	public WorkbenchOperationExecutor(boolean executeInUIOnly) {
 		super();
-		this.fork = !executeInUIOnly;
+		this.executeInUIOnly = executeInUIOnly;
 		this.allowBackgroundAlready = !executeInUIOnly;
 	}
 	
@@ -54,7 +54,7 @@ public class WorkbenchOperationExecutor {
 			throws InvocationTargetException, InterruptedException {
 		
 		if(allowBackgroundAlready && Display.getCurrent() == null) {
-			assertTrue(fork == false);
+			assertTrue(executeInUIOnly == false);
 			// Perform computation directly in this thread, but cancellation won't be possible.
 			progressRunnable.run(new NullProgressMonitor());
 		} else {
@@ -68,7 +68,7 @@ public class WorkbenchOperationExecutor {
 	protected void doRunRunnableWithProgress(IRunnableWithProgress progressRunnable)
 			throws InvocationTargetException, InterruptedException {
 		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
-		progressService.run(fork, true, progressRunnable);
+		progressService.run(!executeInUIOnly, true, progressRunnable);
 	}
 	
 	public void execute(CommonOperation coreOperation) throws CommonException, OperationCancellation {
@@ -149,7 +149,7 @@ public class WorkbenchOperationExecutor {
 		@Override
 		protected void doRunRunnableWithProgress(IRunnableWithProgress progressRunnable)
 				throws InvocationTargetException, InterruptedException {
-			progressMonitorDialog.run(fork, true, progressRunnable);
+			progressMonitorDialog.run(!executeInUIOnly, true, progressRunnable);
 		}
 	}
 	
