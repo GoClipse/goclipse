@@ -71,8 +71,10 @@ public class GoFmtOperation extends AbstractEditorToolOperation<String> {
 			throws CommonException, OperationCancellation, OperationSoftFailure {
 		
 		ExternalProcessResult processResult = getToolService().runProcess(pb, getSource(), om);
-		if(processResult.exitValue != 0) {
-			throw new OperationSoftFailure(processResult.getStdErrBytes().toString());
+		int exitValue = processResult.exitValue;
+		if(exitValue != 0) {
+			throw new OperationSoftFailure("`gofmt` did not complete successfully, exit code: " + exitValue + "\n" + 
+				processResult.getStdErrBytes().toString());
 		}
 		
 		return processResult.getStdOutBytes().toString();
