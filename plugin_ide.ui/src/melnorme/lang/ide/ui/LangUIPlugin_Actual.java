@@ -8,13 +8,13 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
 import com.googlecode.goclipse.ui.editor.GoDocTextHover;
-import com.googlecode.goclipse.ui.editor.actions.GoFmtOperation;
+import com.googlecode.goclipse.ui.editor.actions.GoFmtEditorOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 /**
@@ -57,8 +57,8 @@ public final class LangUIPlugin_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
-		return new GoFmtOperation(editor);
+	public static AbstractEditorToolOperation<?> getFormatOperation(ITextEditor editor) {
+		return new GoFmtEditorOperation(editor);
 	}
 	
 }

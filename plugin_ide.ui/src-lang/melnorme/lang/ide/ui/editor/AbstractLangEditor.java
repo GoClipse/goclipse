@@ -47,11 +47,11 @@ import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.ide.ui.editor.actions.GotoMatchingBracketManager;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -298,7 +298,8 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		if(saveActionsEnablement.isEnabled()) {
 			IProject associatedProject = EditorUtils.getAssociatedProject(getEditorInput());
 			if(ToolchainPreferences.FORMAT_ON_SAVE.getEffectiveValue(associatedProject)) {
-				BasicUIOperation formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
+				AbstractEditorToolOperation<?> formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
+				formatOperation.handleSoftFailureWithDialog = false;
 				formatOperation.executeAndHandle();
 			}
 		}
