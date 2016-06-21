@@ -12,18 +12,9 @@ package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.Test;
 
-import melnorme.utilbox.tests.CommonTest;
-
-public abstract class AbstractFieldComponentTest extends CommonTest {
-	
-	@Test
-	public void runTest() throws Exception {
-		runTest_______();
-	}
+public abstract class AbstractFieldComponentTest extends AbstractWidgetTest {
 	
 	protected int controlsUpdateCount;
 	protected int controlsUpdateCount_expected;
@@ -36,7 +27,8 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 		assertTrue(controlsUpdateCount == controlsUpdateCount_expected);
 	}
 	
-	public void runTest_______() throws Exception {
+	@Override
+	protected void runTestWithShell() {
 		controlsUpdateCount_expected = controlsUpdateCount = 0;
 		valueChangeCount_expected = valueChangeCount = 0;
 		
@@ -50,21 +42,16 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 		
 		__checkUpdatesInvariant();
 		
-		Shell shell = new Shell(Display.getDefault());
-		try {
-
-		doRunTest(shell);
+		super.runTestWithShell();
 		
-		} finally {
-			shell.dispose();
-			assertTrue(field.isCreated() == false);
-		}	
+		assertTrue(field.isCreated() == false);
 	}
 	
 	protected void checkValueIsNotNull() {
 		assertTrue(field.getFieldValue() != null);
 	}
 	
+	@Override
 	protected void doRunTest(Shell shell) {
 		setFirstFieldValue(); 
 		valueChangeCount_expected++;

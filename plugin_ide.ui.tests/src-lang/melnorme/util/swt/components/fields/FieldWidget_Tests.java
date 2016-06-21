@@ -13,13 +13,16 @@ package melnorme.util.swt.components.fields;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import melnorme.util.swt.components.AbstractFieldComponentTest;
+import melnorme.util.swt.components.AbstractWidgetTest;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
@@ -75,6 +78,30 @@ public abstract class FieldWidget_Tests extends CommonTest {
 			__checkUpdatesInvariant();
 		}
 		
+	}
+	
+	public static class TextField_SelectionTest extends AbstractWidgetTest {
+		
+		@Override
+		protected void doRunTest(Shell shell) {
+			TextFieldWidget textFieldWidget = new TextFieldWidget("blah");
+			textFieldWidget.createComponent(shell);
+			
+			textFieldWidget.set("1234");
+			Text textControl = textFieldWidget.getFieldControl();
+			assertTrue(textControl.getCaretPosition() == 0);
+			checkSelection(textControl, 0, 0);
+			textControl.setSelection(1, 3);
+			checkSelection(textControl, 1, 3);
+			textFieldWidget.doUpdateWidgetFromInput();
+			checkSelection(textControl, 1, 3);
+			
+			textFieldWidget.set("123");
+			checkSelection(textControl, 0, 0);
+		}
+		private void checkSelection(Text textControl, int start, int end) {
+			assertTrue(textControl.getSelection().equals(new Point(start, end)));
+		}
 	}
 	
 	public static class TextField_ExtTest extends TextFieldTest {

@@ -30,13 +30,13 @@ public abstract class ButtonTextField extends TextFieldWidget {
 	
 	protected Button button;
 	
-	public ButtonTextField(String labelText, String buttonLabel) {
-		super(labelText);
+	public ButtonTextField(String label, String buttonLabel) {
+		super(label);
 		this.buttonLabel = buttonLabel;
 	}
 	
-	public ButtonTextField(Field<String> field, String labelText, String buttonLabel) {
-		super(field, labelText);
+	public ButtonTextField(Field<String> field, String label, String buttonLabel) {
+		super(field, label);
 		this.buttonLabel = buttonLabel;
 	}
 	

@@ -30,8 +30,8 @@ public class TextFieldExt extends TextFieldWidget {
 	}
 	
 	@Override
-	protected Text createText_2(Composite parent) {
-		Text text = super.createText_2(parent);
+	protected Text createText(Composite parent) {
+		Text text = super.createText(parent);
 		text.setTextLimit(textLimit);
 		return text;
 	}
