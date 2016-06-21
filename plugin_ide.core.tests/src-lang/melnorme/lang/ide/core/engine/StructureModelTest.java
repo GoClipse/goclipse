@@ -24,6 +24,7 @@ import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistrati
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.tooling.LocationKey;
 import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;

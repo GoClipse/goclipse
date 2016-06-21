@@ -47,8 +47,8 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	public LangProjectBuilder() {
 	}
 	
-	protected Location getProjectLocation() throws CoreException {
-		return ResourceUtils.getProjectLocation(getProject());
+	protected Location getProjectLocation() throws CommonException {
+		return ResourceUtils.getProjectLocation2(getProject());
 	}
 	
 	protected ToolManager getToolManager() {

@@ -12,11 +12,18 @@ package melnorme.lang.ide.core.project_model.view;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public class BundleErrorElement extends AbstractBundleModelElement<IBundleModelElement> {
+import org.eclipse.core.resources.IResource;
+
+public class BundleErrorElement extends AbstractBundleModelElement<Object> {
 	
 	public final String errorDescription;
 	
 	public BundleErrorElement(IBundleModelElement parent, String errorDescription) {
+		super(parent);
+		this.errorDescription = assertNotNull(errorDescription);
+	}
+	
+	public BundleErrorElement(IResource parent, String errorDescription) {
 		super(parent);
 		this.errorDescription = assertNotNull(errorDescription);
 	}
@@ -33,7 +40,7 @@ public class BundleErrorElement extends AbstractBundleModelElement<IBundleModelE
 	
 	@Override
 	public String getPathString() {
-		return getParent().getPathString() + "/" + getElementName();
+		return getParent().toString() + "/" + getElementName();
 	}
 	
 }

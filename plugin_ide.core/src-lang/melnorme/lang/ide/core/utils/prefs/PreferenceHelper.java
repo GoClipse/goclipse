@@ -27,6 +27,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.PreferencesOverride;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils.ProjectLocation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
@@ -215,10 +217,17 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		}
 		
 		@Override
-		public void doSetValue(IProject project, T value) {
+		public void doSetValue(IProject project, T newValue) {
 			assertNotNull(project);
 			IEclipsePreferences projectPreferences = getProjectNode(project);
-			setPrefValue(projectPreferences, value);
+			try {
+				ProjectLocation projLocHandle = ResourceUtils.locationHandle(project);
+				LangCore.settings().notifySettingChanged(this, projLocHandle, newValue);
+			} catch(CommonException e) {
+				LangCore.logError("Error changing preference.", e);
+			}
+			
+			setPrefValue(projectPreferences, newValue);
 		}
 		
 		@Override

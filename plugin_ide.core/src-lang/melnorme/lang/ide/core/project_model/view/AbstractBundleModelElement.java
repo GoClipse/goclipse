@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model.view;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import melnorme.utilbox.misc.MiscUtil;
@@ -19,7 +20,7 @@ public abstract class AbstractBundleModelElement<PARENT> implements IBundleModel
 	protected final PARENT parent;
 	
 	public AbstractBundleModelElement(PARENT parent) {
-		this.parent = parent;
+		this.parent = assertNotNull(parent);
 	}
 	
 	@Override

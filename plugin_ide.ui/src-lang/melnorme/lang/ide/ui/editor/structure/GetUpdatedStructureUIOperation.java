@@ -18,13 +18,13 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.engine.LocationKey;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
 import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.tooling.LocationKey;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;

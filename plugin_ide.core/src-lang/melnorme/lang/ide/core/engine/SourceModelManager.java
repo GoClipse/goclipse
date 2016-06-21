@@ -18,6 +18,7 @@ import org.eclipse.jface.text.IDocument;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
+import melnorme.lang.tooling.LocationKey;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedResult;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;

@@ -47,6 +47,7 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.LocationHandle;
 import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -102,37 +103,7 @@ public class ResourceUtils {
 		return Location.fromAbsolutePath(location_.toFile().toPath());
 	}
 	
-	public static IProject getProject(String name) {
-		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
-	}
-	
-	public static IProject getProject(Location fileLocation) {
-		IFile[] files = getWorkspaceRoot().findFilesForLocationURI(fileLocation.toUri());
-		
-		for (IFile file : files) {
-			IProject project = file.getProject();
-			if(project.exists() && project.isOpen()) {
-				return project;
-			}
-		}
-		
-		return null;
-	}
-	
-	public static IProject getProject(Optional<Location> location) {
-		if(location.isPresent()) {
-			return getProject(location.get()); 
-		}
-		return null;
-	}
-	
-	public static Location getProjectLocation(IProject project) throws CoreException {
-		try {
-			return getProjectLocation2(project);
-		} catch (CommonException e) {
-			throw LangCore.createCoreException(e);
-		}
-	}
+	/* ----------------- getLocation ----------------- */
 	
 	public static Location getProjectLocation2(IProject project) throws CommonException {
 		return getLocation(project);
@@ -146,17 +117,70 @@ public class ResourceUtils {
 		return Location.create(location.toFile().toPath());
 	}
 	
-	/* -----------------  Direct resource operations  ----------------- */
+	public static ProjectLocation locationHandle(IProject project) throws CommonException {
+		return new ProjectLocation(project);
+	}
 	
-	public static void refresh(IResource resource, IOperationMonitor om) throws CommonException {
-		try {
-			resource.refreshLocal(IResource.DEPTH_INFINITE, EclipseUtils.pm(om));
-		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+	public static class ProjectLocation extends LocationHandle {
+		
+		protected final IProject project;
+		
+		public ProjectLocation(IProject project) throws CommonException {
+			super(ResourceUtils.getProjectLocation2(project));
+			this.project = assertNotNull(project);
 		}
+		
+		public IProject getProject() {
+			return project;
+		}
+		
 	}
 	
 	/* -----------------  ----------------- */
+	
+	public static IProject getProject(String name) {
+		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
+	}
+	
+	public static IProject getProjectAt(Location location) {
+		IContainer[] containers = getWorkspaceRoot().findContainersForLocationURI(location.toUri());
+		for (IContainer container : containers) {
+			if(container instanceof IProject) {
+				return (IProject) container;
+			}
+		}
+		return null;
+	}
+	
+	public static IProject getProjectAt(LocationHandle location) {
+		if(location instanceof ProjectLocation) {
+			ProjectLocation projectLocation = (ProjectLocation) location;
+			return projectLocation.getProject();
+		}
+		return getProjectAt(location.getLocation());
+	}
+	
+	public static IProject getProjectFromMemberLocation(Location fileLocation) {
+		IFile[] files = getWorkspaceRoot().findFilesForLocationURI(fileLocation.toUri());
+		
+		for (IFile file : files) {
+			IProject project = file.getProject();
+			if(project.exists() && project.isOpen()) {
+				return project;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static IProject getProjectFromMemberLocation(Optional<Location> location) {
+		if(location.isPresent()) {
+			return getProjectFromMemberLocation(location.get()); 
+		}
+		return null;
+	}
+	
+	/* ----------------- Operations ----------------- */
 	
 	public static void runCoreOperation2(ISchedulingRule rule, IProgressMonitor pm, CommonOperation operation)
 			throws CoreException, CommonException, OperationCancellation {
@@ -269,6 +293,16 @@ public class ResourceUtils {
 		runOperation(context, (pm) -> {
 			ResourceUtils.runOperation(ResourceUtils.getWorkspaceRoot(), pm, op);
 		}, isCancellable);
+	}
+	
+	/* -----------------  Direct resource operations  ----------------- */
+	
+	public static void refresh(IResource resource, IOperationMonitor om) throws CommonException {
+		try {
+			resource.refreshLocal(IResource.DEPTH_INFINITE, EclipseUtils.pm(om));
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
 	}
 	
 	/* -----------------  ----------------- */
