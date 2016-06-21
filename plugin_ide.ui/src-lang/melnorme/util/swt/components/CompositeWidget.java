@@ -80,7 +80,6 @@ public class CompositeWidget extends AbstractDisableableWidget {
 				createSubComponent(topControl, subComponent);
 			});
 		}
-		
 	}
 	
 	protected void createSubComponent(Composite topControl, IDisableableWidget subComponent) {

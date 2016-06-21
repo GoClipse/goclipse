@@ -32,7 +32,6 @@ import melnorme.util.swt.components.fields.EnablementButtonTextField2;
 import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.misc.Location;
 
 public class GoToolsConfigBlock extends LanguageToolsBlock {
@@ -118,8 +117,8 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		}
 		
 		@Override
-		protected ButtonTextField init_createButtonTextField(Field<String> field) {
-			return new ButtonTextField(field, "Executable:", FileTextField.DEFAULT_BUTTON_LABEL) {
+		protected ButtonTextField init_createButtonTextField() {
+			return new ButtonTextField("Executable:", FileTextField.DEFAULT_BUTTON_LABEL) {
 				@Override
 				protected String getNewValueFromButtonSelection() throws OperationCancellation {
 					return ControlUtils.openFileDialog(getFieldValue(), button.getShell());

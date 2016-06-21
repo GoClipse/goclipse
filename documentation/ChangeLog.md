@@ -12,6 +12,7 @@
  * Reworked the icon and label of completion proposals and fixed some related issues. Also, now the icons are consistent with the Outline icons. 
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
  * Fixed: Eclipse variables not being substituted in environment-variable values.
+ * Fixed: Erratic text cursor bug when typing in GOPATH field and gofmt field.
 
 ### 0.15.0
  * Added support for lint build target, using `gometalinter`. (#163)

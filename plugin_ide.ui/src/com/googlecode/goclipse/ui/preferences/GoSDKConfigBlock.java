@@ -25,7 +25,6 @@ import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.Field;
 
 public class GoSDKConfigBlock extends LangSDKConfigBlock {
 	
@@ -60,8 +59,8 @@ public class GoSDKConfigBlock extends LangSDKConfigBlock {
 		}
 		
 		@Override
-		protected ButtonTextField init_createButtonTextField(Field<String> field) {
-			return new ButtonTextField(field, null, "Add Folder") {
+		protected ButtonTextField init_createButtonTextField() {
+			return new ButtonTextField(null, "Add Folder") {
 				@Override
 				protected String getNewValueFromButtonSelection() throws CommonException, OperationCancellation {
 					String newValue = DirectoryTextField.openDirectoryDialog("", text.getShell());

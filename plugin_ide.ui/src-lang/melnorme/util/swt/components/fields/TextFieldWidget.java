@@ -26,17 +26,17 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 	protected int defaultTextStyle = SWT.SINGLE | SWT.BORDER;
 	protected Text text;
 	
-	public TextFieldWidget(String labelText) {
-		this(labelText, SWT.SINGLE | SWT.BORDER);
+	public TextFieldWidget(String label) {
+		this(label, SWT.SINGLE | SWT.BORDER);
 	}
 	
-	public TextFieldWidget(String labelText, int textStyle) {
-		super(labelText, Option_AllowNull.NO, "");
+	public TextFieldWidget(String label, int textStyle) {
+		super(label, Option_AllowNull.NO, "");
 		this.defaultTextStyle = textStyle;
 	}
 	
-	public TextFieldWidget(Field<String> field, String labelText) {
-		super(field, labelText);
+	public TextFieldWidget(Field<String> field, String label) {
+		super(field, label);
 	}
 	
 	public void setDefaultTextStyle(int defaultTextStyle) {
@@ -65,7 +65,7 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 	}
 	
 	protected void createContents_Text(Composite topControl) {
-		text = createText_2(topControl);
+		text = createText(topControl);
 		text.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent evt) {
@@ -76,7 +76,7 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 		});
 	}
 	
-	protected Text createText_2(Composite topControl) {
+	protected Text createText(Composite topControl) {
 		return new Text(topControl, defaultTextStyle);
 	}
 	
@@ -90,7 +90,10 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 	
 	@Override
 	protected void doUpdateWidgetFromValue() {
-		text.setText(getFieldValue());
+		String fieldValue = getFieldValue();
+		if(!text.getText().equals(fieldValue)) {
+			text.setText(fieldValue);
+		}
 	}
 	
 	@Override
