@@ -15,11 +15,15 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
+import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
+import melnorme.lang.ide.core.INavigatorElement_Actual;
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.navigator.AbstractNavigatorContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -41,13 +45,11 @@ public class GoNavigatorContentProvider extends AbstractNavigatorContentProvider
 	
 	public GoNavigatorContentProvider() {
 		// TODO: we really want to listen for changes to the root directories referenced by the project.
-		GoUIPlugin.getPrefStore().addPropertyChangeListener(propListener);
 		GoUIPlugin.getCorePrefStore().addPropertyChangeListener(propListener);
 	}
 	
 	@Override
 	public void dispose() {
-		GoUIPlugin.getPrefStore().removePropertyChangeListener(propListener);
 		GoUIPlugin.getCorePrefStore().removePropertyChangeListener(propListener);
 		
 		super.dispose();
@@ -142,23 +144,21 @@ public class GoNavigatorContentProvider extends AbstractNavigatorContentProvider
 		
 		GoRoot goRoot = goEnvironment.getGoRoot();
 		Location goRootSource;
+		Location projectLocation;
 		try {
 			goRootSource = goRoot.getSourceRootLocation();
+			projectLocation = ResourceUtils.getLocation(project);
 		} catch (CommonException e) {
 			return NO_CHILDREN;
 		}
 		
-		if (goRoot.isEmpty()) {
-			return NO_CHILDREN;
-		}
-		
-		ArrayList2<GoPathElement> buildpathChildren = new ArrayList2<>();
+		ArrayList2<INavigatorElement_Actual> buildpathChildren = new ArrayList2<>();
 		
 		buildpathChildren.add(new GoRootElement(goRootSource.toFile()));
 		
-		GoPath effectiveGoPath = goEnvironment.getGoPath();
+		GoPath goPath = goEnvironment.getGoPath();
 		
-		for (String goPathEntry : effectiveGoPath.getGoPathEntries()) {
+		for (String goPathEntry : goPath.getGoPathEntries()) {
 			Path goPathEntryPath;
 			try {
 				goPathEntryPath = MiscUtil.createPath(goPathEntry);
@@ -169,11 +169,13 @@ public class GoNavigatorContentProvider extends AbstractNavigatorContentProvider
 				continue; // Don't add this entry.
 			}
 			
-			try {
-				buildpathChildren.add(new GoPathEntryElement(goPathEntryPath, project, effectiveGoPath));
-			} catch (CommonException e) {
-				// Don't add any entry.
-			}
+			boolean projectInsideThisGoPathEntry = false; // Not used ATM
+			buildpathChildren.add(new GoPathEntryElement(goPathEntryPath, project, projectInsideThisGoPathEntry));
+		}
+		
+		GoWorkspaceLocation goWorkspaceRoot = goPath.findGoPathEntry(projectLocation);
+		if(goWorkspaceRoot == null) {
+			buildpathChildren.add(new BundleErrorElement(project, "Project is not contained in any GOPATH entry."));
 		}
 		
 		return buildpathChildren.toArray();

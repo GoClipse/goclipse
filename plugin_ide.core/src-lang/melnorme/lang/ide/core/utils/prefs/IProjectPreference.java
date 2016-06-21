@@ -15,7 +15,11 @@ import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.SettingsChangeListener;
+import melnorme.lang.tooling.LocationHandle;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.ownership.IDisposable;
 
 
 public interface IProjectPreference<T> {
@@ -39,5 +43,25 @@ public interface IProjectPreference<T> {
 	IProjectPreference<Boolean> getEnableProjectSettingPref();
 	
 	Supplier<T> getEffectiveValueProperty(Optional<IProject> project);
+	
+	default IDisposable addListener(SettingChangeListener2<T> changeListener) {
+		SettingsChangeListener settingsListener = new SettingsChangeListener() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void preferenceChanged(IProjectPreference<?> setting, LocationHandle location, Object newValue) {
+				if(setting == IProjectPreference.this) {
+					changeListener.preferenceChanged(location, (T) newValue);
+				}
+			}
+		};
+		return LangCore.settings().addSettingsListener(settingsListener);
+	}
+	
+	interface SettingChangeListener2<T> {
+		
+		void preferenceChanged(LocationHandle location, T newValue);
+		
+	}
 	
 }

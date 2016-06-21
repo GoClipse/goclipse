@@ -36,7 +36,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		if (gocodePath == null) {
 			throw new CommonException("Error: gocode path not provided.");
 		}
-		IProject project = ResourceUtils.getProject(sourceContext.getOptionalFileLocation());
+		IProject project = ResourceUtils.getProjectFromMemberLocation(sourceContext.getOptionalFileLocation());
 		
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		

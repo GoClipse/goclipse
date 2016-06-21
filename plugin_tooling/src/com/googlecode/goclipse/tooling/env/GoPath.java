@@ -63,10 +63,10 @@ public class GoPath {
 	}
 	
 	public String asString() {
-		return getGoPathWorkspaceString(); 
+		return getGoPathString(); 
 	}
 	
-	public String getGoPathWorkspaceString() {
+	public String getGoPathString() {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	

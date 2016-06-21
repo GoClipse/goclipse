@@ -398,7 +398,7 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	protected static void addSourcePackagesToCmdLine(final IProject project, ArrayList2<String> goBuildCmdLine,
-			GoEnvironment goEnvironment) throws CoreException {
+			GoEnvironment goEnvironment) throws CommonException {
 		Collection2<GoPackageName> sourcePackages = GoProjectEnvironment.findSourcePackages(project, goEnvironment);
 		for (GoPackageName goPackageName : sourcePackages) {
 			goBuildCmdLine.add(goPackageName.getFullNameAsString());

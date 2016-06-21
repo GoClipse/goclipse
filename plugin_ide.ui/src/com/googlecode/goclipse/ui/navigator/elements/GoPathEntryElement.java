@@ -14,31 +14,28 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 
-import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
-
-import melnorme.utilbox.core.CommonException;
 
 public class GoPathEntryElement extends GoPathElement {
 	
 	protected final Path goPathEntryPath;
 	protected final IProject project;
-	protected boolean projectInsideGoPath;
+	protected boolean projectInsideThisGoPathEntry;
 	
-	public GoPathEntryElement(Path goPathEntryPath, IProject project, GoPath goPath) throws CommonException {
+	public GoPathEntryElement(Path goPathEntryPath, IProject project, boolean projectInsideThisGoPathEntry) {
 		super("GOPATH", goPathEntryPath.resolve(GoPath.SRC_DIR).toFile());
 		this.goPathEntryPath = goPathEntryPath;
 		this.project = project;
 		
-		this.projectInsideGoPath = GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project, goPath);
+		this.projectInsideThisGoPathEntry = projectInsideThisGoPathEntry;
 	}
 	
 	public IProject getProject() {
 		return project;
 	}
 	
-	public boolean isProjectInsideGoPath() {
-		return projectInsideGoPath;
+	public boolean isProjectInsideThisGoPathEntry() {
+		return projectInsideThisGoPathEntry;
 	}
 	
 }

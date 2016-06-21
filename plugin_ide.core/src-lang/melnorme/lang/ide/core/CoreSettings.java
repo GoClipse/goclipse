@@ -19,13 +19,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
-
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
+import melnorme.lang.tooling.LocationHandle;
 import melnorme.lang.utils.validators.PathValidator;
+import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.fields.validation.Validator;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.status.StatusException;
 
 public abstract class CoreSettings {
@@ -115,6 +117,29 @@ public abstract class CoreSettings {
 			preference.doSetValue(project, value);
 		}
 		
+	}
+	
+	public <T> void notifySettingChanged(IProjectPreference<T> setting, LocationHandle locationHandle, T newValue) {
+		assertNotNull(setting);
+		for (SettingsChangeListener changeListener : listeners.getListeners()) {
+			changeListener.preferenceChanged(setting, locationHandle, newValue);
+		}
+	}
+	
+	protected final ListenerListHelper<SettingsChangeListener> listeners = new ListenerListHelper<>();
+	
+	public IDisposable addSettingsListener(SettingsChangeListener listener) {
+		listeners.addListener(listener);
+		return new IDisposable() {
+			@Override
+			public void dispose() {
+				removeSettingsListener(listener);
+			}
+		};
+	}
+	
+	public void removeSettingsListener(SettingsChangeListener listener) {
+		listeners.removeListener(listener);
 	}
 	
 }

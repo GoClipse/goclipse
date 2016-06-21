@@ -13,7 +13,6 @@ package com.googlecode.goclipse.ui.launch;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.layout.GridData;
@@ -151,7 +150,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 				return goPackageName.getFullNameAsString();
 			}
 			
-		} catch (CoreException ce) {
+		} catch(CommonException ce) {
 			UIOperationsStatusHandler.handleStatus(false, "Error selecting package from dialog: ", ce);
 		}
 		throw new OperationCancellation();

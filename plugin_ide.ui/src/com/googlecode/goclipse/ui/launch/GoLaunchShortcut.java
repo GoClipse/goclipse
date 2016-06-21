@@ -70,7 +70,7 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 		Location goPackageLocation = ResourceUtils.getResourceLocation(goPackageResource);
 		GoPackageName goPackageName = goEnv.findGoPackageForLocation(goPackageLocation);
 		if(goPackageName == null) {
-			throw CommonException.fromMsgFormat("Resource doesn't have a corresponding Go package.");
+			throw CommonException.fromMsgFormat("{0}", "Resource doesn't have a corresponding Go package.");
 		}
 		
 		BuildTargetLaunchCreator btLaunchCreator = new BuildTargetLaunchCreator().initFromProject(project);

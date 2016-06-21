@@ -32,14 +32,18 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.navigator.LangNavigatorLabelProvider;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
 public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
@@ -86,9 +90,8 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			String goPathEntryLocation = goPathEntryElement.getDirectory().toString();
 			
 			StyledString suffix;
-			if(goPathEntryElement.isProjectInsideGoPath()) {
-				suffix = new StyledString(goPathEntryLocation, 
-					new ItalicStyler(fgColor(LOCATION_ANNOTATION_FG)));
+			if(goPathEntryElement.isProjectInsideThisGoPathEntry()) {
+				suffix = new StyledString(goPathEntryLocation, new ItalicStyler(fgColor(LOCATION_ANNOTATION_FG)));
 			} else {
 				suffix = new StyledString(goPathEntryLocation, fgColor(LOCATION_ANNOTATION_FG));
 			}
@@ -151,18 +154,28 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 	}
 	
 	protected ImageDescriptor getResourceImageDescriptor(IResource resource) {
+		IProject project = resource.getProject();
+		
+		Location projectLocation;
+		Location resourceLocation;
+		try {
+			projectLocation = ResourceUtils.getLocation(project);
+			resourceLocation = ResourceUtils.getLocation(resource);
+		} catch(CommonException e) {
+			return null;
+		}
+		
 		if (resource instanceof IFolder) {
-			IFolder folder = (IFolder)resource;
 			
-			IProject project = resource.getProject();
-			boolean isProjecInsideGoPath;
-			try {
-				isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project);
-			} catch (CommonException e) {
+			GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
+			GoWorkspaceLocation goWorkspaceRoot = goPath.findGoPathEntry(resourceLocation);
+			if(goWorkspaceRoot == null) {
 				return null;
 			}
+			boolean isProjectAGoWorkspace = goWorkspaceRoot.getLocation().equals(projectLocation);
 			
-			if(resource.getParent() instanceof IProject && !isProjecInsideGoPath) {
+			
+			if(isProjectAGoWorkspace && resource.getParent() == project) {
 				if("src".equals(resource.getName())) {
 					return GoPluginImages.NAV_SourceFolder;
 				} else if("pkg".equals(resource.getName())) {
@@ -170,7 +183,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 				} else if("bin".equals(resource.getName())) {
 					return GoPluginImages.NAV_OutputFolder;
 				}
-			} else if(isSourcePackageFolder(folder, isProjecInsideGoPath)) {
+			} else if(resourceLocation.startsWith(goWorkspaceRoot.getSrcLocation())) {
 				return GoPluginImages.NAV_SourceFolder;
 			}
 		} else if(resource instanceof IFile) {

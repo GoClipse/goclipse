@@ -59,7 +59,7 @@ public class GoEnvironment {
 	}
 	
 	public String getGoPathString() {
-		return goPath.getGoPathWorkspaceString();
+		return goPath.getGoPathString();
 	}
 	
 	

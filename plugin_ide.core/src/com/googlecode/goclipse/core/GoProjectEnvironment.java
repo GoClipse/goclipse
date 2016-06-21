@@ -17,8 +17,6 @@ import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
@@ -43,7 +41,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	public static GoOperationContext getGoOperationContext(ISourceBuffer sourceBuffer, int offset) {
 		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
-		IProject project = ResourceUtils.getProject(opContext.getOptionalFileLocation());
+		IProject project = ResourceUtils.getProjectFromMemberLocation(opContext.getOptionalFileLocation());
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		IToolOperationService toolsOpService = LangCore.getToolManager().getEngineToolsOperationService();
@@ -87,8 +85,14 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return isProjectInsideGoPathSourceFolder(project, goPath);
 	}
 	
-	public static boolean isProjectInsideGoPathSourceFolder(IProject project, GoPath goPath) throws CommonException {
-		return goPath.findGoPathEntryForSourceLocation(ResourceUtils.getProjectLocation2(project)) != null;
+	public static boolean isProjectInsideGoPathSourceFolder(IProject project, GoPath goPath) {
+		Location projectLocation;
+		try {
+			projectLocation = ResourceUtils.getProjectLocation2(project);
+		} catch(CommonException e) {
+			return false;
+		}
+		return goPath.findGoPathEntryForSourceLocation(projectLocation) != null;
 	}
 	
 	protected static String getEffectiveValueFromEnv(IProjectPreference<String> pref, IProject project, 
@@ -101,7 +105,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static GoEnvironment getGoEnvironmentFromLocation(Location fileLocation) {
-		IProject project = ResourceUtils.getProject(fileLocation);
+		IProject project = ResourceUtils.getProjectFromMemberLocation(fileLocation);
 		return getGoEnvironment(project);
 	}
 	
@@ -122,8 +126,8 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static ArrayList2<GoPackageName> findSourcePackages(IProject project, GoEnvironment goEnvironment)
-			throws CoreException {
-		return goEnvironment.getGoPath().findGoSourcePackages(ResourceUtils.getProjectLocation(project));
+			throws CommonException {
+		return goEnvironment.getGoPath().findGoSourcePackages(ResourceUtils.getProjectLocation2(project));
 	}
 	
 	public static Location getBinFolderLocation(IProject project) throws CommonException {
