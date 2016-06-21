@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.tooling.toolchain.ops.BuildOutputParser2;
-import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
@@ -32,18 +31,14 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser2 {
 	
 	@Override
 	public ArrayList<ToolSourceMessage> doParseResult(ExternalProcessResult result) throws CommonException {
-		try {
-			validateExitCode(result);
+//			validateExitCode(result);
 			
-			ArrayList<ToolSourceMessage> msgs = new ArrayList2<>();
-			// Parse both stderr and stdout as different commands may output message to different streams
-			// for example go build outputs to stderr, but gometalinter to stdout
-			msgs.addAll(parseOutput(result.getStdErrBytes().toString(StringUtil.UTF8)));
-			msgs.addAll(parseOutput(result.getStdOutBytes().toString(StringUtil.UTF8)));
-			return msgs;
-		} catch(OperationSoftFailure e) {
-			throw new CommonException(e.getMessage());
-		}
+		ArrayList<ToolSourceMessage> msgs = new ArrayList2<>();
+		// Parse both stderr and stdout as different commands may output message to different streams
+		// for example go build outputs to stderr, but gometalinter to stdout
+		msgs.addAll(parseOutput(result.getStdErrBytes().toString(StringUtil.UTF8)));
+		msgs.addAll(parseOutput(result.getStdOutBytes().toString(StringUtil.UTF8)));
+		return msgs;
 	}
 	
 	protected static final Pattern ERROR_LINE_Regex = Pattern.compile(

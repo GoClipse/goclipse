@@ -51,7 +51,6 @@ public class GodefOperation extends AbstractToolInvocationOperation<SourceLocati
 		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			toolLoc.toPathString(),
-			/* FIXME: review this*/
 			"-f", opContext.getFileLocation().toPathString(),
 			"-i",
 			"-o", Integer.toString(byteOffset)
