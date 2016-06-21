@@ -45,6 +45,10 @@ public class GoOperationContext {
 		return sourceBuffer;
 	}
 	
+	public SourceOpContext getOpContext() {
+		return opContext;
+	}
+	
 	public IToolOperationService getToolOpService() {
 		return toolOpService;
 	}

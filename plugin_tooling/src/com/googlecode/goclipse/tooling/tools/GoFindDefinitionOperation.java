@@ -34,6 +34,10 @@ public abstract class GoFindDefinitionOperation {
 		this.goOpContext = assertNotNull(goOpContext);
 	}
 	
+	public GoOperationContext getGoOpContext() {
+		return goOpContext;
+	}
+	
 	public SourceLocation getValidResult(IOperationMonitor om) 
 			throws CommonException, OperationCancellation, OperationSoftFailure {
 		
