@@ -28,7 +28,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
 
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.Getter;
 
 /**
  * Miscellaneous file utilities.
@@ -69,15 +68,15 @@ public final class FileUtil {
 		return readBytesFromFile(file.toFile()).toString(charset);
 	}
 	
-	public static String readStringFromFile(Location loc, Charset charset, Getter<String, RuntimeException> errorMsg) 
-			throws CommonException {
+	public static String readFileContents(Location location, Charset charset) throws CommonException {
 		try {
-			return readStringFromFile(loc.toFile(), charset);
+			return readStringFromFile(location.toPath(), charset);
 		} catch(IOException e) {
-			throw new CommonException(errorMsg.get(), e);
+			throw new CommonException(e.getMessage(), e.getCause());
 		}
 	}
 	
+	/* ----------------- write ----------------- */
 	
 	/** Write the given array of bytes to given file */
 	public static void writeBytesToFile(File file, byte[] bytes) throws IOException {
