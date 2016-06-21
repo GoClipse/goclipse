@@ -99,7 +99,8 @@ public abstract class FieldWidget_Tests extends CommonTest {
 			textFieldWidget.set("123");
 			checkSelection(textControl, 0, 0);
 		}
-		private void checkSelection(Text textControl, int start, int end) {
+		
+		protected void checkSelection(Text textControl, int start, int end) {
 			assertTrue(textControl.getSelection().equals(new Point(start, end)));
 		}
 	}
