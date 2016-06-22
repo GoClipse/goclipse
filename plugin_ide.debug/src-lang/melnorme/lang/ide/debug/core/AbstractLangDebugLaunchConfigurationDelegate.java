@@ -24,7 +24,6 @@ import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
 import org.eclipse.cdt.dsf.gdb.internal.GdbPlugin;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
-import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
 import org.eclipse.cdt.dsf.gdb.service.GDBBackend;
 import org.eclipse.cdt.dsf.service.DsfSession;
 import org.eclipse.cdt.utils.spawner.ProcessFactory;
@@ -136,7 +135,7 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		
 		@Override
 		protected Process launchGDBProcess(String[] commandLine) throws CoreException {
-			String[] launchEnvironment = LaunchUtils.getLaunchEnvironment(fLaunchConfiguration);
+			String[] launchEnvironment = getGDBLaunch_().getLaunchEnvironment();
 			if(launchEnvironment != null) {
 				// launchEnvironment should be usually be null GDB itself
 				LangCore.logWarning("Ignoring previous CDT GDB launch environment");
@@ -152,6 +151,11 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 			    String message = "Error while launching command: " + StringUtil.join(commandLine, " ");
 			    throw new CoreException(new Status(IStatus.ERROR, GdbPlugin.PLUGIN_ID, -1, message, e));
 			}
+		}
+		
+		// duplicate of super.getGDBLaunch because it is private :/
+		protected GdbLaunch getGDBLaunch_() {
+			return (GdbLaunch) getSession().getModelAdapter(ILaunch.class);
 		}
 		
 		@SuppressWarnings("unused")
