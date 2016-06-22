@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="%featureName"
-      version="0.15.0.qualifier"
+      version="0.16.0.qualifier"
       provider-name="%providerName"
       plugin="com.googlecode.goclipse.jvmcheck">
 

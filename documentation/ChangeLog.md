@@ -1,18 +1,21 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Removed preference "Show error dialog if gocode failures occur" as it's no longer necessary.
-   * Content Assist will now distinguish between setup errors (errors that the user can fix, which are related to configuration and not the source) and other tool errors. For setup errors, a dialog will always be shown. For the other errors, if Content Assist was invoked manually, a dialog will also be shown, but if it was activated automatically the error will only be displayed in the editor status line. 
- * Improved `gofmt` error message text.
- * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
- * Fixed: Project Explorer GOPATH elements not updated if project settings changed. 
 
- * Added documentation hover (`F2` or mouse-over a reference). Also added to code completion. #TODO doc
- * Added insertion of function parameters for function completion proposals.
- * Enabled gocode `propose-builtins` option, which isn't enabled by default.
- * Reworked the icon and label of completion proposals and fixed some related issues. Also, now the icons are consistent with the Outline icons. 
+### 0.16.0
+ * Added documentation hover (`F2` or mouse-over the reference). Also documentation added to code completion popup. 
+ * Added insertion of function arguments for function code completion proposals.
+ * Enabled `gocode`'s `propose-builtins` option, which isn't enabled by default.
+ * Reworked the icon and label of code completion proposals and fixed some related issues. Now the icons are consistent with the Outline icons. 
+ * Removed preference "Show error dialog if gocode failures occur" as it's no longer necessary.
+   * Content Assist will now distinguish between setup errors (errors that the user can fix, which are related to configuration and not the source code) and other tool errors. For setup/critical errors, a dialog will always be shown. For the other errors, if Content Assist was invoked manually, a dialog will also be shown, but if it was activated automatically the error will only be displayed in the editor status line. 
+ * Improved `gofmt` error message.
+ * Added: show Project Explorer error element if project is not contained in GOPATH.
+ 
+--
+ * Fixed: Eclipse variables not being substituted in environment-variable values of Build Targets and launch configurations.
+ * Fixed: Project Explorer GOPATH elements not updated if project GOPATH settings changed. 
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
- * Fixed: Eclipse variables not being substituted in environment-variable values.
  * Fixed: Erratic text cursor bug when typing in GOPATH field and gofmt field.
 
 ### 0.15.0
