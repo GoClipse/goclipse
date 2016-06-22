@@ -16,7 +16,7 @@ import java.text.Collator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
@@ -24,7 +24,7 @@ import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 
-public abstract class LangNavigatorSorter extends ViewerSorter {
+public abstract class LangNavigatorSorter extends ViewerComparator {
 	
 	public LangNavigatorSorter() {
 		super();

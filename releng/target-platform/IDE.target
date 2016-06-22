@@ -6,8 +6,8 @@
 <repository location="http://archive.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.feature.group" version="4.5.0.v20150603-2358"/>
-<repository location="http://download.eclipse.org/releases/mars"/>
+<unit id="org.eclipse.platform.feature.group" version="4.6.0.v20160606-1342"/>
+<repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.platform.feature.group" version="9.0.0.201606062011"/>

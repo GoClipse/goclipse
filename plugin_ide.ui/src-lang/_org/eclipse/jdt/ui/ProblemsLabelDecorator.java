@@ -87,7 +87,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 	private boolean fUseNewRegistry= false;
 	private IProblemChangedListener fProblemChangedListener;
 
-	private ListenerList fListeners;
+	private ListenerList<ILabelProviderListener> fListeners;
 
 	/**
 	 * Creates a new <code>ProblemsLabelDecorator</code>.
@@ -240,7 +240,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 	@Override
 	public void addListener(ILabelProviderListener listener) {
 		if (fListeners == null) {
-			fListeners= new ListenerList();
+			fListeners= new ListenerList<>();
 		}
 		fListeners.add(listener);
 		if (fProblemChangedListener == null) {
