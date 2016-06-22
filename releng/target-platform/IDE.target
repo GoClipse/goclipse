@@ -10,9 +10,9 @@
 <repository location="http://download.eclipse.org/releases/mars"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.8.0.201509131935"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.8.0.201509131935"/>
-<repository location="http://download.eclipse.org/releases/mars"/>
+<unit id="org.eclipse.cdt.platform.feature.group" version="9.0.0.201606062011"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="9.0.0.201606062011"/>
+<repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 </locations>
 </target>

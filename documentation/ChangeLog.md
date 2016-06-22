@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Updated minimum CDT to version `9.0`.
  * Removed preference "Show error dialog if #DEAMON_TOOL failures occur" as it's no longer necessary.
    * Content Assist will now distinguish between setup errors (errors that the user can fix, which are related to configuration and not the source) and other tool errors. For setup errors, a dialog will always be shown. For the other errors, if Content Assist was invoked manually, a dialog will also be shown, but if it was activated automatically the error will only be displayed in the editor status line. 
  * Fixed: Eclipse variables not being substituted in environment-variable values for launch configurations.

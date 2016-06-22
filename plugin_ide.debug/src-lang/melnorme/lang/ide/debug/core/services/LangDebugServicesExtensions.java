@@ -88,6 +88,7 @@ public class LangDebugServicesExtensions implements IDsfDebugServicesFactory {
 		return parentServiceFactory.createService(clazz, session, optionalArguments);
 	}
 	
+	// An override of parentServiceFactory.createCommandControl
 	protected GDBControl getGdbControl_override(DsfSession session, ILaunchConfiguration config, 
 			GdbDebugServicesFactory gdbSvcFactory) {
 		GDBControl gdbControl = null;
