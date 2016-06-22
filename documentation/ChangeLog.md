@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Updated minimum CDT to version `9.0`.
 
 ### 0.16.0
  * Added documentation hover (`F2` or mouse-over the reference). Also documentation added to code completion popup. 

@@ -11,14 +11,13 @@
 package melnorme.lang.ide.ui.dialogs;
 
 
+import static melnorme.lang.ide.ui.utils.DialogPageUtils.severityToMessageType;
 import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -49,12 +48,13 @@ import melnorme.util.swt.components.misc.StatusMessageWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
+import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
 public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
-	protected final NameGroup nameGroup = new NameGroup();
+	protected final NameGroup nameGroup = createNameGroup();
 	protected final LocationGroup locationGroup = createLocationGroup();
 	protected final ProjectValidationGroup projectValidationGroup = createProjectValidationGroup();
 	protected final PreferencesValidationGroup prefValidationGroup = createPreferencesValidationGroup();
@@ -67,6 +67,9 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		super(pageName, title, titleImage);
 	}
 	
+	protected NameGroup createNameGroup() {
+		return new NameGroup();
+	}
 	protected ProjectValidationGroup createProjectValidationGroup() {
 		return new ProjectValidationGroup();
 	}
@@ -148,7 +151,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			addChildWidget(textField);
 			this.layoutColumns = 2;
 			
-			ValidationSourceX validationSource = () -> getProjectHandle2();
+			ValidationSourceX validationSource = this::validateProjectName;
 			validation.addFieldValidation(true, textField, validationSource);
 		}
 		
@@ -158,6 +161,10 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		public TextFieldWidget getNameField() {
 			return textField;
+		}
+		
+		public void validateProjectName() throws StatusException {
+			getProjectHandle2();
 		}
 		
 		public IProject getProjectHandle2() throws StatusException {
@@ -337,18 +344,19 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	}
 	
 	protected boolean validateDialog() {
-		IStatus validationStatus = getValidationStatus();
+		IStatusMessage validationStatus = getValidationStatus();
 		
 		boolean valid;
-		if(validationStatus.isOK()) {
-			setErrorMessage(null);
+		if(validationStatus == null) {
 			setMessage(null);
 			setPageComplete(true);
 			
 			valid = true;
 		} else {
-			setErrorMessage(validationStatus.getMessage());
-			setPageComplete(false);
+			Severity severity = validationStatus.getSeverity();
+			setMessage(validationStatus.getMessage(), severityToMessageType(severity));
+			
+			setPageComplete(severity != Severity.ERROR);
 			valid = false;
 		}
 		
@@ -358,13 +366,13 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		return valid;
 	}
 	
-	protected IStatus getValidationStatus() {
+	protected IStatusMessage getValidationStatus() {
 		try {
 			nameGroup.validate();
 			locationGroup.validate();
-			return Status.OK_STATUS;
-		} catch(CommonException e) {
-			return LangCore.createErrorStatus(e.getMessage(), e.getCause());
+			return null;
+		} catch(StatusException e) {
+			return e;
 		}
 	}
 	

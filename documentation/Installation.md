@@ -1,8 +1,9 @@
 ## Installation
 
 #### Installation Requirements: 
- * Eclipse 4.5 (Mars) or later.
  * Java VM version 8 or later.
+ * Eclipse 4.5 (Mars) or later.
+ * CDT 9.0 or later (this will be installed or updated automatically as part of the steps below).
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
