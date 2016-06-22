@@ -99,7 +99,7 @@ public class ProblemMarkerManager implements IResourceChangeListener, IAnnotatio
 		}
 	}
 
-	private ListenerList fListeners;
+	private ListenerList<IProblemChangedListener> fListeners;
 
 	private Set<IResource> fResourcesWithMarkerChanges;
 	private Set<IResource> fResourcesWithAnnotationChanges;
@@ -107,7 +107,7 @@ public class ProblemMarkerManager implements IResourceChangeListener, IAnnotatio
 	private UIJob fNotifierJob;
 
 	public ProblemMarkerManager() {
-		fListeners= new ListenerList();
+		fListeners= new ListenerList<>();
 		fResourcesWithMarkerChanges= new HashSet<IResource>();
 		fResourcesWithAnnotationChanges= new HashSet<IResource>();
 	}

@@ -129,9 +129,9 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 						return GoPluginImages.NAV_SourceFolder;
 					}
 					
-					// TODO: should cleanup up this.
+					// TODO: should cleanup/review this.
 					
-					IEditorDescriptor descriptor = IDE.getEditorDescriptor(fileStore.getName());
+					IEditorDescriptor descriptor = IDE.getEditorDescriptor(fileStore.getName(), true, false);
 					if (descriptor != null) {
 						return descriptor.getImageDescriptor();
 					} else {

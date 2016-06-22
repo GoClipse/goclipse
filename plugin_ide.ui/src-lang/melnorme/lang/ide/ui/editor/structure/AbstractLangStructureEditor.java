@@ -218,13 +218,15 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	
 	/* -----------------  ----------------- */
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class requestedClass) {
+	public <T> T getAdapter(Class<T> requestedClass) {
 		if (IContentOutlinePage.class.equals(requestedClass)) {
-			return outlinePage;
+			IContentOutlinePage outlinePage = this.outlinePage; 
+			return (T) outlinePage;
 		}
 		if(requestedClass == IShowInTargetList.class) {
-			return new IShowInTargetList() {
+			return (T) new IShowInTargetList() {
 				@Override
 				public String[] getShowInTargetIds() {
 					return array(IPageLayout.ID_OUTLINE);

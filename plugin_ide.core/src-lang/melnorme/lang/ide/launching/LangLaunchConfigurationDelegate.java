@@ -20,10 +20,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -246,17 +245,13 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		monitor = (monitor == null) ? new NullProgressMonitor() : monitor;
-		
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 
+			LaunchMessages.LCD_StartingLaunchConfiguration(configuration.getName()), 10);
 		try {
-			monitor.beginTask(LaunchMessages.LCD_StartingLaunchConfiguration(configuration.getName()), 10);
-			
-			launchProcess(configuration, launch, new SubProgressMonitor(monitor, 7));
+			launchProcess(configuration, launch, subMonitor.split(10));
 			
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
-		} finally {
-			monitor.done();
 		}
 	}
 	

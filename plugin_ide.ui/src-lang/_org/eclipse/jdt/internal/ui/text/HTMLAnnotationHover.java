@@ -49,7 +49,7 @@ public class HTMLAnnotationHover extends DefaultAnnotationHover {
 	 * Formats several message as HTML text.
 	 */
 	@Override
-	protected String formatMultipleMessages(List messages) {
+	protected String formatMultipleMessages(List<String> messages) {
 		StringBuffer buffer= new StringBuffer();
 		HTMLPrinter.addPageProlog(buffer);
 		HTMLPrinter.addParagraph(buffer, HTMLPrinter.convertToHTMLContent(JavaUIMessages.JavaAnnotationHover_multipleMarkersAtThisLine));
