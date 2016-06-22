@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed 0.16.0 regression: editor open definition hyperlink (Ctrl-click) not working. (#208)
  * Updated minimum CDT to version `9.0`.
 
 ### 0.16.0

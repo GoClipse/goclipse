@@ -150,15 +150,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	@Override 
 	protected Map<String, IAdaptable> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
 		Map<String, IAdaptable> targets = super.getHyperlinkDetectorTargets(sourceViewer);
-		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, new IAdaptable() {
-			
-			@Override
-			public <T> T getAdapter(Class<T> adapter) {
-				System.out.println("foo");
-				// TODO Auto-generated method stub
-				return null;
-			}
-		}); 
+		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, editor_opt);
 		return targets;
 	} 
 	

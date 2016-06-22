@@ -32,9 +32,9 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 		if (requestedRegion == null)
 			return null;
 		
-		ITextEditor textEditor = (ITextEditor) getAdapter(ITextEditor.class);
+		ITextEditor textEditor = getAdapter(ITextEditor.class);
 		if(textEditor == null) {
-			return null; // TODO: make this work with any ITextViewer
+			return null;
 		}
 		
 		IDocument document = textViewer.getDocument();
