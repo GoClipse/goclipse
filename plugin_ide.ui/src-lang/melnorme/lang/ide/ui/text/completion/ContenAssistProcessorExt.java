@@ -11,10 +11,13 @@
 package melnorme.lang.ide.ui.text.completion;
 
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 
@@ -89,5 +92,24 @@ public abstract class ContenAssistProcessorExt implements IContentAssistProcesso
 	}
 	
 	protected abstract IContextInformation[] doComputeContextInformation(ITextViewer viewer, int offset);
+	
+	/* -----------------  ----------------- */
+	
+	public static class NullContentAssistProcessorExt extends ContenAssistProcessorExt {
+		@Override
+		public IContextInformationValidator getContextInformationValidator() {
+			return null;
+		}
+		
+		@Override
+		protected IContextInformation[] doComputeContextInformation(ITextViewer viewer, int offset) {
+			return array();
+		}
+		
+		@Override
+		protected ICompletionProposal[] doComputeCompletionProposals(ITextViewer viewer, int offset) {
+			return array();
+		}
+	}
 	
 }

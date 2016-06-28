@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
@@ -55,6 +56,7 @@ import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
+import melnorme.lang.ide.ui.text.completion.ContenAssistProcessorExt.NullContentAssistProcessorExt;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
@@ -260,8 +262,21 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	
 	protected void configureContentAssistantProcessors(ContentAssistantExt assistant) {
 		Indexable<CompletionProposalsGrouping> categories = getContentAssistCategoriesProvider().getCategories();
-		IContentAssistProcessor cap = createContentAssistProcessor(assistant, categories);
-		assistant.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
+		IContentAssistProcessor defaultCAP = createContentAssistProcessor(assistant, categories);
+		for (LangPartitionTypes partitionType : LangPartitionTypes.values()) {
+			
+			IContentAssistProcessor cap;
+			
+			if(partitionType.getId().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
+				cap = defaultCAP;
+			} else {
+				// Setup a dummy content Assist processor, to prevent a platform NPE when returning null proposals
+				// See: https://git.eclipse.org/r/#/c/76121/
+				cap = new NullContentAssistProcessorExt();
+			}
+			
+			assistant.setContentAssistProcessor(cap, partitionType.getId());
+		}
 	}
 	
 	protected LangContentAssistProcessor createContentAssistProcessor(ContentAssistantExt assistant,
