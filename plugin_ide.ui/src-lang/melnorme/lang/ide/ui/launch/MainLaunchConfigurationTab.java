@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.build.BuildTargetEditor;
 import melnorme.lang.tooling.commands.CommandInvocation;
@@ -202,7 +203,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		try {
 			return new BuildTargetLaunchCreator(config);
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw EclipseUtils.createCommonException(e);
 		}
 	}
 	

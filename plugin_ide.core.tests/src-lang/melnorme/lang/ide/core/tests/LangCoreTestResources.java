@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.tests.utils.BundleResourcesUtil;
 import melnorme.lang.utils.MiscFileUtils;
@@ -48,7 +48,7 @@ public class LangCoreTestResources {
 		try {
 			BundleResourcesUtil.copyDirContents(pluginId, bundleResourcePath, destFolder);
 		} catch(IOException e) {
-			throw LangCore.createCoreException("Error copying resource contents", e);
+			throw EclipseCore.createCoreException("Error copying resource contents", e);
 		}
 	}
 	
@@ -58,7 +58,7 @@ public class LangCoreTestResources {
 		try {
 			MiscFileUtils.copyDirContentsIntoDirectory(directory, destFolder.getLocation().toFile());
 		} catch (IOException e) {
-			throw LangCore.createCoreException("Error in copyDirContentsIntoDirectory", e);
+			throw EclipseCore.createCoreException("Error in copyDirContentsIntoDirectory", e);
 		}
 		destFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 		return destFolder;

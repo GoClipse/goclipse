@@ -16,8 +16,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.widgets.Display;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.status.StatusException;
 
@@ -27,7 +27,7 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 		try {
 			return config.getAttribute(key, defaultValue);
 		} catch (CoreException ce) {
-			LangUIPlugin.logError(LangUIMessages.Launch_ErrorReadingConfigurationAttribute, ce);
+			LangCore.logError(LangUIMessages.Launch_ErrorReadingConfigurationAttribute, ce);
 		}
 		return defaultValue;
 	}
@@ -36,7 +36,7 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 		try {
 			return config.getAttribute(key, defaultValue);
 		} catch (CoreException ce) {
-			LangUIPlugin.logError(LangUIMessages.Launch_ErrorReadingConfigurationAttribute, ce);
+			LangCore.logError(LangUIMessages.Launch_ErrorReadingConfigurationAttribute, ce);
 		}
 		return defaultValue;
 	}

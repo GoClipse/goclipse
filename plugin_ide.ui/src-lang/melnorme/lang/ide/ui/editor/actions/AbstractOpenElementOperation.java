@@ -19,6 +19,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -95,7 +96,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorToolOpe
 		try {
 			lineOffset = doc.getLineOffset(line_oneBased-1);
 		} catch (BadLocationException e) {
-			throw LangCore.createCoreException("Invalid line number: " + line_oneBased, e);
+			throw EclipseCore.createCoreException("Invalid line number: " + line_oneBased, e);
 		}
 		
 		return lineOffset + column_oneBased-1;

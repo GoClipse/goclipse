@@ -10,6 +10,7 @@
  *******************************************************************************/
 package _org.eclipse.jdt.ui;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
@@ -154,7 +155,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 				return null;
 			}
 
-			LangUIPlugin.logStatus(e);
+			EclipseCore.logStatus(e);
 		}
 		return null;
 	}

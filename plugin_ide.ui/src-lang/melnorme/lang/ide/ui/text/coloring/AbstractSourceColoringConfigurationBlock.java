@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
 import org.osgi.service.event.Event;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -356,7 +357,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		try {
 			return StreamUtil.readAllBytesFromStream(is).toString(StringUtil.UTF8);
 		} catch (IOException e) {
-			LangUIPlugin.logInternalError(e);
+			LangCore.logInternalError(e);
 			return "<INTERNAL ERROR: COULD NOT READ PREVIEW FILE";
 		}
 	}

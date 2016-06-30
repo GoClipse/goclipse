@@ -12,8 +12,6 @@ package melnorme.lang.ide.launching;
 
 import java.util.Map;
 
-import melnorme.lang.ide.core.LangCore;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
@@ -21,6 +19,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.RuntimeProcess;
+
+import melnorme.lang.ide.core.EclipseCore;
 
 /**
  * Extension to {@link RuntimeProcess} that allows updating the process label as used by the console.
@@ -69,7 +69,7 @@ public class RuntimeProcessExtension extends RuntimeProcess {
 					buffer.append("] ");
 				}
 			} catch (CoreException ce) {
-				LangCore.logStatus(ce);
+				EclipseCore.logStatus(ce);
 			}
 		}
 		buffer.append(process.getLabel());

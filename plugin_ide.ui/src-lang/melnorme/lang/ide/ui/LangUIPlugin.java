@@ -12,9 +12,6 @@ package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -31,7 +28,6 @@ import org.osgi.service.prefs.BackingStoreException;
 import _org.eclipse.jdt.internal.ui.viewsupport.ProblemMarkerManager;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
@@ -126,61 +122,6 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	protected abstract void doCustomStop(BundleContext context);
 	
-	/* ######################################################################## */
-	
-	/* ----------------- logging helpers ----------------- */
-	
-	/** Creates an OK status with given message. */
-	public static Status createOkStatus(String message) {
-		return createStatus(IStatus.OK, message, null);
-	}
-	
-	/** Creates a status describing an error in this plugin, with given message. */
-	public static IStatus createErrorStatus(String message) {
-		return createErrorStatus(message, null);
-	}
-	
-	/** Creates a status describing an error in this plugin, with given message and given throwable. */
-	public static StatusExt createErrorStatus(String message, Throwable throwable) {
-		return createStatus(IStatus.ERROR, message, throwable);
-	}
-	
-	/** Creates a Status with given status code and message. */
-	public static StatusExt createStatus(int statusCode, String message, Throwable throwable) {
-		return new StatusExt(statusCode, LangCorePlugin.getInstance(), message, throwable);
-	}
-	
-	/** Creates a CoreException describing an error in this plugin. */
-	public static CoreException createCoreException(String message, Throwable throwable) {
-		return new CoreException(createErrorStatus(message, throwable));
-	}
-	
-	/* ----------------- Logging ----------------- */
-	
-	/** Logs given status. */
-	public static void logStatus(IStatus status) {
-		getInstance().getLog().log(status);
-	}
-	
-	/** Logs status of given CoreException. */
-	public static void logStatus(CoreException ce) {
-		getInstance().getLog().log(ce.getStatus());
-	}
-	
-	/** Logs an error status with given message. */
-	public static void logError(String message) {
-		getInstance().getLog().log(createErrorStatus(message, null));
-	}
-	
-	/** Logs an error status with given message and given throwable. */
-	public static void logError(String message, Throwable throwable) {
-		getInstance().getLog().log(createErrorStatus(message, throwable));
-	}
-	
-	public static void logInternalError(Throwable throwable) {
-		logError("Internal Error!", throwable);
-	}
-	
 	/* -------- Services and other singletons -------- */
 	
 	/** Gets the plugins preference store. */
@@ -247,7 +188,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		try {
 			InstanceScope.INSTANCE.getNode(PLUGIN_ID).flush();
 		} catch (BackingStoreException e) {
-			logError("Error saving instance preferences: ", e);
+			LangCore.logError("Error saving instance preferences: ", e);
 		}
 	}
     

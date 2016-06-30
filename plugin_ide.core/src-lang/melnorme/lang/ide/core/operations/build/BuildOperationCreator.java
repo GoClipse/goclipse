@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -89,7 +90,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 				try {
 					project.refreshLocal(IResource.DEPTH_INFINITE, EclipseUtils.pm(om));
 				} catch(CoreException e) {
-					throw LangCore.createCommonException(e);
+					throw EclipseUtils.createCommonException(e);
 				}
 			}
 		});
@@ -134,7 +135,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 					return true;
 				}
 			} catch (CoreException ce) {
-				LangCore.logStatus(ce);
+				EclipseCore.logStatus(ce);
 			}
 		}
 		return false;

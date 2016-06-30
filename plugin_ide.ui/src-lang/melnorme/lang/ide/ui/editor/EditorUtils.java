@@ -45,7 +45,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -160,7 +160,7 @@ public class EditorUtils {
 					return fullPath.toFile().toPath();
 				}
 			} catch (CoreException ce) {
-				LangCore.logStatus(ce);
+				EclipseCore.logStatus(ce);
 			}
 		}
 		
@@ -254,7 +254,7 @@ public class EditorUtils {
 		IEditorPart editor = page.openEditor(newInput, editorId, true, matchFlags);
 		ITextEditor targetEditor = tryCast(editor, ITextEditor.class);
 		if(targetEditor == null) {
-			throw LangCore.createCoreException("Not a text editor", null);
+			throw EclipseCore.createCoreException("Not a text editor", null);
 		}
 		return targetEditor;
 	}

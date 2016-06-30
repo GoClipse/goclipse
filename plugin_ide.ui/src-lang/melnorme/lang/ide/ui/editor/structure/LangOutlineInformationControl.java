@@ -11,6 +11,8 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
+import melnorme.lang.ide.core.EclipseCore;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.AbstractLangBasicSourceViewerConfiguration;
 import melnorme.lang.ide.ui.views.AbstractFilteredTreePopupControl;
@@ -61,7 +63,7 @@ public abstract class LangOutlineInformationControl extends AbstractFilteredTree
 		if(structure != null) {
 			super.doSetInput(structure, null);
 		} else {
-			LangUIPlugin.logInternalError(new Exception("Could not determine structure from input."));
+			LangCore.logInternalError(new Exception("Could not determine structure from input."));
 			super.setInput(null);
 		}
 		
@@ -76,7 +78,7 @@ public abstract class LangOutlineInformationControl extends AbstractFilteredTree
 				dispose();
 				EditorStructureUtil.openInEditorAndReveal(selectedElement);
 			} catch (CoreException ce) {
-				LangUIPlugin.logStatus(ce);
+				EclipseCore.logStatus(ce);
 			}
 		}
 	}

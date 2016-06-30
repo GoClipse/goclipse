@@ -31,6 +31,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
@@ -54,7 +55,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	}
 	
 	protected CoreException error(String message, Throwable exception) throws CoreException {
-		throw LangCore.createCoreException(message, exception);
+		throw EclipseCore.createCoreException(message, exception);
 	}
 	
 	protected CoreException errorMsg(String messagePattern, Object... arguments) throws CoreException {
@@ -72,7 +73,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			buildTargetSettings = getBuildTargetSettings(configuration);
 			processLauncher = getValidLaunchInfo(configuration, buildTargetSettings);
 		} catch(CommonException ce) {
-			throw LangCore.createCoreException(ce);
+			throw EclipseCore.createCoreException(ce);
 		}
 		
 		if(ILaunchManager.RUN_MODE.equals(mode)) {
@@ -217,7 +218,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		try {
 			return doBuildForLaunch(configuration, mode, monitor);
 		} catch(CommonException e) {
-			throw LangCore.createCoreException(e);
+			throw EclipseCore.createCoreException(e);
 		} catch(OperationCancellation e) {
 			throw new OperationCanceledException();
 		}
@@ -251,7 +252,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			launchProcess(configuration, launch, subMonitor.split(10));
 			
 		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
+			throw EclipseCore.createCoreException(ce);
 		}
 	}
 	

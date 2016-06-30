@@ -28,6 +28,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
@@ -305,7 +306,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		protected final IStatus run(IProgressMonitor monitor) {
 			//System.out.println(getRunningTimeMillis() + " :job#run");
 			runThrottledCode();
-			return LangCore.createOkStatus("ok");
+			return EclipseCore.createOkStatus("ok");
 		}
 		
 		public void markRequestFinished() {

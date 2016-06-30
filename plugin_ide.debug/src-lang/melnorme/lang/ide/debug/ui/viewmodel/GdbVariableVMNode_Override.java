@@ -12,7 +12,8 @@ package melnorme.lang.ide.debug.ui.viewmodel;
 
 import java.util.Map;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.ErrorLabelText;
@@ -76,8 +77,8 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 		if(preferredIndex != -1) {
 			labelAttributes[preferredIndex] = new FormattedValueLabelText_Override();
 		} else {
-			LangUIPlugin.logError("Internal Error: " +
-				" Failed to replace CDT's FormattedValueLabelText for the Variables view");
+			LangCore.logInternalError(new CommonException(
+				" Failed to replace CDT's FormattedValueLabelText for the Variables view"));
 		}
 		
 		provider.setColumnInfo(IDebugVMConstants.COLUMN_ID__VALUE, new LabelColumnInfo(labelAttributes));
@@ -116,7 +117,7 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 		protected static final String[] MESSAGES_TO_TRIM = {
 			"Cannot access memory at address",
 			"There is no member named",
-		}; 
+		};
 		
 		
 		@Override
@@ -142,13 +143,13 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 	                    buf.append( replaceNewlines(childStatus.getMessage()) );
 	                }
 	                return buf.toString();
-	            } 
-	        } 
+	            }
+	        }
 			return super.getPropertyValue(propertyName, status, properties);
 		}
 		
 	    protected String replaceNewlines(String message) {
-	        return message.replaceAll("\n", 
+	        return message.replaceAll("\n",
 	        	MessagesForDebugVM.ErrorLabelText_Error_message__text_page_break_delimiter); //$NON-NLS-1$
 	    }
 	    

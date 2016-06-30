@@ -14,8 +14,8 @@ package melnorme.lang.ide.ui.utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.status.Severity;
@@ -51,7 +51,7 @@ public class UIOperationsStatusHandler {
 	/* -----------------  ----------------- */
 	
 	public static void handleStatus(boolean logError, String title, CoreException ce) {
-		handleStatus(logError, title, LangCore.createCommonException(ce));
+		handleStatus(logError, title, EclipseUtils.createCommonException(ce));
 	}
 	
 	public static void handleStatus(boolean logError, String title, CommonException ce) {
@@ -81,7 +81,7 @@ public class UIOperationsStatusHandler {
 	}
 	
 	public static void handleOperationStatus(String opName, CoreException ce) {
-		handleOperationStatus(opName, LangCore.createCommonException(ce));
+		handleOperationStatus(opName, EclipseUtils.createCommonException(ce));
 	}
 	
 	public static void handleOperationStatus(String opName, CommonException ce) {

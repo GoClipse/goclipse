@@ -46,7 +46,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.tooling.LocationHandle;
 import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
@@ -213,7 +213,7 @@ public class ResourceUtils {
 		try {
 			runCoreOperation2(rule, EclipseUtils.pm(om), operation);
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw EclipseUtils.createCommonException(e);
 		}
 	}
 	
@@ -229,7 +229,7 @@ public class ResourceUtils {
 		try {
 			runCoreOperation2(getWorkspaceRoot(), pm, operation);
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw EclipseUtils.createCommonException(e);
 		}
 	}
 	
@@ -245,7 +245,7 @@ public class ResourceUtils {
 			try {
 				execute_do(EclipseUtils.pm(om));
 			} catch(CoreException e) {
-				throw LangCore.createCommonException(e);
+				throw EclipseUtils.createCommonException(e);
 			}
 		}
 		
@@ -301,7 +301,7 @@ public class ResourceUtils {
 		try {
 			resource.refreshLocal(IResource.DEPTH_INFINITE, EclipseUtils.pm(om));
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw EclipseUtils.createCommonException(e);
 		}
 	}
 	
@@ -313,7 +313,7 @@ public class ResourceUtils {
 		public final CommonException wrapped;
 		
 		public CommonException_CEWrapper(CommonException wrapped) {
-			super(LangCore.createErrorStatus("Error: ", wrapped));
+			super(EclipseCore.createErrorStatus("Error: ", wrapped));
 			this.wrapped = assertNotNull(wrapped);
 		}
 	}
@@ -324,7 +324,7 @@ public class ResourceUtils {
 		public final OperationCancellation wrapped;
 		
 		public CancellationException_CEWrapper(OperationCancellation wrapped) {
-			super(LangCore.createErrorStatus("Error: ", wrapped));
+			super(EclipseCore.createErrorStatus("Error: ", wrapped));
 			this.wrapped = assertNotNull(wrapped);
 		}
 	}
@@ -484,7 +484,7 @@ public class ResourceUtils {
 			}, opRule, IWorkspace.AVOID_UPDATE, null);
 			
 		} catch (CoreException ce) {
-			LangCore.logStatus(ce);
+			EclipseCore.logStatus(ce);
 			// This really should not happen, but still try to recover by registering the listener.
 			getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		}

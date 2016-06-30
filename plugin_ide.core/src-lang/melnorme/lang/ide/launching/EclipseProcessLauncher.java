@@ -29,7 +29,7 @@ import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.tooling.commands.CommandInvocation;
@@ -69,7 +69,7 @@ public class EclipseProcessLauncher {
 	}
 	
 	protected CoreException abort(String message, Throwable exception) throws CoreException {
-		throw LangCore.createCoreException(message, exception);
+		throw EclipseCore.createCoreException(message, exception);
 	}
 	
 	protected CoreException fail(String messagePattern, Object... arguments) throws CoreException {

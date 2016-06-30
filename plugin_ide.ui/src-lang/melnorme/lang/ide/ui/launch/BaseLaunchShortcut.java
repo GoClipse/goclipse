@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.ControlUtils;
@@ -184,7 +184,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 				try {
 					doLaunchTarget(launchTarget, mode);
 				} catch(CoreException e) {
-					throw LangCore.createCommonException(e);
+					throw EclipseUtils.createCommonException(e);
 				}
 			};
 		}.executeAndHandle();

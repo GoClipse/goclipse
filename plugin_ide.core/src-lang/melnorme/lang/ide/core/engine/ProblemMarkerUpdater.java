@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
@@ -101,7 +101,7 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 				
 				updateProblemMarkers();
 			} catch(CoreException ce) {
-				LangCore.logStatus(ce);
+				EclipseCore.logStatus(ce);
 			} catch(OperationCancellation e) {
 				return;
 			}

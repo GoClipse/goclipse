@@ -26,7 +26,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -60,7 +60,7 @@ public class ToolMarkersHelper {
 		try {
 			doAddErrorMarkers(buildErrors, rootPath, EclipseUtils.pm(om));
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw EclipseUtils.createCommonException(e);
 		}
 	}
 	
@@ -132,7 +132,7 @@ public class ToolMarkersHelper {
 				marker.setAttribute(IMarker.CHAR_START, messageSR.getStartPos());
 				marker.setAttribute(IMarker.CHAR_END, messageSR.getEndPos());
 			} catch (CoreException ce) {
-				LangCore.logStatus(ce);
+				EclipseCore.logStatus(ce);
 			}
 		}
 		

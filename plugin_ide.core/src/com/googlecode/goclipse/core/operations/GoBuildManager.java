@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 
 import com.googlecode.goclipse.core.GoCoreMessages;
@@ -389,12 +388,8 @@ public class GoBuildManager extends BuildManager {
 		
 	}
 	
-	protected static GoEnvironment getValidGoEnvironment(IProject project) throws CoreException {
-		try {
-			return GoProjectEnvironment.getValidatedGoEnvironment(project);
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
+	protected static GoEnvironment getValidGoEnvironment(IProject project) throws CommonException {
+		return GoProjectEnvironment.getValidatedGoEnvironment(project);
 	}
 	
 	protected static void addSourcePackagesToCmdLine(final IProject project, ArrayList2<String> goBuildCmdLine,

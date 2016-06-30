@@ -14,13 +14,14 @@ package melnorme.lang.ide.ui.utils;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
@@ -90,8 +91,8 @@ public class UIOperationErrorHandlerImpl {
 			this.message = se.getMessage();
 		}
 		
-		protected static StatusExt createDialogStatus(StatusException se) {
-			return LangCore.createStatus(
+		protected static Status	createDialogStatus(StatusException se) {
+			return EclipseCore.createStatus(
 				EclipseUtils.toEclipseSeverity(se), 
 				null, 
 				new Exception(getExceptionText(se.getCause()))

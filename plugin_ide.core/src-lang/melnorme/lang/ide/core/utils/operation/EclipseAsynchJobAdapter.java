@@ -14,10 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.concurrent.CountDownLatch;
 
-import melnorme.lang.ide.core.LangCore;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
+
+import melnorme.lang.ide.core.EclipseCore;
 
 /**
  * A {@link EclipseAsynchJobAdapter} encompasses a task that should run associated with an Eclipse Job
@@ -52,7 +53,7 @@ public class EclipseAsynchJobAdapter extends Job {
 			job.setThread(Thread.currentThread());
 			runnable.runUnderEclipseJob(job.monitor);
 		} finally {
-			job.done(LangCore.createOkStatus(null));
+			job.done(EclipseCore.createOkStatus(null));
 		}
 	}
 	
