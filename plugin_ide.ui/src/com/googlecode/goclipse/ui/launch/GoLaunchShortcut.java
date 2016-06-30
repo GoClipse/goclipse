@@ -23,6 +23,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
@@ -33,7 +34,7 @@ import melnorme.utilbox.misc.Location;
 
 public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShortcut {
 	
-	public final GoBuildManager buildManager = LangCore.getBuildManager();
+	public final BuildManager buildManager = LangCore.getBuildManager();
 	
 	public static final String LAUNCH_CONFIG_ID = "com.googlecode.goclipse.launch.goLaunchType";
 	

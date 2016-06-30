@@ -1,13 +1,15 @@
 package melnorme.lang.ide.core;
 
 import com.googlecode.goclipse.core.engine.GoBundleModelManager;
-import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 import com.googlecode.goclipse.core.engine.GoSourceModelManager;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 
 import melnorme.lang.ide.core.engine.SourceModelManager;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 
 public class LangCore_Actual {
@@ -32,16 +34,16 @@ public class LangCore_Actual {
 	/* ----------------- Owned singletons: ----------------- */
 	
 	protected final CoreSettings coreSettings;
-	protected final GoToolManager toolManager;
-	protected final GoBundleModelManager bundleManager;
-	protected final GoBuildManager buildManager;
-	protected final GoSourceModelManager sourceModelManager;
+	protected final ToolManager toolManager;
+	protected final BundleModelManager<? extends LangBundleModel> bundleManager;
+	protected final BuildManager buildManager;
+	protected final SourceModelManager sourceModelManager;
 	
 	public LangCore_Actual() {
 		instance = (LangCore) this;
 		
 		coreSettings = createCoreSettings();
-		toolManager = createToolManagerSingleton();
+		toolManager = createToolManager();
 		bundleManager = createBundleModelManager();
 		buildManager = createBuildManager(bundleManager.getModel());
 		sourceModelManager = createSourceModelManager();
@@ -56,7 +58,7 @@ public class LangCore_Actual {
 		};
 	}
 	
-	public static GoToolManager createToolManagerSingleton() {
+	public static GoToolManager createToolManager() {
 		return new GoToolManager();
 	}
 	
@@ -78,16 +80,16 @@ public class LangCore_Actual {
 		return instance.coreSettings;
 	}
 	
-	public static GoToolManager getToolManager() {
+	public static ToolManager getToolManager() {
 		return instance.toolManager;
 	}
-	public static GoBundleModel getBundleModel() {
+	public static LangBundleModel getBundleModel() {
 		return instance.bundleManager.getModel();
 	}
-	public static GoBuildManager getBuildManager() {
+	public static BuildManager getBuildManager() {
 		return instance.buildManager;
 	}
-	public static GoBundleModelManager getBundleModelManager() {
+	public static BundleModelManager<? extends LangBundleModel> getBundleModelManager() {
 		return instance.bundleManager;
 	}
 	public static SourceModelManager getSourceModelManager() {

@@ -4,12 +4,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 
-import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
@@ -23,7 +23,7 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
  */
 public class GocodeServerManager implements IDisposable {
 	
-	protected final GoToolManager toolMgr = LangCore.getToolManager();
+	protected final ToolManager toolMgr = LangCore.getToolManager();
 	protected ExternalProcessNotifyingHelper gocodeProcess;
 	
 	public GocodeServerManager() {
@@ -86,7 +86,7 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void stopServer() {
 		if (gocodeProcess != null) {
-			LangCore.createInfoStatus("stopping gocode server").logInPlugin();
+			LangCore.logInfo("stopping gocode server");
 			
 			gocodeProcess.getProcess().destroy();
 			gocodeProcess = null;

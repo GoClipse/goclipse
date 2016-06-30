@@ -29,6 +29,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
@@ -46,7 +47,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	
 	public static final Location TESTS_GO_WORKSPACE = TestsWorkingDir.getWorkingDir("TestsGoWorkspace");
 	
-	protected GoBuildManager buildMgr = LangCore.getBuildManager();
+	protected BuildManager buildMgr = LangCore.getBuildManager();
 	protected IProject project;
 	protected IProject project2;
 	
