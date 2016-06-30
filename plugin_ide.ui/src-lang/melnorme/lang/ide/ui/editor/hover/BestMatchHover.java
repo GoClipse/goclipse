@@ -24,9 +24,9 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.JavaWordFinder;
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.tooling.common.ISourceBuffer;
 
 /**
@@ -62,9 +62,9 @@ public class BestMatchHover extends AbstractEditorTextHover
 			try {
 				fInstantiatedTextHovers.add(klass.newInstance());
 			} catch (InstantiationException e) {
-				LangUIPlugin.logInternalError(e);
+				LangCore.logInternalError(e);
 			} catch (IllegalAccessException e) {
-				LangUIPlugin.logInternalError(e);
+				LangCore.logInternalError(e);
 			}
 		}
 	}

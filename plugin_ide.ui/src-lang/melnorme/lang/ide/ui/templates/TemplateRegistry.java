@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 
@@ -45,7 +46,7 @@ public class TemplateRegistry {
 			try {
 				store.load();
 			} catch (IOException e) {
-				LangUIPlugin.logError("Could not load template store.", e);
+				LangCore.logError("Could not load template store.", e);
 			}
 		}
 		return store;

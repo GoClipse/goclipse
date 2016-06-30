@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
@@ -44,6 +45,10 @@ import melnorme.utilbox.status.StatusException;
 import melnorme.utilbox.status.StatusLevel;
 
 public class EclipseUtils {
+	
+	public static CommonException createCommonException(CoreException ce) {
+		return new CommonException(ce.getMessage(), ce.getCause());
+	}
 	
 	public static final String MSG__ERROR_TRYING_TO_START_PLUGIN = "Error trying to start plugin: ";
 	
@@ -165,7 +170,7 @@ public class EclipseUtils {
 		try {
 			commonOperation.execute(om);
 		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
+			throw EclipseCore.createCoreException(ce);
 		}
 	}
 	
@@ -215,7 +220,7 @@ public class EclipseUtils {
 		try {
 			coreRunnable.execute();
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw createCommonException(e);
 		}
 	}
 	
@@ -223,7 +228,7 @@ public class EclipseUtils {
 		try {
 			return coreCallable.execute();
 		} catch(CoreException e) {
-			throw LangCore.createCommonException(e);
+			throw createCommonException(e);
 		}
 	}
 	
@@ -231,7 +236,7 @@ public class EclipseUtils {
 		try {
 			return coreCallable.execute();
 		} catch(CommonException e) {
-			throw LangCore.createCoreException(e);
+			throw EclipseCore.createCoreException(e);
 		}
 	}
 	

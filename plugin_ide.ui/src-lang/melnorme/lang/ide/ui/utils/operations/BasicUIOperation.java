@@ -15,10 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.text.MessageFormat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -70,10 +68,6 @@ public abstract class BasicUIOperation implements Runnable {
 			// Do nothing
 		}
 		return false;
-	}
-	
-	protected void handleError(CoreException ce) {
-		handleError(LangCore.createCommonException(ce));
 	}
 	
 	protected void handleError(CommonException ce) {

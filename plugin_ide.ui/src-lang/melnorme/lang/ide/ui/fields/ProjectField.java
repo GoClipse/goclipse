@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -85,7 +85,7 @@ public class ProjectField extends ButtonTextField {
 			final IProject[] projects = getDialogChooseElements(); 
 			dialog.setElements(projects);
 		} catch (CoreException ce) {
-			LangUIPlugin.logStatus(ce);
+			EclipseCore.logStatus(ce);
 		}
 		
 		final IProject project = getProject();

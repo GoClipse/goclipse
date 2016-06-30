@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
@@ -61,7 +62,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		try {
 			getProject().deleteMarkers(LangCore_Actual.BUILD_PROBLEM_ID, true, IResource.DEPTH_INFINITE);
 		} catch (CoreException ce) {
-			LangCore.logStatus(ce);
+			EclipseCore.logStatus(ce);
 		}
 	}
 	
@@ -169,7 +170,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 				// but sometimes its not wrapped correctly.
 				return null;
 			}
-			LangCore.logStatus(ce);
+			EclipseCore.logStatus(ce);
 			throw ce;
 		}
 		finally {
@@ -192,7 +193,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		try {
 			createBuildOp().execute(EclipseUtils.om(monitor));
 		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
+			throw EclipseCore.createCoreException(ce);
 		}
 		return null;
 	}
@@ -213,7 +214,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		} catch (OperationCancellation e) {
 			// return
 		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
+			throw EclipseCore.createCoreException(ce);
 		}
 	}
 	

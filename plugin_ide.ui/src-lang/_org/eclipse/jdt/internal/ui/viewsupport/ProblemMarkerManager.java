@@ -14,9 +14,6 @@ package _org.eclipse.jdt.internal.ui.viewsupport;
 import java.util.HashSet;
 import java.util.Set;
 
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.LangUIPlugin;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -37,6 +34,9 @@ import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
+
+import melnorme.lang.ide.core.EclipseCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 
 /**
  * Listens to resource deltas and filters for marker changes of type IMarker.PROBLEM
@@ -121,7 +121,7 @@ public class ProblemMarkerManager implements IResourceChangeListener, IAnnotatio
 			if (delta != null)
 				delta.accept(new ProjectErrorVisitor(changedElements));
 		} catch (CoreException e) {
-			LangUIPlugin.logStatus(e);
+			EclipseCore.logStatus(e);
 		}
 
 		if (!changedElements.isEmpty()) {

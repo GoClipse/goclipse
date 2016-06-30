@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.utils.validators.AbstractValidator;
 import melnorme.utilbox.status.StatusException;
@@ -57,7 +57,7 @@ public class ProjectValidator extends AbstractValidator {
 			
 			return project;
 		} catch(CoreException ce) {
-			LangCore.logStatus(ce);
+			EclipseCore.logStatus(ce);
 			throw error(ce.getMessage());
 		}
 	}

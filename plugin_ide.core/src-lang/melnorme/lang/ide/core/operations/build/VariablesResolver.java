@@ -21,7 +21,8 @@ import org.eclipse.core.variables.IStringVariable;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.IValueVariable;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.EclipseCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ForwardingVariableManager;
 import melnorme.lang.ide.core.utils.StringSubstitutionEngine;
 import melnorme.lang.tooling.commands.IVariablesResolver;
@@ -46,7 +47,7 @@ public class VariablesResolver implements IVariablesResolver {
 		try {
 			return varMgr.performStringSubstitution(expression, true);
 		} catch(CoreException ce) {
-			throw LangCore.createCommonException(ce);
+			throw EclipseUtils.createCommonException(ce);
 		}
 	}
 	
@@ -182,7 +183,7 @@ public class VariablesResolver implements IVariablesResolver {
 		@Override
 		public String getValue(String argument) throws CoreException {
 			if(argument != null) {
-				throw LangCore.createCoreException(
+				throw EclipseCore.createCoreException(
 					MessageFormat.format("Variable {0} does not accept arguments.", getName()) , null);
 			}
 			if(validator != null) {
@@ -190,7 +191,7 @@ public class VariablesResolver implements IVariablesResolver {
 					return validator.validateField(value.get());
 				} catch(StatusException e) {
 					String msg = MessageFormat.format("Variable {0} error: {1}", getName(),  e.getMessage());
-					throw LangCore.createCoreException(msg, e.getCause());
+					throw EclipseCore.createCoreException(msg, e.getCause());
 				}
 			}
 			return value.get();

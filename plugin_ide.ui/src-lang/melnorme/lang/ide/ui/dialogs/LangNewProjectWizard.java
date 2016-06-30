@@ -36,6 +36,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -69,7 +70,7 @@ public abstract class LangNewProjectWizard extends Wizard
 		try {
 			return getFirstPage().getProjectHandle2();
 		} catch(CommonException ce) {
-			throw LangCore.createCoreException(ce);
+			throw EclipseCore.createCoreException(ce);
 		}
 	}
 	

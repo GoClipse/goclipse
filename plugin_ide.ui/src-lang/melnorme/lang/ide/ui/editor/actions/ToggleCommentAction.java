@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorMessages;
 import melnorme.lang.ide.ui.utils.operations.BasicEditorOperation;
@@ -194,7 +194,7 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			LangUIPlugin.logError("Unexpected error.", x);
+			LangCore.logError("Unexpected error.", x);
 		}
 
 		return false;
@@ -219,7 +219,7 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			LangUIPlugin.logError("Unexpected error.", x);
+			LangCore.logError("Unexpected error.", x);
 		}
 
 		return null;
@@ -251,7 +251,7 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			LangUIPlugin.logError("Unexpected error.", x);
+			LangCore.logError("Unexpected error.", x);
 		}
 
 		return -1;
@@ -297,7 +297,7 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 
 		} catch (BadLocationException x) {
 			// should not happen
-			LangUIPlugin.logError("Unexpected error.", x);
+			LangCore.logError("Unexpected error.", x);
 		}
 
 		return false;
