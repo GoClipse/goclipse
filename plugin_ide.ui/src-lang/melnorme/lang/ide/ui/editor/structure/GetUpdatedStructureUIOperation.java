@@ -108,7 +108,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 		} else {
 			key = new LocationKey(sourceBuffer.getKeyForCurrentInput(), "[Unlocated source buffer]");
 		}
-		IDocument doc = sourceBuffer.getDocument();
+		IDocument doc = sourceBuffer.getDocument(); // TODO: try to refactor out the need to for a IDocument
 		
 		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(key, doc);
 		return op.executeAndGetHandledResult();

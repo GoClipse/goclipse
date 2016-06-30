@@ -84,18 +84,18 @@ public class BestMatchHover extends AbstractEditorTextHover
 	
 	@Override
 	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		return getInformation(textViewer, hoverRegion, false);
+		// getHoverInfo2 is called automatically, in background thread, so don't allow the buffer to be saved.
+		ISourceBuffer hoverSourceBuffer = sourceBuffer.getReadOnlyView();
+		return getInformation(textViewer, hoverRegion, hoverSourceBuffer);
 	}
 	
-	public Object getInformation(ITextViewer textViewer, IRegion hoverRegion, boolean canSaveEditor) {
-		
+	public Object getInformation(ITextViewer textViewer, IRegion hoverRegion, ISourceBuffer hoverSourceBuffer) {
 		matchedHover = null;
 		
 		for (ILangEditorTextHover<?> hover : fInstantiatedTextHovers) {
 			if (hover == null) 
 				continue;
 			
-			ISourceBuffer hoverSourceBuffer = canSaveEditor ? sourceBuffer : sourceBuffer.getReadOnlyView();
 			Object info = hover.getHoverInfo(hoverSourceBuffer, hoverRegion, option(editor), textViewer);
 			if (info != null) {
 				matchedHover = hover;
