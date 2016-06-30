@@ -231,7 +231,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 						throws CommonException, OperationCancellation {
 					doJobRun(om);
 				}
-			}.executeAndHandle();
+			}.execute();
 		}
 		
 		protected String getJobTitle() {

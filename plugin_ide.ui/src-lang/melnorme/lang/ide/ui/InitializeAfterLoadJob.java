@@ -10,14 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.progress.UIJob;
+
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.utilbox.core.CommonException;
 
 public class InitializeAfterLoadJob extends UIJob {
 
@@ -33,8 +34,8 @@ public class InitializeAfterLoadJob extends UIJob {
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		try {
-			langUIPlugin.doInitializeAfterLoad(monitor);
-		} catch(CoreException ce) {
+			langUIPlugin.doInitializeAfterLoad(EclipseUtils.om(monitor));
+		} catch(CommonException ce) {
 			UIOperationsStatusHandler.handleInternalError("Error during UI initialization.", ce);
 		}
 		monitor.done();

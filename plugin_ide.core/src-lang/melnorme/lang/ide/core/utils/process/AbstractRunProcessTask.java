@@ -13,7 +13,6 @@ package melnorme.lang.ide.core.utils.process;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -39,11 +38,9 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		this.cancelMonitor = assertNotNull(cancelMonitor);
 	}
 	
-	public ExternalProcessNotifyingHelper startProcess() throws CommonException {
-		return startProcess(cancelMonitor);
-	}
-	
-	protected ExternalProcessNotifyingHelper startProcess(ICancelMonitor cm) throws CommonException {
+	public ExternalProcessNotifyingHelper startProcess() throws CommonException, OperationCancellation {
+		ICancelMonitor.checkCancelation(cancelMonitor);
+		
 		Process process;
 		try {
 			process = ExternalProcessNotifyingHelper.startProcess(pb);
@@ -57,7 +54,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 			throw ce;
 		}
 		
-		return readFromStartedProcess(process, cm);
+		return readFromStartedProcess(process, cancelMonitor);
 	}
 	
 	protected ExternalProcessNotifyingHelper readFromStartedProcess(Process process, ICancelMonitor pm) {
@@ -99,27 +96,15 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	}
 	
 	public ExternalProcessResult runProcess(String input) throws CommonException, OperationCancellation {
-		return runProcess(input, false);
+		return doRunProcess(input);
 	}
 	
-	public ExternalProcessResult runProcess(String input, boolean throwOnNonZeroStatus) 
-			throws CommonException, OperationCancellation 
+	public ExternalProcessResult doRunProcess(String input) throws CommonException, OperationCancellation 
 	{
-		return doRunProcess(input, throwOnNonZeroStatus);
-	}
-	
-	public ExternalProcessResult doRunProcess(String input, boolean throwOnNonZeroStatus) 
-			throws CommonException, OperationCancellation 
-	{
-		ICancelMonitor.checkCancelation(cancelMonitor);
-		
-		ExternalProcessNotifyingHelper processHelper = startProcess(cancelMonitor);
+		ExternalProcessNotifyingHelper processHelper = startProcess();
 		processHelper.writeInput_(input, StringUtil.UTF8);
 		ExternalProcessResult processResult = processHelper.awaitTerminationAndResult_ce();
 		
-		if(throwOnNonZeroStatus) {
-			ProcessUtils.validateNonZeroExitValue(processResult.exitValue);
-		}
 		return processResult;
 	}
 	

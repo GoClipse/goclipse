@@ -50,11 +50,6 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 		this.document = assertNotNull(document);
 	}
 	
-	@Override
-	protected String getTaskName() {
-		return operationName;
-	}
-	
 	protected StructureInfo structureInfo;
 	
 	@Override

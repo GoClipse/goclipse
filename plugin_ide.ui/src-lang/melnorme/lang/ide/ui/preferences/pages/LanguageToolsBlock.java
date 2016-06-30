@@ -17,9 +17,7 @@ import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
 import melnorme.lang.utils.validators.PathValidator;
 import melnorme.util.swt.components.AbstractGroupWidget;
-import melnorme.util.swt.components.FieldWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.FileTextField;
 
 public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
@@ -42,9 +40,6 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 		
 		public final ButtonTextField toolLocationField;
 		
-		protected final FieldWidget<Boolean> startServerAutomatically = new CheckBoxField(
-			"Start " + getEngineToolName() + " server automatically");
-		
 		public EngineToolGroup() {
 			super(getEngineToolName() + ": ", 3);
 			
@@ -58,9 +53,6 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 			toolLocationField.addFieldValidator(false, validator);
 			
 			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.DAEMON_PATH);
-			prefContext.bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
-			
-			addChildWidget(startServerAutomatically);
 		}
 		
 		protected ButtonTextField initToolLocationField() {

@@ -10,14 +10,13 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.Disposable;
@@ -32,7 +31,7 @@ public class GoUIPlugin extends LangUIPlugin {
 	}
 	
 	@Override
-	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
+	protected void doInitializeAfterLoad(IOperationMonitor om) throws CommonException {
 	}
 	
 	public static GocodeServerManager prepareGocodeManager_inUI() 

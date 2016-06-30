@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils.operations;
 
-import java.text.MessageFormat;
-
 import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.tooling.common.ops.CommonOperation;
@@ -49,12 +47,13 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	}
 	
 	protected CommonOperation getBackgroundOperation() {
-		return CommonOperation.namedOperation(getTaskName(), this::doBackgroundComputation);
+		return CommonOperation.namedOperation(getOperationName(), this::doBackgroundComputation);
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */
-	protected String getTaskName() {
-		return MessageFormat.format(MSG_EXECUTING_OPERATION, operationName);
+	@Override
+	public String getOperationName() {
+		return super.getOperationName();
 	}
 	
 	/* -----------------  ----------------- */

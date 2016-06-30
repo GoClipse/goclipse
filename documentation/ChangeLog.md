@@ -5,6 +5,7 @@
  * Fixed 0.16.0 regression: editor open definition hyperlink (Ctrl-click) not working. (#208)
  * Fixed 0.16.0 regression: Assertion exception when opening Go files in the compare editor. (#211)
  * Updated minimum CDT to version `9.0`.
+ * Removed virtually useless "Start gocode server automatically" pref.
 
 ### 0.16.0
  * Added documentation hover (`F2` or mouse-over the reference). Also documentation added to code completion popup. 
