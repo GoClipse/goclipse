@@ -45,7 +45,7 @@ public class HoverInformationProvider
 	@Override
 	public Object getInformation2(ITextViewer textViewer, IRegion subject) {
 		assertTrue(Display.getCurrent() != null);
-		return editorHover.getInformation(textViewer, subject, true);
+		return editorHover.getInformation(textViewer, subject, editorHover.sourceBuffer);
 	}
 	
 	@Override

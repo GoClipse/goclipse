@@ -16,7 +16,7 @@ import java.text.Collator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerSorter;
 
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
@@ -24,7 +24,10 @@ import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 
-public abstract class LangNavigatorSorter extends ViewerComparator {
+// We need to use Viewer even though it's deprecated because the Navigator Extension Point still expects it.
+// See: org.eclipse.ui.internal.navigator.sorters.CommonSorterDescriptor.createSorter()
+@SuppressWarnings("deprecation")
+public abstract class LangNavigatorSorter extends ViewerSorter {
 	
 	public LangNavigatorSorter() {
 		super();

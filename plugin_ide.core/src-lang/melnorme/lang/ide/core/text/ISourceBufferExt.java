@@ -20,6 +20,7 @@ import melnorme.lang.tooling.common.ISourceBuffer;
  */
 public interface ISourceBufferExt extends ISourceBuffer {
 	
+	/** @return the document associated with this source buffer, non-null. */
 	IDocument getDocument();
 	
 	@Override
