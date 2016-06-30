@@ -29,7 +29,7 @@ public class GocodeServerManager implements IDisposable {
 	public GocodeServerManager() {
 	}
 	
-	public static IPath getGocodePath() {
+	public IPath getGocodePath() {
 		String pref = ToolchainPreferences.DAEMON_PATH.get();
 		
 		if (pref == null || pref.length() == 0) {
@@ -43,7 +43,9 @@ public class GocodeServerManager implements IDisposable {
 		return gocodeProcess != null;
 	}
 	
-	public boolean prepareServerStart(IPath gocodePath) throws CommonException {
+	public boolean prepareServerStart() throws CommonException {
+		IPath gocodePath = getGocodePath();
+		
 		if(gocodePath == null || gocodePath.isEmpty()) {
 			throw new CommonException("No gocode path provided.", null);
 		}
@@ -52,8 +54,8 @@ public class GocodeServerManager implements IDisposable {
 		return gocodeProcess == null;
 	}
 	
-	public void doStartServer(IPath gocodePath, IOperationMonitor monitor) 
-			throws CommonException, OperationCancellation {
+	public void doStartServer(IOperationMonitor monitor) throws CommonException, OperationCancellation {
+		IPath gocodePath = getGocodePath(); 
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
 		commandLine.add(gocodePath.toOSString());

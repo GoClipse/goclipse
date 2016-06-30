@@ -31,8 +31,8 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		Location fileLoc = sourceContext.getFileLocation();
 		int offset = sourceContext.getOffset();
 		
-		GoUIPlugin.prepareGocodeManager_inUI();
-		IPath gocodePath = GocodeServerManager.getGocodePath();
+		GocodeServerManager gocodeServerManager = GoUIPlugin.prepareGocodeManager_inUI();
+		IPath gocodePath = gocodeServerManager.getGocodePath();
 		if (gocodePath == null) {
 			throw new CommonException("Error: gocode path not provided.");
 		}

@@ -10,44 +10,31 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import org.eclipse.core.runtime.IPath;
-
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
-import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.ide.ui.utils.operations.WorkbenchOperationExecutor;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class StartGocodeServerOperation extends AbstractUIOperation {
+public class StartGocodeServerOperation {
 	
-	protected final GocodeServerManager gocodeServerManager;
-	protected IPath gocodePath;
-	
-	public StartGocodeServerOperation(GocodeServerManager gocodeServerManager) {
-		super("Starting gocode server");
-		this.gocodeServerManager = gocodeServerManager;
+	public StartGocodeServerOperation() {
+		super();
 	}
 	
-	@Override
-	public void execute() throws CommonException, OperationCancellation {
-		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
-			return; // stop operation
-		}
+	public void execute(GocodeServerManager gocodeServerManager) throws CommonException, OperationCancellation {
 		
-		gocodePath = GocodeServerManager.getGocodePath();
-		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
+		boolean needsStart = gocodeServerManager.prepareServerStart();
 		if(!needsStart) {
 			return;
 		}
 		
-		super.execute();
-	}
-	
-	@Override
-	protected void doBackgroundComputation(IOperationMonitor monitor) throws CommonException, OperationCancellation {
-		gocodeServerManager.doStartServer(gocodePath, monitor);
+		CommonOperation backgroundOperation = CommonOperation.namedOperation("Starting gocode server", om -> {
+			gocodeServerManager.doStartServer(om);
+		});
+		WorkbenchOperationExecutor backgroundOperationExecutor = new WorkbenchOperationExecutor();
+		backgroundOperationExecutor.execute(backgroundOperation);
 	}
 	
 }

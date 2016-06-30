@@ -18,6 +18,8 @@ import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.Disposable;
 
 public class GoUIPlugin extends LangUIPlugin {
@@ -33,10 +35,10 @@ public class GoUIPlugin extends LangUIPlugin {
 	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
 	}
 	
-	public static GocodeServerManager prepareGocodeManager_inUI() {
-		// This must run from UI thread, so that we can report errors if startup fails
+	public static GocodeServerManager prepareGocodeManager_inUI() 
+			throws CommonException, OperationCancellation {
 		
-		new StartGocodeServerOperation(gocodeServerManager).executeAndHandle();
+		new StartGocodeServerOperation().execute(gocodeServerManager);
 		
 		return gocodeServerManager;
 	}
