@@ -10,45 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import org.eclipse.core.runtime.ILog;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.ILogHandler;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
 public class LangCore extends LangCore_Actual {
 	
-	public LangCore() {
-	}
-	
-	protected void shutdown() {
-		buildManager.dispose();
-		bundleManager.shutdownManager();
-		sourceModelManager.dispose();
-		toolManager.shutdownNow();
-	}
-	
-	/** 
-	 * Start core agents, and do other initizaliation after UI is started.
-	 */
-	public void startAgentsAfterUIStart() {
-		bundleManager.startManager();
+	public LangCore(ILogHandler logHandler) {
+		super(logHandler);
 	}
 	
 	/* ----------------- Logging ----------------- */
 	
-	public static final ILogHandler LOG_HANDLER = new ILogHandler() {
-		@Override
-		public void logStatus(StatusException se) {
-			int severity = EclipseUtils.toEclipseSeverity(se);
-			ILog log = LangCorePlugin.getInstance().getLog();
-			log.log(EclipseCore.createStatus(severity, se.getMessage(), se.getCause()));
-		}
-	};
-	
 	/** Logs status of given StatusException. */
 	public static void logStatusException(StatusException se) {
-		LOG_HANDLER.logStatus(se);
+		logHandler().logStatus(se);
 	}
 	
 	public static void logInternalError(Throwable throwable) {

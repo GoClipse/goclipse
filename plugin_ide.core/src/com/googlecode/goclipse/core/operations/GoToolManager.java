@@ -10,8 +10,13 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import melnorme.lang.ide.core.CoreSettings;
 import melnorme.lang.ide.core.operations.ToolManager;
 
 public class GoToolManager extends ToolManager {
+	
+	public GoToolManager(CoreSettings settings) {
+		super(settings);
+	}
 	
 }

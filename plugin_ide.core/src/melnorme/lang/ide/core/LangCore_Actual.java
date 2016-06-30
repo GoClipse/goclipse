@@ -6,13 +6,9 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 
-import melnorme.lang.ide.core.engine.SourceModelManager;
-import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.BundleModelManager;
-import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.utilbox.misc.ILogHandler;
 
-public class LangCore_Actual {
+public class LangCore_Actual extends AbstractLangCore {
 	
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.core";
 	public static final String NATURE_ID = PLUGIN_ID + ".goNature";
@@ -29,26 +25,11 @@ public class LangCore_Actual {
 	public static final String VAR_NAME_SdkToolPath = "GO_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the Go tool";
 	
-	public static LangCore instance;
-	
-	/* ----------------- Owned singletons: ----------------- */
-	
-	protected final CoreSettings coreSettings;
-	protected final ToolManager toolManager;
-	protected final BundleModelManager<? extends LangBundleModel> bundleManager;
-	protected final BuildManager buildManager;
-	protected final SourceModelManager sourceModelManager;
-	
-	public LangCore_Actual() {
-		instance = (LangCore) this;
-		
-		coreSettings = createCoreSettings();
-		toolManager = createToolManager();
-		bundleManager = createBundleModelManager();
-		buildManager = createBuildManager(bundleManager.getModel());
-		sourceModelManager = createSourceModelManager();
+	public LangCore_Actual(ILogHandler logHandler) {
+		super(logHandler);
 	}
-	
+		
+	@Override
 	protected CoreSettings createCoreSettings() {
 		return new CoreSettings() {
 			@Override
@@ -58,8 +39,9 @@ public class LangCore_Actual {
 		};
 	}
 	
-	public static GoToolManager createToolManager() {
-		return new GoToolManager();
+	@Override
+	public GoToolManager createToolManager() {
+		return new GoToolManager(coreSettings);
 	}
 	
 	public static GoSourceModelManager createSourceModelManager() {
@@ -69,31 +51,12 @@ public class LangCore_Actual {
 	public static GoBundleModelManager createBundleModelManager() {
 		return new GoBundleModelManager();
 	}
-	public static GoBuildManager createBuildManager(LangBundleModel bundleModel) {
-		return new GoBuildManager(bundleModel, getToolManager());
-	}
 	
+	@Override
+	public GoBuildManager createBuildManager() {
+		return new GoBuildManager(bundleManager.getModel(), getToolManager());
+	}
 		
 	/* -----------------  ----------------- */
-	
-	public static CoreSettings settings() {
-		return instance.coreSettings;
-	}
-	
-	public static ToolManager getToolManager() {
-		return instance.toolManager;
-	}
-	public static LangBundleModel getBundleModel() {
-		return instance.bundleManager.getModel();
-	}
-	public static BuildManager getBuildManager() {
-		return instance.buildManager;
-	}
-	public static BundleModelManager<? extends LangBundleModel> getBundleModelManager() {
-		return instance.bundleManager;
-	}
-	public static SourceModelManager getSourceModelManager() {
-		return instance.sourceModelManager;
-	}
 	
 }

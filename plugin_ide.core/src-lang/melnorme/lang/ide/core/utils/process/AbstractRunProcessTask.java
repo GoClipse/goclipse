@@ -67,7 +67,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		});
 		
 		try {
-			return new ExternalProcessNotifyingHelper(process, true, pm, processListeners, LangCore.LOG_HANDLER);
+			return new ExternalProcessNotifyingHelper(process, true, pm, processListeners, LangCore.logHandler());
 		} finally {
 			processListeners = null; // Set to null to fail fast if anyone else tries to modify afterward.
 		}
