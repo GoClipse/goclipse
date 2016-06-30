@@ -57,9 +57,10 @@ import melnorme.utilbox.status.StatusLevel;
  */
 public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
-	protected final CoreSettings settings = LangCore.settings();
+	protected final CoreSettings settings;
 	
-	public ToolManager() {
+	public ToolManager(CoreSettings settings) {
+		this.settings = assertNotNull(settings);
 	}
 	
 	public void shutdownNow() {

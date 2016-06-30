@@ -5,13 +5,12 @@ import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_SourceModelManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 import LANG_PROJECT_ID.tooling.toolchain.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.utilbox.misc.ILogHandler;
 
-public class LangCore_Actual {
+public class LangCore_Actual extends AbstractLangCore {
 	
 	public static final String PLUGIN_ID = "LANG_PROJECT_ID.ide.core";
 	public static final String NATURE_ID = PLUGIN_ID +".nature";
@@ -27,26 +26,11 @@ public class LangCore_Actual {
 	public static final String VAR_NAME_SdkToolPath = "SDK_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the SDK tool";
 	
-	public static LangCore instance;
-	
-	/* ----------------- Owned singletons: ----------------- */
-	
-	protected final CoreSettings coreSettings;
-	protected final ToolManager toolManager;
-	protected final LANGUAGE_BundleModelManager bundleManager;
-	protected final BuildManager buildManager;
-	protected final LANGUAGE_SourceModelManager sourceModelManager;
-	
-	public LangCore_Actual() {
-		instance = (LangCore) this;
-		
-		coreSettings = createCoreSettings();
-		toolManager = createToolManagerSingleton();
-		bundleManager = createBundleModelManager();
-		buildManager = createBuildManager(bundleManager.getModel());
-		sourceModelManager = createSourceModelManager();
+	public LangCore_Actual(ILogHandler logHandler) {
+		super(logHandler);
 	}
-	
+		
+	@Override
 	protected CoreSettings createCoreSettings() {
 		return new CoreSettings() {
 			@Override
@@ -56,43 +40,25 @@ public class LangCore_Actual {
 		};
 	}
 	
-	public static LANGUAGE_ToolManager createToolManagerSingleton() {
-		return new LANGUAGE_ToolManager();
+	@Override
+	protected ToolManager createToolManager() {
+		return new LANGUAGE_ToolManager(coreSettings);
 	}
 	
 	public static LANGUAGE_BundleModelManager createBundleModelManager() {
 		return new LANGUAGE_BundleModelManager();
 	}
-	public static BuildManager createBuildManager(LangBundleModel bundleModel) {
-		return new LANGUAGE_BuildManager(bundleModel, LangCore.getToolManager());
+	
+	@Override
+	protected BuildManager createBuildManager() {
+		return new LANGUAGE_BuildManager(this.bundleManager.getModel(), toolManager);
 	}
 	
 	public static LANGUAGE_SourceModelManager createSourceModelManager() {
 		return new LANGUAGE_SourceModelManager();
 	}
 	
-	
 	/* -----------------  ----------------- */
-	
-	public static CoreSettings settings() {
-		return instance.coreSettings;
-	}
-	
-	public static ToolManager getToolManager() {
-		return instance.toolManager;
-	}
-	public static LANGUAGE_BundleModel getBundleModel() {
-		return instance.bundleManager.getModel();
-	}
-	public static BuildManager getBuildManager() {
-		return instance.buildManager;
-	}
-	public static BundleModelManager<?> getBundleModelManager() {
-		return instance.bundleManager;
-	}
-	public static SourceModelManager getSourceModelManager() {
-		return instance.sourceModelManager;
-	}
 	
 	public static class LANGUAGE_BundleModel extends LangBundleModel {
 		

@@ -10,8 +10,13 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
+import melnorme.lang.ide.core.CoreSettings;
 import melnorme.lang.ide.core.operations.ToolManager;
 
 public class LANGUAGE_ToolManager extends ToolManager {
+	
+	public LANGUAGE_ToolManager(CoreSettings settings) {
+		super(settings);
+	}
 	
 }

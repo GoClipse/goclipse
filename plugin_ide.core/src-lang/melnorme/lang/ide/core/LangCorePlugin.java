@@ -10,8 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.utilbox.misc.ILogHandler;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class LangCorePlugin extends Plugin {
 	
@@ -27,6 +32,15 @@ public abstract class LangCorePlugin extends Plugin {
 		return pluginInstance;
 	}
 	
+	public static final ILogHandler LOG_HANDLER = new ILogHandler() {
+		@Override
+		public void logStatus(StatusException se) {
+			int severity = EclipseUtils.toEclipseSeverity(se);
+			ILog log = LangCorePlugin.getInstance().getLog();
+			log.log(EclipseCore.createStatus(severity, se.getMessage(), se.getCause()));
+		}
+	};
+	
 	protected LangCore langCore;
 	
 	/* -----------------  ----------------- */
@@ -36,7 +50,7 @@ public abstract class LangCorePlugin extends Plugin {
 	@Override
 	public final void start(BundleContext context) throws Exception {
 		pluginInstance = this;
-		langCore = new LangCore();
+		langCore = new LangCore(LOG_HANDLER);
 		super.start(context);
 		doCustomStart(context);
 	}
