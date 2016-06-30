@@ -18,23 +18,24 @@ import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class AbstractJobUIOperation extends AbstractUIOperation {
+public abstract class AbstractJobUIOperation extends BasicUIOperation {
 	
 	public AbstractJobUIOperation(String operationName) {
 		super(operationName);
 	}
 	
 	@Override
-	public void execute() throws CommonException, OperationCancellation {
+	public void execute() {
 		
 		Display display = Display.getCurrent();
 		
-		CommonOperation backgroundOp = getBackgroundOperation();
+		CommonOperation backgroundOp = CommonOperation.namedOperation(operationName, this::doBackgroundComputation);
 		
-		new Job(getOperationName()) {
+		new Job(operationName) {
 			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -57,6 +58,9 @@ public abstract class AbstractJobUIOperation extends AbstractUIOperation {
 	}
 	
 	/* -----------------  ----------------- */
+	
+	protected abstract void doBackgroundComputation(IOperationMonitor om) 
+			throws CommonException, OperationCancellation;
 	
 	protected void asynchronous_handleComputationResult()  {
 	}

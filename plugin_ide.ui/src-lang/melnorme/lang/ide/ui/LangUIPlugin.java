@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -36,8 +35,10 @@ import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 
 public abstract class LangUIPlugin extends AbstractUIPlugin {
@@ -108,7 +109,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	protected abstract ILangOperationsListener createOperationsConsoleListener();
 	
 	@SuppressWarnings("unused")
-	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
+	protected void doInitializeAfterLoad(IOperationMonitor om) throws CommonException {
 	}
 	
 	@Override

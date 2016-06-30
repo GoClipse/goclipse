@@ -26,12 +26,10 @@ import melnorme.utilbox.core.CommonException;
 
 public abstract class BasicUIOperation implements Runnable {
 	
-	protected static final String MSG_EXECUTING_OPERATION 
-		= "{0}";
 	protected static final String MSG_ERROR_EXECUTING_OPERATION 
-		= "Error executing `{0}`.";
+		= "Error executing: {0}.";
 	protected static final String MSG_INTERNAL_ERROR_EXECUTING_OPERATION 
-		= "Internal error executing `{0}`.";
+		= "Internal error executing: {0}.";
 	
 	
 	protected final String operationName;

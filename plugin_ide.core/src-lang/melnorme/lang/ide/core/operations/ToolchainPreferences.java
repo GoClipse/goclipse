@@ -26,14 +26,7 @@ public interface ToolchainPreferences {
 	public static final BooleanPreference FORMAT_ON_SAVE =
 			new BooleanPreference(LangCore.PLUGIN_ID, "format_onSave", false, USE_PROJECT_SETTINGS);
 	
-	public static final BooleanPreference AUTO_START_DAEMON =
-			new BooleanPreference("auto_start_daemon", true);
 	public static final StringPreference DAEMON_PATH =
 			new StringPreference("daemon_path", "");
-	
-//	/* -----------------  ----------------- */
-//	
-//	public static final IProjectPreference<Boolean> PROJ_AUTO_BUILD_DISABLED = new BooleanPreference( 
-//		"prj_auto_build_disabled", false).getProjectPreference();
 	
 }
