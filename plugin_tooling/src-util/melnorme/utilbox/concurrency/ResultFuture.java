@@ -14,21 +14,21 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * A future meant to be completed (or cancelled) by an explicit call.
+ * A future meant to be completed by an explicit {@link #setResult()} call. 
+ * Similar to {@link CompletableFuture} but with a safer and simplified API, particularly:
  * 
- * Similar to {@link CompletableFuture} but with a simplified API,
- * particularly the throws clause for methods that await a result: 
- * Here, the {@link #awaitResult()} method is preferable to {@link #get()}), 
- * since it doesn't throw an unchecked exception for cancellation.
+ * - Uses the {@link FutureX} interface which throws a checked exception for cancellation, 
+ * instead of a runtime one that {@link Future} does.
+ * - By default, completing the Future ({@link #setResult()}) can only be attempted once, 
+ * it is illegal for multiple attempts to occur.
  *
  */
-public class ResultFuture<DATA, EXC extends Throwable> implements Future<DATA>, FutureX<DATA, EXC> {
+public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<DATA, EXC> {
 	
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
@@ -94,6 +94,7 @@ public class ResultFuture<DATA, EXC extends Throwable> implements Future<DATA>, 
 		}
 	}
 	
+	@Override
 	public boolean cancel() {
 		synchronized (lock) {
 			if(isDone()) {
@@ -151,36 +152,6 @@ public class ResultFuture<DATA, EXC extends Throwable> implements Future<DATA>, 
 		if(resultException != null) {
 			throw (EXC) resultException;
 		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return cancel();
-	}
-	
-	@Override
-	public DATA get() throws InterruptedException, ExecutionException {
-		try {
-			return awaitResult();
-		} catch(Throwable e) {
-			throw toExecutionException(e);
-		}
-	}
-	
-	@Override
-	public DATA get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		try {
-			return awaitResult(timeout, unit);
-		} catch(Throwable e) {
-			throw toExecutionException(e);
-		}
-	}
-	
-	public ExecutionException toExecutionException(Throwable e) throws ExecutionException {
-		// Don't throw java.util.concurrent.CancellationException because it is a RuntimeException
-		return new ExecutionException(e);
 	}
 	
 	/* -----------------  ----------------- */

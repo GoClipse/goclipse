@@ -30,7 +30,7 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.utilbox.collections.ArrayList2;
@@ -54,13 +54,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		this.opMonitor = assertNotNull(opMonitor);
 	}
 	
-	protected ArrayList2<CommonOperation> operations;
+	protected ArrayList2<Operation> operations;
 	
-	public CommonOperation newClearBuildMarkersOperation() {
+	public Operation newClearBuildMarkersOperation() {
 		return doCreateClearBuildMarkersOperation();
 	}
 	
-	public CompositeBuildOperation newProjectBuildOperation(Collection2<CommonOperation> buildOps, boolean clearMarkers) 
+	public CompositeBuildOperation newProjectBuildOperation(Collection2<Operation> buildOps, boolean clearMarkers) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
@@ -79,12 +79,12 @@ public class BuildOperationCreator implements BuildManagerMessages {
 				TextMessageUtils.headerSMALL(MSG_NoBuildTargetsEnabled)));
 		}
 		
-		for(CommonOperation buildOp : buildOps) {
+		for(Operation buildOp : buildOps) {
 			addOperation(buildOp);
 		}
 		
 		// refresh project
-		addOperation(new CommonOperation() {
+		addOperation(new Operation() {
 			@Override
 			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 				try {
@@ -103,7 +103,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return new CompositeBuildOperation(opMonitor, operations, rule);
 	}
 	
-	protected boolean addOperation(CommonOperation toolOp) {
+	protected boolean addOperation(Operation toolOp) {
 		return operations.add(toolOp);
 	}
 	
@@ -112,7 +112,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		addOperation(newMessageOperation(startMsg));
 	}
 	
-	protected CommonOperation doCreateClearBuildMarkersOperation() {
+	protected Operation doCreateClearBuildMarkersOperation() {
 		return (om) -> {
 			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, om);
 			if(hadDeletedMarkers) {
@@ -141,11 +141,11 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return false;
 	}
 	
-	protected CommonOperation newMessageOperation(String msg) {
+	protected Operation newMessageOperation(String msg) {
 		return new BuildMessageOperation(msg);
 	}
 	
-	protected class BuildMessageOperation implements CommonOperation, Callable<Void> {
+	protected class BuildMessageOperation implements Operation, Callable<Void> {
 		
 		protected final String msg;
 		

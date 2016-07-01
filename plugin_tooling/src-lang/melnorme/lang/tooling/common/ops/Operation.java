@@ -12,21 +12,44 @@ package melnorme.lang.tooling.common.ops;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.SimpleRunnableFuture;
 
-public interface CommonOperation {
+public interface Operation {
 	
 	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
-	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
+	/* -----------------  ----------------- */
+	
+	default OperationCallable<Void> toOperationCallable(IOperationMonitor om) {
+		return new OperationCallable<Void>() {
+			@Override
+			public Void call() throws CommonException, OperationCancellation {
+				execute(om);
+				return null;
+			}
+		};
+	}
+	
+	default SimpleRunnableFuture<CommonResult<Void>> toRunnableFuture(IOperationMonitor om) {
+		return toOperationCallable(om).toRunnableFuture();
+	}
+	
+	default CommonResult<Void> executeToResult(IOperationMonitor om) {
+		return toOperationCallable(om).callToResult();
+	}
+	
+	public static Operation NULL_COMMON_OPERATION = (pm) -> { };
 	
 	/* -----------------  ----------------- */
 	
-	default CommonOperation namedOperation(String taskName) {
+	default Operation namedOperation(String taskName) {
 		return namedOperation(taskName, this);
 	}
 	
-	public static CommonOperation namedOperation(String taskName, CommonOperation subOp) {
-		return new CommonOperation() {
+	public static Operation namedOperation(String taskName, Operation subOp) {
+		return new Operation() {
 			@Override
 			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 				om.runSubTask(taskName, subOp);

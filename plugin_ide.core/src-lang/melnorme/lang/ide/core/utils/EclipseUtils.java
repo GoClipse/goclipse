@@ -32,7 +32,7 @@ import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.BasicOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -165,7 +165,7 @@ public class EclipseUtils {
 	
 	/* ----------------- ops ----------------- */
 	
-	public static void execute_asCore(IOperationMonitor om, CommonOperation commonOperation)
+	public static void execute_asCore(IOperationMonitor om, Operation commonOperation)
 			throws OperationCancellation, CoreException {
 		try {
 			commonOperation.execute(om);

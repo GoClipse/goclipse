@@ -16,19 +16,19 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class CompositeBuildOperation implements CommonOperation {
+public class CompositeBuildOperation implements Operation {
 	
 	protected final IToolOperationMonitor opMonitor;
-	protected final Indexable<CommonOperation> operations;
+	protected final Indexable<Operation> operations;
 	protected final ISchedulingRule rule; // Can be null
 	
-	public CompositeBuildOperation(IToolOperationMonitor opMonitor, Indexable<CommonOperation> operations, 
+	public CompositeBuildOperation(IToolOperationMonitor opMonitor, Indexable<Operation> operations, 
 			ISchedulingRule rule) {
 		this.opMonitor = assertNotNull(opMonitor);
 		this.operations = assertNotNull(operations);
@@ -53,7 +53,7 @@ public class CompositeBuildOperation implements CommonOperation {
 		if(monitor.isCanceled()) {
 			return;
 		}
-		for (CommonOperation subOperation : operations) {
+		for (Operation subOperation : operations) {
 			subOperation.execute(monitor);
 		}
 	}

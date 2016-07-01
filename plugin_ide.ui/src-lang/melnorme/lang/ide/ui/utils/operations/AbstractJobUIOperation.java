@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -33,7 +33,7 @@ public abstract class AbstractJobUIOperation extends BasicUIOperation {
 		
 		Display display = Display.getCurrent();
 		
-		CommonOperation backgroundOp = CommonOperation.namedOperation(operationName, this::doBackgroundComputation);
+		Operation backgroundOp = Operation.namedOperation(operationName, this::doBackgroundComputation);
 		
 		new Job(operationName) {
 			

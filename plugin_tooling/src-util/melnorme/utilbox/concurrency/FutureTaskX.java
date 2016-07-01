@@ -39,8 +39,8 @@ public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> imp
 	}
 	
 	@Override
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return super.cancel(mayInterruptIfRunning);
+	public boolean cancel() {
+		return super.cancel(true);
 	}
 	
 	public void before_cancel(@SuppressWarnings("unused") boolean mayInterruptIfRunning) {

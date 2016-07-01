@@ -13,7 +13,7 @@ package com.googlecode.goclipse.ui.actions;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 
 import melnorme.lang.ide.ui.utils.operations.WorkbenchOperationExecutor;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -30,7 +30,7 @@ public class StartGocodeServerOperation {
 			return;
 		}
 		
-		CommonOperation backgroundOperation = CommonOperation.namedOperation("Starting gocode server", om -> {
+		Operation backgroundOperation = Operation.namedOperation("Starting gocode server", om -> {
 			gocodeServerManager.doStartServer(om);
 		});
 		WorkbenchOperationExecutor backgroundOperationExecutor = new WorkbenchOperationExecutor();

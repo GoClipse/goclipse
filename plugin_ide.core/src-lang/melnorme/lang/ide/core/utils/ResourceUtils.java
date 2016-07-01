@@ -48,7 +48,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.tooling.LocationHandle;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -182,7 +182,7 @@ public class ResourceUtils {
 	
 	/* ----------------- Operations ----------------- */
 	
-	public static void runCoreOperation2(ISchedulingRule rule, IProgressMonitor pm, CommonOperation operation)
+	public static void runCoreOperation2(ISchedulingRule rule, IProgressMonitor pm, Operation operation)
 			throws CoreException, CommonException, OperationCancellation {
 		assertNotNull(rule);
 		
@@ -208,7 +208,7 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void runOperation(ISchedulingRule rule, IOperationMonitor om, CommonOperation operation)
+	public static void runOperation(ISchedulingRule rule, IOperationMonitor om, Operation operation)
 			throws CommonException, OperationCancellation {
 		try {
 			runCoreOperation2(rule, EclipseUtils.pm(om), operation);
@@ -217,14 +217,14 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void runOperationUnderResource(IResource resource, IOperationMonitor om, CommonOperation operation)
+	public static void runOperationUnderResource(IResource resource, IOperationMonitor om, Operation operation)
 			throws CommonException, OperationCancellation {
 		runOperation(resource, om, operation);
 		
 		refresh(resource, om);
 	}
 	
-	public static void runWorkspaceOperation(IProgressMonitor pm, CommonOperation operation) 
+	public static void runWorkspaceOperation(IProgressMonitor pm, Operation operation) 
 			throws OperationCancellation, CommonException {
 		try {
 			runCoreOperation2(getWorkspaceRoot(), pm, operation);
@@ -233,12 +233,12 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void runProjectOperation(IOperationMonitor om, IProject project, CommonOperation operation) 
+	public static void runProjectOperation(IOperationMonitor om, IProject project, Operation operation) 
 			throws OperationCancellation, CommonException {
 		runOperation(project, om, operation);
 	}
 	
-	public static interface CoreOperation extends CommonOperation {
+	public static interface CoreOperation extends Operation {
 		
 		@Override
 		default void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
@@ -254,7 +254,7 @@ public class ResourceUtils {
 		
 	}
 	
-	public static void runOperation(IRunnableContext context, CommonOperation op, boolean isCancellable) 
+	public static void runOperation(IRunnableContext context, Operation op, boolean isCancellable) 
 			throws OperationCancellation, CommonException {
 		try {
 			context.run(true, isCancellable, new IRunnableWithProgress() {
@@ -287,7 +287,7 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void runOperationInWorkspace(IRunnableContext context, boolean isCancellable, CommonOperation op) 
+	public static void runOperationInWorkspace(IRunnableContext context, boolean isCancellable, Operation op) 
 			throws OperationCancellation, CommonException {
 		
 		runOperation(context, (pm) -> {
