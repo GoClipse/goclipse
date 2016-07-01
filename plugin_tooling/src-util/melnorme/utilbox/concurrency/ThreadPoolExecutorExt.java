@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 
 /**
@@ -111,10 +111,10 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	// This adapter is only needed because CommonFuture is not a true alias.
-	protected class CommonResultFutureTask<RET> extends FutureTaskX<CommonResult<RET>, RuntimeException> 
+	protected class CommonResultFutureTask<RET> extends FutureTaskX<OperationResult<RET>, RuntimeException> 
 		implements CommonFuture<RET> {
 		
-		public CommonResultFutureTask(CallableX<CommonResult<RET>, RuntimeException> callable) {
+		public CommonResultFutureTask(CallableX<OperationResult<RET>, RuntimeException> callable) {
 			super(callable);
 		}
 		

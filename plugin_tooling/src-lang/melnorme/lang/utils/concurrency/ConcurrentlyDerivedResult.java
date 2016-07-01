@@ -78,6 +78,7 @@ public class ConcurrentlyDerivedResult<VALUE, EXC extends Exception, SELF>
 			}
 		}
 		
+		/* FIXME: review */
 		protected abstract VALUE doCreateNewData() throws EXC, OperationCancellation;
 		
 	}

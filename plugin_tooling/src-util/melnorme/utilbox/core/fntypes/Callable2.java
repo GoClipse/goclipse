@@ -14,12 +14,23 @@ import java.util.concurrent.Callable;
 
 
 /**
- * A {@link Callable2} that is also a {@link Callable}. 
- * The EXC type parameter must an {@link Exception}, not a {@link Throwable} 
+ * A variant of {@link Callable} with a stricter API: 
+ * allows specifying a more specific Throwable that the {@link #call()} method throws.
  */
-public interface CallableX<RET, EXC extends Exception> extends Callable<RET>, Callable2<RET, EXC> {
+public interface Callable2<RET, EXC extends Throwable> {
 	
-	@Override
 	public RET call() throws EXC;
 	
+	/* -----------------  ----------------- */
+	
+	default Result<RET, EXC> callToResult() {
+		try {
+			return Result.fromValue(call());
+		} catch(Throwable e) {
+			@SuppressWarnings("unchecked")
+			EXC exc = (EXC) e;
+			return new Result<>(null, exc);
+		}
+	}
+		
 }

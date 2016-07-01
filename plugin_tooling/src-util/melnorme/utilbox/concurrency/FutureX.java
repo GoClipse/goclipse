@@ -10,15 +10,21 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Same as {@link Future} but with more specific paremeterization of the thrown exceptions.
+ * Variant of {@link Future} with a safer and more precise API, with regards to exception throwing:
+ * 
+ * - The exception type for the result is parameterized, so the generic {@link ExecutionException} is not used.
+ * - It throws a checked exception instead of an unchecked exception if cancellation occurs. 
  *
- * @param <RESULT>
- * @param <EXCEPTION>
+ * @param <RESULT> The result type returned by the result methods.
+ * @param <EXCEPTION> The exception thrown by the result methods. 
+ * It should not be {@link InterruptedException} or {@link OperationCancellation} !
+ * 
  */
 public interface FutureX<RESULT, EXCEPTION extends Throwable> {
 	

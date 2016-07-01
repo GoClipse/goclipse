@@ -31,7 +31,7 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.core.fntypes.ThrowingRunnable;
+import melnorme.utilbox.core.fntypes.RunnableX;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
@@ -130,16 +130,16 @@ public class CommonTestUtils {
 		);
 	}
 	
-	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<EXC> runnable) {
+	public static <EXC extends Throwable> void verifyThrows(RunnableX<EXC> runnable) {
 		verifyThrows(runnable, null);
 	}
 	
-	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<?> runnable, 
+	public static <EXC extends Throwable> void verifyThrows(RunnableX<?> runnable, 
 			Class<EXC> klass) {
 		verifyThrows(runnable, klass, null);
 	}
 	
-	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<?> runnable, 
+	public static <EXC extends Throwable> void verifyThrows(RunnableX<?> runnable, 
 			Class<EXC> klass, String expectedExceptionString) {
 		try {
 			if(klass != null && AssertFailedException.class.isAssignableFrom(klass)) {

@@ -19,14 +19,14 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.ThrowingRunnable;
+import melnorme.utilbox.core.fntypes.RunnableX;
 
 /**
  * An extension to {@link FutureTask}, implementing {@link FutureX}. 
  */
 public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> implements FutureX<RET, EXC> {
 	
-	public FutureTaskX(ThrowingRunnable<EXC> runnable) {
+	public FutureTaskX(RunnableX<EXC> runnable) {
 		this(() -> { runnable.run(); return null; });
 	}
 	

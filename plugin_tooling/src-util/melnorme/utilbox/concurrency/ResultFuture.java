@@ -18,14 +18,16 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.core.fntypes.Result;
+
 /**
  * A future meant to be completed by an explicit {@link #setResult()} call. 
  * Similar to {@link CompletableFuture} but with a safer and simplified API, particularly:
  * 
- * - Uses the {@link FutureX} interface which throws a checked exception for cancellation, 
- * instead of a runtime one that {@link Future} does.
+ * - Uses the {@link FutureX} interface which has a safer and more precise API than {@link Future} 
+ * with regards to exception throwing.
  * - By default, completing the Future ({@link #setResult()}) can only be attempted once, 
- * it is illegal for multiple attempts to occur.
+ * it is illegal for multiple {@link #setResult()} calls to be attempted.
  *
  */
 public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<DATA, EXC> {
@@ -34,9 +36,7 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 	protected final Object lock = new Object();
 	
     protected volatile ResultStatus status = ResultStatus.INITIAL;
-	protected volatile DATA resultValue;
-	/** Note: resultException is either a EXC, or a RuntimeException. */
-	protected volatile Throwable resultException;
+	protected volatile Result<DATA, EXC> result;
 	
 	public enum ResultStatus { INITIAL, RESULT_SET, CANCELLED }
 	
@@ -63,32 +63,24 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 	}
 	
 	public void setResult(DATA resultValue) {
-		synchronized (lock) {
-			if(isDone()) {
-				handleReSetResult();
-				return;
-			}
-			this.resultValue = resultValue;
-			status = ResultStatus.RESULT_SET;
-			completionLatch.countDown();
-		}
+		setResult(Result.fromValue(resultValue));
 	}
 	
 	public void setExceptionResult(EXC exceptionResult) {
-		doSetExceptionResult(exceptionResult);
+		setResult(Result.fromException(exceptionResult));
 	}
 	
 	public void setRuntimeExceptionResult(RuntimeException exceptionResult) {
-		doSetExceptionResult(exceptionResult);
+		setResult(Result.fromRuntimeException(exceptionResult));
 	}
 	
-	protected void doSetExceptionResult(Throwable exceptionResult) {
+	public void setResult(Result<DATA, EXC> newResult) {
 		synchronized (lock) {
 			if(isDone()) {
 				handleReSetResult();
 				return;
 			}
-			this.resultException = exceptionResult;
+			result = newResult;
 			status = ResultStatus.RESULT_SET;
 			completionLatch.countDown();
 		}
@@ -122,6 +114,11 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 		}
 	}
 	
+	/* FIXME: rewrite */
+	public Result<DATA, EXC> getRawResult() {
+		return result;
+	}
+	
 	@Override
 	public DATA awaitResult() 
 			throws EXC, OperationCancellation, InterruptedException {
@@ -140,18 +137,7 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 		if(isCancelled()) {
 			throw new OperationCancellation();
 		}
-		throwIfExceptionResult();
-		return resultValue;
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected void throwIfExceptionResult() throws EXC {
-		if(resultException instanceof RuntimeException) {
-			throw (RuntimeException) resultException;
-		}
-		if(resultException != null) {
-			throw (EXC) resultException;
-		}
+		return result.get();
 	}
 	
 	/* -----------------  ----------------- */

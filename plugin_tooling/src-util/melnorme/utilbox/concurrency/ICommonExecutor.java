@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 
 /**
@@ -35,7 +35,7 @@ public interface ICommonExecutor extends IBasicExecutor {
 	<RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable);
 	
 	/** Alias interface */
-	public static interface CommonFuture<RET> extends FutureX<CommonResult<RET>, RuntimeException> {
+	public static interface CommonFuture<RET> extends FutureX<OperationResult<RET>, RuntimeException> {
 		
 	}
 	

@@ -15,17 +15,17 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class CommonResult<DATA> extends Result<DATA, Exception> {
+public class OperationResult<DATA> extends Result<DATA, Exception> {
 	
-	public CommonResult(DATA resultValue) {
+	public OperationResult(DATA resultValue) {
 		super(resultValue);
 	}
 	
-	public CommonResult(DATA resultValue, CommonException resultException) {
+	public OperationResult(DATA resultValue, CommonException resultException) {
 		super(resultValue, resultException);
 	}
 	
-	public CommonResult(DATA resultValue, OperationCancellation resultException) {
+	public OperationResult(DATA resultValue, OperationCancellation resultException) {
 		super(resultValue, resultException);
 	}
 	

@@ -11,10 +11,10 @@
 package melnorme.lang.tooling.common.ops;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.concurrency.SimpleRunnableFutureX.SimpleRunnableFuture;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
-import melnorme.utilbox.core.fntypes.SimpleRunnableFuture;
 
 public interface Operation {
 	
@@ -32,11 +32,11 @@ public interface Operation {
 		};
 	}
 	
-	default SimpleRunnableFuture<CommonResult<Void>> toRunnableFuture(IOperationMonitor om) {
+	default SimpleRunnableFuture<OperationResult<Void>> toRunnableFuture(IOperationMonitor om) {
 		return toOperationCallable(om).toRunnableFuture();
 	}
 	
-	default CommonResult<Void> executeToResult(IOperationMonitor om) {
+	default OperationResult<Void> executeToResult(IOperationMonitor om) {
 		return toOperationCallable(om).callToResult();
 	}
 	

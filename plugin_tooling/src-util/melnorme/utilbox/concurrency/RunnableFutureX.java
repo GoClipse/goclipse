@@ -15,8 +15,7 @@ import java.util.concurrent.RunnableFuture;
 /**
  * An analogue of {@link RunnableFuture}, but using {@link FutureX} which has a safer API.
  * 
- * Just like {@link RunnableFuture}, 
- * successful execution of the {@link #run()} method causes completion of the future.
+ * Just like {@link RunnableFuture}, successful execution of {@link #run()} will cause completion of the future.
  * 
  */
 public interface RunnableFutureX<RESULT, EXCEPTION extends Throwable> extends Runnable, FutureX<RESULT, EXCEPTION> {

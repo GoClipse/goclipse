@@ -17,6 +17,7 @@ package melnorme.utilbox.core.fntypes;
  * Retrieving the result will rethrow the original exception, if any was thrown.
  * The result can be accessed by other threads.
  */
+/* FIXME: review*/
 public abstract class ExceptionTrackingRunnable<R, E extends Throwable> implements Runnable {
 	
 	protected volatile Throwable throwable;

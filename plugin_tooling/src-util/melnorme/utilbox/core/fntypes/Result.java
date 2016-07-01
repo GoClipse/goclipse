@@ -18,11 +18,27 @@ public class Result<DATA, EXC extends Throwable> {
 	/** Note: resultException is either a EXC, or a RuntimeException. */
 	protected final Throwable resultException;
 	
+	public static <DATA, EXC extends Throwable> Result<DATA, EXC> fromValue(DATA resultValue) {
+		return new Result<>(resultValue);
+	}
+	
+	public static <DATA, EXC extends Throwable> Result<DATA, EXC> fromException(EXC exception) {
+		return new Result<>(null, exception);
+	}
+	
+	public static <DATA, EXC extends Throwable> Result<DATA, EXC> fromRuntimeException(RuntimeException exception) {
+		return new Result<>(null, exception, null);
+	}
+	
 	public Result(DATA resultValue) {
 		this(resultValue, null);
 	}
 	
 	public Result(DATA resultValue, EXC resultException) {
+		this(resultValue, resultException, null);
+	}
+	
+	protected Result(DATA resultValue, Throwable resultException, @SuppressWarnings("unused") Void dummy) {
 		this.resultValue = resultValue;
 		this.resultException = resultException;
 		assertTrue(resultValue == null || resultException == null);
@@ -49,6 +65,10 @@ public class Result<DATA, EXC extends Throwable> {
 		} catch(Throwable e) {
 			return null;
 		}
+	}
+	
+	public Throwable getResultException() {
+		return resultException;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.core.fntypes;
 
-public abstract class SafeRunnable implements Runnable {
+public interface RunnableX<EXC extends Throwable> {
 	
-	@Override
-	public final void run() {
-		try { 
-			safeRun();
-		} catch(Throwable e) {
-			handleUncaughtException(e);
-		} 
-	}
-	
-	protected abstract void safeRun();
-	
-	protected abstract void handleUncaughtException(Throwable e);
+	void run() throws EXC;
 	
 }
