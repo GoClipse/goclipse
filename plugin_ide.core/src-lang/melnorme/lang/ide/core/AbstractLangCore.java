@@ -16,8 +16,9 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.utilbox.misc.ILogHandler;
+import melnorme.utilbox.status.StatusException;
 
-public abstract class AbstractLangCore {
+public abstract class AbstractLangCore extends LoggingCore {
 	
 	public static LangCore instance;
 	
@@ -54,7 +55,7 @@ public abstract class AbstractLangCore {
 	
 	/* -----------------  ----------------- */ 
 	
-	public static ILogHandler logHandler() {
+	public static ILogHandler log() {
 		return instance.logHandler;
 	}
 	
@@ -94,4 +95,44 @@ public abstract class AbstractLangCore {
 		bundleManager.startManager();
 	}
 	
+}
+
+class LoggingCore {
+	
+	public static ILogHandler log() {
+		return AbstractLangCore.instance.logHandler;
+	}
+	
+	/** Logs status of given StatusException. */
+	public static void logStatusException(StatusException se) {
+		log().logStatus(se);
+	}
+	
+	/** Logs an error status with given message. */
+	public static void logError(String message) {
+		log().logError(message);
+	}
+	/** Logs an error status with given message and given throwable. */
+	public static void logError(String message, Throwable throwable) {
+		log().logError(message, throwable);
+	}
+	
+	/** Logs a warning status with given message. */
+	public static void logWarning(String message) {
+		log().logWarning(message);
+	}
+	/** Logs a warning status with given message and given throwable. */
+	public static void logWarning(String message, Throwable throwable) {
+		log().logWarning(message, throwable);
+	}
+	
+	/** Logs an info status with given message. */
+	public static void logInfo(String message) {
+		log().logInfo(message);
+	}
+	
+	public static void logInternalError(Throwable throwable) {
+		log().logError("Internal Error!", throwable);
+	}
+
 }

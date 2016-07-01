@@ -11,47 +11,11 @@
 package melnorme.lang.ide.core;
 
 import melnorme.utilbox.misc.ILogHandler;
-import melnorme.utilbox.status.Severity;
-import melnorme.utilbox.status.StatusException;
 
 public class LangCore extends LangCore_Actual {
 	
 	public LangCore(ILogHandler logHandler) {
 		super(logHandler);
-	}
-	
-	/* ----------------- Logging ----------------- */
-	
-	/** Logs status of given StatusException. */
-	public static void logStatusException(StatusException se) {
-		logHandler().logStatus(se);
-	}
-	
-	public static void logInternalError(Throwable throwable) {
-		logError("Internal Error!", throwable);
-	}
-	
-	/** Logs an error status with given message. */
-	public static void logError(String message) {
-		logError(message, null);
-	}
-	/** Logs an error status with given message and given throwable. */
-	public static void logError(String message, Throwable throwable) {
-		logStatusException(new StatusException(Severity.ERROR, message, throwable));
-	}
-	
-	/** Logs a warning status with given message. */
-	public static void logWarning(String message) {
-		logWarning(message, null);
-	}
-	/** Logs a warning status with given message and given throwable. */
-	public static void logWarning(String message, Throwable throwable) {
-		logStatusException(new StatusException(Severity.WARNING, message, throwable));
-	}
-	
-	/** Logs an info status with given message. */
-	public static void logInfo(String message) {
-		logStatusException(new StatusException(Severity.INFO, message, null));
 	}
 	
 }
