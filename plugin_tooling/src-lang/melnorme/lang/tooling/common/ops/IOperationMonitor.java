@@ -20,7 +20,7 @@ public interface IOperationMonitor extends ICancelMonitor {
 	
 	abstract IOperationSubMonitor enterSubTask(String subTaskName);
 	
-	default void runSubTask(String subTaskName, CommonOperation subOp) throws CommonException, OperationCancellation {
+	default void runSubTask(String subTaskName, Operation subOp) throws CommonException, OperationCancellation {
 		try(IOperationSubMonitor subMonitor = enterSubTask(subTaskName)) {
 			subOp.execute(subMonitor);
 		}

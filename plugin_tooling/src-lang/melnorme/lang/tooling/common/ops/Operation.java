@@ -16,7 +16,7 @@ import melnorme.utilbox.core.fntypes.CommonResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.core.fntypes.SimpleRunnableFuture;
 
-public interface CommonOperation {
+public interface Operation {
 	
 	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
@@ -40,16 +40,16 @@ public interface CommonOperation {
 		return toOperationCallable(om).callToResult();
 	}
 	
-	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
+	public static Operation NULL_COMMON_OPERATION = (pm) -> { };
 	
 	/* -----------------  ----------------- */
 	
-	default CommonOperation namedOperation(String taskName) {
+	default Operation namedOperation(String taskName) {
 		return namedOperation(taskName, this);
 	}
 	
-	public static CommonOperation namedOperation(String taskName, CommonOperation subOp) {
-		return new CommonOperation() {
+	public static Operation namedOperation(String taskName, Operation subOp) {
+		return new Operation() {
 			@Override
 			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 				om.runSubTask(taskName, subOp);

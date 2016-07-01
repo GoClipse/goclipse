@@ -42,7 +42,7 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -141,7 +141,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		IProject project = buildTargetSettings.getBuildTargetSupplier().getValidProject();
 		
 		BuildTarget buildTarget = buildTargetSettings.getValidBuildTarget();
-		CommonOperation buildOperation = buildTarget == null ? 
+		Operation buildOperation = buildTarget == null ? 
 				null : buildManager.newBuildTargetOperation(project, buildTarget);
 		
 		String workingDirectoryString = evaluateStringVars(
@@ -226,7 +226,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	protected boolean doBuildForLaunch(ILaunchConfiguration configuration, String mode,
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		CommonOperation buildOperation = processLauncher.buildOperation;
+		Operation buildOperation = processLauncher.buildOperation;
 		if(buildOperation != null) {
 			buildOperation.execute(EclipseUtils.om(pm));
 			return false;

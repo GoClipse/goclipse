@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import org.eclipse.ui.progress.IProgressService;
 
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -46,8 +46,8 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		return new WorkbenchOperationExecutor();
 	}
 	
-	protected CommonOperation getBackgroundOperation() {
-		return CommonOperation.namedOperation(getOperationName(), this::doBackgroundComputation);
+	protected Operation getBackgroundOperation() {
+		return Operation.namedOperation(getOperationName(), this::doBackgroundComputation);
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */

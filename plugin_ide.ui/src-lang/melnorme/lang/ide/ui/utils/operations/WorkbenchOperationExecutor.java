@@ -29,7 +29,7 @@ import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -71,7 +71,7 @@ public class WorkbenchOperationExecutor {
 		progressService.run(!executeInUIOnly, true, progressRunnable);
 	}
 	
-	public void execute(CommonOperation coreOperation) throws CommonException, OperationCancellation {
+	public void execute(Operation coreOperation) throws CommonException, OperationCancellation {
 		try {
 			IRunnableWithProgress runnableWithProgress = new IRunnableWithProgress() {
 				@Override
@@ -104,7 +104,7 @@ public class WorkbenchOperationExecutor {
 		
 		AtomicReference<R> resultHolder = new AtomicReference<>();
 		
-		CommonOperation opWrapper = new CommonOperation() {
+		Operation opWrapper = new Operation() {
 			@Override
 			public void execute(IOperationMonitor om) {
 				R result = op.apply(om);
@@ -124,7 +124,7 @@ public class WorkbenchOperationExecutor {
 		
 		AtomicReference<R> resultHolder = new AtomicReference<>();
 		
-		execute(new CommonOperation() {
+		execute(new Operation() {
 			@Override
 			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 				R result = op.executeOp(om);

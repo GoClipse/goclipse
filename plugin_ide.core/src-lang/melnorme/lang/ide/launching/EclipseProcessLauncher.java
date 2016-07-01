@@ -33,7 +33,7 @@ import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -45,7 +45,7 @@ import melnorme.utilbox.misc.StringUtil;
 public class EclipseProcessLauncher {
 	
 	public final IProject project;
-	public final CommonOperation buildOperation;
+	public final Operation buildOperation;
 	public final Location programFileLocation;
 	public final IPath workingDir;
 	public final CommandInvocation unresolvedProgramInvocation;
@@ -53,7 +53,7 @@ public class EclipseProcessLauncher {
 	
 	public EclipseProcessLauncher(
 			IProject project, 
-			CommonOperation buildOperation, 
+			Operation buildOperation, 
 			Location programFileLocation, 
 			IPath workingDir, 
 			CommandInvocation unresolvedProgramInvocation,
