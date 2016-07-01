@@ -34,14 +34,8 @@ public interface OperationCallable<RET> extends Callable<RET> {
 		return this::callToResult;
 	}
 	
-	default ResultRunnable<CommonResult<RET>> toResultRunnable() {
-		SupplierExt<CommonResult<RET>> supplier = this.toResultSupplier();
-		return new ResultRunnable<CommonResult<RET>>() {
-			@Override
-			public CommonResult<RET> call() {
-				return supplier.get();
-			}
-		};
+	default SimpleRunnableFuture<CommonResult<RET>> toRunnableFuture() {
+		return new SimpleRunnableFuture<CommonResult<RET>>(this::callToResult);
 	}
 	
 }

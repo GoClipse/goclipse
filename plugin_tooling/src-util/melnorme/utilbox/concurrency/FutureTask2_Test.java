@@ -77,7 +77,7 @@ public class FutureTask2_Test extends CommonTest {
 			neverending.entryLatch.await();
 			
 			// Test cancellation through Future API
-			future.cancel(true);
+			future.cancel();
 			assertTrue(future.isCancelled());
 			verifyThrows(() -> future.awaitResult(), OperationCancellation.class);
 		}
@@ -88,7 +88,7 @@ public class FutureTask2_Test extends CommonTest {
 			FutureX<?, ?> future = new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
 			
 			// Test cancellation through Future API - when task has not started yet
-			future.cancel(true);
+			future.cancel();
 			assertTrue(future.isCancelled());
 			verifyThrows(() -> future.awaitResult(), OperationCancellation.class);
 		}

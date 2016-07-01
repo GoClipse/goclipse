@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 public interface FutureX<RESULT, EXCEPTION extends Throwable> {
 	
 	/** See {@link Future#cancel(boolean)} */
-    boolean cancel(boolean mayInterruptIfRunning);
+    boolean cancel();
     
     /** See {@link Future#isCancelled()} */
     boolean isCancelled();
@@ -51,12 +51,12 @@ public interface FutureX<RESULT, EXCEPTION extends Throwable> {
 	}
 	
 	/** Same as {@link #awaitResult(long, TimeUnit)}, 
-	 * but throw InterruptedException and TimeoutException as an OperationCancellation. */
+	 * but throw InterruptedException as an OperationCancellation. */
 	default RESULT getResult(long timeout, TimeUnit unit) 
-			throws EXCEPTION, OperationCancellation {
+			throws EXCEPTION, OperationCancellation, TimeoutException {
 		try {
 			return awaitResult(timeout, unit);
-		} catch(InterruptedException | TimeoutException e) {
+		} catch(InterruptedException e) {
 			throw new OperationCancellation();
 		}
 	}

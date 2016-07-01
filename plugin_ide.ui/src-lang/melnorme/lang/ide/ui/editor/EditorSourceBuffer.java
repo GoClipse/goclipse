@@ -26,7 +26,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
-import melnorme.utilbox.core.fntypes.ResultRunnable;
+import melnorme.utilbox.core.fntypes.SimpleRunnableFuture;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -63,7 +63,7 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 				saveBuffer();
 				return null;
 			};
-			ResultRunnable<CommonResult<Void>> resultRunnable = operationCallable.toResultRunnable();
+			SimpleRunnableFuture<CommonResult<Void>> resultRunnable = operationCallable.toRunnableFuture();
 			Display.getDefault().syncExec(resultRunnable);
 			resultRunnable.getResult().get();
 		} else {

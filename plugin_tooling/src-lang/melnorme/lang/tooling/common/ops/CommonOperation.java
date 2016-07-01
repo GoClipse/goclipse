@@ -12,10 +12,33 @@ package melnorme.lang.tooling.common.ops;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.SimpleRunnableFuture;
 
 public interface CommonOperation {
 	
 	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
+	
+	/* -----------------  ----------------- */
+	
+	default OperationCallable<Void> toOperationCallable(IOperationMonitor om) {
+		return new OperationCallable<Void>() {
+			@Override
+			public Void call() throws CommonException, OperationCancellation {
+				execute(om);
+				return null;
+			}
+		};
+	}
+	
+	default SimpleRunnableFuture<CommonResult<Void>> toRunnableFuture(IOperationMonitor om) {
+		return toOperationCallable(om).toRunnableFuture();
+	}
+	
+	default CommonResult<Void> executeToResult(IOperationMonitor om) {
+		return toOperationCallable(om).callToResult();
+	}
 	
 	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
 	

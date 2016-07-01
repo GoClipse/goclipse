@@ -8,26 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.core.fntypes;
+package melnorme.utilbox.concurrency;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import java.util.concurrent.RunnableFuture;
 
-public abstract class ResultRunnable<RESULT> implements Runnable {
-	
-	protected volatile RESULT result;
-	protected boolean executed = false;
-	
-	public abstract RESULT call();
-	
-	@Override
-	public void run() {
-		result = call();
-		executed = true;
-	}
-	
-	public RESULT getResult() {
-		assertTrue(executed);
-		return result;
-	}
+/**
+ * An analogue of {@link RunnableFuture}, but using {@link FutureX} which has a safer API.
+ * 
+ * Just like {@link RunnableFuture}, 
+ * successful execution of the {@link #run()} method causes completion of the future.
+ * 
+ */
+public interface RunnableFutureX<RESULT, EXCEPTION extends Throwable> extends Runnable, FutureX<RESULT, EXCEPTION> {
 	
 }
