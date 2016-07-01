@@ -15,15 +15,13 @@ import org.osgi.framework.BundleContext;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.ownership.Disposable;
 
 public class GoUIPlugin extends LangUIPlugin {
-	
-	protected static GocodeServerManager gocodeServerManager = new GocodeServerManager();
 	
 	@Override
 	protected GoOperationsConsoleUIHandler createOperationsConsoleListener() {
@@ -37,6 +35,7 @@ public class GoUIPlugin extends LangUIPlugin {
 	public static GocodeServerManager prepareGocodeManager_inUI() 
 			throws CommonException, OperationCancellation {
 		
+		GocodeServerManager gocodeServerManager = LangCore.get().gocodeServerManager();
 		new StartGocodeServerOperation().execute(gocodeServerManager);
 		
 		return gocodeServerManager;
@@ -44,8 +43,6 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		Disposable.dispose(gocodeServerManager);
-		gocodeServerManager = null;
 	}
 	
 }

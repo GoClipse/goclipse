@@ -4,9 +4,12 @@ import com.googlecode.goclipse.core.engine.GoBundleModelManager;
 import com.googlecode.goclipse.core.engine.GoSourceModelManager;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
+import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.utilbox.misc.ILogHandler;
+import melnorme.utilbox.ownership.Disposable;
 
 public class LangCore_Actual extends AbstractLangCore {
 	
@@ -28,9 +31,11 @@ public class LangCore_Actual extends AbstractLangCore {
 	public LangCore_Actual(ILogHandler logHandler) {
 		super(logHandler);
 	}
-		
+	
 	@Override
 	protected CoreSettings createCoreSettings() {
+		ToolchainPreferences.DAEMON_PATH.setPreferencesDefaultValue("gocode");
+		
 		return new CoreSettings() {
 			@Override
 			public GoSDKLocationValidator getSDKLocationValidator() {
@@ -57,6 +62,17 @@ public class LangCore_Actual extends AbstractLangCore {
 		return new GoBuildManager(bundleManager.getModel(), getToolManager());
 	}
 		
-	/* -----------------  ----------------- */
+	protected final GocodeServerManager gocodeServerManager = new GocodeServerManager();
+	
+	public GocodeServerManager gocodeServerManager() {
+		return gocodeServerManager;
+	}
+	
+	@Override
+	protected void shutdown() {
+		Disposable.dispose(gocodeServerManager);
+		
+		super.shutdown();
+	}
 	
 }
