@@ -19,6 +19,17 @@ import melnorme.utilbox.core.CommonException;
 
 public class EclipseCore extends EclipseUtils {
 	
+	private static LangCorePlugin getPluginInstance() {
+		return LangCorePlugin.getInstance();
+	}
+	
+	/** Creates a Status with given status code and message. */
+	public static Status createStatus(int severity, String message, Throwable throwable) {
+		return new Status(severity, getPluginInstance().getBundle().getSymbolicName(), message, throwable);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	/** Creates an OK status with given message. */
 	public static Status createOkStatus(String message) {
 		return createStatus(IStatus.OK, message, null);
@@ -39,11 +50,6 @@ public class EclipseCore extends EclipseUtils {
 		return createStatus(IStatus.ERROR, message, throwable);
 	}
 	
-	/** Creates a Status with given status code and message. */
-	public static Status createStatus(int severity, String message, Throwable throwable) {
-		return createStatus(severity, message, throwable);
-	}
-	
 	/** Creates a CoreException describing an error in this plugin. */
 	public static CoreException createCoreException(String message, Throwable throwable) {
 		return new CoreException(createErrorStatus(message, throwable));
@@ -58,7 +64,7 @@ public class EclipseCore extends EclipseUtils {
 	
 	/** Logs status of given CoreException. */
 	public static void logStatus(CoreException ce) {
-		LangCorePlugin.getInstance().getLog().log(ce.getStatus());
+		getPluginInstance().getLog().log(ce.getStatus());
 	}
 	
 }
