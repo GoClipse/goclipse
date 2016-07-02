@@ -17,22 +17,22 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.ResultFuture.NonNullResultFuture;
 import melnorme.utilbox.core.fntypes.Callable2;
 import melnorme.utilbox.core.fntypes.Result;
 
 /**
- * A simple ResultFuture, completable by means of executing the {@link #run()} method.
+ * A simple future, completable by means of executing the {@link #run()} method.
  * Cannot be cancelled.
  * 
  * @param <RESULT> The result type returned by the result methods.
  * @param <EXCEPTION> The exception thrown by the result methods. 
- * It should not be {@link InterruptedException} or {@link OperationCancellation} !
  * 
  */
-public class SimpleRunnableFutureX<RET, EXC extends Throwable> extends AbstractFutureX<RET, EXC> 
-	implements RunnableFutureX<RET, EXC> {
+public class SimpleRunnableFutureX<RET, EXC extends Throwable> extends AbstractFutureX<Result<RET, EXC>> 
+	implements Runnable, FutureX<Result<RET, EXC>, RuntimeException> {
 	
-	protected final ResultFuture<RET, EXC> resultFuture = new ResultFuture<>();
+	protected final ResultFuture<Result<RET, EXC>> resultFuture = new NonNullResultFuture<>();
 	protected final Callable2<RET, EXC> callable;
 	
 	public SimpleRunnableFutureX(Callable2<RET, EXC> callable) {
@@ -64,7 +64,7 @@ public class SimpleRunnableFutureX<RET, EXC extends Throwable> extends AbstractF
 	}
 	
 	@Override
-	public RET awaitResult() throws EXC, InterruptedException {
+	public Result<RET, EXC> awaitResult() throws InterruptedException {
 		try {
 			return resultFuture.awaitResult();
 		} catch(OperationCancellation e) {
@@ -73,8 +73,7 @@ public class SimpleRunnableFutureX<RET, EXC extends Throwable> extends AbstractF
 	}
 	
 	@Override
-	public RET awaitResult(long timeout, TimeUnit unit)
-			throws EXC, InterruptedException, TimeoutException {
+	public Result<RET, EXC> awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
 		try {
 			return resultFuture.awaitResult(timeout, unit);
 		} catch(OperationCancellation e) {
@@ -83,7 +82,7 @@ public class SimpleRunnableFutureX<RET, EXC extends Throwable> extends AbstractF
 	}
 	
 	@Override
-	public RET getResult() throws EXC {
+	public Result<RET, EXC> getResult() {
 		try {
 			return super.getResult();
 		} catch(OperationCancellation e) {
@@ -92,7 +91,7 @@ public class SimpleRunnableFutureX<RET, EXC extends Throwable> extends AbstractF
 	}
 	
 	@Override
-	public RET getResult(long timeout, TimeUnit unit) throws EXC, TimeoutException {
+	public Result<RET, EXC> getResult(long timeout, TimeUnit unit) throws TimeoutException {
 		try {
 			return super.getResult(timeout, unit);
 		} catch(OperationCancellation e) {

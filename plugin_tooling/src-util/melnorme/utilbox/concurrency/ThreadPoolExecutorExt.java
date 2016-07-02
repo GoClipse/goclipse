@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.OperationResult;
 
 /**
  * An extension to {@link ThreadPoolExecutor}: 
