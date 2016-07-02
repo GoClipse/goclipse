@@ -25,7 +25,7 @@ import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.CResult;
+import melnorme.utilbox.core.fntypes.CommonResult;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
@@ -122,7 +122,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 	
 	/* -----------------  ----------------- */
 	
-	public class StructureInfo extends ConcurrentlyDerivedData<CResult<SourceFileStructure>, StructureInfo> {
+	public class StructureInfo extends ConcurrentlyDerivedData<CommonResult<SourceFileStructure>, StructureInfo> {
 		
 		protected final LocationKey key2;
 		protected final StructureUpdateTask disconnectTask; // Can be null
@@ -148,15 +148,15 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		}
 		
 		@Override
-		protected void internalSetData(CResult<SourceFileStructure> newData) {
+		protected void internalSetData(CommonResult<SourceFileStructure> newData) {
 			if(newData == null) {
-				newData = new CResult<>(null);
+				newData = new CommonResult<>(null);
 			}
 			super.internalSetData(newData);
 		}
 		
 		@Override
-		public CResult<SourceFileStructure> getStoredData() {
+		public CommonResult<SourceFileStructure> getStoredData() {
 			return assertNotNull(super.getStoredData());
 		}
 		
@@ -248,7 +248,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		return new DisconnectUpdatesTask(structureInfo);
 	}
 	
-	public static abstract class StructureUpdateTask extends DataUpdateTask<CResult<SourceFileStructure>> {
+	public static abstract class StructureUpdateTask extends DataUpdateTask<CommonResult<SourceFileStructure>> {
 		
 		protected final StructureInfo structureInfo;
 		
@@ -263,11 +263,11 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		}
 		
 		@Override
-		protected final CResult<SourceFileStructure> createNewData() throws OperationCancellation {
+		protected final CommonResult<SourceFileStructure> createNewData() throws OperationCancellation {
 			try {
-				return new CResult<>(doCreateNewData());
+				return new CommonResult<>(doCreateNewData());
 			} catch(CommonException e) {
-				return new CResult<>(null, e);
+				return new CommonResult<>(null, e);
 			}
 		}
 		
