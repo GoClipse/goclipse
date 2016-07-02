@@ -20,6 +20,7 @@ import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.status.Severity;
@@ -49,12 +50,16 @@ public abstract class BuildOutputParser2 extends AbstractToolResultParser<ArrayL
 		try {
 			validateExitCode(result);
 			
-			return parseOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
+			return parseOutput(getOutputFromProcessResult(result).toString(StringUtil.UTF8));
 		} catch(OperationSoftFailure e) {
 			// There shouldn't even be a StatusValidation error for build, 
 			// because the source should always be able to be analyis. (might need  to refactor this)
 			throw new CommonException(e.getMessage());
 		}
+	}
+	
+	protected IByteSequence getOutputFromProcessResult(ExternalProcessResult result) {
+		return result.getStdOutBytes();
 	}
 	
 	@Override
