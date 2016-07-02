@@ -52,7 +52,7 @@ import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.ThrowingRunnable;
+import melnorme.utilbox.core.fntypes.RunnableX;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.ownership.IOwner;
@@ -473,7 +473,7 @@ public class ResourceUtils {
 	}
 	
 	public static void connectResourceListener(IResourceChangeListener listener, 
-			ThrowingRunnable<CoreException> initialUpdate, ISchedulingRule opRule, IOwner owner) {
+			RunnableX<CoreException> initialUpdate, ISchedulingRule opRule, IOwner owner) {
 		try {
 			getWorkspace().run(new IWorkspaceRunnable() {
 				@Override

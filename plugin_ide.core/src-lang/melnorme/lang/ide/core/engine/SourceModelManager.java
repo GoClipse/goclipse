@@ -20,12 +20,12 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
 import melnorme.lang.tooling.LocationKey;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.utils.concurrency.ConcurrentlyDerivedResult;
+import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
+import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CResult;
-import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
@@ -122,7 +122,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 	
 	/* -----------------  ----------------- */
 	
-	public class StructureInfo extends ConcurrentlyDerivedResult<SourceFileStructure, CommonException, StructureInfo> {
+	public class StructureInfo extends ConcurrentlyDerivedData<CResult<SourceFileStructure>, StructureInfo> {
 		
 		protected final LocationKey key2;
 		protected final StructureUpdateTask disconnectTask; // Can be null
@@ -132,6 +132,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		
 		
 		public StructureInfo(LocationKey key) {
+			super();
 			this.key2 = assertNotNull(key);
 			
 			this.disconnectTask = assertNotNull(createDisconnectTask(this));
@@ -147,11 +148,16 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		}
 		
 		@Override
-		protected Result<SourceFileStructure, CommonException> createResult(SourceFileStructure resultValue,
-				CommonException resultException) {
-			// CResult will provide better runtime assertion checks for the exception contract, 
-			// better than just using Result
-			return new CResult<>(resultValue, resultException);
+		protected void internalSetData(CResult<SourceFileStructure> newData) {
+			if(newData == null) {
+				newData = new CResult<>(null);
+			}
+			super.internalSetData(newData);
+		}
+		
+		@Override
+		public CResult<SourceFileStructure> getStoredData() {
+			return assertNotNull(super.getStoredData());
 		}
 		
 		public synchronized boolean hasConnectedListeners() {
@@ -242,12 +248,12 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		return new DisconnectUpdatesTask(structureInfo);
 	}
 	
-	public static abstract class StructureUpdateTask extends StructureInfo.ResultUpdateTask {
+	public static abstract class StructureUpdateTask extends DataUpdateTask<CResult<SourceFileStructure>> {
 		
 		protected final StructureInfo structureInfo;
 		
 		public StructureUpdateTask(StructureInfo structureInfo) {
-			structureInfo.super(structureInfo.getKey2().toString());
+			super(structureInfo, structureInfo.getKey2().toString());
 			this.structureInfo = structureInfo;
 		}
 		
@@ -255,6 +261,17 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		protected void handleRuntimeException(RuntimeException e) {
 			LangCore.logInternalError(e);
 		}
+		
+		@Override
+		protected final CResult<SourceFileStructure> createNewData() throws OperationCancellation {
+			try {
+				return new CResult<>(doCreateNewData());
+			} catch(CommonException e) {
+				return new CResult<>(null, e);
+			}
+		}
+		
+		protected abstract SourceFileStructure doCreateNewData() throws CommonException, OperationCancellation;
 		
 	}
 	
@@ -265,7 +282,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		}
 		
 		@Override
-		protected SourceFileStructure doCreateNewData() throws CommonException, OperationCancellation {
+		protected SourceFileStructure doCreateNewData() throws OperationCancellation {
 			Location location = structureInfo.getLocation();
 			if(location != null) {
 				handleDisconnectForLocation(location);

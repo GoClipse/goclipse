@@ -23,10 +23,10 @@ import melnorme.lang.ide.ui.utils.operations.WorkbenchOperationExecutor;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.concurrency.SimpleRunnableFutureX.SimpleRunnableFuture;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
-import melnorme.utilbox.core.fntypes.SimpleRunnableFuture;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -63,7 +63,7 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 				saveBuffer();
 				return null;
 			};
-			SimpleRunnableFuture<CommonResult<Void>> resultRunnable = operationCallable.toRunnableFuture();
+			SimpleRunnableFuture<OperationResult<Void>> resultRunnable = operationCallable.toRunnableFuture();
 			Display.getDefault().syncExec(resultRunnable);
 			resultRunnable.getResult().get();
 		} else {

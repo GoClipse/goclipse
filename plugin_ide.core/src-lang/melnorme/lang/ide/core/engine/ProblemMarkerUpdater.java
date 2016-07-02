@@ -33,7 +33,7 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.Result;
+import melnorme.utilbox.core.fntypes.CResult;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.LifecycleObject;
@@ -85,7 +85,7 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 		protected final StructureInfo structureInfo;
 		protected final Location location;
 		protected final SourceFileStructure structure;
-		protected final Result<SourceFileStructure, CommonException> storedData;
+		protected final CResult<SourceFileStructure> storedData;
 		
 		public UpdateProblemMarkersTask(StructureInfo structureInfo) throws CommonException {
 			this.structureInfo = assertNotNull(structureInfo);

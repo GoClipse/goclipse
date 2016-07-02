@@ -11,6 +11,7 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -22,21 +23,19 @@ import java.util.concurrent.TimeoutException;
  * A future meant to be completed by an explicit {@link #setResult()} call. 
  * Similar to {@link CompletableFuture} but with a safer and simplified API, particularly:
  * 
- * - Uses the {@link FutureX} interface which throws a checked exception for cancellation, 
- * instead of a runtime one that {@link Future} does.
+ * - Uses the {@link FutureX} interface which has a safer and more precise API than {@link Future} 
+ * with regards to exception throwing.
  * - By default, completing the Future ({@link #setResult()}) can only be attempted once, 
- * it is illegal for multiple attempts to occur.
+ * it is illegal for multiple {@link #setResult()} calls to be attempted.
  *
  */
-public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<DATA, EXC> {
+public class ResultFuture<DATA> extends AbstractFutureX<DATA> {
 	
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
 	
     protected volatile ResultStatus status = ResultStatus.INITIAL;
-	protected volatile DATA resultValue;
-	/** Note: resultException is either a EXC, or a RuntimeException. */
-	protected volatile Throwable resultException;
+	protected volatile DATA result;
 	
 	public enum ResultStatus { INITIAL, RESULT_SET, CANCELLED }
 	
@@ -62,33 +61,13 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 		return completionLatch;
 	}
 	
-	public void setResult(DATA resultValue) {
+	public void setResult(DATA result) {
 		synchronized (lock) {
 			if(isDone()) {
 				handleReSetResult();
 				return;
 			}
-			this.resultValue = resultValue;
-			status = ResultStatus.RESULT_SET;
-			completionLatch.countDown();
-		}
-	}
-	
-	public void setExceptionResult(EXC exceptionResult) {
-		doSetExceptionResult(exceptionResult);
-	}
-	
-	public void setRuntimeExceptionResult(RuntimeException exceptionResult) {
-		doSetExceptionResult(exceptionResult);
-	}
-	
-	protected void doSetExceptionResult(Throwable exceptionResult) {
-		synchronized (lock) {
-			if(isDone()) {
-				handleReSetResult();
-				return;
-			}
-			this.resultException = exceptionResult;
+			this.result = result;
 			status = ResultStatus.RESULT_SET;
 			completionLatch.countDown();
 		}
@@ -124,39 +103,28 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 	
 	@Override
 	public DATA awaitResult() 
-			throws EXC, OperationCancellation, InterruptedException {
+			throws OperationCancellation, InterruptedException {
 		awaitCompletion();
 		return getResult_afterCompletion();
 	}
 	
 	@Override
 	public DATA awaitResult(long timeout, TimeUnit unit) 
-			throws EXC, OperationCancellation, InterruptedException, TimeoutException {
+			throws OperationCancellation, InterruptedException, TimeoutException {
 		awaitCompletion(timeout, unit);
 		return getResult_afterCompletion();
 	}
 	
-	protected DATA getResult_afterCompletion() throws EXC, OperationCancellation {
+	protected DATA getResult_afterCompletion() throws OperationCancellation {
 		if(isCancelled()) {
 			throw new OperationCancellation();
 		}
-		throwIfExceptionResult();
-		return resultValue;
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected void throwIfExceptionResult() throws EXC {
-		if(resultException instanceof RuntimeException) {
-			throw (RuntimeException) resultException;
-		}
-		if(resultException != null) {
-			throw (EXC) resultException;
-		}
+		return result;
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public static class LatchFuture extends ResultFuture<Object, RuntimeException> {
+	public static class LatchFuture extends ResultFuture<Object> {
 		
 		public void setCompleted() {
 			setResult(null);
@@ -165,6 +133,18 @@ public class ResultFuture<DATA, EXC extends Throwable> extends AbstractFutureX<D
 		@Override
 		protected void handleReSetResult() {
 			// Do nothing - this is allowed because the possible value is always null anyways
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class NonNullResultFuture<DATA> extends ResultFuture<DATA> {
+		
+		@Override
+		public void setResult(DATA result) {
+			assertNotNull(result);
+			super.setResult(result);
 		}
 		
 	}

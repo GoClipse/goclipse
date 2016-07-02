@@ -12,6 +12,7 @@ package melnorme.utilbox.core.fntypes;
 
 import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface SupplierExt<RET> extends Supplier<RET>, CallableX<RET, RuntimeException> {
 	
 	@Override

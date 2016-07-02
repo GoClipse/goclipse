@@ -14,12 +14,18 @@ import java.util.concurrent.Callable;
 
 
 /**
- * A {@link Callable} with a stricter API: 
- * allows specifying a more specific Exception that the {@link #call()} method throws.
+ * A {@link Callable2} that is also a {@link Callable}. 
+ * The EXC type parameter must an {@link Exception}, not a {@link Throwable} 
  */
-public interface CallableX<RET, EXC extends Exception> extends Callable<RET> {
+@FunctionalInterface
+public interface CallableX<RET, EXC extends Exception> extends Callable2<RET, EXC>, Callable<RET> {
 	
 	@Override
 	public RET call() throws EXC;
+	
+	@Override
+	default RET invoke() throws EXC {
+		return call();
+	}
 	
 }

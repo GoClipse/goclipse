@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import melnorme.utilbox.core.CommonException;
 
+/* FIXME: review */
 public class CResult<DATA> extends Result<DATA, CommonException> {
 	
 	public CResult(DATA resultValue) {

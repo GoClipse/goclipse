@@ -29,7 +29,9 @@ import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.Assert.AssertFailedException;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.ownership.StrictDisposable;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
@@ -78,6 +80,20 @@ public class StructureModelTest extends CommonCoreTest {
 			createUpdateTaskCount++;
 			
 			return updateTaskProvider.apply(structureInfo);
+		}
+		
+		public void setSingleUse_UpdateTaskProvider(OperationCallable<SourceFileStructure> opCallable) {
+			Function<StructureInfo, StructureUpdateTask> previousTaskProvider = updateTaskProvider;
+			
+			updateTaskProvider = (_structureInfo) -> {
+				updateTaskProvider = previousTaskProvider;
+				return new StructureUpdateTask(_structureInfo) {
+					@Override
+					protected SourceFileStructure doCreateNewData() throws CommonException, OperationCancellation {
+						return opCallable.call();
+					}
+				};
+			};
 		}
 		
 	}
@@ -154,12 +170,33 @@ public class StructureModelTest extends CommonCoreTest {
 			assertTrue(storedStructureInfo == null || !storedStructureInfo.hasConnectedListeners());
 		}
 		
-		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, IStructureModelListener.NIL_LISTENER);
+		
+		CountDownLatch firstUpdateLatch = new CountDownLatch(1);
+		
+		fixtureMgr.setSingleUse_UpdateTaskProvider(() -> {
+			try {
+				firstUpdateLatch.await();
+			} catch(InterruptedException e) {
+				throw new OperationCancellation();
+			}
+			return null;			
+		});
+		
+		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, 
+			IStructureModelListener.NIL_LISTENER);
 		checkTaskDelta(initialConnect ? 1 : 0);
 		
 		StructureInfo structureInfo = registration.structureInfo;
+		
+		if(initialConnect) {
+			assertTrue(structureInfo.isStale() == true);
+		}
+		assertTrue(structureInfo.getStoredData() != null);
+		
 		assertTrue(structureInfo.hasConnectedListeners());
 		assertTrue(mgr.getStoredStructureInfo(key) == structureInfo);
+		
+		firstUpdateLatch.countDown();
 		
 		return registration;
 	}
@@ -279,7 +316,8 @@ public class StructureModelTest extends CommonCoreTest {
 		StructureInfo structureInfo = registration.structureInfo;
 		
 		checkCounts();
-		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, IStructureModelListener.NIL_LISTENER);
+		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, 
+			IStructureModelListener.NIL_LISTENER);
 		assertTrue(registration2.structureInfo == structureInfo);
 		// Test no extra updates
 		checkCounts();

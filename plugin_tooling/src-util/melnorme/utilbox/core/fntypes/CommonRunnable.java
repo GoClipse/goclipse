@@ -12,6 +12,6 @@ package melnorme.utilbox.core.fntypes;
 
 import melnorme.utilbox.core.CommonException;
 
-public interface CommonRunnable extends ThrowingRunnable<CommonException>{
+public interface CommonRunnable extends RunnableX<CommonException>{
 	
 }

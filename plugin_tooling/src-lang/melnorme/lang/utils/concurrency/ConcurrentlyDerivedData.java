@@ -47,9 +47,10 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	private CountDownLatch latch = new CountDownLatch(0);
 	
 	public ConcurrentlyDerivedData() {
+		internalSetData(null);
 	}
 	
-	public void internalSetData(DATA newData) {
+	protected void internalSetData(DATA newData) {
 		this.data = newData;
 	}
 	

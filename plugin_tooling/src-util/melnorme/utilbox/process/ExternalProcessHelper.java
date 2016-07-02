@@ -62,12 +62,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	}
 	
 	@Override
-	protected ReadAllBytesTask createMainReaderTask() {
+	protected Runnable createMainReaderTask() {
 		return mainReader = new ReadAllBytesTask(process.getInputStream());
 	}
 	
 	@Override
-	protected ReadAllBytesTask createStdErrReaderTask() {
+	protected Runnable createStdErrReaderTask() {
 		return stderrReader = new ReadAllBytesTask(process.getErrorStream());
 	}
 	
