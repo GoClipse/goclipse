@@ -14,14 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import melnorme.utilbox.core.CommonException;
 
-/* FIXME: review */
-public class CResult<DATA> extends Result<DATA, CommonException> {
+public class CommonResult<DATA> extends Result<DATA, CommonException> {
 	
-	public CResult(DATA resultValue) {
+	public CommonResult(DATA resultValue) {
 		super(resultValue);
 	}
 	
-	public CResult(DATA resultValue, CommonException resultException) {
+	public CommonResult(DATA resultValue, CommonException resultException) {
 		super(resultValue, resultException);
 	}
 	
