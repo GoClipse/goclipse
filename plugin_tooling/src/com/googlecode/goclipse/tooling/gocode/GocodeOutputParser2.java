@@ -87,6 +87,9 @@ public abstract class GocodeOutputParser2 extends AbstractToolResultParser<Array
 	protected abstract void logWarning(String message);
 	
 	protected ToolCompletionProposal parseCompletion(final String completionEntry) {
+		if(completionEntry.trim().isEmpty()) {
+			return null;
+		}
 		String line = completionEntry;
 		
 		String kindString = StringUtil.segmentUntilMatch(line, ",,");
