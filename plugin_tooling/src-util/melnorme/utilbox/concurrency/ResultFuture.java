@@ -29,7 +29,7 @@ import java.util.concurrent.TimeoutException;
  * it is illegal for multiple {@link #setResult()} calls to be attempted.
  *
  */
-public class ResultFuture<DATA> extends AbstractFutureX<DATA> {
+public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
 	
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();

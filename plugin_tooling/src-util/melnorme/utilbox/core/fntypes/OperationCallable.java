@@ -13,7 +13,7 @@ package melnorme.utilbox.core.fntypes;
 import java.util.concurrent.Callable;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.SimpleRunnableFutureX.SimpleRunnableFuture;
+import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.core.CommonException;
 
 public interface OperationCallable<RET> extends Callable<RET> {
@@ -35,8 +35,8 @@ public interface OperationCallable<RET> extends Callable<RET> {
 		return this::callToResult;
 	}
 	
-	default SimpleRunnableFuture<OperationResult<RET>> toRunnableFuture() {
-		return new SimpleRunnableFuture<OperationResult<RET>>(this::callToResult);
+	default RunnableFuture2<OperationResult<RET>> toRunnableFuture() {
+		return new RunnableFuture2<>(this::callToResult);
 	}
 	
 }

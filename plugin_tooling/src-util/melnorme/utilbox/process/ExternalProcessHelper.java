@@ -23,8 +23,10 @@ import java.util.concurrent.TimeoutException;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.concurrency.RunnableFuture2;
+import melnorme.utilbox.concurrency.RunnableFuture2.ResultRunnableFuture;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.ExceptionTrackingRunnable;
+import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StreamUtil;
@@ -63,24 +65,31 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	@Override
 	protected Runnable createMainReaderTask() {
-		return mainReader = new ReadAllBytesTask(process.getInputStream());
+		mainReader = new ReadAllBytesTask(process.getInputStream());
+		return stderrReader.runnableFuture;
 	}
 	
 	@Override
 	protected Runnable createStdErrReaderTask() {
-		return stderrReader = new ReadAllBytesTask(process.getErrorStream());
+		stderrReader = new ReadAllBytesTask(process.getErrorStream());
+		return stderrReader.runnableFuture;
 	}
 	
-	protected static class ReadAllBytesTask extends ExceptionTrackingRunnable<ByteArrayOutputStreamExt, IOException> {
+	protected static class ReadAllBytesTask {
 		
 		protected final InputStream is;
 		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
+		protected final ResultRunnableFuture<ByteArrayOutputStreamExt, IOException> runnableFuture;
 		
 		public ReadAllBytesTask(InputStream is) {
 			this.is = is;
+			this.runnableFuture = RunnableFuture2.toResultRunnableFuture(this::doRun);
 		}
 		
-		@Override
+		public RunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> asRunnableFuture() {
+			return runnableFuture;
+		}
+		
 		public ByteArrayOutputStreamExt doRun() throws IOException {
 			// BM: Hum, should we treat an IOException not as an error, but just like an EOF?
 			try {
@@ -212,9 +221,9 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			awaitTermination(timeoutMs);
 			
 			// Check for IOExceptions (although I'm not sure this scenario is possible)
-			mainReader.getResult();
+			mainReader.asRunnableFuture().getResult();
 			if(stderrReader != null) {
-				stderrReader.getResult();
+				stderrReader.asRunnableFuture().getResult();
 			}
 		} catch (Exception e) {
 			process.destroy();
