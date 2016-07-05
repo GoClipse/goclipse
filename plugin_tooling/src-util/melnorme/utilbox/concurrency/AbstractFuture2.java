@@ -15,13 +15,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public abstract class AbstractFutureX<RET> implements FutureX<RET, RuntimeException> {
+public abstract class AbstractFuture2<RET> implements Future2<RET> {
 	
-	public AbstractFutureX() {
+	public AbstractFuture2() {
 		super();
 	}
 	
-	public Future<RET> asStdFuture() {
+	public Future<RET> asFuture1() {
 		return asFuture;
 	}
 	
@@ -29,17 +29,17 @@ public abstract class AbstractFutureX<RET> implements FutureX<RET, RuntimeExcept
 		
 		@Override
 		public boolean cancel(boolean mayInterruptIfRunning) {
-			return AbstractFutureX.this.cancel();
+			return AbstractFuture2.this.cancel();
 		}
 		
 		@Override
 		public boolean isCancelled() {
-			return AbstractFutureX.this.isCancelled();
+			return AbstractFuture2.this.isCancelled();
 		}
 		
 		@Override
 		public boolean isDone() {
-			return AbstractFutureX.this.isDone();
+			return AbstractFuture2.this.isDone();
 		}
 		
 		@Override

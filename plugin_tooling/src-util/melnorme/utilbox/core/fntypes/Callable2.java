@@ -38,5 +38,5 @@ public interface Callable2<RET, EXC extends Throwable> {
 			return new Result<>(null, exc);
 		}
 	}
-		
+	
 }
