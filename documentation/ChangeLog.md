@@ -1,13 +1,15 @@
 ## release ChangeLog
 
 ### (NextVersion)
+
+### 0.16.1
+ * Updated minimum CDT to version `9.0` (CDT from Eclipse Neon).
+ * Removed effectively useless "Start gocode server automatically" preference.
+ * The GOROOT environment variable is no longer set when invoking Go tools (such as `go`, `gocode`, `godef`, etc.). (#214)
+   * This causes problems with non-archive Go installations (such as those installed into `/usr/bin`), and the reason why it was set in the first place is not known - probably legacy code. Google also seems to indicate GOROOT should not be set explicitly.
  * Fixed: NPE when invoking Content Assist inside a comment, string or character.
- * Fixed 0.16.0 regression: editor open definition hyperlink (Ctrl-click) not working. (#208)
+ * Fixed 0.16.0 regression: editor open definition hyperlink (Ctrl+click) not working. (#208)
  * Fixed 0.16.0 regression: Assertion exception when opening Go files in the compare editor. (#211)
- * Updated minimum CDT to version `9.0`.
- * Removed effectively useless "Start gocode server automatically" pref.
- * The GOROOT environment variable is no longer set when invoking Go tools (`go`, `gocode`, etc.). (#214)
-   * This seems to cause problems with non-archive Go installations, and seems it's not meant to be set explicitly anyways.
 
 ### 0.16.0
  * Added documentation hover (`F2` or mouse-over the reference). Also documentation added to code completion popup. 
