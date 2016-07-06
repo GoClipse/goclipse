@@ -269,9 +269,13 @@ public class StringUtil {
 		return indexOf == -1 ? "" : string.substring(indexOf);
 	}
 	
-	/** If given string starts with given startMatch, trim that from string. 
-	 * @return the result. */
 	public static String trimStart(String string, String startMatch) {
+		return removeStart(startMatch, string);
+	}
+	
+	/** If given string starts with given startMatch, remove that from string. 
+	 * @return the result. */
+	public static String removeStart(String startMatch, String string) {
 		if(string.startsWith(startMatch)) {
 			return string.substring(startMatch.length());
 		}

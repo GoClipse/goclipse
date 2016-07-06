@@ -22,7 +22,7 @@ public class AbstractValidatorExt extends AbstractValidator {
 	
 	protected ValidationException createException(Severity severity, String message) {
 		assertNotNull(severity);
-		return new ValidationException(severity, getFullMessage(message), message, null);
+		return new ValidationException(severity, getFullMessage(message));
 	}
 	
 	protected String getFullMessage(String simpleMessage) {

@@ -13,16 +13,9 @@ package melnorme.lang.ide.ui.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
@@ -51,21 +44,11 @@ public class UIOperationErrorHandlerImpl {
 		}
 		assertNotNull(shell);
 		
-		if(status.getCause() == null) {
-			// No point in using ErrorDialog, use simpler dialog
-			openMessageDialog(MessageDialog.ERROR, shell, title, status.getMessage());
-			return;
-		}
-		
-		openErrorDialog(shell, title, status);
+		openMessageDialog(shell, title, status);
 	}
 	
-	protected void openMessageDialog(int kind, Shell shell, String title, String message) {
-		MessageDialog.open(kind, shell, title, message, SWT.SHEET);
-	}
-	
-	protected void openErrorDialog(Shell shell, String title, StatusException status) {
-		new ErrorDialogExt(shell, title, status).open();
+	protected void openMessageDialog(Shell shell, String title, StatusException status) {
+		new StatusMessageDialogExt(shell, title, status).open();
 	}
 	
 	/* -----------------  ----------------- */
@@ -81,25 +64,6 @@ public class UIOperationErrorHandlerImpl {
 	
 	
 	/* -----------------  ----------------- */
-	
-	public static class ErrorDialogExt extends ErrorDialog {
-		
-		public ErrorDialogExt(Shell parentShell, String dialogTitle, StatusException se) {
-			super(parentShell, dialogTitle, "XXX", createDialogStatus(se), 
-				IStatus.OK | IStatus.INFO | IStatus.WARNING | IStatus.ERROR);
-			
-			this.message = se.getMessage();
-		}
-		
-		protected static Status	createDialogStatus(StatusException se) {
-			return EclipseCore.createStatus(
-				EclipseUtils.toEclipseSeverity(se), 
-				null, 
-				new Exception(getExceptionText(se.getCause()))
-			);
-		}
-		
-	}
 	
 	protected static String getExceptionText(Throwable exception) {
 		if(exception == null)

@@ -19,7 +19,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.util.swt.SWTFactory;
@@ -56,7 +55,7 @@ public abstract class StatusMessageDialog extends IconAndMessageDialog {
 	
 	@Override
 	protected Image getImage() {
-		return Display.getCurrent().getSystemImage(SWTUtil.getSystemImageCode(statusLevel));
+		return SWTUtil.getSWTImageForStatusLevel(statusLevel);
 	}
 	
 	@Override
