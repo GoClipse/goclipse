@@ -94,13 +94,8 @@ public class UIOperationsStatusHandler {
 	public static class Null_UIOperationErrorHandlerImpl extends UIOperationErrorHandlerImpl {
 		
 		@Override
-		protected void openMessageDialog(int kind, Shell shell, String title, String message) {
-			//super.openMessageDialog(kind, shell, title, message);
-		}
-		
-		@Override
-		protected void openErrorDialog(Shell shell, String title, StatusException status) {
-			//super.openErrorDialog(shell, title, status);
+		protected void openMessageDialog(Shell shell, String title, StatusException status) {
+			// Do nothing 
 		}
 		
 	}

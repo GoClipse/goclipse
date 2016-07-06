@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -29,7 +28,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -37,6 +35,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
@@ -310,13 +309,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		protected void openPreferencePage() {
-			PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(getShell(), 
-				LangUIPlugin_Actual.ROOT_PREF_PAGE_ID, null, null);
-			
-			if (pref != null) {
-				pref.open();
-				updateWidgetFromInput();
-			}
+			WorkbenchUtils.openPreferencePage(getShell(), LangUIPlugin_Actual.ROOT_PREF_PAGE_ID);
+			updateWidgetFromInput();
 		}
 		
 		@Override

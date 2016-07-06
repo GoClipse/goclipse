@@ -80,7 +80,7 @@ public class PathValidator extends AbstractValidatorExt implements Validator<Str
 			if(canBeEmpty) {
 				return null;
 			}
-			throw createException(Severity.WARNING, ValidationMessages.Path_EmptyPath());
+			throw createIsEmptyException();
 		}
 		
 		Path path = PathUtil.createPathOrNull(pathString);
@@ -88,6 +88,10 @@ public class PathValidator extends AbstractValidatorExt implements Validator<Str
 			throw createException(Severity.ERROR, ValidationMessages.Path_InvalidPath(pathString));
 		}
 		return path;
+	}
+	
+	protected ValidationException createIsEmptyException() {
+		return createException(Severity.WARNING, ValidationMessages.Path_EmptyPath());
 	}
 	
 	protected Path validatePath(Path path) throws ValidationException {

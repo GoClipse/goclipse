@@ -62,9 +62,12 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		this(pluginId, key, defaultValue, true, null);
 	}
 	
-	public PreferenceHelper(String pluginId, String key, T defaultValue, 
-			IProjectPreference<Boolean> useProjectPref) {
+	public PreferenceHelper(String pluginId, String key, T defaultValue, IProjectPreference<Boolean> useProjectPref) {
 		this(pluginId, key, defaultValue, true, useProjectPref);
+	}
+	
+	public PreferenceHelper(String key, T defaultValue, IProjectPreference<Boolean> useProjectPref) {
+		this(LangCore.PLUGIN_ID, key, defaultValue, true, useProjectPref);
 	}
 	
 	public PreferenceHelper(String pluginId, String key, T defaultValue, boolean ensureUniqueKey,

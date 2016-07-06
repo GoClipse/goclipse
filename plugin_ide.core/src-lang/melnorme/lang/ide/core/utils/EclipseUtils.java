@@ -32,9 +32,9 @@ import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.BasicOperationMonitor;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -112,7 +112,7 @@ public class EclipseUtils {
 	}
 	
 	public static <T> T getAdapter(Object adaptable, Class<T> adapterType) {
-		return (T) Platform.getAdapterManager().getAdapter(adaptable, adapterType);
+		return Platform.getAdapterManager().getAdapter(adaptable, adapterType);
 	}
 	
 	/* ----------------- status ----------------- */

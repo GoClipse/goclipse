@@ -21,6 +21,10 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 	public BooleanPreference(String key, boolean defaultValue) {
 		super(key, defaultValue);
 	}
+	public BooleanPreference(String key, boolean defaultValue, IProjectPreference<Boolean> useProjectSettings) {
+		super(key, defaultValue, useProjectSettings);
+	}
+	
 	public BooleanPreference(String pluginId, String key, boolean defaultValue) {
 		super(pluginId, key, defaultValue);
 	}

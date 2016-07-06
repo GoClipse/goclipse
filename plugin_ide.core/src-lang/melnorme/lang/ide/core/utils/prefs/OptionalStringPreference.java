@@ -17,9 +17,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public class OptionalStringPreference extends StringPreference {
 	
-	public OptionalStringPreference(String pluginId, String key,  
-			IProjectPreference<Boolean> useProjectSettings) {
-		super(pluginId, key, null, useProjectSettings);
+	public OptionalStringPreference(String key, IProjectPreference<Boolean> useProjectSettings) {
+		super(key, null, useProjectSettings);
 	}
 	
 	@Override

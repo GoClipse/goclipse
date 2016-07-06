@@ -18,6 +18,9 @@ public class StringPreference extends PreferenceHelper<String> {
 	public StringPreference(String key, String defaultValue) {
 		super(key, defaultValue);
 	}
+	public StringPreference(String key, String defaultValue, IProjectPreference<Boolean> useProjectPref) {
+		super(key, defaultValue, useProjectPref);
+	}
 	public StringPreference(String pluginId, String key, String defaultValue) {
 		super(pluginId, key, defaultValue);
 	}

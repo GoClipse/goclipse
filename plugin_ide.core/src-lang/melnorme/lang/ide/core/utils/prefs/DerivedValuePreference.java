@@ -24,10 +24,10 @@ public class DerivedValuePreference<VALUE> {
 	protected final StringPreference preference;
 	protected final Validator<String, VALUE> validator;
 	
-	public DerivedValuePreference(String pluginId, String key, String defaultValue, 
+	public DerivedValuePreference(String key, String defaultValue, 
 			IProjectPreference<Boolean> useProjectPref /* can be null*/,
 			Validator<String, VALUE> validator) {
-		this(new StringPreference(pluginId, key, defaultValue, useProjectPref), validator);
+		this(new StringPreference(key, defaultValue, useProjectPref), validator);
 	}
 	
 	public DerivedValuePreference(StringPreference preference, Validator<String, VALUE> validator) {

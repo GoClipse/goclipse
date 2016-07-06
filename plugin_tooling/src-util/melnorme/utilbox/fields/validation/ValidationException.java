@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.fields.validation;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
@@ -20,21 +18,22 @@ import melnorme.utilbox.status.StatusException;
  * as well as contain the simple message (a message strictly about what is went wrong in the validation).
  */
 @SuppressWarnings("serial")
-public class ValidationException extends StatusException {
+public class ValidationException extends StatusException implements IDetailsMessage {
 	
-	protected final String simpleMessage;
+	protected final String detailsMessage;
 	
-	public ValidationException(Severity severity, String message, String simpleMessage, Throwable cause) {
-		super(severity, message, cause);
-		this.simpleMessage = assertNotNull(simpleMessage);
+	public ValidationException(Severity severity, String message) {
+		this(severity, message, null);
 	}
 	
-	public String getSimpleMessage() {
-		return simpleMessage;
+	public ValidationException(Severity severity, String message, String detailsMessage) {
+		super(severity, message, null);
+		this.detailsMessage = detailsMessage;
 	}
 	
-	public String getContextualizedMessage() {
-		return getMessage();
+	@Override
+	public String getDetailsMessage() {
+		return detailsMessage;
 	}
 	
 }

@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -22,6 +23,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusLevel;
 
 /**
@@ -127,6 +129,10 @@ public class SWTUtil {
 		throw assertFail();
 	}
 	
+	public static Image getSWTImageForStatusLevel(StatusLevel statusLevel2) {
+		return getSystemImage(getSystemImageCode(statusLevel2));
+	}
+	
 	public static int getSystemImageCode(StatusLevel statusLevel) {
 		switch (statusLevel) {
 		case ERROR: return SWT.ICON_ERROR;
@@ -135,6 +141,19 @@ public class SWTUtil {
 		case OK: return SWT.ICON_WORKING;
 		}
 		throw assertFail();
+	}
+	
+	public static Image getImageForSeverity(Severity severity) {
+		switch (severity) {
+		case ERROR: return getSystemImage(SWT.ICON_ERROR);
+		case WARNING: return getSystemImage(SWT.ICON_WARNING);
+		case INFO: return getSystemImage(SWT.ICON_INFORMATION);
+		}
+		throw assertFail();
+	}
+	
+	public static Image getSystemImage(final int imageID) {
+		return Display.getCurrent().getSystemImage(imageID);
 	}
 	
 }

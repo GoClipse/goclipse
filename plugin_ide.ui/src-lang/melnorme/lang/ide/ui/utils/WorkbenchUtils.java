@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.utils;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -23,6 +24,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.ide.ResourceUtil;
 
 public class WorkbenchUtils {
@@ -97,6 +99,19 @@ public class WorkbenchUtils {
 		IWorkbenchWindow window = site.getWorkbenchWindow();
 		IPartService service = window.getPartService();
 		return service.getActivePart();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static void openPreferencePage(Shell shell, String prefPageId) {
+		PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell, prefPageId, null, null);
+		
+		if(prefDialog != null) {
+			prefDialog.open();
+		} else {
+			String message = "Preference page not found: `" + prefPageId + "`.";
+			UIOperationsStatusHandler.handleInternalError(shell, message, null);
+		}
 	}
 	
 }
