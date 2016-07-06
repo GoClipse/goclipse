@@ -28,6 +28,15 @@ public class LangCore_Actual extends AbstractLangCore {
 	public static final String VAR_NAME_SdkToolPath = "GO_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the Go tool";
 	
+	/* -----------------  ----------------- */
+	
+	public static final String USER_GUIDE_LINK = 
+			"https://github.com/GoClipse/goclipse/blob/latest/documentation/UserGuide.md#user-guide";
+	public static final String TOOLS_PREF_PAGE_ID = 
+			"com.googlecode.goclipse.ui.PreferencePages.GocodePreferencePage";
+	
+	/* -----------------  ----------------- */
+	
 	public LangCore_Actual(ILogHandler logHandler) {
 		super(logHandler);
 	}
