@@ -66,7 +66,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	@Override
 	protected Runnable createMainReaderTask() {
 		mainReader = new ReadAllBytesTask(process.getInputStream());
-		return stderrReader.runnableFuture;
+		return mainReader.runnableFuture;
 	}
 	
 	@Override
