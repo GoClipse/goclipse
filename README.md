@@ -50,17 +50,34 @@ A release is a web site with an Eclipse p2 update site. The website may contain 
 
 #### LangEclipseIDE
 This project uses the LangEclipseIDE framework, which is designed to have its source embedded in the host IDE.
-See [this section]( https://github.com/bruno-medeiros/LangEclipseIDE/blob/master/README-LangEclipseIDE.md#langeclipseide-source-embedding) for more info on how this should be managed.
+See [this section](https://github.com/bruno-medeiros/MelnormeEclipse/blob/master/README-MelnormeEclipse.md#understanding-melnormeeclipse-source-embedding) for more info on how this should be managed.
 
+### Extensive Compile-Time type and contract checking
+See https://github.com/bruno-medeiros/MelnormeEclipse/wiki/Extensive-Compile-Time-Checking for more info on this principle.
+
+### Code style:
+ * Indent with tabs (tab size is 4 spaces)
+ * Max line width: 120
+ * Block style:
+```
+    if(foo.blah()) {
+        doThis();
+    }
+```
+ * Indentation for function arguments: 1 indent unit (= 1 tab):
+```
+    foo(one, two, three,
+        four, five, six);
+```
 
 #### Unit tests double-method wrapper:
  
-What is this code idiom seen so often in Junit tests? :
+This code idiom is often used in this project's JUnit tests:
 ```java
 @Test
 public void testXXX() throws Exception { testXXX$(); }
 public void testXXX$() throws Exception {
 ```
-This is donely solely as an aid when debugging code, so that the "Drop to frame" functionality can be used on the unit-test method. It seems the Eclipse debugger cannot drop-to-frame to a method that is invoked dynamically (such as the unit-test method). So we wrap the unit-test method on another one. So while we now cannot drop-to-frame in `testXXX`, we can do it in `testXXX$`, which basically allows us to restart the unit-test.
+This is donely solely as an aid when debugging code, so that the "Drop to frame" functionality can be used on the unit-test method. It seems the Eclipse debugger (or the JVM) cannot drop-to-frame to a method that is invoked dynamically (such as the unit-test method). So we wrap the unit-test method on another one. So while we now cannot drop-to-frame in `testXXX`, we can do it in `testXXX$`, which basically allows us to restart the unit-test.
 
 TODO: investigate if there is an alternate way to achieve the same. I haven't actually checked that.
