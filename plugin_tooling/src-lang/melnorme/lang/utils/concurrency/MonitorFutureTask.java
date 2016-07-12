@@ -16,13 +16,13 @@ import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitor;
 /**
  * Wrap a {@link FutureTaskX} around a cancel monitor
  */
-public abstract class MonitorFutureTask<EXC extends Exception> {
+public abstract class MonitorFutureTask {
 	
 	protected final CancelMonitor cancelMonitor = new CancelMonitor();
-	protected final FutureTaskX<?, EXC> asFutureTask;
+	protected final FutureTaskX<?> asFutureTask;
 	
 	public MonitorFutureTask() {
-		this.asFutureTask = new FutureTaskX<Object, EXC>(this::runTask) {
+		this.asFutureTask = new FutureTaskX<Object>(this::runTask) {
 			@Override
 			public void before_cancel(boolean mayInterruptIfRunning) {
 				cancelMonitor.cancel();
@@ -38,10 +38,10 @@ public abstract class MonitorFutureTask<EXC extends Exception> {
 		return cancelMonitor.isCanceled();
 	}
 	
-	public FutureTaskX<?, EXC> asFutureTask() {
+	public FutureTaskX<?> asFutureTask() {
 		return asFutureTask;
 	}
 	
-	protected abstract void runTask() throws EXC;
+	protected abstract void runTask();
 	
 }

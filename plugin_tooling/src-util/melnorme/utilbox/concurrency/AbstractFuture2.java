@@ -29,7 +29,7 @@ public abstract class AbstractFuture2<RET> implements Future2<RET> {
 		
 		@Override
 		public boolean cancel(boolean mayInterruptIfRunning) {
-			return AbstractFuture2.this.cancel();
+			return AbstractFuture2.this.tryCancel();
 		}
 		
 		@Override

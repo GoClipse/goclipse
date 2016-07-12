@@ -32,7 +32,7 @@ import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.DefaultBufferListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ICommonExecutor;
-import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
+import melnorme.utilbox.concurrency.CompletableResult.CompletableLatch;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.misc.Location;
 
@@ -131,7 +131,7 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 		protected final ITextFileBuffer textFileBuffer;
 		protected final DirtyBufferListener fbListener;
 
-		protected LatchFuture fileSaveFuture = new LatchFuture();
+		protected CompletableLatch fileSaveLatch = new CompletableLatch();
 		
 		public TextReconcileConnection(IDocument document, StructureInfo structureInfo, ITextFileBuffer textFileBuffer) {
 			super(document, structureInfo);
@@ -148,18 +148,18 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 		public void disconnect() {
 			super.disconnect();
 			fbm.removeFileBufferListener(fbListener);
-			fileSaveFuture.cancel();
+			fileSaveLatch.setCancelledResult();
 		}
 		
 		@Override
 		protected StructureUpdateTask doDocumentChanged() {
 			StructureUpdateTask structureUpdateTask = structureInfo.queueSourceUpdateTask(document.get());
 			
-			fileSaveFuture.cancel();
-			fileSaveFuture = new LatchFuture();
+			fileSaveLatch.setCancelledResult();
+			fileSaveLatch = new CompletableLatch();
 			
 			if(project != null) {
-				projectReconciler.invalidateProjectModel(project, structureUpdateTask, fileSaveFuture);
+				projectReconciler.invalidateProjectModel(project, structureUpdateTask, fileSaveLatch);
 			}
 			return structureUpdateTask;
 		}
@@ -198,16 +198,16 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 					// Cancel the current reconciliation task, because there is no point to it
 					// A normal, full build will be performed instead.
 					projectReconciler.cancelPendingReconciliation(project);
-					fileSaveFuture.setCompleted();
+					fileSaveLatch.setCompleted();
 					return;
 				}
 				// Mark the file save as completed
-				fileSaveFuture.setCompleted();
+				fileSaveLatch.setCompleted();
 				
 				StructureUpdateTask structureUpdateTask = structureInfo.documentSaved(document);
 				
 				if(structureUpdateTask != null && project != null) {
-					projectReconciler.invalidateProjectModel(project, structureUpdateTask, fileSaveFuture);
+					projectReconciler.invalidateProjectModel(project, structureUpdateTask, fileSaveLatch);
 				}
 			}
 			

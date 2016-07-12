@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -22,15 +24,17 @@ import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.core.fntypes.RunnableX;
 
 /**
- * An extension to {@link FutureTask}, implementing {@link FutureX}. 
+ * An extension to {@link FutureTask}, implementing {@link BasicFuture}. 
  */
-public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> implements FutureX<RET, EXC> {
+public class FutureTaskX<RET> extends FutureTask<RET> implements Future2<RET> {
+
+	/* FIXME: review interaction with OperationMonitor */
 	
-	public FutureTaskX(RunnableX<EXC> runnable) {
+	public FutureTaskX(RunnableX<RuntimeException> runnable) {
 		this(() -> { runnable.run(); return null; });
 	}
 	
-	public FutureTaskX(CallableX<RET, EXC> callable) {
+	public FutureTaskX(CallableX<RET, RuntimeException> callable) {
 		super(callable);
 	}
 	
@@ -39,7 +43,7 @@ public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> imp
 	}
 	
 	@Override
-	public boolean cancel() {
+	public boolean tryCancel() {
 		return super.cancel(true);
 	}
 	
@@ -49,7 +53,7 @@ public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> imp
 	/* -----------------  ----------------- */
 	
 	@Override
-	public RET awaitResult() throws EXC, OperationCancellation, InterruptedException {
+	public RET awaitResult() throws OperationCancellation, InterruptedException {
 		try {
 			return get();
 		} catch(CancellationException e) {
@@ -61,7 +65,7 @@ public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> imp
 	
 	@Override
 	public RET awaitResult(long timeout, TimeUnit unit)
-			throws EXC, OperationCancellation, InterruptedException, TimeoutException {
+			throws OperationCancellation, InterruptedException, TimeoutException {
 		try {
 			return get(timeout, unit);
 		} catch(CancellationException e) {
@@ -71,20 +75,18 @@ public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> imp
 		}
 	}
 	
-	protected AssertFailedException rethrowCause(ExecutionException e) throws EXC {
+	protected AssertFailedException rethrowCause(ExecutionException e) {
 		Throwable cause = e.getCause();
 		if(cause instanceof RuntimeException) {
 			throw (RuntimeException) cause;
 		}
-		// guaranteed to be an EXC according to callable.
-		@SuppressWarnings("unchecked")
-		EXC cause2 = (EXC) cause;
-		throw cause2;
+		// it can only be a RuntimeException
+		throw assertFail(); 
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public FutureX<RET, EXC> submitTo(Executor executor) {
+	public FutureTaskX<RET> submitTo(Executor executor) {
 		return ThreadPoolExecutorExt.submitTo(executor, this);
 	}
 	

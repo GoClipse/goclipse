@@ -11,7 +11,6 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -23,13 +22,15 @@ import java.util.concurrent.TimeoutException;
  * A future meant to be completed by an explicit {@link #setResult()} call. 
  * Similar to {@link CompletableFuture} but with a safer and simplified API, particularly:
  * 
- * - Uses the {@link FutureX} interface which has a safer and more precise API than {@link Future} 
+ * - Uses the {@link BasicFuture} interface which has a safer and more precise API than {@link Future} 
  * with regards to exception throwing.
  * - By default, completing the Future ({@link #setResult()}) can only be attempted once, 
  * it is illegal for multiple {@link #setResult()} calls to be attempted.
  *
  */
-public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
+public class CompletableResult<DATA> 
+	implements BasicFuture<DATA>
+{
 	
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
@@ -39,7 +40,7 @@ public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
 	
 	public enum ResultStatus { INITIAL, RESULT_SET, CANCELLED }
 	
-	public ResultFuture() {
+	public CompletableResult() {
 		super();
 	}
 	
@@ -64,6 +65,9 @@ public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
 	public void setResult(DATA result) {
 		synchronized (lock) {
 			if(isDone()) {
+				if(isCancelled()) {
+					return;
+				}
 				handleReSetResult();
 				return;
 			}
@@ -73,8 +77,14 @@ public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
 		}
 	}
 	
-	@Override
-	public boolean cancel() {
+	/** 
+	 * Set the result of this {@link CompletableResult} as cancelled.
+	 * Has no effect if a result has already been set.
+	 * 
+	 * Note: if there is still a task or background task calculating a result, it is the caller's responsibility
+	 * to terminate that task, this {@link CompletableResult} knows nothing about it.
+	 */
+	public boolean setCancelledResult() {
 		synchronized (lock) {
 			if(isDone()) {
 				return false;
@@ -124,7 +134,7 @@ public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
 	
 	/* -----------------  ----------------- */
 	
-	public static class LatchFuture extends ResultFuture<Object> {
+	public static class CompletableLatch extends CompletableResult<Object> {
 		
 		public void setCompleted() {
 			setResult(null);
@@ -133,18 +143,6 @@ public class ResultFuture<DATA> extends AbstractFuture2<DATA> {
 		@Override
 		protected void handleReSetResult() {
 			// Do nothing - this is allowed because the possible value is always null anyways
-		}
-		
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static class NonNullResultFuture<DATA> extends ResultFuture<DATA> {
-		
-		@Override
-		public void setResult(DATA result) {
-			assertNotNull(result);
-			super.setResult(result);
 		}
 		
 	}

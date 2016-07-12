@@ -15,9 +15,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.core.Assert.AssertFailedException;
+
 public abstract class AbstractRunnableFuture<RET> extends AbstractFuture2<RET> implements Runnable {
 	
-	protected final ResultFuture<RET> resultFuture = new ResultFuture<>();
+	protected final CompletableResult<RET> completableResult = new CompletableResult<>();
 	
 	public AbstractRunnableFuture() {
 		super();
@@ -25,30 +27,31 @@ public abstract class AbstractRunnableFuture<RET> extends AbstractFuture2<RET> i
 	
 	@Override
 	public void run() {
-		resultFuture.setResult(invokeToResult());
+		completableResult.setResult(invokeToResult());
 	}
 	
 	protected abstract RET invokeToResult();
 	
 	@Override
-	public boolean cancel() {
+	public boolean tryCancel() throws AssertFailedException {
+		// Hum, perhaps we should be more lenient and just return false?
 		throw assertFail();
 	}
 	
 	@Override
 	public boolean isCancelled() {
-		return resultFuture.isCancelled();
+		return completableResult.isCancelled();
 	}
 	
 	@Override
 	public boolean isDone() {
-		return resultFuture.isDone();
+		return completableResult.isDone();
 	}
 	
 	@Override
 	public RET awaitResult() throws InterruptedException {
 		try {
-			return resultFuture.awaitResult();
+			return completableResult.awaitResult();
 		} catch(OperationCancellation e) {
 			throw assertFail();
 		}
@@ -57,7 +60,7 @@ public abstract class AbstractRunnableFuture<RET> extends AbstractFuture2<RET> i
 	@Override
 	public RET awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
 		try {
-			return resultFuture.awaitResult(timeout, unit);
+			return completableResult.awaitResult(timeout, unit);
 		} catch(OperationCancellation e) {
 			throw assertFail();
 		}

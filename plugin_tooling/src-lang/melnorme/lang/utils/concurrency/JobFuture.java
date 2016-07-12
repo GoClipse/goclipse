@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.concurrency;
+package melnorme.lang.utils.concurrency;
 
-import java.util.concurrent.Future;
+import melnorme.utilbox.concurrency.Future2;
 
-public interface Future2<RESULT> extends BasicFuture<RESULT> {
+public interface JobFuture<RET> extends Future2<RET> {
 	
-	/** See {@link Future#cancel(boolean)} */
-    boolean tryCancel();
-    
+	/** Shedule this job future for execution. Has no effect if job already started. */
+	void start();
+	
+	/** @return if job future has been started already. */
+	boolean isStarted();
+	
 }
