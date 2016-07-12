@@ -15,22 +15,23 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.core.fntypes.Result;
+
 /**
  * Variant of {@link Future} with a safer and more precise API, with regards to exception throwing:
  * 
- * - The exception type for the result is parameterized, so the generic {@link ExecutionException} is not used.
- * - It throws a checked exception instead of an unchecked exception if cancellation occurs. 
+ * - Does not throw {@link ExecutionException}. If you want an Exception as a possible result, use {@link Result}.
+ * - If cancellation occurs, this throws a checked exception instead of an unchecked exception. 
  *
  * @param <RESULT> The result type returned by the result methods.
  * @param <EXCEPTION> The exception thrown by the result methods. 
  * It should not be {@link InterruptedException} or {@link OperationCancellation} !
  * 
+ * @see Future2
+ * 
  */
-public interface FutureX<RESULT, EXCEPTION extends Throwable> {
+public interface BasicFuture<RESULT> {
 	
-	/** See {@link Future#cancel(boolean)} */
-    boolean cancel();
-    
     /** See {@link Future#isCancelled()} */
     boolean isCancelled();
     
@@ -40,14 +41,14 @@ public interface FutureX<RESULT, EXCEPTION extends Throwable> {
     /* -----------------  ----------------- */
     
 	RESULT awaitResult() 
-			throws EXCEPTION, OperationCancellation, InterruptedException;
+			throws OperationCancellation, InterruptedException;
 	
 	RESULT awaitResult(long timeout, TimeUnit unit) 
-			throws EXCEPTION, OperationCancellation, InterruptedException, TimeoutException;
+			throws OperationCancellation, InterruptedException, TimeoutException;
 	
 	/** Same as {@link #awaitResult()}, 
 	 * but throw InterruptedException as an OperationCancellation. */
-	default RESULT getResult() throws EXCEPTION, OperationCancellation {
+	default RESULT getResult() throws OperationCancellation {
 		try {
 			return awaitResult();
 		} catch(InterruptedException e) {

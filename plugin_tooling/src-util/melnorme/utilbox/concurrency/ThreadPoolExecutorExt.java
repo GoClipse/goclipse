@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.core.fntypes.OperationResult;
+import melnorme.utilbox.core.fntypes.SupplierExt;
 
 /**
  * An extension to {@link ThreadPoolExecutor}: 
@@ -77,11 +78,11 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	@Override
-	public void submitTask(FutureTaskX<?, RuntimeException> futureTask) {
+	public void submitTask(FutureTaskX<?> futureTask) {
 		submitTo(this, futureTask);
 	}
 	
-	public static <FT extends FutureTaskX<?, ?>> FT submitTo(Executor executor, FT futureTask2) {
+	public static <FT extends FutureTaskX<?>> FT submitTo(Executor executor, FT futureTask2) {
 		executor.execute(futureTask2.asFutureTask());
 		return futureTask2;
 	}
@@ -101,7 +102,7 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	/* -----------------  ----------------- */
 	
 	@Override
-	public <RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable) {
+	public <RET> Future2<RET> submitSupplier(SupplierExt<RET> callable) {
 		return submitTo(this, new FutureTaskX<>(callable));
 	}
 	
@@ -111,7 +112,7 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	// This adapter is only needed because CommonFuture is not a true alias.
-	protected class CommonResultFutureTask<RET> extends FutureTaskX<OperationResult<RET>, RuntimeException> 
+	protected class CommonResultFutureTask<RET> extends FutureTaskX<OperationResult<RET>> 
 		implements CommonFuture<RET> {
 		
 		public CommonResultFutureTask(CallableX<OperationResult<RET>, RuntimeException> callable) {

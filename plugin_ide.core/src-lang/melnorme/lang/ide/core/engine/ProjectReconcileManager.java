@@ -25,7 +25,7 @@ import melnorme.lang.utils.concurrency.MonitorFutureTask;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
+import melnorme.utilbox.concurrency.CompletableResult.CompletableLatch;
 import melnorme.utilbox.core.CommonException;
 
 abstract class AbstractProjectReconcileManager {
@@ -44,9 +44,9 @@ abstract class AbstractProjectReconcileManager {
 	}
 	
 	public void invalidateProjectModel(IProject project, StructureUpdateTask structureUpdateTask, 
-			LatchFuture fileSaveFuture) {
+			CompletableLatch fileSaveLatch) {
 		
-		assertNotNull(fileSaveFuture);
+		assertNotNull(fileSaveLatch);
 		
 		synchronized (projectInfosLock) {
 			ProjectReconcileTask currentReconcileTask = projectInfos.get(project);
@@ -57,7 +57,7 @@ abstract class AbstractProjectReconcileManager {
 			}
 			
 			ProjectReconcileTask newReconcileTask = 
-					new ProjectReconcileTask(project, currentReconcileTask, structureUpdateTask, fileSaveFuture);
+					new ProjectReconcileTask(project, currentReconcileTask, structureUpdateTask, fileSaveLatch);
 			
 			projectInfos.put(project, newReconcileTask);
 			
@@ -83,24 +83,24 @@ abstract class AbstractProjectReconcileManager {
 		}
 	}
 	
-	public class ProjectReconcileTask extends MonitorFutureTask<RuntimeException> {
+	public class ProjectReconcileTask extends MonitorFutureTask {
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;
 		protected final StructureUpdateTask structureUpdateTask;
-		protected final LatchFuture fileSaveFuture;
+		protected final CompletableLatch fileSaveLatch;
 		
 		public ProjectReconcileTask(IProject project, ProjectReconcileTask previousReconcileTask, 
-				StructureUpdateTask structureUpdateTask, LatchFuture fileSaveFuture) {
+				StructureUpdateTask structureUpdateTask, CompletableLatch fileSaveLatch) {
 			
 			this.project = assertNotNull(project);
 			this.previousReconcileTask = previousReconcileTask;
 			this.structureUpdateTask = assertNotNull(structureUpdateTask);
-			this.fileSaveFuture = assertNotNull(fileSaveFuture);
+			this.fileSaveLatch = assertNotNull(fileSaveLatch);
 		}
 		
 		public void awaitPreconditions() throws OperationCancellation, InterruptedException {
-			fileSaveFuture.awaitResult();
+			fileSaveLatch.awaitResult();
 			
 			if(structureUpdateTask != null) {
 				structureUpdateTask.structureInfo.awaitUpdatedData();

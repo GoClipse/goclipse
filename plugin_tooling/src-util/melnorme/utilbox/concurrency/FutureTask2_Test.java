@@ -20,7 +20,6 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.junit.Test;
 
-import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.tests.CommonTest;
 
@@ -50,13 +49,6 @@ public class FutureTask2_Test extends CommonTest {
 		// Test await result
 		assertEquals("result", submitAndAwaitResult(() -> "result"));
 		
-		// Test Exception handling
-		verifyThrows(() -> {
-			submitAndAwaitResult(() -> { 
-				throw new CommonException("xxx1");
-			});
-		}, CommonException.class, "xxx1");
-		
 		// Test RuntimeException handling
 		verifyThrows(() -> {
 			submitAndAwaitResult(() -> { 
@@ -73,11 +65,11 @@ public class FutureTask2_Test extends CommonTest {
 		
 		{
 			NeverendingCallable neverending = new NeverendingCallable();
-			FutureX<?, ?> future = new FutureTaskX<>(neverending).submitTo(executor);
+			FutureTaskX<?> future = new FutureTaskX<>(neverending).submitTo(executor);
 			neverending.entryLatch.await();
 			
 			// Test cancellation through Future API
-			future.cancel();
+			future.tryCancel();
 			assertTrue(future.isCancelled());
 			verifyThrows(() -> future.awaitResult(), OperationCancellation.class);
 		}
@@ -85,10 +77,10 @@ public class FutureTask2_Test extends CommonTest {
 		{
 			new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
 			
-			FutureX<?, ?> future = new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
+			FutureTaskX<?> future = new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
 			
 			// Test cancellation through Future API - when task has not started yet
-			future.cancel();
+			future.tryCancel();
 			assertTrue(future.isCancelled());
 			verifyThrows(() -> future.awaitResult(), OperationCancellation.class);
 		}
@@ -96,9 +88,9 @@ public class FutureTask2_Test extends CommonTest {
 		executor.shutdownNow();
 	}
 	
-	protected <EXC extends Exception> Object submitAndAwaitResult(CallableX<Object, EXC> callable)
+	protected <EXC extends Exception> Object submitAndAwaitResult(CallableX<Object, RuntimeException> callable)
 			throws OperationCancellation, InterruptedException, EXC {
-		FutureX<Object, EXC> future = new FutureTaskX<>(callable).submitTo(ForkJoinPool.commonPool());
+		FutureTaskX<Object> future = new FutureTaskX<>(callable).submitTo(ForkJoinPool.commonPool());
 		return future.awaitResult();
 	}
 	

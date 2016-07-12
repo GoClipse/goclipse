@@ -12,10 +12,12 @@ package melnorme.utilbox.concurrency;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 
 import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.OperationResult;
+import melnorme.utilbox.core.fntypes.SupplierExt;
 
 /**
  * A few minor additions to {@link IBasicExecutor}
@@ -28,26 +30,27 @@ public interface ICommonExecutor extends IBasicExecutor {
 	
 	/* -----------------  ----------------- */
 	
-	/** Same as {@link ExecutorService#submit(Callable)}, but with a more strict exception throwing API. */
-	<RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable);
+	/** Same as {@link ExecutorService#submit(Callable)}, but using {@link SupplierExt} instead, 
+	 * which has with a more strict exception throwing API. */
+	<RET> Future2<RET> submitSupplier(SupplierExt<RET> callable);
 	
 	/** Similar to {@link #submitX(CallableX)}, but using an {@link OperationCallable}. */
 	<RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable);
 	
 	/** Alias interface */
-	public static interface CommonFuture<RET> extends FutureX<OperationResult<RET>, RuntimeException> {
+	public static interface CommonFuture<RET> extends Future2<OperationResult<RET>> {
 		
 	}
 	
-	default <RET> FutureX<RET, RuntimeException> submitR(Runnable runnable) {
-		return submitX(() -> {
+	default <RET> BasicFuture<RET> submitR(Runnable runnable) {
+		return submitSupplier(() -> {
 			runnable.run();
 			return null;
 		});
 	}
 	
 	/** Submit a {@link FutureTaskX} for execution. */
-	void submitTask(FutureTaskX<?, RuntimeException> futureTask);
+	void submitTask(FutureTaskX<?> futureTask);
 	
 	/** 
 	 * @return the total number of tasks that have been submitted for execution (including possibly rejected tasks).

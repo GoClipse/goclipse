@@ -8,13 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.concurrency;
+package melnorme.lang.tooling.common.ops;
 
-import java.util.concurrent.Future;
+import melnorme.lang.utils.concurrency.JobFuture;
+import melnorme.utilbox.core.fntypes.OperationResult;
 
-public interface Future2<RESULT> extends BasicFuture<RESULT> {
+
+public interface JobExecutor {
 	
-	/** See {@link Future#cancel(boolean)} */
-    boolean tryCancel();
-    
+	JobFuture<OperationResult<Void>> start(String operationName, Operation operation, boolean schedule);
+	
 }
