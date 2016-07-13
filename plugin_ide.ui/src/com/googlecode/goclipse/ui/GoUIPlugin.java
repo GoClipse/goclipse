@@ -21,15 +21,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.core.tools.GocodeServerManager;
-import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
-
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class GoUIPlugin extends LangUIPlugin {
@@ -59,15 +54,6 @@ public class GoUIPlugin extends LangUIPlugin {
 			}
 		}
 		assertFail();
-	}
-	
-	public static GocodeServerManager prepareGocodeManager_inUI() 
-			throws CommonException, OperationCancellation {
-		
-		GocodeServerManager gocodeServerManager = LangCore.get().gocodeServerManager();
-		new StartGocodeServerOperation().execute(gocodeServerManager);
-		
-		return gocodeServerManager;
 	}
 	
 	@Override

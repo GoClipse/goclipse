@@ -231,6 +231,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		} catch(OperationCancellation e) {
 			return null;
 		} catch(CommonException ce) {
+			/* FIXME: must pass exception */
 			return returnErrorResult(ce.getMultiLineRender());
 		} catch(OperationSoftFailure e) {
 			String errorMessage = e.getMessage();

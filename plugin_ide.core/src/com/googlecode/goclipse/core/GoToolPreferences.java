@@ -24,6 +24,7 @@ public interface GoToolPreferences {
 	
 	public class GoToolValidator extends LocationOrSinglePathValidator {
 		public GoToolValidator(String fieldNamePrefix) {
+			/* FIXME: */
 			// TODO: refactor to fieldName
 			super(fieldNamePrefix);
 		}

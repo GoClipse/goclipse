@@ -10,6 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import melnorme.lang.ide.core.engine.LanguageServerHandler;
+import melnorme.lang.ide.core.engine.LanguageServerInstance;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -30,6 +34,7 @@ public abstract class AbstractLangCore extends LoggingCore {
 	protected final ILogHandler logHandler;
 	protected final CoreSettings coreSettings;
 	protected final ToolManager toolManager;
+	protected final LanguageServerHandler<?> languageServerHandler;
 	protected final BundleModelManager<? extends LangBundleModel> bundleManager;
 	protected final BuildManager buildManager;
 	protected final SourceModelManager sourceModelManager;
@@ -39,17 +44,19 @@ public abstract class AbstractLangCore extends LoggingCore {
 		
 		this.logHandler = logHandler;
 		
-		coreSettings = createCoreSettings();
-		toolManager = createToolManager();
-		bundleManager = LangCore_Actual.createBundleModelManager();
-		buildManager = createBuildManager();
-		sourceModelManager = LangCore_Actual.createSourceModelManager();
+		coreSettings = assertNotNull(createCoreSettings());
+		toolManager = assertNotNull(createToolManager());
+		languageServerHandler = assertNotNull(createLanguageServerHandler());
+		bundleManager = assertNotNull(LangCore_Actual.createBundleModelManager());
+		buildManager = assertNotNull(createBuildManager());
+		sourceModelManager = assertNotNull(LangCore_Actual.createSourceModelManager());
 	}
 	
 	protected void shutdown() {
 		buildManager.dispose();
 		bundleManager.shutdownManager();
 		sourceModelManager.dispose();
+		languageServerHandler.dispose();
 		toolManager.shutdownNow();
 	}
 	
@@ -86,6 +93,12 @@ public abstract class AbstractLangCore extends LoggingCore {
 	
 	public static SourceModelManager getSourceModelManager() {
 		return instance.sourceModelManager;
+	}
+	
+	public abstract LanguageServerHandler<?> createLanguageServerHandler();
+	
+	public static LanguageServerHandler<? extends LanguageServerInstance> getLanguageServerHandler() {
+		return instance.languageServerHandler;
 	}
 	
 	/* -----------------  ----------------- */

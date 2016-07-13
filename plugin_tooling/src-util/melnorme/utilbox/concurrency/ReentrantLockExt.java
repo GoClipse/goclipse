@@ -12,6 +12,8 @@ package melnorme.utilbox.concurrency;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import melnorme.utilbox.core.fntypes.CallableX;
+
 /**
  * Minor Extension to {@link ReentrantLock} to allow using of {@link AutoUnlockable}
  */
@@ -31,6 +33,15 @@ public class ReentrantLockExt extends ReentrantLock implements AutoUnlockable {
 	@Override
 	public void close() throws IllegalMonitorStateException {
 		 unlock();
+	}
+	
+	public void runUnderLock(Runnable runnable) {
+		ConcurrencyUtil.runUnderLock(this, runnable); 
+	}
+	
+	public <RET, EXC extends Exception> RET callUnderLock(CallableX<RET, EXC> callable) 
+			throws EXC {
+		return ConcurrencyUtil.callUnderLock(this, callable);
 	}
 	
 }

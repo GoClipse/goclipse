@@ -2,8 +2,6 @@ package melnorme.lang.ide.core.utils.operation;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,12 +15,10 @@ import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.lang.utils.concurrency.JobFuture;
 import melnorme.utilbox.concurrency.AbstractFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.CompletableResult;
 import melnorme.utilbox.core.fntypes.OperationResult;
 
 public class EclipseJobFuture<RET> extends AbstractFuture2<RET> implements JobFuture<RET> {
 	
-	protected final CompletableResult<RET> completableResult = new CompletableResult<>();
 	protected final Job job;
 	
 	protected boolean scheduled = false;
@@ -90,27 +86,6 @@ public class EclipseJobFuture<RET> extends AbstractFuture2<RET> implements JobFu
 			}
 		}
 		return cancelled;
-	}
-	
-	@Override
-	public boolean isCancelled() {
-		return completableResult.isCancelled();
-	}
-	
-	@Override
-	public boolean isDone() {
-		return completableResult.isDone();
-	}
-	
-	@Override
-	public RET awaitResult() throws InterruptedException, OperationCancellation {
-		return completableResult.awaitResult();
-	}
-	
-	@Override
-	public RET awaitResult(long timeout, TimeUnit unit) 
-			throws InterruptedException, TimeoutException, OperationCancellation {
-		return completableResult.awaitResult(timeout, unit);
 	}
 	
 }

@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -34,7 +37,10 @@ import com.googlecode.goclipse.tooling.oracle.GuruPackageDescribeParser;
 
 public class GoSourceModelManager extends SourceModelManager {
 	
-	public GoSourceModelManager() {
+	protected final ToolManager toolManager;
+	
+	public GoSourceModelManager(ToolManager toolManager) {
+		this.toolManager = assertNotNull(toolManager);
 	}
 	
 	@Override
@@ -147,7 +153,7 @@ public class GoSourceModelManager extends SourceModelManager {
 			
 			ProcessBuilder pb = guruOp.createProcessBuilder(goEnv, opTempFile, offset);
 			
-			return LangCore.getToolManager().runEngineTool(pb, null, cm);
+			return toolManager.runEngineTool(pb, null, cm);
 		}
 		
 	}

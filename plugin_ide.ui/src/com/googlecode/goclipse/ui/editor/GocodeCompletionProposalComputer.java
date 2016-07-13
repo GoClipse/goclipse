@@ -1,14 +1,15 @@
 package com.googlecode.goclipse.ui.editor;
 
+import java.nio.file.Path;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.tools.GocodeServerInstance;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 import com.googlecode.goclipse.tooling.gocode.GocodeOutputParser2;
-import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -25,24 +26,23 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
+	protected final GocodeServerManager gocodeServerManager = LangCore.get().languageServerHandler();
+	
 	@Override
 	protected Indexable<ToolCompletionProposal> doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
 			throws CommonException, OperationCancellation, OperationSoftFailure {
 		Location fileLoc = sourceContext.getFileLocation();
 		int offset = sourceContext.getOffset();
 		
-		GocodeServerManager gocodeServerManager = GoUIPlugin.prepareGocodeManager_inUI();
-		IPath gocodePath = gocodeServerManager.getGocodePath();
-		if (gocodePath == null) {
-			throw new CommonException("Error: gocode path not provided.");
-		}
+		GocodeServerInstance gocodeServerInstance = gocodeServerManager.getReadyServerInstance();
+		Path gocodePath = gocodeServerInstance.getServerPath();
 		IProject project = ResourceUtils.getProjectFromMemberLocation(sourceContext.getOptionalFileLocation());
 		
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
 		// TODO: we should run this operation outside the UI thread.
 		GocodeCompletionOperation client = new GocodeCompletionOperation(
-			getEngineToolRunner(), goEnvironment, gocodePath.toOSString(), cm);
+			getEngineToolRunner(), goEnvironment, gocodePath.toString(), cm);
 		
 		String source = sourceContext.getSource();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);

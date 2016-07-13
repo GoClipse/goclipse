@@ -127,7 +127,7 @@ public class WorkbenchOperationExecutor {
 		execute(new Operation() {
 			@Override
 			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
-				R result = op.executeOp(om);
+				R result = op.callOp(om);
 				resultHolder.set(result);
 			}
 		});

@@ -8,8 +8,8 @@ import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.operation.EclipseJobExecutor;
 import melnorme.utilbox.misc.ILogHandler;
-import melnorme.utilbox.ownership.Disposable;
 
 public class LangCore_Actual extends AbstractLangCore {
 	
@@ -28,6 +28,8 @@ public class LangCore_Actual extends AbstractLangCore {
 	public static final String VAR_NAME_SdkToolPath = "GO_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the Go tool";
 	
+	public static final String LANGUAGE_SERVER_Name = "gocode";
+	
 	/* -----------------  ----------------- */
 	
 	public static final String USER_GUIDE_LINK = 
@@ -43,7 +45,7 @@ public class LangCore_Actual extends AbstractLangCore {
 	
 	@Override
 	protected CoreSettings createCoreSettings() {
-		ToolchainPreferences.DAEMON_PATH.setPreferencesDefaultValue("gocode");
+		ToolchainPreferences.LANGUAGE_SERVER_PATH.setPreferencesDefaultValue("gocode");
 		
 		return new CoreSettings() {
 			@Override
@@ -58,8 +60,17 @@ public class LangCore_Actual extends AbstractLangCore {
 		return new GoToolManager(coreSettings);
 	}
 	
+	@Override
+	public GocodeServerManager createLanguageServerHandler() {
+		return new GocodeServerManager(new EclipseJobExecutor(), getToolManager());
+	}
+	
+	public GocodeServerManager languageServerHandler() {
+		return (GocodeServerManager) languageServerHandler;
+	}
+	
 	public static GoSourceModelManager createSourceModelManager() {
-		return new GoSourceModelManager();
+		return new GoSourceModelManager(getToolManager());
 	}
 	
 	public static GoBundleModelManager createBundleModelManager() {
@@ -71,17 +82,4 @@ public class LangCore_Actual extends AbstractLangCore {
 		return new GoBuildManager(bundleManager.getModel(), getToolManager());
 	}
 		
-	protected final GocodeServerManager gocodeServerManager = new GocodeServerManager();
-	
-	public GocodeServerManager gocodeServerManager() {
-		return gocodeServerManager;
-	}
-	
-	@Override
-	protected void shutdown() {
-		Disposable.dispose(gocodeServerManager);
-		
-		super.shutdown();
-	}
-	
 }

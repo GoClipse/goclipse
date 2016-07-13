@@ -10,11 +10,26 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.concurrent.Future;
 
 public interface Future2<RESULT> extends BasicFuture<RESULT> {
 	
 	/** See {@link Future#cancel(boolean)} */
     boolean tryCancel();
+    
+    /**
+     * @return the result of this future if it is done, throw a cancellation exception othewise.
+     * As a consequence this method is non-blocking. 
+     */
+    default RESULT cancelOrGetResult() throws OperationCancellation {
+    	tryCancel();
+    	try {
+			return awaitResult();
+		} catch(InterruptedException e) {
+			throw assertFail();
+		}
+    }
     
 }

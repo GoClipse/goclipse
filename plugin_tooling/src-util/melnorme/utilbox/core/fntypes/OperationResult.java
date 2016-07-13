@@ -29,6 +29,10 @@ public class OperationResult<DATA> extends Result<DATA, Exception> {
 		super(resultValue, resultException);
 	}
 	
+	public static <RET> OperationResult<RET> fromException(CommonException resultException) {
+		return new OperationResult<RET>(null, resultException);
+	}
+	
 	@Override
 	public DATA get() throws CommonException, OperationCancellation {
 		throwIfExceptionResult();
@@ -43,6 +47,18 @@ public class OperationResult<DATA> extends Result<DATA, Exception> {
 			throw e;
 		} catch(Exception e) {
 			assertFail();
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static <RET> OperationResult<RET> callToResult(OperationCallable<RET> operationCallable) {
+		try {
+			return new OperationResult<>(operationCallable.call());
+		} catch(CommonException e) {
+			return new OperationResult<>(null, e);
+		} catch(OperationCancellation e) {
+			return new OperationResult<>(null, e);
 		}
 	}
 	

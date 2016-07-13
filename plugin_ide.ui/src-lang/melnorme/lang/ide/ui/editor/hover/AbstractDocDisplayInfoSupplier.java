@@ -83,7 +83,7 @@ public abstract class AbstractDocDisplayInfoSupplier implements Supplier<String>
 	protected ToolResponse<String> getRawDocumentation(IOperationMonitor om, ISourceBuffer sourceBuffer, int offset) 
 			throws CommonException, OperationCancellation {
 		AbstractToolOperation<String> findDefinitionOp = getFindDocOperation(sourceBuffer, offset);
-		return findDefinitionOp.toResultOperation().executeOp(om);
+		return findDefinitionOp.toResultOperation().callOp(om);
 	}
 	
 	protected abstract AbstractToolOperation<String> getFindDocOperation(ISourceBuffer sourceBuffer, int offset);

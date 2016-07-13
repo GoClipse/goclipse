@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.core.fntypes;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class Result<DATA, EXC extends Throwable> {
@@ -55,6 +56,15 @@ public class Result<DATA, EXC extends Throwable> {
 	
 	public boolean isException() {
 		return !isSuccessful();
+	}
+	
+	public DATA getSuccessful() {
+		assertTrue(isSuccessful());
+		try {
+			return get();
+		} catch(Throwable e) {
+			throw assertFail();
+		}
 	}
 	
 	public DATA getOrNull() {

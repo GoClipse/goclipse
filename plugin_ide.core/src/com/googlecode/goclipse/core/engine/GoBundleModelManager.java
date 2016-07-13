@@ -50,6 +50,7 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 				) {
 					IProject project = ResourceUtils.getProjectAt(location);
 					// Trigger a model change notification
+					/* FIXME: review, possible BUG here*/
 					model.setBundleInfo(project, model.getBundleInfo(project));
 				}
 			}

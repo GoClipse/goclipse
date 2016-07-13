@@ -10,26 +10,65 @@
  *******************************************************************************/
 package melnorme.lang.tooling.common.ops;
 
+import java.util.function.Function;
+
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.OperationResult;
 
-public interface ResultOperation<RESULT> {
+/**
+ * An operation which return a RET object upon successfull completion.
+ *
+ * @param <RET>
+ */
+public interface ResultOperation<RET> extends Function<IOperationMonitor, OperationResult<RET>> {
 	
-	public abstract RESULT executeOp(IOperationMonitor om) throws CommonException, OperationCancellation;
+	public abstract RET callOp(IOperationMonitor om) throws CommonException, OperationCancellation;
+	
+	/** Execute this operation to a {@link OperationResult} object. */
+	@Override
+	default OperationResult<RET> apply(IOperationMonitor om) {
+		try {
+			return new OperationResult<>(callOp(om));
+		} catch(CommonException e) {
+			return new OperationResult<>(null, e);
+		} catch(OperationCancellation e) {
+			return new OperationResult<>(null, e);
+		}
+	}
+	
+	default OperationCallable<RET> toOperationCallable(IOperationMonitor om) {
+		return new OperationCallable<RET>() {
+			@Override
+			public RET call() throws CommonException, OperationCancellation {
+				return callOp(om);
+			}
+		};
+	}
+	
+	default RunnableFuture2<OperationResult<RET>> toRunnableFuture(IOperationMonitor om) {
+		return toOperationCallable(om).toRunnableFuture();
+	}
+	
+	default OperationResult<RET> executeToResult(IOperationMonitor om) {
+		return toOperationCallable(om).callToResult();
+	}
 	
 	/* -----------------  ----------------- */
 	
-	public default ResultOperation<RESULT> namedOperation(String taskName) {
+	public default ResultOperation<RET> namedOperation(String taskName) {
 		return namedOperation(taskName, this);
 	}
 	
 	public static <R> ResultOperation<R> namedOperation(String taskName, ResultOperation<R> subOp) {
 		return new ResultOperation<R>() {
 			@Override
-			public R executeOp(IOperationMonitor om) throws CommonException, OperationCancellation {
+			public R callOp(IOperationMonitor om) throws CommonException, OperationCancellation {
 				try(IOperationSubMonitor subMonitor = om.enterSubTask(taskName)) {
-					return subOp.executeOp(subMonitor);
+					return subOp.callOp(subMonitor);
 				}
 			}
 		};

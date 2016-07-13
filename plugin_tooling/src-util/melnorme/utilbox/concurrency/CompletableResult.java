@@ -35,10 +35,10 @@ public class CompletableResult<DATA>
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
 	
-    protected volatile ResultStatus status = ResultStatus.INITIAL;
+    protected volatile ResultStatus status = ResultStatus.NOT_COMPLETED;
 	protected volatile DATA result;
 	
-	public enum ResultStatus { INITIAL, RESULT_SET, CANCELLED }
+	public static enum ResultStatus { NOT_COMPLETED, RESULT_SET, CANCELLED }
 	
 	public CompletableResult() {
 		super();
@@ -46,11 +46,7 @@ public class CompletableResult<DATA>
 	
 	@Override
 	public boolean isDone() {
-		return status != ResultStatus.INITIAL;
-	}
-	
-	public boolean isCompleted() {
-		return isDone();
+		return status != ResultStatus.NOT_COMPLETED;
 	}
 	
 	@Override

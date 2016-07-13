@@ -10,56 +10,30 @@
  *******************************************************************************/
 package melnorme.lang.tooling.common.ops;
 
-import java.util.function.Function;
-
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.OperationCallable;
-import melnorme.utilbox.core.fntypes.OperationResult;
 
-public interface Operation extends Function<IOperationMonitor, OperationResult<Void>> {
+/**
+ * Simpler and more common form of {@link ResultOperation}, which has no return value. 
+ */
+public interface Operation extends ResultOperation<Void> {
+	
+	@Override
+	default Void callOp(IOperationMonitor om) throws CommonException, OperationCancellation {
+		execute(om);
+		return null;
+	}
 	
 	/** Execute this operation. */
 	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
-	/** Execute this operation to a {@link OperationResult} object. */
-	@Override
-	default OperationResult<Void> apply(IOperationMonitor om) {
-		try {
-			execute(om);
-			return new OperationResult<>(null);
-		} catch(CommonException e) {
-			return new OperationResult<>(null, e);
-		} catch(OperationCancellation e) {
-			return new OperationResult<>(null, e);
-		}
-	}
-	
 	/* -----------------  ----------------- */
-	
-	default OperationCallable<Void> toOperationCallable(IOperationMonitor om) {
-		return new OperationCallable<Void>() {
-			@Override
-			public Void call() throws CommonException, OperationCancellation {
-				execute(om);
-				return null;
-			}
-		};
-	}
-	
-	default RunnableFuture2<OperationResult<Void>> toRunnableFuture(IOperationMonitor om) {
-		return toOperationCallable(om).toRunnableFuture();
-	}
-	
-	default OperationResult<Void> executeToResult(IOperationMonitor om) {
-		return toOperationCallable(om).callToResult();
-	}
 	
 	public static Operation NULL_COMMON_OPERATION = (pm) -> { };
 	
 	/* -----------------  ----------------- */
 	
+	@Override
 	default Operation namedOperation(String taskName) {
 		return namedOperation(taskName, this);
 	}

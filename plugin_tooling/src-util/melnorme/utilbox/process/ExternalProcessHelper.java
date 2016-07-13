@@ -221,9 +221,9 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			awaitTermination(timeoutMs);
 			
 			// Check for IOExceptions (although I'm not sure this scenario is possible)
-			mainReader.asRunnableFuture().getResult();
+			mainReader.asRunnableFuture().awaitResult2();
 			if(stderrReader != null) {
-				stderrReader.asRunnableFuture().getResult();
+				stderrReader.asRunnableFuture().awaitResult2();
 			}
 		} catch (Exception e) {
 			process.destroy();

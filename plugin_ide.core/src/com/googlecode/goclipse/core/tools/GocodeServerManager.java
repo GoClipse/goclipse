@@ -1,64 +1,51 @@
 package com.googlecode.goclipse.core.tools;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import java.nio.file.Path;
+
 import org.eclipse.debug.core.DebugPlugin;
 
+import com.googlecode.goclipse.core.GoToolPreferences.GoToolValidator;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.LanguageServerHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.JobExecutor;
+import melnorme.lang.utils.validators.PathValidator;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 /**
- * Start up an instance of Gocode in server mode.
+ * For Go, gocode is the closest to a language server, since it's the only tool that runs in daemon mode.
  */
-public class GocodeServerManager implements IDisposable {
+public class GocodeServerManager extends LanguageServerHandler<GocodeServerInstance> {
 	
-	protected final ToolManager toolMgr = LangCore.getToolManager();
-	protected ExternalProcessNotifyingHelper gocodeProcess;
-	
-	public GocodeServerManager() {
+	public GocodeServerManager(JobExecutor jobExecutor, ToolManager toolMgr) {
+		super(jobExecutor, toolMgr);
 	}
 	
-	public IPath getGocodePath() {
-		String pref = ToolchainPreferences.DAEMON_PATH.get();
-		
-		if (pref == null || pref.length() == 0) {
-			return null;
-		}
-		
-		return new Path(pref);
+	@Override
+	protected PathValidator init_ServerToolPathValidator() {
+		return new GoToolValidator("gocode path");
 	}
 	
-	protected boolean isChildServerRunning() {
-		return gocodeProcess != null;
+	@Override
+	protected String getLanguageServerName() {
+		return GocodeServerInstance.GOCODE_SERVER_Name;
 	}
 	
-	public boolean prepareServerStart() throws CommonException {
-		IPath gocodePath = getGocodePath();
-		
-		if(gocodePath == null || gocodePath.isEmpty()) {
-			throw new CommonException("No gocode path provided.", null);
-		}
-		
-		// TODO: check path hasn't changed
-		return gocodeProcess == null;
-	}
-	
-	public void doStartServer(IOperationMonitor monitor) throws CommonException, OperationCancellation {
-		IPath gocodePath = getGocodePath(); 
+	@Override
+	protected GocodeServerInstance doCreateServerInstance(IOperationMonitor om)
+			throws CommonException, OperationCancellation {
+		Path gocodePath = getServerPath();
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
-		commandLine.add(gocodePath.toOSString());
+		commandLine.add(gocodePath.toString());
 		commandLine.add("-s");
 		if (GocodeCompletionOperation.USE_TCP) {
 			commandLine.add("-sock=tcp");
@@ -72,30 +59,19 @@ public class GocodeServerManager implements IDisposable {
 		IToolOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER, true, false);
 		String prefixText = "==== Starting gocode server ====\n";
 		
-		gocodeSetEnableBuiltins(gocodePath, monitor, opMonitor, prefixText);
+		gocodeSetEnableBuiltins(gocodePath, om, opMonitor, prefixText);
 		
-		gocodeProcess = toolMgr.new RunToolTask(opMonitor, prefixText, pb, monitor).startProcess();
+		ExternalProcessNotifyingHelper process = 
+				toolMgr.new RunToolTask(opMonitor, prefixText, pb, om).startProcess();
+		
+		return new GocodeServerInstance(gocodePath, process);
 	}
 	
-	protected void gocodeSetEnableBuiltins(IPath gocodePath, IOperationMonitor om, IToolOperationMonitor toolOpMonitor, 
-			String prefixText)
+	protected void gocodeSetEnableBuiltins(Path gocodePath, IOperationMonitor om, 
+			IToolOperationMonitor toolOpMonitor, String prefixText)
 			throws CommonException, OperationCancellation {
 		ProcessBuilder pb = new ProcessBuilder(gocodePath.toString(), "set", "propose-builtins", "true");
 		toolMgr.new RunToolTask(toolOpMonitor, prefixText, pb, om).runProcess();
-	}
-	
-	public void stopServer() {
-		if (gocodeProcess != null) {
-			LangCore.logInfo("stopping gocode server");
-			
-			gocodeProcess.getProcess().destroy();
-			gocodeProcess = null;
-		}
-	}
-	
-	@Override
-	public void dispose() {
-		stopServer();
 	}
 	
 }
