@@ -19,8 +19,6 @@ import melnorme.utilbox.core.Assert.AssertFailedException;
 
 public abstract class AbstractRunnableFuture<RET> extends AbstractFuture2<RET> implements Runnable {
 	
-	protected final CompletableResult<RET> completableResult = new CompletableResult<>();
-	
 	public AbstractRunnableFuture() {
 		super();
 	}
@@ -36,16 +34,6 @@ public abstract class AbstractRunnableFuture<RET> extends AbstractFuture2<RET> i
 	public boolean tryCancel() throws AssertFailedException {
 		// Hum, perhaps we should be more lenient and just return false?
 		throw assertFail();
-	}
-	
-	@Override
-	public boolean isCancelled() {
-		return completableResult.isCancelled();
-	}
-	
-	@Override
-	public boolean isDone() {
-		return completableResult.isDone();
 	}
 	
 	@Override
@@ -67,9 +55,9 @@ public abstract class AbstractRunnableFuture<RET> extends AbstractFuture2<RET> i
 	}
 	
 	@Override
-	public RET getResult() {
+	public RET awaitResult2() {
 		try {
-			return super.getResult();
+			return super.awaitResult2();
 		} catch(OperationCancellation e) {
 			throw assertFail();
 		}

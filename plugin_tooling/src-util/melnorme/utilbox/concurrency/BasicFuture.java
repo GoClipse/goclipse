@@ -37,6 +37,12 @@ public interface BasicFuture<RESULT> {
     
     /** See {@link Future#isDone()} */
     boolean isDone();
+    
+    /** @return true if completed with a result, without being cancelled. */
+	default boolean isCompletedWithResult() {
+		return isDone() && !isCancelled();
+	}
+	
 	
     /* -----------------  ----------------- */
     
@@ -48,7 +54,7 @@ public interface BasicFuture<RESULT> {
 	
 	/** Same as {@link #awaitResult()}, 
 	 * but throw InterruptedException as an OperationCancellation. */
-	default RESULT getResult() throws OperationCancellation {
+	default RESULT awaitResult2() throws OperationCancellation {
 		try {
 			return awaitResult();
 		} catch(InterruptedException e) {

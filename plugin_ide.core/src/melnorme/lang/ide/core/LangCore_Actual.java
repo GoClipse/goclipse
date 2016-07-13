@@ -1,13 +1,16 @@
 package melnorme.lang.ide.core;
 
 import LANG_PROJECT_ID.ide.core.bundle_model.LANGUAGE_BundleModelManager;
+import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_LanguageServerHandler;
 import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_SourceModelManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 import LANG_PROJECT_ID.tooling.toolchain.LANGUAGE_SDKLocationValidator;
+import melnorme.lang.ide.core.engine.LanguageServerHandler;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.lang.ide.core.utils.operation.EclipseJobExecutor;
 import melnorme.utilbox.misc.ILogHandler;
 
 public class LangCore_Actual extends AbstractLangCore {
@@ -26,6 +29,8 @@ public class LangCore_Actual extends AbstractLangCore {
 	public static final String VAR_NAME_SdkToolPath = "SDK_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the SDK tool";
 	
+	public static final String LANGUAGE_SERVER_Name = "lang_language_server";
+	
 	public LangCore_Actual(ILogHandler logHandler) {
 		super(logHandler);
 	}
@@ -43,6 +48,11 @@ public class LangCore_Actual extends AbstractLangCore {
 	@Override
 	protected ToolManager createToolManager() {
 		return new LANGUAGE_ToolManager(coreSettings);
+	}
+	
+	@Override
+	public LanguageServerHandler<?> createLanguageServerHandler() {
+		return new LANGUAGE_LanguageServerHandler(new EclipseJobExecutor(), getToolManager());
 	}
 	
 	public static LANGUAGE_BundleModelManager createBundleModelManager() {

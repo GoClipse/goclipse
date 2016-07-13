@@ -10,17 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.pages;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.engine.LanguageServerHandler;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.AbstractCompositePreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
-import melnorme.lang.utils.validators.PathValidator;
 import melnorme.util.swt.components.AbstractGroupWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 
 public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
+	
+	protected final LanguageServerHandler<?> languageServerHandler = LangCore.getLanguageServerHandler();
 	
 	public LanguageToolsBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
@@ -33,7 +35,7 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 	}
 	
 	protected String getEngineToolName() {
-		return LangUIPlugin_Actual.DAEMON_TOOL_Name;
+		return LangCore_Actual.LANGUAGE_SERVER_Name;
 	}
 	
 	public class EngineToolGroup extends AbstractGroupWidget {
@@ -49,10 +51,9 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 				layoutColumns = 4;
 			}
 			
-			PathValidator validator = (new LocationOrSinglePathValidator(getEngineToolName())).setFileOnly(true);
-			toolLocationField.addFieldValidator(false, validator);
+			toolLocationField.addFieldValidator(false, languageServerHandler.getLanguageToolPathValidator());
 			
-			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.DAEMON_PATH);
+			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.LANGUAGE_SERVER_PATH);
 		}
 		
 		protected ButtonTextField initToolLocationField() {

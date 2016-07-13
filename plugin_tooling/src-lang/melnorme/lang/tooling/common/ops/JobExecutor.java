@@ -10,12 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.tooling.common.ops;
 
+import java.util.function.Function;
+
 import melnorme.lang.utils.concurrency.JobFuture;
 import melnorme.utilbox.core.fntypes.OperationResult;
 
 
 public interface JobExecutor {
 	
-	JobFuture<OperationResult<Void>> start(String operationName, Operation operation, boolean schedule);
+	JobFuture<OperationResult<Void>> startOp(
+			String operationName, boolean schedule, Operation operation);
+	
+	<RET> JobFuture<OperationResult<RET>> startOpFunction(
+			String operationName, boolean schedule, Function<IOperationMonitor, OperationResult<RET>> operation);
+	
+	default <RET> JobFuture<OperationResult<RET>> startResultOp(
+			String operationName, boolean schedule, ResultOperation<RET> resultOperation)
+	{
+		return startOpFunction(operationName, schedule, resultOperation);
+	}
 	
 }

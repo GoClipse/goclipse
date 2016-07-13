@@ -26,7 +26,7 @@ public interface ToolchainPreferences {
 	public static final BooleanPreference FORMAT_ON_SAVE =
 			new BooleanPreference(LangCore.PLUGIN_ID, "format_onSave", false, USE_PROJECT_SETTINGS);
 	
-	public static final StringPreference DAEMON_PATH =
+	public static final StringPreference LANGUAGE_SERVER_PATH =
 			new StringPreference("daemon_path", "");
 	
 }

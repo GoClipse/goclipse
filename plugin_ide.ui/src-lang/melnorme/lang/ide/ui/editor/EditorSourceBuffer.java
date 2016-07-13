@@ -65,7 +65,7 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 			};
 			RunnableFuture2<OperationResult<Void>> resultRunnable = operationCallable.toRunnableFuture();
 			Display.getDefault().syncExec(resultRunnable);
-			resultRunnable.getResult().get();
+			resultRunnable.awaitResult2().get();
 		} else {
 			saveBuffer();
 		}
