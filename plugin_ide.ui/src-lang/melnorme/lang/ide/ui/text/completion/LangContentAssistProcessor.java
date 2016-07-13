@@ -231,8 +231,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		} catch(OperationCancellation e) {
 			return null;
 		} catch(CommonException ce) {
-			/* FIXME: must pass exception */
-			return returnErrorResult(ce.getMultiLineRender());
+			return returnErrorResult(ce);
 		} catch(OperationSoftFailure e) {
 			String errorMessage = e.getMessage();
 			if(isAutoActivation) {
@@ -240,7 +239,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 				setAndDisplayStatusLineErrorMessage("Error: " + errorMessage);
 				return null;
 			} else {
-				return returnErrorResult(errorMessage);
+				return returnErrorResult(new CommonException(errorMessage));
 			}
 		}
 		
@@ -263,13 +262,9 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		return null; // TODO: need to add proper support for this
 	}
 	
-	protected ICompletionProposal[] returnErrorResult(String errorMessage) {
+	protected ICompletionProposal[] returnErrorResult(CommonException ce) {
 		Display.getCurrent().beep();
-		return array(new ErrorCompletionProposal(errorMessage));
-	}
-	
-	protected void showErrorDialog(CommonException ce) {
-		UIOperationsStatusHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
+		return array(new ErrorCompletionProposal(ce));
 	}
 	
 	protected void setAndDisplayStatusLineErrorMessage(String errorMessage) {
@@ -278,13 +273,13 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		Display.getCurrent().beep();
 	}
 	
-	public class ErrorCompletionProposal 
+	public static class ErrorCompletionProposal 
 		implements ICompletionProposal, ICompletionProposalExtension3, ICompletionProposalExtension4 {
 		
-		protected final String errorMessage;
+		protected final CommonException error;
 		
-		public ErrorCompletionProposal(String errorMessage) {
-			this.errorMessage = assertNotNull(errorMessage);
+		public ErrorCompletionProposal(CommonException error) {
+			this.error = assertNotNull(error);
 		}
 		
 		@Override
@@ -299,6 +294,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		
 		@Override
 		public String getAdditionalProposalInfo() {
+			String errorMessage = error.getMultiLineRender();
 			return BrowserControlCreator.wrapHTMLBody("<b>Error:</b><hr/> " + HTMLHelper.escapeToToHTML(errorMessage));
 		}
 		
@@ -318,7 +314,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		
 		@Override
 		public void apply(IDocument document) {
-			showErrorDialog(new CommonException(errorMessage));
+			UIOperationsStatusHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, error);
 		}
 		
 		@Override

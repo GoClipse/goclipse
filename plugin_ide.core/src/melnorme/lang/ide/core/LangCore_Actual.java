@@ -55,6 +55,10 @@ public class LangCore_Actual extends AbstractLangCore {
 		return new LANGUAGE_LanguageServerHandler(new EclipseJobExecutor(), getToolManager());
 	}
 	
+	public LANGUAGE_LanguageServerHandler languageServerHandler() {
+		return (LANGUAGE_LanguageServerHandler) languageServerHandler;
+	}
+	
 	public static LANGUAGE_BundleModelManager createBundleModelManager() {
 		return new LANGUAGE_BundleModelManager();
 	}

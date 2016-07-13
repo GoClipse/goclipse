@@ -10,22 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.pages;
 
-import melnorme.lang.ide.core.LangCore;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.engine.LanguageServerHandler;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.AbstractCompositePreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
+import melnorme.lang.utils.validators.PathValidator;
 import melnorme.util.swt.components.AbstractGroupWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 
 public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 	
-	protected final LanguageServerHandler<?> languageServerHandler = LangCore.getLanguageServerHandler();
+	protected final PathValidator languageToolPathValidator;
 	
-	public LanguageToolsBlock(PreferencesPageContext prefContext) {
+	public LanguageToolsBlock(PreferencesPageContext prefContext, PathValidator languageToolPathValidator) {
 		super(prefContext);
+		this.languageToolPathValidator = assertNotNull(languageToolPathValidator);
 		
 		addChildWidget(init_createEngineToolGroup());
 	}
@@ -51,7 +53,7 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 				layoutColumns = 4;
 			}
 			
-			toolLocationField.addFieldValidator(false, languageServerHandler.getLanguageToolPathValidator());
+			toolLocationField.addFieldValidator(false, languageToolPathValidator);
 			
 			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.LANGUAGE_SERVER_PATH);
 		}

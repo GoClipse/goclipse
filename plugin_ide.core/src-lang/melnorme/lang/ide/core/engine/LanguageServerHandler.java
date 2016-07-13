@@ -30,9 +30,10 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.ReentrantLockExt;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.OperationResult;
-import melnorme.utilbox.ownership.IDisposable;
 
-public abstract class LanguageServerHandler<LS_INSTANCE extends LanguageServerInstance> implements IDisposable {
+public abstract class LanguageServerHandler<LS_INSTANCE extends LanguageServerInstance> 
+	implements ILanguageServerHandler 
+{
 	
 	protected final ToolManager toolMgr;
 	protected final JobExecutor jobExecutor;

@@ -12,8 +12,7 @@ package melnorme.lang.ide.core;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.ide.core.engine.LanguageServerHandler;
-import melnorme.lang.ide.core.engine.LanguageServerInstance;
+import melnorme.lang.ide.core.engine.ILanguageServerHandler;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -34,7 +33,7 @@ public abstract class AbstractLangCore extends LoggingCore {
 	protected final ILogHandler logHandler;
 	protected final CoreSettings coreSettings;
 	protected final ToolManager toolManager;
-	protected final LanguageServerHandler<?> languageServerHandler;
+	protected final ILanguageServerHandler languageServerHandler;
 	protected final BundleModelManager<? extends LangBundleModel> bundleManager;
 	protected final BuildManager buildManager;
 	protected final SourceModelManager sourceModelManager;
@@ -95,9 +94,9 @@ public abstract class AbstractLangCore extends LoggingCore {
 		return instance.sourceModelManager;
 	}
 	
-	public abstract LanguageServerHandler<?> createLanguageServerHandler();
+	public abstract ILanguageServerHandler createLanguageServerHandler();
 	
-	public static LanguageServerHandler<? extends LanguageServerInstance> getLanguageServerHandler() {
+	public static ILanguageServerHandler getLanguageServerHandler() {
 		return instance.languageServerHandler;
 	}
 	
