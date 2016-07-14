@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.pages;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
@@ -24,11 +23,7 @@ public abstract class EngineToolsPreferencePage extends AbstractPreferencesBlock
 		return null;
 	}
 	
-	/* -----------------  ----------------- */
-	
 	@Override
-	protected LanguageToolsBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
-		return new LanguageToolsBlock(prefContext, LangCore.get().languageServerHandler().getLanguageToolPathValidator());
-	}
+	protected abstract LanguageToolsBlock init_createPreferencesBlock(PreferencesPageContext prefContext);
 	
 }
