@@ -147,7 +147,9 @@ public class CommonTestUtils {
 			}
 			
 			runnable.run();
-			assertFail();
+			
+			// No exception thrown, check that this was what was expected
+			assertTrue(klass == null && expectedExceptionString == null);
 		} catch(Throwable e) {
 			if(klass != null) {
 				assertTrue(klass.isInstance(e));

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -33,6 +34,19 @@ public abstract class AbstractFuture2<RET> implements Future2<RET> {
 	@Override
 	public boolean isDone() {
 		return completableResult.isDone();
+	}
+	
+	@Override
+	public boolean tryCancel() {
+		boolean wasCancelledNow = completableResult.setCancelledResult();
+		if(wasCancelledNow) {
+			handleCancellation();
+		}
+		return wasCancelledNow;
+	}
+	
+	protected void handleCancellation() {
+		// default: do nothing
 	}
 	
 	@Override
@@ -104,9 +118,10 @@ public abstract class AbstractFuture2<RET> implements Future2<RET> {
 		}
 		
 		@Override
-		public boolean tryCancel() {
-			return false;
+		protected void handleCancellation() {
+			assertFail(); // Should not happen
 		}
+		
 	}
 	
 }

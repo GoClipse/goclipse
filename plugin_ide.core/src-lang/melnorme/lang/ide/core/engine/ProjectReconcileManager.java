@@ -21,7 +21,7 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
-import melnorme.lang.utils.concurrency.MonitorFutureTask;
+import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -53,7 +53,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			// Cancel the previous task
 			if(currentReconcileTask != null) {
-				currentReconcileTask.cancel(); 
+				currentReconcileTask.tryCancel(); 
 			}
 			
 			ProjectReconcileTask newReconcileTask = 
@@ -61,7 +61,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			getExecutor().submitTask(newReconcileTask.asFutureTask());
+			getExecutor().submitRunnable(newReconcileTask);
 		}
 		
 	}
@@ -72,7 +72,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			// Cancel the previous task
 			if(currentReconcileTask != null) {
-				currentReconcileTask.cancel(); 
+				currentReconcileTask.tryCancel(); 
 			}
 		}
 	}
@@ -83,7 +83,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 	}
 	
-	public class ProjectReconcileTask extends MonitorFutureTask {
+	public class ProjectReconcileTask extends MonitorRunnableFuture {
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;

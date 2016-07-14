@@ -83,7 +83,12 @@ public abstract class AbstractExternalProcessHelper {
 	protected abstract Runnable createStdErrReaderTask();
 	
 	protected String getBaseNameForWorkerThreads() {
-		return getClass().getSimpleName();
+		String simpleName = getClass().getSimpleName();
+		if(simpleName.isEmpty()) {
+			return getClass().getName();
+		}
+		return simpleName;
+		
 	}
 	
 	protected class ProcessHelperMainThread extends Thread {

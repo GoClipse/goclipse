@@ -12,6 +12,7 @@ package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,10 +41,12 @@ public class CompletableResult_Test extends CommonTest {
 			CompletableResult<String> resultFuture = new CompletableResult<>();
 			AtomicReference<Boolean> threw = new AtomicReference<>(false);
 			
-			LatchRunnable2 latchRunnable = new LatchRunnable2(2, 1) {
+			CountDownLatch setResultLatch = new CountDownLatch(1);
+			LatchRunnable2 latchRunnable = new LatchRunnable2() {
 				@Override
 				protected void doRun() {
 					try {
+						LatchRunnable2.awaitLatch(setResultLatch);
 						resultFuture.setResult(null);
 					} catch(Exception e) {
 						threw.set(true);	
@@ -53,8 +56,9 @@ public class CompletableResult_Test extends CommonTest {
 			
 			Executors.newSingleThreadExecutor().execute(latchRunnable);
 			resultFuture.setCancelledResult();
-			latchRunnable.entryLatch.countDown();
-			latchRunnable.exitLatch.await(); // Ensure doRun() is executed
+			setResultLatch.countDown();
+			
+			latchRunnable.awaitExit(); // Ensure doRun() is executed
 			assertTrue(threw.get() == false);
 		}
 		

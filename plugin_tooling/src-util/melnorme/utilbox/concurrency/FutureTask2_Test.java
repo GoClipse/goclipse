@@ -65,7 +65,7 @@ public class FutureTask2_Test extends CommonTest {
 		
 		{
 			NeverendingCallable neverending = new NeverendingCallable();
-			FutureTaskX<?> future = new FutureTaskX<>(neverending).submitTo(executor);
+			IRunnableFuture2<?> future = new FutureTaskX<>(neverending).submitTo(executor);
 			neverending.entryLatch.await();
 			
 			// Test cancellation through Future API
@@ -77,7 +77,7 @@ public class FutureTask2_Test extends CommonTest {
 		{
 			new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
 			
-			FutureTaskX<?> future = new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
+			IRunnableFuture2<?> future = new FutureTaskX<>(new NeverendingCallable()).submitTo(executor);
 			
 			// Test cancellation through Future API - when task has not started yet
 			future.tryCancel();
@@ -90,7 +90,7 @@ public class FutureTask2_Test extends CommonTest {
 	
 	protected <EXC extends Exception> Object submitAndAwaitResult(CallableX<Object, RuntimeException> callable)
 			throws OperationCancellation, InterruptedException, EXC {
-		FutureTaskX<Object> future = new FutureTaskX<>(callable).submitTo(ForkJoinPool.commonPool());
+		IRunnableFuture2<Object> future = new FutureTaskX<>(callable).submitTo(ForkJoinPool.commonPool());
 		return future.awaitResult();
 	}
 	

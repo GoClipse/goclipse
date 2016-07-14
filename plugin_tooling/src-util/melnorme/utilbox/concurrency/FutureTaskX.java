@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -26,7 +25,7 @@ import melnorme.utilbox.core.fntypes.RunnableX;
 /**
  * An extension to {@link FutureTask}, implementing {@link BasicFuture}. 
  */
-public class FutureTaskX<RET> extends FutureTask<RET> implements Future2<RET> {
+public class FutureTaskX<RET> extends FutureTask<RET> implements Future2<RET>, IRunnableFuture2<RET> {
 
 	/* FIXME: review interaction with OperationMonitor */
 	
@@ -38,16 +37,9 @@ public class FutureTaskX<RET> extends FutureTask<RET> implements Future2<RET> {
 		super(callable);
 	}
 	
-	public FutureTask<RET> asFutureTask() {
-		return this;
-	}
-	
 	@Override
 	public boolean tryCancel() {
 		return super.cancel(true);
-	}
-	
-	public void before_cancel(@SuppressWarnings("unused") boolean mayInterruptIfRunning) {
 	}
 	
 	/* -----------------  ----------------- */
@@ -82,12 +74,6 @@ public class FutureTaskX<RET> extends FutureTask<RET> implements Future2<RET> {
 		}
 		// it can only be a RuntimeException
 		throw assertFail(); 
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public FutureTaskX<RET> submitTo(Executor executor) {
-		return ThreadPoolExecutorExt.submitTo(executor, this);
 	}
 	
 }

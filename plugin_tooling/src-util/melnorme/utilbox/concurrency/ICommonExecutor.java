@@ -30,17 +30,16 @@ public interface ICommonExecutor extends IBasicExecutor {
 	
 	/* -----------------  ----------------- */
 	
+	/** Submit a {@link IRunnableFuture2} for execution. */
+	void submitRunnable(IRunnableFuture2<?> futureTask);
+	
 	/** Same as {@link ExecutorService#submit(Callable)}, but using {@link SupplierExt} instead, 
 	 * which has with a more strict exception throwing API. */
 	<RET> Future2<RET> submitSupplier(SupplierExt<RET> callable);
 	
 	/** Similar to {@link #submitX(CallableX)}, but using an {@link OperationCallable}. */
-	<RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable);
+	<RET> Future2<OperationResult<RET>> submitOp(OperationCallable<RET> opCallable);
 	
-	/** Alias interface */
-	public static interface CommonFuture<RET> extends Future2<OperationResult<RET>> {
-		
-	}
 	
 	default <RET> BasicFuture<RET> submitR(Runnable runnable) {
 		return submitSupplier(() -> {
@@ -48,9 +47,6 @@ public interface ICommonExecutor extends IBasicExecutor {
 			return null;
 		});
 	}
-	
-	/** Submit a {@link FutureTaskX} for execution. */
-	void submitTask(FutureTaskX<?> futureTask);
 	
 	/** 
 	 * @return the total number of tasks that have been submitted for execution (including possibly rejected tasks).

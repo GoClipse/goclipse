@@ -37,7 +37,7 @@ import melnorme.utilbox.misc.Location;
 public class GoToolsConfigBlock extends LanguageToolsBlock {
 	
 	public GoToolsConfigBlock(PreferencesPageContext prefContext) {
-		super(prefContext);
+		super(prefContext, LangCore.get().languageServerHandler().getLanguageToolPathValidator());
 		
 		addChildWidget(new GoGuruGroup());
 		addChildWidget(new GoDefGroup());

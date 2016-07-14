@@ -17,7 +17,6 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * An implementation of {@link ITaskAgent} based on an {@link ExecutorService}.
@@ -29,7 +28,7 @@ public class ExecutorTaskAgent extends ThreadPoolExecutorExt implements ITaskAge
 	}
 	
 	public ExecutorTaskAgent(String name, UncaughtExceptionHandler ueHandler) {
-		super(1, 1, new LinkedBlockingQueue<Runnable>(), name, ueHandler);
+		super(name, ueHandler);
 	}
 	
 	@Override
