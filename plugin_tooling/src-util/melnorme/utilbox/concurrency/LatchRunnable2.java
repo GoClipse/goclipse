@@ -12,42 +12,46 @@ package melnorme.utilbox.concurrency;
 
 import java.util.concurrent.CountDownLatch;
 
+import melnorme.utilbox.ownership.IDisposable;
+
 /**
  * A {@link LatchRunnable2} provides a two way (entry and exit) concurrency barrier.
  * It is useful mostly for tests related to concurrent code.
  * (Improved version over {@link LatchRunnable})
  */
-public class LatchRunnable2 implements Runnable, AutoCloseable {
+public class LatchRunnable2 implements Runnable {
 	
 	public final CountDownLatch entryLatch;
 	public final CountDownLatch exitLatch;
 	
 	public LatchRunnable2() {
-		this(2, 2);
-	}
-	
-	public LatchRunnable2(int entryCount, int exitCount) {
-		this.entryLatch = new CountDownLatch(entryCount);
-		this.exitLatch = new CountDownLatch(exitCount);
+		this.entryLatch = new CountDownLatch(1);
+		this.exitLatch = new CountDownLatch(1);
 	}
 	
 	@Override
 	public void run() {
 		entryLatch.countDown();
-		awaitLatch(entryLatch);
 		
 		try {
 			doRun();
 		} finally {
 			exitLatch.countDown();
-			awaitLatch(exitLatch);
 		}
 	}
 	
 	protected void doRun() {
 	}
 	
-	protected void awaitLatch(CountDownLatch latch) {
+	public void awaitEntry() {
+		awaitLatch(entryLatch);
+	}
+	
+	public void awaitExit() {
+		awaitLatch(exitLatch);
+	}
+	
+	public static void awaitLatch(CountDownLatch latch) {
 		while(true) {
 			try {
 				latch.await();
@@ -63,9 +67,15 @@ public class LatchRunnable2 implements Runnable, AutoCloseable {
 		exitLatch.countDown();
 	}
 	
-	@Override
-	public void close() {
-		releaseAll(); // Ensure whatever was holding on the latch is released, even for error cleanup
-	}
+	protected final IDisposable asDisposable = new IDisposable() {
+		@Override
+		public void dispose() {
+			releaseAll(); // Ensure whatever was holding on the latch is released, even for error cleanup
+		}
+	};
 	
+	public IDisposable asDisposable() {
+		return asDisposable;
+	}
+
 }

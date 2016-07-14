@@ -24,6 +24,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,6 +46,10 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	
 	protected final String name;
 	protected final UncaughtExceptionHandler uncaughtExceptionHandler;
+	
+	public ThreadPoolExecutorExt(String name, UncaughtExceptionHandler ueHandler) {
+		this(1, 1, new LinkedBlockingQueue<Runnable>(), name, ueHandler);
+	}
 	
 	public ThreadPoolExecutorExt(int corePoolSize, int maximumPoolSize,
 			BlockingQueue<Runnable> workQueue, String name, UncaughtExceptionHandler ueHandler) {
@@ -78,12 +83,12 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	@Override
-	public void submitTask(FutureTaskX<?> futureTask) {
-		submitTo(this, futureTask);
+	public void submitRunnable(IRunnableFuture2<?> futureTask) {
+		this.execute(futureTask);
 	}
 	
 	public static <FT extends FutureTaskX<?>> FT submitTo(Executor executor, FT futureTask2) {
-		executor.execute(futureTask2.asFutureTask());
+		executor.execute(futureTask2);
 		return futureTask2;
 	}
 	
@@ -94,6 +99,9 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 			if(runnable instanceof FutureTask<?>) {
 				FutureTask<?> futureTask = (FutureTask<?>) runnable;
 				futureTask.cancel(true);
+			} else if(runnable instanceof Future2<?>) {
+				Future2<?> futureTask = (Future2<?>) runnable;
+				futureTask.tryCancel();
 			}
 		}
 		return remaining;
@@ -107,21 +115,16 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	@Override
-	public <RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable) {
+	public <RET> Future2<OperationResult<RET>> submitOp(OperationCallable<RET> opCallable) {
 		return submitTo(this, new CommonResultFutureTask<>(opCallable.toResultSupplier()));
 	}
 	
 	// This adapter is only needed because CommonFuture is not a true alias.
 	protected class CommonResultFutureTask<RET> extends FutureTaskX<OperationResult<RET>> 
-		implements CommonFuture<RET> {
+		implements Future2<OperationResult<RET>> {
 		
 		public CommonResultFutureTask(CallableX<OperationResult<RET>, RuntimeException> callable) {
 			super(callable);
-		}
-		
-		@Override
-		public CommonResultFutureTask<RET> submitTo(Executor executor) {
-			return ThreadPoolExecutorExt.submitTo(executor, this);
 		}
 	}
 	

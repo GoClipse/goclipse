@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Bruno Medeiros and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package melnorme.lang.ide.core.utils.operation;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -17,6 +27,7 @@ import melnorme.utilbox.concurrency.AbstractFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.fntypes.OperationResult;
 
+/* FIXME: integrate with MonitorRunnableFuture */
 public class EclipseJobFuture<RET> extends AbstractFuture2<RET> implements JobFuture<RET> {
 	
 	protected final Job job;
@@ -77,15 +88,9 @@ public class EclipseJobFuture<RET> extends AbstractFuture2<RET> implements JobFu
 	}
 	
 	@Override
-	public boolean tryCancel() {
-		boolean cancelled = completableResult.setCancelledResult();
-		if(cancelled) {
-			job.cancel();
-			if(operationMonitor != null) {
-				assertTrue(operationMonitor.isCanceled());
-			}
-		}
-		return cancelled;
+	protected void handleCancellation() {
+		super.handleCancellation();
+		job.cancel();
 	}
 	
 }

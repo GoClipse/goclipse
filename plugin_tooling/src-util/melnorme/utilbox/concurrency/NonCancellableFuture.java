@@ -17,29 +17,34 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.core.Assert.AssertFailedException;
-
 /**
  * Like a {@link Future}, but cannot be cancelled, 
  * and guaranteed not to throw {@link ExecutionException}s.  
  */
-public interface SafeFuture<DATA> extends Future<DATA> {
-	
-	@Override
-	default boolean cancel(boolean mayInterruptIfRunning) throws AssertFailedException {
-		throw assertFail();
-	}
+public interface NonCancellableFuture<DATA> extends BasicFuture<DATA> {
 	
 	@Override
 	default boolean isCancelled() {
 		return false;
 	}
 	
+	// Doesn't throw OperationCancellation 
 	@Override
-	public DATA get() throws InterruptedException;
+	public abstract DATA awaitResult() throws InterruptedException;
+	
+	// Doesn't throw OperationCancellation
+	@Override
+	public abstract DATA awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
+	
 	
 	@Override
-	public DATA get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
+	default DATA awaitResult2() {
+		try {
+			return BasicFuture.super.awaitResult2();
+		} catch(OperationCancellation e) {
+			throw assertFail();
+		}
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -49,7 +54,7 @@ public interface SafeFuture<DATA> extends Future<DATA> {
 			cm.checkCancellation();
 			
 			try {
-				return this.get(100, TimeUnit.MILLISECONDS);
+				return this.awaitResult(100, TimeUnit.MILLISECONDS);
 			} catch(InterruptedException e) {
 				throw new OperationCancellation();
 			} catch(TimeoutException e) {

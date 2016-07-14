@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.SafeFuture;
+import melnorme.utilbox.concurrency.NonCancellableFuture;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.fields.ListenerListHelper;
 
@@ -210,27 +210,27 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	}
 	
 	public DATA awaitUpdatedData() throws InterruptedException {
-		return asFuture().get();
+		return asFuture().awaitResult();
 	}
 	
 	public DATA awaitUpdatedData(IOperationMonitor om) throws OperationCancellation {
 		return asFuture().awaitData(om);
 	}
 	
-	public class DataUpdateFuture implements SafeFuture<DATA> {
+	public class DataUpdateFuture implements NonCancellableFuture<DATA> {
 		@Override
 		public boolean isDone() {
 			return !isStale();
 		}
 		
 		@Override
-		public DATA get() throws InterruptedException {
+		public DATA awaitResult() throws InterruptedException {
 			getLatchForUpdateTask().await();
 			return data;
 		}
 		
 		@Override
-		public DATA get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+		public DATA awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
 			boolean success = getLatchForUpdateTask().await(timeout, unit);
 			if(!success) {
 				throw new TimeoutException();
