@@ -21,6 +21,7 @@ Require-Bundle: LANG_PROJECT_ID.tooling;visibility:=reexport,
 Bundle-ClassPath: .
 Export-Package: LANG_PROJECT_ID.ide.core,
  LANG_PROJECT_ID.ide.core.bundle_model,
+ LANG_PROJECT_ID.ide.core.engine,
  LANG_PROJECT_ID.ide.core.launch,
  LANG_PROJECT_ID.ide.core.operations,
  LANG_PROJECT_ID.ide.core.text,

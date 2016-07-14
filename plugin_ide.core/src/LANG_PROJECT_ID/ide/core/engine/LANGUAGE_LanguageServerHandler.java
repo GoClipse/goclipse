@@ -20,6 +20,7 @@ import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.JobExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public class LANGUAGE_LanguageServerHandler extends LanguageServerHandler<LanguageServerInstance> {
 	
@@ -30,8 +31,12 @@ public class LANGUAGE_LanguageServerHandler extends LanguageServerHandler<Langua
 	@Override
 	protected LanguageServerInstance doCreateServerInstance(IOperationMonitor om)
 			throws CommonException, OperationCancellation {
+		boolean fail = true;
+		if(fail) throw new CommonException("LanguageServerInstance NOT IMPLEMENTED");
+		
 		Path serverPath = getServerPath();
-		return new LanguageServerInstance(serverPath, null) {
+		ExternalProcessNotifyingHelper serverProcess = null;
+		return new LanguageServerInstance(serverPath, serverProcess) {
 			
 			@Override
 			protected String getLanguageServerName() {
