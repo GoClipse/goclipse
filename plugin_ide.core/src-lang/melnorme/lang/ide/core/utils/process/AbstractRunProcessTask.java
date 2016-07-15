@@ -103,9 +103,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	{
 		ExternalProcessNotifyingHelper processHelper = startProcess();
 		processHelper.writeInput_(input, StringUtil.UTF8);
-		ExternalProcessResult processResult = processHelper.awaitTerminationAndResult_ce();
-		
-		return processResult;
+		return processHelper.awaitTerminationAndResult_ce(true);
 	}
 	
 }

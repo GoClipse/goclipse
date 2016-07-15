@@ -20,8 +20,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.Future2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
-import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.concurrency.RunnableFuture2.ResultRunnableFuture;
@@ -40,7 +40,6 @@ import melnorme.utilbox.misc.StringUtil;
  */
 public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
-	protected final ICancelMonitor cancelMonitor;
 	protected ReadAllBytesTask mainReader;
 	protected ReadAllBytesTask stderrReader;
 	
@@ -54,8 +53,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders, 
 			ICancelMonitor cancelMonitor) {
-		super(process, readStdErr, startReaders);
-		this.cancelMonitor = cancelMonitor == null ? new NullCancelMonitor() : cancelMonitor;
+		super(process, readStdErr, startReaders, cancelMonitor);
 	}
 	
 	@Override
@@ -86,7 +84,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			this.runnableFuture = new ResultRunnableFuture<ByteArrayOutputStreamExt, IOException>(this::doRun);
 		}
 		
-		public RunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> asRunnableFuture() {
+		public Future2<Result<ByteArrayOutputStreamExt, IOException>> asRunnableFuture() {
 			return runnableFuture;
 		}
 		
@@ -197,10 +195,10 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	/* ----------------- Await termination ----------------- */
 	
-	public ExternalProcessResult awaitTerminationAndResult() 
-			throws InterruptedException, IOException {
+	public ExternalProcessResult awaitTerminationAndResult(boolean destroyOnError) 
+			throws InterruptedException, OperationCancellation, IOException {
 		try {
-			return awaitTerminationAndResult(NO_TIMEOUT);
+			return awaitTerminationAndResult(NO_TIMEOUT, destroyOnError);
 		} catch (TimeoutException e) {
 			throw assertFail(); // Cannot happen
 		}
@@ -210,37 +208,47 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	 * Awaits for successful process termination, as well as successful termination of reader threads,
 	 * throws an exception otherwise (and destroys the process).
 	 * @param timeoutMs the timeout in milliseconds to wait for (or -1 for no TIMEOUT).
+	 * @param destroyOnError if the process should be destroyed should any exception occur
 	 * @return the process output result in an {@link ExternalProcessResult}. 
-	 * @throws InterruptedException if thread interrupted, or if cancellation is polled.
+	 * @throws InterruptedException if thread interrupted while waiting.
 	 * @throws TimeoutException if timeout reached.
+	 * @throws OperationCancellation if reader thread cancellation has occured.
 	 * @throws IOException if an IO error occured in the reader threads.
 	 */
-	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs) 
-			throws InterruptedException, TimeoutException, IOException {
+	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs, boolean destroyOnError) 
+			throws InterruptedException, TimeoutException, OperationCancellation, IOException {
 		try {
-			awaitTermination(timeoutMs);
+			awaitReadersTermination(timeoutMs);
 			
 			// Check for IOExceptions (although I'm not sure this scenario is possible)
-			mainReader.asRunnableFuture().awaitResult2();
+			mainReader.asRunnableFuture().awaitResult2().get();
 			if(stderrReader != null) {
-				stderrReader.asRunnableFuture().awaitResult2();
+				stderrReader.asRunnableFuture().awaitResult2().get();
 			}
 		} catch (Exception e) {
-			process.destroy();
+			if(destroyOnError) {
+				destroyProcess();
+			}
 			throw e;
 		}
 		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes2());
 	}
 	
-	public ExternalProcessResult awaitTerminationAndResult_ce() throws CommonException, OperationCancellation {
-		return awaitTerminationAndResult_ce(NO_TIMEOUT);
+	protected void destroyProcess() {
+		process.destroy();
 	}
 	
-	public ExternalProcessResult awaitTerminationAndResult_ce(int timeout) 
+	public ExternalProcessResult awaitTerminationAndResult_ce(boolean destroyOnError) 
+			throws CommonException, OperationCancellation 
+	{
+		return awaitTerminationAndResult_ce(NO_TIMEOUT, destroyOnError);
+	}
+	
+	public ExternalProcessResult awaitTerminationAndResult_ce(int timeout, boolean destroyOnError) 
 			throws CommonException, OperationCancellation 
 	{
 		try {
-			return awaitTerminationAndResult(timeout);
+			return awaitTerminationAndResult(timeout, destroyOnError);
 		} catch (IOException e) {
 			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorStreamReaderIOException, e);
 		} catch (TimeoutException te) {

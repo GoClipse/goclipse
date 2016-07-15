@@ -10,10 +10,13 @@
  *******************************************************************************/
 package melnorme.utilbox.process;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
 
 /**
  * Abstract helper class to start an external process and read its output concurrently,
@@ -28,6 +31,7 @@ public abstract class AbstractExternalProcessHelper {
 	
 	protected final Process process;
 	protected final boolean readStdErr;
+	protected final ICancelMonitor cancelMonitor;
 	
 	/** This latch exists to signal that the process has terminated, and also that both reader threads 
 	 * have finished reading all input. This last aspect is very important. */
@@ -36,13 +40,11 @@ public abstract class AbstractExternalProcessHelper {
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
 	
-	public AbstractExternalProcessHelper(ProcessBuilder pb) throws IOException {
-		this(pb.start(), pb.redirectErrorStream() == false, true);
-	}
-	
-	public AbstractExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
+	public AbstractExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders,
+			ICancelMonitor cancelMonitor) {
 		this.process = process;
 		this.readStdErr = readStdErr;
+		this.cancelMonitor = cancelMonitor == null ? new NullCancelMonitor() : cancelMonitor;
 		
 		readersTerminationLatch = new CountDownLatch(2);
 		
@@ -94,7 +96,7 @@ public abstract class AbstractExternalProcessHelper {
 	protected class ProcessHelperMainThread extends Thread {
 		
 		public ProcessHelperMainThread(Runnable runnable) {
-			super(runnable, getBaseNameForWorkerThreads() + ".MainWorker");
+			super(runnable, getBaseNameForWorkerThreads() + "/StdOutReader");
 			setDaemon(true);
 		}
 		
@@ -130,7 +132,7 @@ public abstract class AbstractExternalProcessHelper {
 	protected class ProcessHelperStdErrThread extends Thread {
 		
 		public ProcessHelperStdErrThread(Runnable runnable) {
-			super(runnable, getBaseNameForWorkerThreads() + ".StdErrWorker");
+			super(runnable, getBaseNameForWorkerThreads() + "/StdErrReader");
 			setDaemon(true);
 		}
 		
@@ -151,20 +153,22 @@ public abstract class AbstractExternalProcessHelper {
 	 * Await termination of process, with given timeoutMs timeout in milliseconds (-1 for no timeout).
 	 * Periodically polls for cancellation.
 	 * @return the process exit value.
-	 * @throws InterruptedException if thread interrupted, or if cancellation is polled.
+	 * @throws InterruptedException if thread interrupted.
 	 * @throws TimeoutException if timeout reached.
+	 * @throws OperationCancellation if process reader cancellation was requested.
 	 */
-	protected int awaitTermination(int timeoutMs) throws InterruptedException, TimeoutException {
+	protected void awaitReadersTermination(int timeoutMs) 
+			throws InterruptedException, TimeoutException, OperationCancellation {
 		int waitedTime = 0;
 		
 		while(true) {
+			if(isCanceled()) {
+				throw new OperationCancellation();
+			}
 			int cancelPollPeriodMs = getCancelPollingPeriodMs();
 			boolean latchSuccess = doAwaitTermination(cancelPollPeriodMs);
 			if(latchSuccess) {
-				return process.exitValue();
-			}
-			if(isCanceled()) {
-				throw new InterruptedException();
+				return;
 			}
 			if(timeoutMs != NO_TIMEOUT && waitedTime >= timeoutMs) {
 				throw new TimeoutException();
@@ -173,12 +177,12 @@ public abstract class AbstractExternalProcessHelper {
 		}
 	}
 	
-	protected boolean doAwaitTermination(int cancelPollPeriodMs) throws InterruptedException {
-		return readersTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
-	}
-	
 	protected int getCancelPollingPeriodMs() {
 		return 200;
+	}
+	
+	protected boolean doAwaitTermination(int cancelPollPeriodMs) throws InterruptedException {
+		return readersTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
 	}
 	
 	protected abstract boolean isCanceled();
