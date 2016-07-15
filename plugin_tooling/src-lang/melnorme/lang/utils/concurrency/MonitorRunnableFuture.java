@@ -19,16 +19,17 @@ import melnorme.utilbox.concurrency.IRunnableFuture2;
 /**
  * A {@link IRunnableFuture2} with a cancellation monitor
  */
-public abstract class MonitorRunnableFuture 
-	extends AbstractRunnableFuture2<Void> 
+public abstract class MonitorRunnableFuture<RET> 
+	extends AbstractRunnableFuture2<RET> 
 {
 	
-	public static MonitorRunnableFuture fromRunnable(Runnable runnable) {
+	public static MonitorRunnableFuture<Void> fromRunnable(Runnable runnable) {
 		assertNotNull(runnable);
-		return new MonitorRunnableFuture() {
+		return new MonitorRunnableFuture<Void>() {
 			@Override
-			protected void runTask() {
+			protected Void invokeToResult() {
 				runnable.run();
+				return null;
 			}
 		};
 	}
@@ -50,13 +51,5 @@ public abstract class MonitorRunnableFuture
 		super.handleCancellation();
 		cancelMonitor.cancel();
 	}
-	
-	@Override
-	protected final Void invokeToResult() {
-		runTask();
-		return null;
-	}
-	
-	protected abstract void runTask();
 	
 }

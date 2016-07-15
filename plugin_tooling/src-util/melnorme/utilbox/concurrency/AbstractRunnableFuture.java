@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.core.Assert.AssertFailedException;
 
+@Deprecated
 public abstract class AbstractRunnableFuture<RET> extends AbstractRunnableFuture2<RET> 
 	implements NonCancellableFuture<RET> 
 {

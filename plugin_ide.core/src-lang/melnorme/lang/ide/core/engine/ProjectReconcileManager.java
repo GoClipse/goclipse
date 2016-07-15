@@ -83,7 +83,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 	}
 	
-	public class ProjectReconcileTask extends MonitorRunnableFuture {
+	public class ProjectReconcileTask extends MonitorRunnableFuture<Void> {
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;
@@ -108,6 +108,11 @@ abstract class AbstractProjectReconcileManager {
 		}
 		
 		@Override
+		protected Void invokeToResult() {
+			runTask();
+			return null;
+		}
+		
 		protected void runTask() {
 			try {
 				try {

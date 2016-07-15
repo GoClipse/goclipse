@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.core.fntypes.SupplierExt;
@@ -87,7 +86,7 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 		this.execute(futureTask);
 	}
 	
-	public static <FT extends FutureTaskX<?>> FT submitTo(Executor executor, FT futureTask2) {
+	public static <FT extends IRunnableFuture2<?>> FT submitTo(Executor executor, FT futureTask2) {
 		executor.execute(futureTask2);
 		return futureTask2;
 	}
@@ -111,21 +110,20 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	
 	@Override
 	public <RET> Future2<RET> submitSupplier(SupplierExt<RET> callable) {
-		return submitTo(this, new FutureTaskX<>(callable));
+		IRunnableFuture2<RET> futureTask2 = new AbstractRunnableFuture2<RET>() {
+			@Override
+			protected RET invokeToResult() {
+				return callable.get();
+			}
+		};
+		return submitTo(this, futureTask2);
 	}
 	
+	/* FIXME: review interaction with OperationMonitor */
+
 	@Override
 	public <RET> Future2<OperationResult<RET>> submitOp(OperationCallable<RET> opCallable) {
-		return submitTo(this, new CommonResultFutureTask<>(opCallable.toResultSupplier()));
-	}
-	
-	// This adapter is only needed because CommonFuture is not a true alias.
-	protected class CommonResultFutureTask<RET> extends FutureTaskX<OperationResult<RET>> 
-		implements Future2<OperationResult<RET>> {
-		
-		public CommonResultFutureTask(CallableX<OperationResult<RET>, RuntimeException> callable) {
-			super(callable);
-		}
+		return submitSupplier(opCallable.toResultSupplier());
 	}
 	
 	/* -----------------  Uncaught exception handling  ----------------- */
