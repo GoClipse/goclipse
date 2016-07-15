@@ -22,7 +22,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.operations.WorkbenchOperationExecutor;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
-import melnorme.lang.tooling.common.ops.MonitorOperationCallable;
+import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -60,15 +60,12 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 	@Override
 	public void doTrySaveBuffer() throws CommonException, OperationCancellation {
 		if(Display.getCurrent() == null) {
-			MonitorOperationCallable<Void> operationCallable = new MonitorOperationCallable<Void>(
-					new NullOperationMonitor()) {
-				@Override
-				public Void call() throws CommonException, OperationCancellation {
-					saveBuffer();
-					return null;
-				}
+			ResultOperation<Void> operationCallable2 = (om) -> {
+				saveBuffer();
+				return null;
 			};
-			IRunnableFuture2<OperationResult<Void>> resultRunnable = operationCallable.toRunnableFuture();
+			IRunnableFuture2<OperationResult<Void>> resultRunnable = operationCallable2.toRunnableFuture(
+				new NullOperationMonitor());
 			Display.getDefault().syncExec(resultRunnable);
 			resultRunnable.awaitResult2().get(); // unwrap result and exceptions
 		} else {

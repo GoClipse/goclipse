@@ -45,17 +45,8 @@ public interface ResultOperation<RET> extends Function<IOperationMonitor, Operat
 	
 	/* -----------------  ----------------- */
 	
-	default MonitorOperationCallable<RET> toOperationCallable(IOperationMonitor om) {
-		return new MonitorOperationCallable<RET>(om) {
-			@Override
-			public RET call() throws CommonException, OperationCancellation {
-				return ResultOperation.this.callOp(om);
-			}
-		};
-	}
-	
 	default IRunnableFuture2<OperationResult<RET>> toRunnableFuture(IOperationMonitor om) {
-		return toOperationCallable(om).toRunnableFuture();
+		return new OperationFuture<RET>(ResultOperation.this, om);
 	}
 	
 	/* -----------------  ----------------- */

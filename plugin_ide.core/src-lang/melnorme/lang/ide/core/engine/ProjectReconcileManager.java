@@ -127,10 +127,10 @@ abstract class AbstractProjectReconcileManager {
 			} catch(InterruptedException | OperationCancellation e) {
 				return;
 			}
-			if(cancelMonitor.isCanceled()) {
+			if(isCancelled()) {
 				return;
 			}
-			doProjectReconcile(project, cancelMonitor);
+			doProjectReconcile(project, getCancelMonitor());
 			
 			removeProjectInfo(this);
 		}

@@ -23,20 +23,7 @@ public abstract class MonitorRunnableFuture<RET>
 	extends AbstractRunnableFuture2<RET> 
 {
 	
-	public static MonitorRunnableFuture<Void> fromRunnable(Runnable runnable) {
-		assertNotNull(runnable);
-		return new MonitorRunnableFuture<Void>() {
-			@Override
-			protected Void invokeToResult() {
-				runnable.run();
-				return null;
-			}
-		};
-	}
-	
-	/* -----------------  ----------------- */
-	
-	protected final CancelMonitor cancelMonitor;
+	private final CancelMonitor cancelMonitor;
 	
 	public MonitorRunnableFuture() {
 		this(new CancelMonitor());
@@ -44,6 +31,10 @@ public abstract class MonitorRunnableFuture<RET>
 	
 	public MonitorRunnableFuture(CancelMonitor cancelMonitor) {
 		this.cancelMonitor = assertNotNull(cancelMonitor);
+	}
+	
+	public CancelMonitor getCancelMonitor() {
+		return cancelMonitor;
 	}
 	
 	@Override

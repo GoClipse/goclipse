@@ -51,7 +51,7 @@ public class OperationResult<DATA> extends Result<DATA, Exception> {
 	}
 	
 	/* -----------------  ----------------- */
-	/* FIXME: review RuntimeException */
+	
 	public static <RET> OperationResult<RET> callToResult(OperationCallable<RET> operationCallable) {
 		try {
 			return new OperationResult<>(operationCallable.call());
