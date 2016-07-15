@@ -30,6 +30,7 @@ import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.concurrency.CancellableTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -56,8 +57,8 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 	
 	@Override
 	protected void dispose_post() {
-		super.dispose_post();
 		executor.shutdownNowAndCancelAll();
+		super.dispose_post();
 	}
 	
 	protected final IStructureModelListener problemUpdaterListener = new IStructureModelListener() {
@@ -76,11 +77,11 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 				// Ignore
 				return;
 			}
-			executor.submitR(task);
+			executor.submitTask(task);
 		}
 	};
 	
-	protected static class UpdateProblemMarkersTask implements Runnable {
+	protected static class UpdateProblemMarkersTask extends CancellableTask {
 		
 		protected final StructureInfo structureInfo;
 		protected final Location location;
@@ -95,7 +96,7 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 		}
 		
 		@Override
-		public void run() {
+		protected void doRun() {
 			try {
 				checkIsStillValid();
 				

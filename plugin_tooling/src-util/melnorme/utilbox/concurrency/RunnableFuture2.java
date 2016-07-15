@@ -23,7 +23,7 @@ import melnorme.utilbox.core.fntypes.Result;
  * @param <EXCEPTION> The exception thrown by the result methods. 
  * 
  */
-public class RunnableFuture2<RET> extends AbstractRunnableFuture<RET> {
+public class RunnableFuture2<RET> extends AbstractRunnableFuture2<RET> {
 	
 	protected final Callable2<RET, RuntimeException> callable;
 	
@@ -35,21 +35,14 @@ public class RunnableFuture2<RET> extends AbstractRunnableFuture<RET> {
 	protected RET invokeToResult() {
 		return callable.invoke();
 	}
-	
-	/* -----------------  ----------------- */
-	
-	
-	public static <RET, EXC extends Throwable> ResultRunnableFuture<RET, EXC> toResultRunnableFuture(
-			Callable2<RET, EXC> callable) {
-		return new ResultRunnableFuture<RET, EXC>(callable);
+
+	public static <RET> IRunnableFuture2<RET> toFuture(Callable2<RET, RuntimeException> callable) {
+		return new RunnableFuture2<>(callable);
 	}
 	
-	public static class ResultRunnableFuture<RET, EXC extends Throwable> extends RunnableFuture2<Result<RET, EXC>> {
-		
-		public ResultRunnableFuture(Callable2<RET, EXC> callable) {
-			super(callable::callToResult);
-		}
-		
+	public static <RET, EXC extends Throwable> IRunnableFuture2<Result<RET, EXC>> toResultFuture(
+			Callable2<RET, EXC> callable) {
+		return toFuture(callable::callToResult);
 	}
 	
 }

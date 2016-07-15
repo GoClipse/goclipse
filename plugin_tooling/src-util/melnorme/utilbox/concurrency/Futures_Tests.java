@@ -130,7 +130,7 @@ abstract class AbstractFutureTest extends CommonTest {
 		LatchRunnable2 latchRunnable = new InterruptibleEndlessRunnable();
 		runnableFuture = initFuture_fromRunnable(latchRunnable);
 		assertTrue(getFuture().isDone() == false);
-		executor.submitRunnable(getFuture());
+		executor.submitTask(getFuture());
 		return latchRunnable;
 	}
 	
@@ -204,22 +204,6 @@ public abstract class Futures_Tests extends CommonTest {
 		@Override
 		protected IRunnableFuture2<Object> initFuture(CallableX<Object, RuntimeException> callable) {
 			return runnableFuture = new RunnableFuture2<>(callable);
-		}
-		
-		@Override
-		protected void cancelFuture() {
-			getFuture().tryCancel();
-//			verifyThrows(() -> getFuture().awaitResult2(), OperationCancellation.class);
-		}
-		
-		@Override
-		protected void testExpectInterruptionOfRunningTask(LatchRunnable2 latchRunnable) {
-//			super.testExpectInterruptedOfRunningTask(latchRunnable);
-		}
-		
-		@Override
-		protected void test_cancellation_before_running() {
-//			super.testCancellationBeforeRunning();
 		}
 		
 	}

@@ -22,9 +22,9 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.concurrency.Future2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.RunnableFuture2;
-import melnorme.utilbox.concurrency.RunnableFuture2.ResultRunnableFuture;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
@@ -73,15 +73,16 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return stderrReader.runnableFuture;
 	}
 	
+	/* FIXME: make static, use cancelMonitor, maybe turn into MonitorRunnableFuture */ 
 	protected class ReadAllBytesTask {
 		
 		protected final InputStream is;
 		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
-		protected final RunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> runnableFuture;
+		protected final IRunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> runnableFuture;
 		
 		public ReadAllBytesTask(InputStream is) {
 			this.is = is;
-			this.runnableFuture = new ResultRunnableFuture<ByteArrayOutputStreamExt, IOException>(this::doRun);
+			this.runnableFuture = RunnableFuture2.toResultFuture(this::doRun);
 		}
 		
 		public Future2<Result<ByteArrayOutputStreamExt, IOException>> asRunnableFuture() {

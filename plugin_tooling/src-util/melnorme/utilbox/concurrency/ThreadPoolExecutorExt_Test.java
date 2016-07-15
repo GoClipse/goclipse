@@ -42,13 +42,13 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		
 		Future<?> futureTask = executor.submit(new InvalidRunnable());
 		
-		MonitorRunnableFuture monitorFutureTask = MonitorRunnableFuture.fromRunnable(new InvalidRunnable());
-		executor.submitRunnable(monitorFutureTask);
+		MonitorRunnableFuture<Void> monitorFutureTask = MonitorRunnableFuture.fromRunnable(new InvalidRunnable());
+		executor.submitTask(monitorFutureTask);
 		
 		RunnableFuture2<Object> runnableFuture = new RunnableFuture2<>(() -> {
 			throw assertFail();
 		});
-		executor.submitRunnable(runnableFuture);
+		executor.submitTask(runnableFuture);
 		
 		
 		executingRunnable.awaitEntry();
@@ -69,8 +69,8 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		InterruptibleEndlessRunnable latchRunnable = new InterruptibleEndlessRunnable();
 		
 		// Initial task
-		MonitorRunnableFuture monitorFutureTask = MonitorRunnableFuture.fromRunnable(latchRunnable);
-		executor.submitRunnable(monitorFutureTask);
+		MonitorRunnableFuture<Void> monitorFutureTask = MonitorRunnableFuture.fromRunnable(latchRunnable);
+		executor.submitTask(monitorFutureTask);
 		
 		latchRunnable.awaitEntry();
 		executor.shutdownNowAndCancelAll();

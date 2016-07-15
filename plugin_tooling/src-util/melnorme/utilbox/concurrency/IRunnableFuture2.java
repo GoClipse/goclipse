@@ -13,10 +13,10 @@ package melnorme.utilbox.concurrency;
 import java.util.concurrent.Executor;
 
 /**
- * A Runnable future can complete by means of executing it's {@link #run()} method.
+ * A {@link Runnable} future that can complete by executing it's {@link #run()} method.
  * 
  */
-public interface IRunnableFuture2<RET> extends ICancellableTask, Future2<RET> {
+public interface IRunnableFuture2<RET> extends Runnable, ICancellableTask, Future2<RET> {
 	
 	/** 
 	 * Execute this future. Should have no effect if Future is cancelled.

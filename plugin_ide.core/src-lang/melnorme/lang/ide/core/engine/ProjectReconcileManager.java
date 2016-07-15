@@ -61,7 +61,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			getExecutor().submitRunnable(newReconcileTask);
+			getExecutor().submitTask(newReconcileTask);
 		}
 		
 	}

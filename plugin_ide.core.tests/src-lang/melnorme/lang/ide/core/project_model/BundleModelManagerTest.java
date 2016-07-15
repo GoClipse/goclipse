@@ -25,7 +25,7 @@ public class BundleModelManagerTest extends CommonCoreTest {
 		bundleMgr.startManager();
 		
 		final LatchRunnable latchRunnable = new LatchRunnable();
-		bundleMgr.getModelAgent().submitR(latchRunnable);
+		bundleMgr.getModelAgent().submitBasicRunnable(latchRunnable);
 		
 		latchRunnable.awaitTaskEntry();
 		
