@@ -13,6 +13,7 @@ package melnorme.utilbox.concurrency;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ForkJoinPool;
 
 import org.junit.After;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent_Test.Tests_ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.Futures_Tests.InterruptibleEndlessRunnable;
 import melnorme.utilbox.concurrency.Futures_Tests.InvalidRunnable;
+import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.tests.CommonTest;
 
 abstract class AbstractFutureTest extends CommonTest {
@@ -43,6 +45,8 @@ abstract class AbstractFutureTest extends CommonTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		for(int i = 0; i < 10; i++) {
+			test_result();
+			
 			testCancellation();
 		}
 	}
@@ -53,7 +57,38 @@ abstract class AbstractFutureTest extends CommonTest {
 		return runnableFuture;
 	}
 	
-	protected abstract IRunnableFuture2<?> init_Future(Runnable latchRunnable);
+	protected IRunnableFuture2<?> initFuture_fromRunnable(Runnable runnable) {
+		return initFuture(() -> {
+			runnable.run();
+			return null;
+		});
+	}
+	
+	protected abstract IRunnableFuture2<Object> initFuture(CallableX<Object, RuntimeException> callable);
+	
+	public void test_result() throws Exception {
+		
+		// Test await result
+		assertEquals("result", submitAndAwaitResult(() -> "result"));
+		
+		// Test RuntimeException handling
+		if(true) {
+			return; /* FIXME: re-enable*/
+		}
+		verifyThrows(() -> {
+			submitAndAwaitResult(() -> { 
+				throw new RuntimeException("xxx2");
+			});
+		}, RuntimeException.class, "xxx2");
+		
+	}
+	
+	protected <EXC extends Exception> Object submitAndAwaitResult(CallableX<Object, RuntimeException> callable)
+			throws OperationCancellation, InterruptedException, EXC {
+		IRunnableFuture2<Object> future = initFuture(callable);
+		ForkJoinPool.commonPool().execute(future);
+		return future.awaitResult();
+	}
 	
 	protected void testCancellation() {
 		test_cancellation_before_running();
@@ -85,7 +120,7 @@ abstract class AbstractFutureTest extends CommonTest {
 	protected void test_cancellation_before_running() {
 		init_Executor();
 		
-		runnableFuture = init_Future(new InvalidRunnable());
+		runnableFuture = initFuture_fromRunnable(new InvalidRunnable());
 		cancelFuture();
 		assertTrue(runnableFuture.isCancelled());
 		runnableFuture.run();
@@ -93,9 +128,9 @@ abstract class AbstractFutureTest extends CommonTest {
 	
 	protected LatchRunnable2 submitRunnableFuture() {
 		LatchRunnable2 latchRunnable = new InterruptibleEndlessRunnable();
-		runnableFuture = init_Future(latchRunnable);
+		runnableFuture = initFuture_fromRunnable(latchRunnable);
 		assertTrue(getFuture().isDone() == false);
-		executor.submitRunnable(getFuture());
+		executor.submitTask(getFuture());
 		return latchRunnable;
 	}
 	
@@ -147,16 +182,15 @@ public abstract class Futures_Tests extends CommonTest {
 	
 	public static class MonitorFuture_Test extends AbstractFutureTest {
 		
-		public MonitorRunnableFuture monitorFuture;
+		public MonitorRunnableFuture<Object> monitorFuture;
 		
 		@Override
-		protected IRunnableFuture2<?> init_Future(Runnable latchRunnable) {
-			monitorFuture = new MonitorRunnableFuture() {
+		protected IRunnableFuture2<Object> initFuture(CallableX<Object, RuntimeException> callable) {
+			monitorFuture = new MonitorRunnableFuture<Object>() {
 				@Override
-				protected void runTask() {
-					latchRunnable.run();
+				protected Object invokeToResult() {
+					return callable.call();
 				}
-				
 			};
 			return monitorFuture;
 		}
@@ -168,27 +202,8 @@ public abstract class Futures_Tests extends CommonTest {
 		public RunnableFuture2<Object> runnableFuture;
 		
 		@Override
-		protected IRunnableFuture2<?> init_Future(Runnable latchRunnable) {
-			return runnableFuture = new RunnableFuture2<>(() -> {
-				latchRunnable.run();
-				return null;
-			});
-		}
-		
-		@Override
-		protected void cancelFuture() {
-			getFuture().tryCancel();
-//			verifyThrows(() -> getFuture().awaitResult2(), OperationCancellation.class);
-		}
-		
-		@Override
-		protected void testExpectInterruptionOfRunningTask(LatchRunnable2 latchRunnable) {
-//			super.testExpectInterruptedOfRunningTask(latchRunnable);
-		}
-		
-		@Override
-		protected void test_cancellation_before_running() {
-//			super.testCancellationBeforeRunning();
+		protected IRunnableFuture2<Object> initFuture(CallableX<Object, RuntimeException> callable) {
+			return runnableFuture = new RunnableFuture2<>(callable);
 		}
 		
 	}

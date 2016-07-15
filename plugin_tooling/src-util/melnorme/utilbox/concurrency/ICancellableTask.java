@@ -10,28 +10,22 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import java.util.concurrent.Executor;
-
 /**
- * A {@link Runnable} future that can complete by executing it's {@link #run()} method.
- * 
+ * A concurrent task that can be cancelled.
  */
-public interface IRunnableFuture2<RET> extends Runnable, ICancellableTask, Future2<RET> {
+public interface ICancellableTask extends Runnable {
 	
-	/** 
-	 * Execute this future. Should have no effect if Future is cancelled.
-	 */
 	@Override
 	abstract void run();
 	
-	@Override
-	abstract boolean tryCancel();
-	
-	/* -----------------  ----------------- */
-	
-	default IRunnableFuture2<RET> submitTo(Executor executor) {
-		executor.execute(this);
-		return this;
-	}
+	/**
+	 * Try to cancel this task.
+	 * If cancelled before the task is run, invoking {@link #run()} will have no effect.
+	 * If cancelled while it is running, the running thread is interrupted.
+	 * Has no effect if it is called after the task has run.
+	 * @return whether the task was cancelled.
+	 * 
+	 */
+	boolean tryCancel();
 	
 }

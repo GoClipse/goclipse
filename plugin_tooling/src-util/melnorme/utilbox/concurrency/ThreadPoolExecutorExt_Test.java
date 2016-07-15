@@ -11,6 +11,7 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CancellationException;
@@ -42,13 +43,13 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		
 		Future<?> futureTask = executor.submit(new InvalidRunnable());
 		
-		MonitorRunnableFuture monitorFutureTask = MonitorRunnableFuture.fromRunnable(new InvalidRunnable());
-		executor.submitRunnable(monitorFutureTask);
+		MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(new InvalidRunnable());
+		executor.submitTask(monitorFutureTask);
 		
 		RunnableFuture2<Object> runnableFuture = new RunnableFuture2<>(() -> {
 			throw assertFail();
 		});
-		executor.submitRunnable(runnableFuture);
+		executor.submitTask(runnableFuture);
 		
 		
 		executingRunnable.awaitEntry();
@@ -69,8 +70,8 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		InterruptibleEndlessRunnable latchRunnable = new InterruptibleEndlessRunnable();
 		
 		// Initial task
-		MonitorRunnableFuture monitorFutureTask = MonitorRunnableFuture.fromRunnable(latchRunnable);
-		executor.submitRunnable(monitorFutureTask);
+		MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(latchRunnable);
+		executor.submitTask(monitorFutureTask);
 		
 		latchRunnable.awaitEntry();
 		executor.shutdownNowAndCancelAll();
@@ -83,6 +84,17 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		// Ensure executing runnable was interrupted and continued
 		latchRunnable.awaitExit();
 		assertTrue(latchRunnable.interrupted);
+	}
+	
+	public static MonitorRunnableFuture<Void> monitorRunnableFuture(Runnable runnable) {
+		assertNotNull(runnable);
+		return new MonitorRunnableFuture<Void>() {
+			@Override
+			protected Void invokeToResult() {
+				runnable.run();
+				return null;
+			}
+		};
 	}
 	
 }

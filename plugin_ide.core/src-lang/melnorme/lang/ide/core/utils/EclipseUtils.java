@@ -193,10 +193,10 @@ public class EclipseUtils {
 	}
 	
 	public static IOperationMonitor om(IProgressMonitor pm) {
-		return new BasicOperationMonitor(cm(pm), null, true) {
+		return new BasicOperationMonitor(cm(pm)) {
 			
 			@Override
-			public void setTaskName(String taskName) {
+			public void setTaskLabel(String taskName) {
 				pm.setTaskName(taskName);
 			}
 		};

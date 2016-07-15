@@ -15,9 +15,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
 import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.OperationCallable;
-import melnorme.utilbox.core.fntypes.OperationResult;
-import melnorme.utilbox.core.fntypes.SupplierExt;
 
 /**
  * A few minor additions to {@link IBasicExecutor}
@@ -30,23 +27,31 @@ public interface ICommonExecutor extends IBasicExecutor {
 	
 	/* -----------------  ----------------- */
 	
-	/** Submit a {@link IRunnableFuture2} for execution. */
-	void submitRunnable(IRunnableFuture2<?> futureTask);
-	
-	/** Same as {@link ExecutorService#submit(Callable)}, but using {@link SupplierExt} instead, 
-	 * which has with a more strict exception throwing API. */
-	<RET> Future2<RET> submitSupplier(SupplierExt<RET> callable);
-	
-	/** Similar to {@link #submitX(CallableX)}, but using an {@link OperationCallable}. */
-	<RET> Future2<OperationResult<RET>> submitOp(OperationCallable<RET> opCallable);
+	/** Submit a {@link ICancellableTask} for execution. */
+	void submitTask(ICancellableTask runnableTask);
 	
 	
-	default <RET> BasicFuture<RET> submitR(Runnable runnable) {
-		return submitSupplier(() -> {
+	/** Submit a {@link IRunnableFuture2} for execution. @return the given future. */
+	default <RET> Future2<RET> submitFuture(IRunnableFuture2<RET> runnableFuture) {
+		submitTask(runnableFuture);
+		return runnableFuture;
+	}
+	
+	/** Same as {@link ExecutorService#submit(Runnable)}, but returning a {@link BasicFuture}. */
+	default <RET> BasicFuture<RET> submitBasicRunnable(Runnable runnable) {
+		return submitBasicCallable(() -> {
 			runnable.run();
 			return null;
 		});
 	}
+	
+	/** Same as {@link ExecutorService#submit(Callable)}, 
+	 * but using {@link CallableX} instead, and returning a {@link Future2}. */
+	default <RET> Future2<RET> submitBasicCallable(CallableX<RET, RuntimeException> callable) {
+		return submitFuture(new RunnableFuture2<RET>(callable));
+	}
+	
+	/* -----------------  ----------------- */
 	
 	/** 
 	 * @return the total number of tasks that have been submitted for execution (including possibly rejected tasks).

@@ -21,12 +21,13 @@ import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.operations.WorkbenchOperationExecutor;
 import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.OperationResult;
-import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -59,13 +60,14 @@ public class EditorSourceBuffer implements ISourceBufferExt {
 	@Override
 	public void doTrySaveBuffer() throws CommonException, OperationCancellation {
 		if(Display.getCurrent() == null) {
-			OperationCallable<Void> operationCallable = () -> {
+			ResultOperation<Void> operationCallable2 = (om) -> {
 				saveBuffer();
 				return null;
 			};
-			RunnableFuture2<OperationResult<Void>> resultRunnable = operationCallable.toRunnableFuture();
+			IRunnableFuture2<OperationResult<Void>> resultRunnable = operationCallable2.toRunnableFuture(
+				new NullOperationMonitor());
 			Display.getDefault().syncExec(resultRunnable);
-			resultRunnable.awaitResult2().get();
+			resultRunnable.awaitResult2().get(); // unwrap result and exceptions
 		} else {
 			saveBuffer();
 		}

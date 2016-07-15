@@ -61,7 +61,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			getExecutor().submitRunnable(newReconcileTask);
+			getExecutor().submitTask(newReconcileTask);
 		}
 		
 	}
@@ -83,7 +83,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 	}
 	
-	public class ProjectReconcileTask extends MonitorRunnableFuture {
+	public class ProjectReconcileTask extends MonitorRunnableFuture<Void> {
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;
@@ -108,6 +108,11 @@ abstract class AbstractProjectReconcileManager {
 		}
 		
 		@Override
+		protected Void invokeToResult() {
+			runTask();
+			return null;
+		}
+		
 		protected void runTask() {
 			try {
 				try {
@@ -122,10 +127,10 @@ abstract class AbstractProjectReconcileManager {
 			} catch(InterruptedException | OperationCancellation e) {
 				return;
 			}
-			if(cancelMonitor.isCanceled()) {
+			if(isCancelled()) {
 				return;
 			}
-			doProjectReconcile(project, cancelMonitor);
+			doProjectReconcile(project, getCancelMonitor());
 			
 			removeProjectInfo(this);
 		}

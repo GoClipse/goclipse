@@ -48,13 +48,13 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	protected void initializeModelManagerWithModelAgent() {
 		// Put a latch runnable to prevent model from actually starting
 		// This is because typically we want model to start only after UI code is fully loaded 
-		modelAgent.submitR(startLatch);
+		modelAgent.submitBasicRunnable(startLatch);
 		
 		// Run heavyweight initialization in executor thread.
 		// This is necessary so that we avoid running the initialization during plugin initialization.
 		// Otherwise there could be problems because initialization is heavyweight code:
 		// it requests workspace locks (which may not be available) and issues workspace deltas
-		modelAgent.submitR(new Runnable() {
+		modelAgent.submitBasicRunnable(new Runnable() {
 			@Override
 			public void run() {
 				initializeModelManager();

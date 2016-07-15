@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -29,11 +28,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-
-import melnorme.utilbox.core.fntypes.CallableX;
-import melnorme.utilbox.core.fntypes.OperationCallable;
-import melnorme.utilbox.core.fntypes.OperationResult;
-import melnorme.utilbox.core.fntypes.SupplierExt;
 
 /**
  * An extension to {@link ThreadPoolExecutor}: 
@@ -83,14 +77,11 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	@Override
-	public void submitRunnable(IRunnableFuture2<?> futureTask) {
-		this.execute(futureTask);
+	public void submitTask(ICancellableTask runnableTask) {
+		this.execute(runnableTask);
 	}
 	
-	public static <FT extends FutureTaskX<?>> FT submitTo(Executor executor, FT futureTask2) {
-		executor.execute(futureTask2);
-		return futureTask2;
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
 	public List<Runnable> shutdownNowAndCancelAll() {
@@ -105,27 +96,6 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 			}
 		}
 		return remaining;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public <RET> Future2<RET> submitSupplier(SupplierExt<RET> callable) {
-		return submitTo(this, new FutureTaskX<>(callable));
-	}
-	
-	@Override
-	public <RET> Future2<OperationResult<RET>> submitOp(OperationCallable<RET> opCallable) {
-		return submitTo(this, new CommonResultFutureTask<>(opCallable.toResultSupplier()));
-	}
-	
-	// This adapter is only needed because CommonFuture is not a true alias.
-	protected class CommonResultFutureTask<RET> extends FutureTaskX<OperationResult<RET>> 
-		implements Future2<OperationResult<RET>> {
-		
-		public CommonResultFutureTask(CallableX<OperationResult<RET>, RuntimeException> callable) {
-			super(callable);
-		}
 	}
 	
 	/* -----------------  Uncaught exception handling  ----------------- */

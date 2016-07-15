@@ -17,22 +17,22 @@ public interface Future2<RESULT> extends BasicFuture<RESULT> {
 	/** 
 	 * Attempts to cancel execution of this task. This attempt will fail if the task has already completed, 
 	 * has already been cancelled, or could not be cancelled for some other reason.
-	 *  
+	 * 
 	 * If successful, and this task has not started when cancel is called, this task should never run.
 	 */
-    boolean tryCancel();
-    
-    /**
-     * @return the result of this future if it is done, throw a cancellation exception othewise.
-     * As a consequence this method is non-blocking. 
-     */
-    default RESULT cancelOrGetResult() throws OperationCancellation {
-    	tryCancel();
-    	try {
+	boolean tryCancel();
+	
+	/**
+	 * @return the result of this future if it is done, throw a cancellation exception othewise.
+	 * As a consequence this method is non-blocking. 
+	 */
+	default RESULT cancelOrGetResult() throws OperationCancellation {
+		tryCancel();
+		try {
 			return awaitResult();
 		} catch(InterruptedException e) {
 			throw assertFail();
 		}
-    }
-    
+	}
+	
 }

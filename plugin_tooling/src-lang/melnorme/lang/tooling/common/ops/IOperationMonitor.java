@@ -18,6 +18,10 @@ import melnorme.utilbox.core.CommonException;
 
 public interface IOperationMonitor extends ICancelMonitor {
 	
+	String getOperationName();
+	
+	void setTaskLabel(String taskLabel);
+	
 	abstract IOperationSubMonitor enterSubTask(String subTaskName);
 	
 	default void runSubTask(String subTaskName, Operation subOp) throws CommonException, OperationCancellation {
@@ -33,13 +37,16 @@ public interface IOperationMonitor extends ICancelMonitor {
 		protected final ICancelMonitor cm;
 		protected final String operationName; // can be null
 		
+		public BasicOperationMonitor(ICancelMonitor cm) {
+			this(cm, null, true);
+		}
 		
 		public BasicOperationMonitor(ICancelMonitor cm, String operationName, boolean initialize) {
 			this.cm = assertNotNull(cm);
 			this.operationName = operationName;
 			
 			if(initialize) {
-				setTaskName();
+				initializeLabel();
 			}
 		}
 		
@@ -48,13 +55,16 @@ public interface IOperationMonitor extends ICancelMonitor {
 			return cm.isCanceled();
 		}
 		
-		public void setTaskName() {
-			if(operationName != null) {
-				setTaskName(operationName);
-			}
+		@Override
+		public String getOperationName() {
+			return operationName;
 		}
 		
-		public abstract void setTaskName(String taskName);
+		public void initializeLabel() {
+			if(getOperationName() != null) {
+				setTaskLabel(getOperationName());
+			}
+		}
 		
 		@Override
 		public IOperationSubMonitor enterSubTask(String subTaskName) {
@@ -72,23 +82,27 @@ public interface IOperationMonitor extends ICancelMonitor {
 	
 	public class OperationSubMonitor extends BasicOperationMonitor implements IOperationSubMonitor {
 		
-		protected final BasicOperationMonitor parentMonitor;
+		protected final IOperationMonitor parentMonitor;
+		protected final String originalTaskName;
 		
-		public OperationSubMonitor(BasicOperationMonitor parentMonitor, String operationName) {
-			super(parentMonitor.cm, operationName, false);
+		public OperationSubMonitor(IOperationMonitor parentMonitor, String operationName) {
+			super(parentMonitor, operationName, false);
 			this.parentMonitor = assertNotNull(parentMonitor);
+			this.originalTaskName = parentMonitor.getOperationName();
 			
-			setTaskName();
+			initializeLabel();
 		}
 		
 		@Override
 		public void close() {
-			parentMonitor.setTaskName();
+			if(originalTaskName != null) {
+				parentMonitor.setTaskLabel(originalTaskName);
+			}
 		}
 		
 		@Override
-		public void setTaskName(String taskName) {
-			parentMonitor.setTaskName(taskName);
+		public void setTaskLabel(String taskName) {
+			parentMonitor.setTaskLabel(taskName);
 		}
 		
 	}
@@ -104,8 +118,40 @@ public interface IOperationMonitor extends ICancelMonitor {
 		}
 		
 		@Override
-		public void setTaskName(String taskName) {
+		public void setTaskLabel(String taskName) {
 			// Do nothing
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public class DelegatingOperationMonitor implements IOperationMonitor {
+		
+		protected final IOperationMonitor om;
+		
+		public DelegatingOperationMonitor(IOperationMonitor om) {
+			this.om = assertNotNull(om);
+		}
+		
+		@Override
+		public boolean isCanceled() {
+			return om.isCanceled();
+		}
+		
+		@Override
+		public String getOperationName() {
+			return om.getOperationName();
+		}
+		
+		@Override
+		public void setTaskLabel(String taskLabel) {
+			om.setTaskLabel(taskLabel);
+		}
+		
+		@Override
+		public IOperationSubMonitor enterSubTask(String subTaskName) {
+			return new OperationSubMonitor(this, subTaskName);
 		}
 		
 	}

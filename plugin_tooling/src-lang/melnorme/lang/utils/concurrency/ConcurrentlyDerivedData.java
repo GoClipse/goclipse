@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.utilbox.concurrency.ICancelMonitor;
-import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.concurrency.CancellableTask;
 import melnorme.utilbox.concurrency.NonCancellableFuture;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.fields.ListenerListHelper;
 
@@ -134,7 +134,7 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	
 	/* -----------------  ----------------- */
 	
-	public static abstract class DataUpdateTask<DATA> implements Runnable {
+	public static abstract class DataUpdateTask<DATA> extends CancellableTask {
 		
 		protected final ConcurrentlyDerivedData<DATA, ?> derivedData;
 		protected final String taskDisplayName;
@@ -144,41 +144,12 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 			this.derivedData = derivedData;
 		}
 		
-		private boolean cancelled = false;
-		private Thread thread;
-		
-		protected final ICancelMonitor cm = this::isCancelled;
-		
-		public synchronized void cancel() {
-			cancelled = true;
-			if(thread != null) {
-				thread.interrupt();
-			}
-		}
-		
-		public synchronized boolean isCancelled() {
-			return cancelled;
+		@Override
+		public String getTaskDisplayName() {
+			return taskDisplayName;
 		}
 		
 		@Override
-		public final void run() {
-			synchronized(this) {
-				if(cancelled) {
-					return;
-				} else {
-					thread = Thread.currentThread();
-				}
-			}
-			
-			String originalName = thread.getName();
-			try {
-				thread.setName(originalName + " >> " + taskDisplayName);
-				doRun();
-			} finally {
-				thread.setName(originalName);
-			}
-		}
-		
 		protected final void doRun() {
 			try {
 				DATA newData = createNewData();

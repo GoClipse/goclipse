@@ -13,10 +13,9 @@ package melnorme.lang.tooling.common.ops;
 import java.util.function.Function;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
+import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.core.fntypes.OperationResult;
 
 /**
@@ -40,21 +39,14 @@ public interface ResultOperation<RET> extends Function<IOperationMonitor, Operat
 		}
 	}
 	
-	default OperationCallable<RET> toOperationCallable(IOperationMonitor om) {
-		return new OperationCallable<RET>() {
-			@Override
-			public RET call() throws CommonException, OperationCancellation {
-				return callOp(om);
-			}
-		};
-	}
-	
-	default RunnableFuture2<OperationResult<RET>> toRunnableFuture(IOperationMonitor om) {
-		return toOperationCallable(om).toRunnableFuture();
-	}
-	
 	default OperationResult<RET> executeToResult(IOperationMonitor om) {
-		return toOperationCallable(om).callToResult();
+		return apply(om);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	default IRunnableFuture2<OperationResult<RET>> toRunnableFuture(IOperationMonitor om) {
+		return new OperationFuture<RET>(ResultOperation.this, om);
 	}
 	
 	/* -----------------  ----------------- */
