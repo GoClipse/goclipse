@@ -15,6 +15,16 @@ package melnorme.utilbox.concurrency;
  */
 public interface ICancellableTask extends Runnable {
 	
+	/**
+	 * @return whether this task is in a state that allows it to run. 
+	 * Most task implementations can only execute once.
+	 * This method is useful mainly for tests and contract checking.
+	 */
+	abstract boolean canExecute();
+	
+	/** 
+	 * Execute this task.
+	 */
 	@Override
 	abstract void run();
 	

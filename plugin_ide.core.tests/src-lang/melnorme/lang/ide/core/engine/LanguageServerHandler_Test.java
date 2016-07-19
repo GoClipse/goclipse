@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
@@ -22,23 +23,38 @@ import melnorme.lang.ide.core.utils.operation.EclipseJobExecutor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class LanguageServerHandler_Test extends CommonCoreTest {
 	
 	@Test
-	public void test() throws Exception { test$(); }
+	public void test() throws Exception {
+		for(int i = 0; i < 10; i++) {
+			test$();
+		}
+	}
+	
 	public void test$() throws Exception {
+		CountDownLatch doCreatelatch = new CountDownLatch(1);
+		
 		LanguageServerHandler<LanguageServerInstance> lsHandler = new LanguageServerHandler<LanguageServerInstance>(
 				new EclipseJobExecutor(), LangCore.getToolManager()
 		) {
-
+			
+			@Override
+			public Path getServerPath() throws CommonException {
+				return MiscUtil.createValidPath("LanguageServerHandler_Test/blah");
+			}
+			
 			@Override
 			protected LanguageServerInstance doCreateServerInstance(IOperationMonitor om)
 					throws CommonException, OperationCancellation {
 				try {
+					doCreatelatch.countDown();
+					
 					new CountDownLatch(1).await(); // await forever until interrupted
 				} catch(InterruptedException e) {
-					return null;
+					return null; // This is the exit path the test expects
 				} 
 				throw assertFail();
 			}
@@ -58,8 +74,10 @@ public class LanguageServerHandler_Test extends CommonCoreTest {
 			});
 			thread.start();
 			
+			doCreatelatch.await();
+			
 			lsHandler.stopServerInstance();
-			thread.join(); // Test that getReadyServerInstance is cancelled
+			thread.join(); // Test that getReadyServerInstance is cancelled due to stopServerInstance
 		} finally {
 			lsHandler.close();
 		}

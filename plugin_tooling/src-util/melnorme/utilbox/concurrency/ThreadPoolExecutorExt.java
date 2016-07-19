@@ -78,6 +78,8 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	
 	@Override
 	public void submitTask(ICancellableTask runnableTask) {
+		// Check this assertion contract early, and in submitor's thread.
+		assertTrue(runnableTask.canExecute());
 		this.execute(runnableTask);
 	}
 	
