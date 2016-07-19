@@ -62,7 +62,7 @@ public abstract class AbstractFuture2<RET> implements Future2<RET> {
 	
 	/* -----------------  ----------------- */ 
 	
-	public Future<RET> asFuture1() {
+	public Future<RET> asJavaUtilFuture() {
 		return asFuture;
 	}
 	

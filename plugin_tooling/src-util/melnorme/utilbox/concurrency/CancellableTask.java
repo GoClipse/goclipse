@@ -35,6 +35,15 @@ public abstract class CancellableTask implements ICancellableTask {
 		return cancelled;
 	}
 	
+	@Override
+	public boolean canExecute() {
+		return !hasExecuted();
+	}
+	
+	public synchronized boolean hasExecuted() {
+		return executed;
+	}
+	
 	public void cancel() {
 		tryCancel();
 	}

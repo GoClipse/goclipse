@@ -85,6 +85,7 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	
 	public synchronized void setUpdateTask(DataUpdateTask<DATA> newUpdateTask) {
 		assertNotNull(newUpdateTask);
+		assertTrue(!newUpdateTask.hasExecuted());
 		assertTrue(latestUpdateTask != newUpdateTask);
 		
 		if(latestUpdateTask == null) {

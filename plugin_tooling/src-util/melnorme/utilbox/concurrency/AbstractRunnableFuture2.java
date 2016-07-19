@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import java.util.concurrent.FutureTask;
-
 public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET> 
 	implements IRunnableFuture2<RET>	
 {
@@ -21,15 +19,25 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	}
 	
 	/**
-	 * FutureTask is only used to wrap the internalTaskRun method, so that
-	 * - internalTaskRun not run if task already cancelled.
-	 * - if a thread is currently running the future, interrupt the thread if future is cancelled
+	 * CancellableTask is use for:
+	 * - not run task if task already cancelled.
+	 * - if a thread is currently running the internalTaskRun, interrupt the thread if future is cancelled.
 	 */
-	private final FutureTask<RET> futureTask = new FutureTask<RET>(this::internalTaskRun, null);
+	private final CancellableTask cancellableTask = new CancellableTask() {
+		@Override
+		protected void doRun() {
+			AbstractRunnableFuture2.this.internalTaskRun();
+		}
+	};
+	
+	@Override
+	public boolean canExecute() {
+		return cancellableTask.canExecute();
+	}
 	
 	@Override
 	public final void run() {
-		futureTask.run();
+		cancellableTask.run();
 	}
 	
 	protected void internalTaskRun() {
@@ -42,7 +50,7 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	
 	@Override
 	protected void handleCancellation() {
-		futureTask.cancel(true);
+		cancellableTask.tryCancel();
 	}
 	
 }
