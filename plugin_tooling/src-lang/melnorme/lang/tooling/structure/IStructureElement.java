@@ -10,8 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.structure;
 
+import java.util.Optional;
+
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.misc.Location;
 
 
 /**
@@ -48,5 +51,15 @@ public interface IStructureElement extends IStructureElementContainer {
 	
 	/** @return the containing {@link ISourceFileStructure} of this element. Can be null. */
 	ISourceFileStructure getContainingFileStructure();
+	
+	
+	/** @return the optional Location of this structure element. */
+	default Optional<Location> getLocation() {
+		ISourceFileStructure containingFileStructure = getContainingFileStructure();
+		if(containingFileStructure == null) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(containingFileStructure.getLocation());
+	}
 	
 }
