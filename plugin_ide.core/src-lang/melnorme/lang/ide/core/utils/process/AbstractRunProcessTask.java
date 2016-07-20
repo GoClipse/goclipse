@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.utils.process;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -43,7 +44,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		
 		Process process;
 		try {
-			process = ExternalProcessNotifyingHelper.startProcess(pb);
+			process = ProcessUtils.startProcess(pb);
 		} catch (CommonException ce) {
 			handleProcessStartResult(new ProcessStartHelper() {
 				@Override

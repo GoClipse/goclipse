@@ -124,8 +124,8 @@ public class ExternalProcessHelper_Test extends CommonTest {
 			}
 			
 			@Override
-			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
-				byteArray.reset();
+			protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
+				assertTrue(byteArray.size() == 0);
 			}
 		}
 	}

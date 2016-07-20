@@ -16,19 +16,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.IByteSequence;
-import melnorme.utilbox.misc.StreamUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 /**
  * Helper for running external processes.
@@ -39,11 +33,7 @@ import melnorme.utilbox.misc.StringUtil;
 public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	protected ReadAllBytesTask mainReader;
-	protected ReadAllBytesTask stderrReader;
-	
-	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
-		this(pb.start(), pb.redirectErrorStream() == false, true);
-	}
+	protected ReadAllBytesTask stderrReader; // Can be null
 	
 	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
 		this(process, readStdErr, startReaders, null);
@@ -69,91 +59,24 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor);
 	}
 	
-	/* FIXME: maybe turn into MonitorRunnableFuture */ 
-	protected static class ReadAllBytesTask 
-		extends AbstractRunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> 
-	{
+	protected static class ReadAllBytesTask extends ReaderTask<ByteArrayOutputStreamExt> {
 		
-		protected final InputStream is;
-		protected final ICancelMonitor cancelMonitor;
 		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
 		
 		public ReadAllBytesTask(InputStream is, ICancelMonitor cancelMonitor) {
-			this.is = assertNotNull(is);
-			this.cancelMonitor = assertNotNull(cancelMonitor);
+			super(is, cancelMonitor);
 		}
 		
 		@Override
-		protected Result<ByteArrayOutputStreamExt, IOException> internalInvoke() {
-			return Result.callToResult(this::doRun);
+		protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
+			byteArray.write(buffer, 0, readCount);
 		}
 		
-		public ByteArrayOutputStreamExt doRun() throws IOException {
-			// BM: Hum, should we treat an IOException not as an error, but just like an EOF?
-			try {
-				final int BUFFER_SIZE = 1024;
-				byte[] buffer = new byte[BUFFER_SIZE];
-				
-				int read;
-				while((read = is.read(buffer)) != StreamUtil.EOF && !cancelMonitor.isCanceled()) {
-					byteArray.write(buffer, 0, read);
-					notifyReadChunk(buffer, 0, read);
-				}
-				return byteArray;
-			} finally {
-				is.close();
-			}
+		@Override
+		protected ByteArrayOutputStreamExt doGetReturnValue() {
+			return byteArray;
 		}
 		
-		@SuppressWarnings("unused")
-		protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
-			// Default implementation: do nothing
-		}
-		
-	}
-	
-	/* ----------------- ----------------- */
-	
-	protected CommonException createCommonException(String message, Throwable cause) {
-		return new CommonException(message, cause);
-	}
-	
-	public static Process startProcess(ProcessBuilder pb) throws CommonException {
-		try {
-			return pb.start();
-		} catch (IOException ioe) {
-			String msg = ioe.getMessage();
-			if(msg == null) {
-				msg = ProcessHelperMessages.ExternalProcess_CouldNotStart;
-			}
-			throw new CommonException(msg, ioe);
-		}
-	}
-	
-	/* ----------------- writing helpers ----------------- */
-	
-	public void writeInput(String input) throws IOException {
-		writeInput(input, StringUtil.UTF8);
-	}
-	
-	public void writeInput(String input, Charset charset) throws IOException {
-		if(input == null)
-			return;
-		
-		OutputStream processInputStream = getProcess().getOutputStream();
-		StreamUtil.writeStringToStream(input, processInputStream, charset);
-	}
-	
-	public void writeInput_(String input) throws CommonException {
-		writeInput_(input, StringUtil.UTF8);
-	}
-	
-	public void writeInput_(String input, Charset charset) throws CommonException {
-		try {
-			writeInput(input, charset);
-		} catch (IOException e) {
-			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorWritingInput, e);
-		}
 	}
 	
 	/* ----------------- result helpers ----------------- */
@@ -171,7 +94,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return null;
 	}
 	
-	public class ExternalProcessResult {
+	public static class ExternalProcessResult {
 		
 		public final int exitValue;
 		public final ByteArrayOutputStreamExt stdout;
