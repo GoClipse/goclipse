@@ -11,6 +11,7 @@
 package melnorme.utilbox.core.fntypes;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class Result<DATA, EXC extends Throwable> {
@@ -88,6 +89,17 @@ public class Result<DATA, EXC extends Throwable> {
 		}
 		if(resultException != null) {
 			throw (EXC) resultException;
+		}
+	}
+	
+	public static <RET, EXC  extends Throwable> Result<RET, EXC> callToResult(Callable2<RET, EXC> callable2) {
+		assertNotNull(callable2);
+		try {
+			return Result.fromValue(callable2.invoke());
+		} catch(Throwable e) {
+			@SuppressWarnings("unchecked")
+			EXC exc = (EXC) e;
+			return new Result<>(null, exc);
 		}
 	}
 	

@@ -228,7 +228,7 @@ public abstract class Futures_Tests extends CommonTest {
 		protected MonitorRunnableFuture<Object> initFuture(CallableX<Object, RuntimeException> callable) {
 			return new MonitorRunnableFuture<Object>() {
 				@Override
-				protected Object invoke() {
+				protected Object internalInvoke() {
 					return callable.call();
 				}
 			};

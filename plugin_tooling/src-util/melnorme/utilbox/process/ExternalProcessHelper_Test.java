@@ -101,14 +101,12 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		
 		@Override
 		protected Runnable createMainReaderTask() {
-			mainReader = new EndlessReadTask(process.getInputStream());
-			return mainReader.runnableFuture;
+			return mainReader = new EndlessReadTask(process.getInputStream());
 		}
 		
 		@Override
 		protected Runnable createStdErrReaderTask() {
-			stderrReader = new EndlessReadTask(process.getErrorStream());
-			return stderrReader.runnableFuture;
+			return stderrReader = new EndlessReadTask(process.getErrorStream());
 		}
 		
 		public class EndlessReadTask extends ReadAllBytesTask {

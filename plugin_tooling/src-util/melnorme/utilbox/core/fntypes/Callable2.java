@@ -30,13 +30,7 @@ public interface Callable2<RET, EXC extends Throwable> {
 	/* -----------------  ----------------- */
 	
 	default Result<RET, EXC> callToResult() {
-		try {
-			return Result.fromValue(invoke());
-		} catch(Throwable e) {
-			@SuppressWarnings("unchecked")
-			EXC exc = (EXC) e;
-			return new Result<>(null, exc);
-		}
+		return Result.callToResult(this);
 	}
 	
 }

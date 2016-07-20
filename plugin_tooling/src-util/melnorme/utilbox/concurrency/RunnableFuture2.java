@@ -28,7 +28,7 @@ public class RunnableFuture2<RET> extends AbstractRunnableFuture2<RET> {
 	}
 	
 	@Override
-	protected RET invoke() {
+	protected RET internalInvoke() {
 		return callable.invoke();
 	}
 	

@@ -108,7 +108,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 		
 		@Override
-		protected Void invoke() {
+		protected Void internalInvoke() {
 			runTask();
 			return null;
 		}

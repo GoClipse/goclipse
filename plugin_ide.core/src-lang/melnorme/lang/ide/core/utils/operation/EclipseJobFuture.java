@@ -106,7 +106,7 @@ public class EclipseJobFuture<RET> extends MonitorRunnableFuture<RET> implements
 	}
 	
 	@Override
-	protected RET invoke() {
+	protected RET internalInvoke() {
 		return resultFunction.apply(biMonitor);
 	}
 	

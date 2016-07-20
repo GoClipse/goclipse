@@ -90,7 +90,7 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		assertNotNull(runnable);
 		return new MonitorRunnableFuture<Void>() {
 			@Override
-			protected Void invoke() {
+			protected Void internalInvoke() {
 				runnable.run();
 				return null;
 			}

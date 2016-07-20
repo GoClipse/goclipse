@@ -20,9 +20,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.concurrency.Future2;
+import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
-import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Result;
@@ -62,30 +61,27 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	@Override
 	protected Runnable createMainReaderTask() {
-		mainReader = new ReadAllBytesTask(process.getInputStream());
-		return mainReader.runnableFuture;
+		return mainReader = new ReadAllBytesTask(process.getInputStream());
 	}
 	
 	@Override
 	protected Runnable createStdErrReaderTask() {
-		stderrReader = new ReadAllBytesTask(process.getErrorStream());
-		return stderrReader.runnableFuture;
+		return stderrReader = new ReadAllBytesTask(process.getErrorStream());
 	}
 	
 	/* FIXME: make static, use cancelMonitor, maybe turn into MonitorRunnableFuture */ 
-	protected class ReadAllBytesTask {
+	protected class ReadAllBytesTask extends AbstractRunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> {
 		
 		protected final InputStream is;
 		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
-		protected final IRunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> runnableFuture;
 		
 		public ReadAllBytesTask(InputStream is) {
-			this.is = is;
-			this.runnableFuture = IRunnableFuture2.toResultFuture(this::doRun);
+			this.is = assertNotNull(is);
 		}
 		
-		public Future2<Result<ByteArrayOutputStreamExt, IOException>> asRunnableFuture() {
-			return runnableFuture;
+		@Override
+		protected Result<ByteArrayOutputStreamExt, IOException> internalInvoke() {
+			return Result.callToResult(this::doRun);
 		}
 		
 		public ByteArrayOutputStreamExt doRun() throws IOException {
@@ -221,9 +217,9 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			awaitReadersTermination(timeoutMs);
 			
 			// Check for IOExceptions (although I'm not sure this scenario is possible)
-			mainReader.asRunnableFuture().awaitResult2().get();
+			mainReader.awaitResult2().get();
 			if(stderrReader != null) {
-				stderrReader.asRunnableFuture().awaitResult2().get();
+				stderrReader.awaitResult2().get();
 			}
 		} catch (Exception e) {
 			if(destroyOnError) {

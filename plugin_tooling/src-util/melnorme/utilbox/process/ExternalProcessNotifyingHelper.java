@@ -68,24 +68,22 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	@Override
 	protected Runnable createMainReaderTask() {
-		mainReader = new ReadAllBytesTask(process.getInputStream()) {
+		return mainReader = new ReadAllBytesTask(process.getInputStream()) {
 			@Override
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
 				notifyDataRead(buffer, offset, readCount, true);
 			}
 		};
-		return mainReader.runnableFuture;
 	}
 	
 	@Override
 	protected Runnable createStdErrReaderTask() {
-		stderrReader = new ReadAllBytesTask(process.getErrorStream()) {
+		return stderrReader = new ReadAllBytesTask(process.getErrorStream()) {
 			@Override
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
 				notifyDataRead(buffer, offset, readCount, false);
 			}
 		};
-		return stderrReader.runnableFuture;
 	}
 	
 	protected void notifyDataRead(byte[] buffer, int offset, int readCount, boolean stdOut) {

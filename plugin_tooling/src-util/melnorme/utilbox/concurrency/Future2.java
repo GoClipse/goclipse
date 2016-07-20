@@ -29,7 +29,7 @@ public interface Future2<RESULT> extends BasicFuture<RESULT> {
 	default RESULT cancelOrGetResult() throws OperationCancellation {
 		tryCancel();
 		assertTrue(isTerminated());
-		return getResult_forSuccessfulyCompleted();
+		return getResult_forTerminated();
 	}
 	
 }
