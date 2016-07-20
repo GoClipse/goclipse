@@ -93,7 +93,21 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		}
 	}
 	
-	public static class TestsExternalProcessHelper extends ExternalProcessHelper {
+	public static class EndlessReadTask extends ReaderTask<Void> {
+		
+		public EndlessReadTask(InputStream is, ICancelMonitor cancelMonitor) {
+			super(is, cancelMonitor);
+		}
+		
+		@Override
+		protected Void doGetReturnValue() {
+			return null;
+		}
+		
+	}
+	
+	public static class TestsExternalProcessHelper 
+		extends AbstractExternalProcessHelper<EndlessReadTask, EndlessReadTask> {
 		
 		protected final MockProcess mockProcess;
 		
@@ -108,26 +122,20 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		}
 		
 		@Override
-		protected Runnable createMainReaderTask() {
+		protected EndlessReadTask createMainReaderTask() {
 			return mainReader = new EndlessReadTask(process.getInputStream(), cancelMonitor);
 		}
 		
 		@Override
-		protected Runnable createStdErrReaderTask() {
+		protected EndlessReadTask createStdErrReaderTask() {
 			return stderrReader = new EndlessReadTask(process.getErrorStream(), cancelMonitor);
 		}
 		
-		public class EndlessReadTask extends ReadAllBytesTask {
-			
-			public EndlessReadTask(InputStream is, ICancelMonitor cancelMonitor) {
-				super(is, cancelMonitor);
-			}
-			
-			@Override
-			protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
-				assertTrue(byteArray.size() == 0);
-			}
+		@Override
+		protected boolean isCanceled() {
+			return this.cancelMonitor.isCanceled();
 		}
+		
 	}
 	
 	@Test
@@ -148,7 +156,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 	protected void check_awaitProcessTermination(TestsExternalProcessHelper eph, 
 			Class<? extends Throwable> expectedThrows, boolean awaitProcessTermination) {
 		
-		verifyThrows(() -> eph.awaitTerminationAndResult(false), expectedThrows);
+		verifyThrows(() -> eph.awaitTermination(false), expectedThrows);
 		
 		checkReaderThreadsTerminate(eph, awaitProcessTermination);
 	}

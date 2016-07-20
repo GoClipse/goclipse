@@ -12,7 +12,6 @@ package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +22,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.IByteSequence;
+import melnorme.utilbox.process.ExternalProcessHelper.ReadAllBytesTask;
 
 /**
  * Helper for running external processes.
@@ -30,10 +30,13 @@ import melnorme.utilbox.misc.IByteSequence;
  * 
  * @see AbstractExternalProcessHelper
  */
-public class ExternalProcessHelper extends AbstractExternalProcessHelper {
+public class ExternalProcessHelper 
+	extends AbstractExternalProcessHelper<ReadAllBytesTask, ReadAllBytesTask> 
+{
 	
-	protected ReadAllBytesTask mainReader;
-	protected ReadAllBytesTask stderrReader; // Can be null
+	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
+		this(pb.start(), pb.redirectErrorStream() == false, true);
+	}
 	
 	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
 		this(process, readStdErr, startReaders, null);
@@ -50,16 +53,16 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	}
 	
 	@Override
-	protected Runnable createMainReaderTask() {
+	protected ReadAllBytesTask createMainReaderTask() {
 		return mainReader = new ReadAllBytesTask(process.getInputStream(), cancelMonitor);
 	}
 	
 	@Override
-	protected Runnable createStdErrReaderTask() {
+	protected ReadAllBytesTask createStdErrReaderTask() {
 		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor);
 	}
 	
-	protected static class ReadAllBytesTask extends ReaderTask<ByteArrayOutputStreamExt> {
+	public static class ReadAllBytesTask extends ReaderTask<ByteArrayOutputStreamExt> {
 		
 		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
 		
@@ -81,15 +84,13 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	/* ----------------- result helpers ----------------- */
 	
-	protected ByteArrayOutputStreamExt getStdOutBytes() {
-		assertTrue(areReadersTerminated2());
-		return mainReader.byteArray;
+	protected ByteArrayOutputStreamExt getStdOutBytes3() throws IOException {
+		return mainReader.getResult_forSuccessfulyCompleted().get();
 	}
 	
-	protected ByteArrayOutputStreamExt getStdErrBytes2() {
-		assertTrue(areReadersTerminated2());
+	protected ByteArrayOutputStreamExt getStdErrBytes3() throws IOException {
 		if(readStdErr) {
-			return stderrReader.byteArray;
+			return stderrReader.getResult_forSuccessfulyCompleted().get();
 		}
 		return null;
 	}
@@ -140,25 +141,8 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	 */
 	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs, boolean destroyOnError) 
 			throws InterruptedException, TimeoutException, OperationCancellation, IOException {
-		try {
-			awaitReadersTermination(timeoutMs);
-			
-			// Check for IOExceptions (although I'm not sure this scenario is possible)
-			mainReader.awaitResult2().get();
-			if(stderrReader != null) {
-				stderrReader.awaitResult2().get();
-			}
-		} catch (Exception e) {
-			if(destroyOnError) {
-				destroyProcess();
-			}
-			throw e;
-		}
-		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes2());
-	}
-	
-	protected void destroyProcess() {
-		process.destroy();
+		awaitTermination(timeoutMs, destroyOnError);
+		return new ExternalProcessResult(process.exitValue(), getStdOutBytes3(), getStdErrBytes3());
 	}
 	
 	public ExternalProcessResult awaitTerminationAndResult_ce(boolean destroyOnError) 
@@ -173,7 +157,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		try {
 			return awaitTerminationAndResult(timeout, destroyOnError);
 		} catch (IOException e) {
-			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorStreamReaderIOException, e);
+			throw new CommonException(ProcessHelperMessages.ExternalProcess_ErrorStreamReaderIOException, e);
 		} catch (TimeoutException te) {
 			// at this point a TimeoutException can be one of two things, an actual timeout, 
 			// or an explicit cancellation. In both case we throw OperationCancellation
