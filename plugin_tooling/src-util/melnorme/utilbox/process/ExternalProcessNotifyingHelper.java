@@ -11,6 +11,7 @@
 package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +69,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	@Override
 	protected Runnable createMainReaderTask() {
-		return mainReader = new ReadAllBytesTask(process.getInputStream()) {
+		return mainReader = new ReadAllBytesTask(process.getInputStream(), cancelMonitor) {
 			@Override
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
 				notifyDataRead(buffer, offset, readCount, true);
@@ -78,7 +79,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	@Override
 	protected Runnable createStdErrReaderTask() {
-		return stderrReader = new ReadAllBytesTask(process.getErrorStream()) {
+		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor) {
 			@Override
 			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
 				notifyDataRead(buffer, offset, readCount, false);
@@ -102,14 +103,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	@Override
 	public void mainReaderThread_Terminated() {
-		while(true) {
-			try {
-				readersTerminationLatch.await();
-				break;
-			} catch (InterruptedException e) {
-				// retry await
-			}
-		}
+		assertTrue(readersAndProcessTerminationLatch.getCount() == 0);
 		try {
 			// Notify listeners
 			mainReaderThread_notifyProcessTerminatedAndRead(process.exitValue());

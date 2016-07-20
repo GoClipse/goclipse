@@ -130,17 +130,17 @@ public class CommonTestUtils {
 		);
 	}
 	
-	public static <EXC extends Throwable> void verifyThrows(RunnableX<EXC> runnable) {
+	public static void verifyThrows(RunnableX<? extends Throwable> runnable) {
 		verifyThrows(runnable, null);
 	}
 	
-	public static <EXC extends Throwable> void verifyThrows(RunnableX<?> runnable, 
-			Class<EXC> klass) {
+	public static void verifyThrows(RunnableX<?> runnable, Class<? extends Throwable> klass) {
 		verifyThrows(runnable, klass, null);
 	}
 	
-	public static <EXC extends Throwable> void verifyThrows(RunnableX<?> runnable, 
-			Class<EXC> klass, String expectedExceptionString) {
+	public static void verifyThrows(RunnableX<?> runnable, Class<? extends Throwable> klass, 
+			String expectedExceptionString) 
+	{
 		try {
 			if(klass != null && AssertFailedException.class.isAssignableFrom(klass)) {
 				Assert.assertionFailureExpected = true;

@@ -61,22 +61,26 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	@Override
 	protected Runnable createMainReaderTask() {
-		return mainReader = new ReadAllBytesTask(process.getInputStream());
+		return mainReader = new ReadAllBytesTask(process.getInputStream(), cancelMonitor);
 	}
 	
 	@Override
 	protected Runnable createStdErrReaderTask() {
-		return stderrReader = new ReadAllBytesTask(process.getErrorStream());
+		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor);
 	}
 	
-	/* FIXME: make static, use cancelMonitor, maybe turn into MonitorRunnableFuture */ 
-	protected class ReadAllBytesTask extends AbstractRunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> {
+	/* FIXME: maybe turn into MonitorRunnableFuture */ 
+	protected static class ReadAllBytesTask 
+		extends AbstractRunnableFuture2<Result<ByteArrayOutputStreamExt, IOException>> 
+	{
 		
 		protected final InputStream is;
+		protected final ICancelMonitor cancelMonitor;
 		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
 		
-		public ReadAllBytesTask(InputStream is) {
+		public ReadAllBytesTask(InputStream is, ICancelMonitor cancelMonitor) {
 			this.is = assertNotNull(is);
+			this.cancelMonitor = assertNotNull(cancelMonitor);
 		}
 		
 		@Override
@@ -155,12 +159,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	/* ----------------- result helpers ----------------- */
 	
 	protected ByteArrayOutputStreamExt getStdOutBytes() {
-		assertTrue(areReadersTerminated());
+		assertTrue(areReadersTerminated2());
 		return mainReader.byteArray;
 	}
 	
 	protected ByteArrayOutputStreamExt getStdErrBytes2() {
-		assertTrue(areReadersTerminated());
+		assertTrue(areReadersTerminated2());
 		if(readStdErr) {
 			return stderrReader.byteArray;
 		}

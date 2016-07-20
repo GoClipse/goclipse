@@ -33,9 +33,10 @@ public abstract class AbstractExternalProcessHelper {
 	protected final boolean readStdErr;
 	protected final ICancelMonitor cancelMonitor;
 	
+	protected final CountDownLatch readerThreadsTerminationLatch;
 	/** This latch exists to signal that the process has terminated, and also that both reader threads 
 	 * have finished reading all input. This last aspect is very important. */
-	protected final CountDownLatch readersTerminationLatch;
+	protected final CountDownLatch readersAndProcessTerminationLatch;
 	
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
@@ -46,14 +47,15 @@ public abstract class AbstractExternalProcessHelper {
 		this.readStdErr = readStdErr;
 		this.cancelMonitor = cancelMonitor == null ? new NullCancelMonitor() : cancelMonitor;
 		
-		readersTerminationLatch = new CountDownLatch(2);
+		readerThreadsTerminationLatch= new CountDownLatch(2);
+		readersAndProcessTerminationLatch = new CountDownLatch(1);
 		
 		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
 		
 		if(readStdErr) {
 			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
 		} else {
-			readersTerminationLatch.countDown(); // dont start stderr thread, so update latch
+			readerThreadsTerminationLatch.countDown(); // dont start stderr thread, so update latch
 			stderrReaderThread = null;
 		}
 		if(startReaders) {
@@ -76,8 +78,12 @@ public abstract class AbstractExternalProcessHelper {
 		return readStdErr;
 	}
 	
-	public boolean areReadersTerminated() {
-		return readersTerminationLatch.getCount() == 0;
+	public boolean areReadersTerminated2() {
+		return readerThreadsTerminationLatch.getCount() == 0;
+	}
+	
+	public boolean areReadersAndProcessTerminated() {
+		return readersAndProcessTerminationLatch.getCount() == 0;
 	}
 	
 	protected abstract Runnable createMainReaderTask();
@@ -105,8 +111,10 @@ public abstract class AbstractExternalProcessHelper {
 			try {
 				super.run();
 			} finally {
+				readerThreadsTerminationLatch.countDown();
+				
 				waitForProcessIndefinitely();
-				readersTerminationLatch.countDown();
+				readersAndProcessTerminationLatch.countDown();
 				
 				mainReaderThread_Terminated();
 			}
@@ -116,6 +124,8 @@ public abstract class AbstractExternalProcessHelper {
 			while(true) {
 				try {
 					process.waitFor();
+					// Await stderr too:
+					readerThreadsTerminationLatch.await();
 					return;
 				} catch (InterruptedException e) {
 					// retry waitfor, we must ensure process is terminated.
@@ -141,7 +151,7 @@ public abstract class AbstractExternalProcessHelper {
 			try {
 				super.run();
 			} finally {
-				readersTerminationLatch.countDown();
+				readerThreadsTerminationLatch.countDown();
 			}
 		}
 		
@@ -182,7 +192,7 @@ public abstract class AbstractExternalProcessHelper {
 	}
 	
 	protected boolean doAwaitTermination(int cancelPollPeriodMs) throws InterruptedException {
-		return readersTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
+		return readersAndProcessTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
 	}
 	
 	protected abstract boolean isCanceled();
