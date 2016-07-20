@@ -14,21 +14,14 @@ import java.util.function.Function;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.JobExecutor;
-import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.lang.utils.concurrency.JobFuture;
 import melnorme.utilbox.core.fntypes.OperationResult;
 
 public class EclipseJobExecutor implements JobExecutor {
 	
 	@Override
-	public JobFuture<OperationResult<Void>> startOp(
-			String operationName, boolean schedule, Operation operation) {
-		return new EclipseJobFuture<>(operationName, operation, schedule);
-	}
-	
-	@Override
-	public <RET> JobFuture<OperationResult<RET>> startOpFunction(String operationName, 
-			boolean schedule, Function<IOperationMonitor, OperationResult<RET>> operation) {
+	public <RET> JobFuture<OperationResult<RET>> startOpFunction(
+			String operationName, boolean schedule, Function<IOperationMonitor, OperationResult<RET>> operation) {
 		return new EclipseJobFuture<>(operationName, operation, schedule);
 	}
 	

@@ -10,13 +10,24 @@
  *******************************************************************************/
 package melnorme.utilbox.process;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Result;
+import melnorme.utilbox.misc.StreamUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 /**
  * Abstract helper class to start an external process and read its output concurrently,
@@ -33,9 +44,10 @@ public abstract class AbstractExternalProcessHelper {
 	protected final boolean readStdErr;
 	protected final ICancelMonitor cancelMonitor;
 	
+	protected final CountDownLatch readerThreadsTerminationLatch;
 	/** This latch exists to signal that the process has terminated, and also that both reader threads 
 	 * have finished reading all input. This last aspect is very important. */
-	protected final CountDownLatch readersTerminationLatch;
+	protected final CountDownLatch readersAndProcessTerminationLatch;
 	
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
@@ -46,14 +58,15 @@ public abstract class AbstractExternalProcessHelper {
 		this.readStdErr = readStdErr;
 		this.cancelMonitor = cancelMonitor == null ? new NullCancelMonitor() : cancelMonitor;
 		
-		readersTerminationLatch = new CountDownLatch(2);
+		readerThreadsTerminationLatch= new CountDownLatch(2);
+		readersAndProcessTerminationLatch = new CountDownLatch(1);
 		
 		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
 		
 		if(readStdErr) {
 			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
 		} else {
-			readersTerminationLatch.countDown(); // dont start stderr thread, so update latch
+			readerThreadsTerminationLatch.countDown(); // dont start stderr thread, so update latch
 			stderrReaderThread = null;
 		}
 		if(startReaders) {
@@ -76,8 +89,12 @@ public abstract class AbstractExternalProcessHelper {
 		return readStdErr;
 	}
 	
-	public boolean areReadersTerminated() {
-		return readersTerminationLatch.getCount() == 0;
+	public boolean areReadersTerminated2() {
+		return readerThreadsTerminationLatch.getCount() == 0;
+	}
+	
+	public boolean areReadersAndProcessTerminated() {
+		return readersAndProcessTerminationLatch.getCount() == 0;
 	}
 	
 	protected abstract Runnable createMainReaderTask();
@@ -105,8 +122,10 @@ public abstract class AbstractExternalProcessHelper {
 			try {
 				super.run();
 			} finally {
+				readerThreadsTerminationLatch.countDown();
+				
 				waitForProcessIndefinitely();
-				readersTerminationLatch.countDown();
+				readersAndProcessTerminationLatch.countDown();
 				
 				mainReaderThread_Terminated();
 			}
@@ -116,6 +135,8 @@ public abstract class AbstractExternalProcessHelper {
 			while(true) {
 				try {
 					process.waitFor();
+					// Await stderr too:
+					readerThreadsTerminationLatch.await();
 					return;
 				} catch (InterruptedException e) {
 					// retry waitfor, we must ensure process is terminated.
@@ -141,8 +162,52 @@ public abstract class AbstractExternalProcessHelper {
 			try {
 				super.run();
 			} finally {
-				readersTerminationLatch.countDown();
+				readerThreadsTerminationLatch.countDown();
 			}
+		}
+		
+	}
+	
+	/* ----------------- Reader Task ----------------- */
+	
+	public static abstract class ReaderTask<RET> 
+		extends AbstractRunnableFuture2<Result<RET, IOException>> 
+	{
+		
+		protected final InputStream is;
+		protected final ICancelMonitor cancelMonitor;
+		
+		public ReaderTask(InputStream is, ICancelMonitor cancelMonitor) {
+			this.is = assertNotNull(is);
+			this.cancelMonitor = assertNotNull(cancelMonitor);
+		}
+		
+		@Override
+		protected Result<RET, IOException> internalInvoke() {
+			return Result.callToResult(this::doRun);
+		}
+		
+		public RET doRun() throws IOException {
+			// BM: Hum, should we treat an IOException not as an error, but just like an EOF?
+			try {
+				final int BUFFER_SIZE = 1024;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				
+				int read;
+				while((read = is.read(buffer)) != StreamUtil.EOF && !cancelMonitor.isCanceled()) {
+					notifyReadChunk2(buffer, 0, read);
+				}
+				return doGetReturnValue();
+			} finally {
+				is.close();
+			}
+		}
+		
+		protected abstract RET doGetReturnValue();
+		
+		@SuppressWarnings("unused")
+		protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
+			// Default implementation: do nothing
 		}
 		
 	}
@@ -182,9 +247,39 @@ public abstract class AbstractExternalProcessHelper {
 	}
 	
 	protected boolean doAwaitTermination(int cancelPollPeriodMs) throws InterruptedException {
-		return readersTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
+		return readersAndProcessTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
 	}
 	
 	protected abstract boolean isCanceled();
+	
+	/* ----------------- writing helpers ----------------- */
+	
+	public void writeInput(String input) throws IOException {
+		writeInput(input, StringUtil.UTF8);
+	}
+	
+	public void writeInput(String input, Charset charset) throws IOException {
+		if(input == null)
+			return;
+		
+		OutputStream processInputStream = getProcess().getOutputStream();
+		StreamUtil.writeStringToStream(input, processInputStream, charset);
+	}
+	
+	public void writeInput_(String input) throws CommonException {
+		writeInput_(input, StringUtil.UTF8);
+	}
+	
+	public void writeInput_(String input, Charset charset) throws CommonException {
+		try {
+			writeInput(input, charset);
+		} catch (IOException e) {
+			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorWritingInput, e);
+		}
+	}
+	
+	protected CommonException createCommonException(String message, Throwable cause) {
+		return new CommonException(message, cause);
+	}
 	
 }

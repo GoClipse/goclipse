@@ -46,7 +46,7 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(new InvalidRunnable());
 		executor.submitTask(monitorFutureTask);
 		
-		RunnableFuture2<Object> runnableFuture = new RunnableFuture2<>(() -> {
+		IRunnableFuture2<Object> runnableFuture = IRunnableFuture2.toFuture(() -> {
 			throw assertFail();
 		});
 		executor.submitTask(runnableFuture);
@@ -90,7 +90,7 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 		assertNotNull(runnable);
 		return new MonitorRunnableFuture<Void>() {
 			@Override
-			protected Void invokeToResult() {
+			protected Void internalInvoke() {
 				runnable.run();
 				return null;
 			}

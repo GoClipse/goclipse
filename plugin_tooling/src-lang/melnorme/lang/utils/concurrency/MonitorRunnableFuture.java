@@ -39,8 +39,8 @@ public abstract class MonitorRunnableFuture<RET>
 	
 	@Override
 	protected void handleCancellation() {
-		super.handleCancellation();
 		cancelMonitor.cancel();
+		super.handleCancellation();
 	}
 	
 }

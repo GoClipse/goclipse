@@ -11,6 +11,7 @@
 package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -68,24 +69,26 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	@Override
 	protected Runnable createMainReaderTask() {
-		mainReader = new ReadAllBytesTask(process.getInputStream()) {
+		return mainReader = new ReadAllBytesTask(process.getInputStream(), cancelMonitor) {
 			@Override
-			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
+			protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
+				super.notifyReadChunk2(buffer, offset, readCount);
+				
 				notifyDataRead(buffer, offset, readCount, true);
 			}
 		};
-		return mainReader.runnableFuture;
 	}
 	
 	@Override
 	protected Runnable createStdErrReaderTask() {
-		stderrReader = new ReadAllBytesTask(process.getErrorStream()) {
+		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor) {
 			@Override
-			protected void notifyReadChunk(byte[] buffer, int offset, int readCount) {
+			protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
+				super.notifyReadChunk2(buffer, offset, readCount);
+				
 				notifyDataRead(buffer, offset, readCount, false);
 			}
 		};
-		return stderrReader.runnableFuture;
 	}
 	
 	protected void notifyDataRead(byte[] buffer, int offset, int readCount, boolean stdOut) {
@@ -104,14 +107,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	@Override
 	public void mainReaderThread_Terminated() {
-		while(true) {
-			try {
-				readersTerminationLatch.await();
-				break;
-			} catch (InterruptedException e) {
-				// retry await
-			}
-		}
+		assertTrue(readersAndProcessTerminationLatch.getCount() == 0);
 		try {
 			// Notify listeners
 			mainReaderThread_notifyProcessTerminatedAndRead(process.exitValue());

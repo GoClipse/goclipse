@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.operation;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.function.Function;
@@ -22,55 +24,29 @@ import org.eclipse.core.runtime.jobs.Job;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
+import melnorme.lang.tooling.common.ops.OperationFuture.BiDelegatingOperationMonitor;
 import melnorme.lang.utils.concurrency.JobFuture;
-import melnorme.utilbox.concurrency.AbstractFuture2;
+import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.fntypes.OperationResult;
 
-/* FIXME: integrate with MonitorRunnableFuture */
-public class EclipseJobFuture<RET> extends AbstractFuture2<RET> implements JobFuture<RET> {
+public class EclipseJobFuture<RET> extends MonitorRunnableFuture<RET> implements JobFuture<RET> {
 	
+	protected final String operationName;
+	protected final Function<IOperationMonitor, RET> resultFunction;
 	protected final Job job;
 	
 	protected boolean scheduled = false;
 	
-	protected volatile IOperationMonitor operationMonitor;
-	
 	public EclipseJobFuture(String operationName, Function<IOperationMonitor, RET> resultFunction, boolean schedule) {
 		super();
+		this.operationName = assertNotNull(operationName);
+		this.resultFunction = assertNotNull(resultFunction);
 		
-		this.job = init_createJob(operationName, resultFunction);
+		this.job = init_createJob();
 		
 		if(schedule) {
 			this.start();
 		}
-	}
-	
-	protected Job init_createJob(String operationName, Function<IOperationMonitor, RET> resultFunction) {
-		return new Job(operationName) {
-			
-			@Override
-			protected IStatus run(IProgressMonitor pm) {
-				assertTrue(operationMonitor == null);
-				operationMonitor = EclipseUtils.om(pm);
-				try(IOperationSubMonitor subMonitor = operationMonitor.enterSubTask(operationName)) {
-					return doRun(subMonitor);
-				}
-			}
-			
-			protected IStatus doRun(IOperationMonitor om) {
-				RET result = resultFunction.apply(om);
-				completableResult.setResult(result);
-				
-				if(result instanceof OperationResult<?>) {
-					OperationResult<?> opResult = (OperationResult<?>) result;
-					if(opResult.getResultException() instanceof OperationCancellation) {
-						return Status.CANCEL_STATUS;
-					}
-				}
-				return Status.OK_STATUS;
-			}
-		};
 	}
 	
 	@Override
@@ -85,6 +61,53 @@ public class EclipseJobFuture<RET> extends AbstractFuture2<RET> implements JobFu
 	@Override
 	public boolean isStarted() {
 		return scheduled;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected volatile BiDelegatingOperationMonitor biMonitor;
+	
+	protected Job init_createJob() {
+		return new Job(operationName) {
+			
+			@Override
+			protected IStatus run(IProgressMonitor pm) {
+				IOperationMonitor parentOM = EclipseUtils.om(pm);
+				
+				try(IOperationSubMonitor subMonitor = parentOM.enterSubTask(operationName)) {
+					
+					try {
+						doFutureRun(subMonitor);
+					} catch(OperationCancellation e) {
+						return Status.CANCEL_STATUS;
+					}
+					return Status.OK_STATUS;
+				}
+			}
+			
+			protected void doFutureRun(IOperationMonitor om) throws OperationCancellation {
+				assertTrue(biMonitor == null);
+				biMonitor = new BiDelegatingOperationMonitor(om, getCancelMonitor());
+				
+				EclipseJobFuture.this.runFuture();
+				assertTrue(completableResult.isTerminated());
+			}
+		};
+	}
+	
+	@Override
+	public void run() {
+		throw assertFail();
+	}
+	
+	@Override
+	protected void runFuture() {
+		super.runFuture();
+	}
+	
+	@Override
+	protected RET internalInvoke() {
+		return resultFunction.apply(biMonitor);
 	}
 	
 	@Override

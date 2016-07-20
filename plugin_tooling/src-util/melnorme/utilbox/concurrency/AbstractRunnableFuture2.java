@@ -36,15 +36,19 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	}
 	
 	@Override
-	public final void run() {
+	public void run() {
+		runFuture();
+	}
+	
+	protected void runFuture() {
 		cancellableTask.run();
 	}
 	
 	protected void internalTaskRun() {
-		completableResult.setResult(invokeToResult());
+		completableResult.setResultFromCallable(this::internalInvoke);
 	}
 	
-	protected abstract RET invokeToResult();
+	protected abstract RET internalInvoke();
 	
 	/* -----------------  ----------------- */
 	

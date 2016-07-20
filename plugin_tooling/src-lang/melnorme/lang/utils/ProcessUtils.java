@@ -12,6 +12,7 @@ package melnorme.lang.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ToolingMessages;
@@ -19,6 +20,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.process.ProcessHelperMessages;
 
 public class ProcessUtils {
 	
@@ -54,6 +56,20 @@ public class ProcessUtils {
 		}
 		
 		return pb;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static Process startProcess(ProcessBuilder pb) throws CommonException {
+		try {
+			return pb.start();
+		} catch (IOException ioe) {
+			String msg = ioe.getMessage();
+			if(msg == null) {
+				msg = ProcessHelperMessages.ExternalProcess_CouldNotStart;
+			}
+			throw new CommonException(msg, ioe);
+		}
 	}
 	
 	/* -----------------  ----------------- */

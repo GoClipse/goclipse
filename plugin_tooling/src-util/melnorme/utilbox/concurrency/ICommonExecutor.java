@@ -48,7 +48,7 @@ public interface ICommonExecutor extends IBasicExecutor {
 	/** Same as {@link ExecutorService#submit(Callable)}, 
 	 * but using {@link CallableX} instead, and returning a {@link Future2}. */
 	default <RET> Future2<RET> submitBasicCallable(CallableX<RET, RuntimeException> callable) {
-		return submitFuture(new RunnableFuture2<RET>(callable));
+		return submitFuture(IRunnableFuture2.toFuture(callable));
 	}
 	
 	/* -----------------  ----------------- */
