@@ -123,9 +123,6 @@ public abstract class Futures_Tests extends CommonTest {
 			
 			
 			// Test RuntimeException handling
-			if(true) {
-				return; /* FIXME: re-enable*/
-			}
 			verifyThrows(() -> {
 				submitAndAwaitResult(() -> { 
 					throw new RuntimeException("xxx2");

@@ -45,7 +45,7 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	}
 	
 	protected void internalTaskRun() {
-		completableResult.setResult(invoke());
+		completableResult.setResultFromCallable(this::invoke);
 	}
 	
 	protected abstract RET invoke();
