@@ -15,14 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.process.ExternalProcessHelper;
+import melnorme.utilbox.process.IExternalProcessHandler;
 
 public abstract class LanguageServerInstance {
 	
 	protected final Path serverPath;
-	protected final ExternalProcessHelper serverProcess;
+	protected final IExternalProcessHandler serverProcess;
 	
-	public LanguageServerInstance(Path serverPath, ExternalProcessHelper serverProcess) {
+	public LanguageServerInstance(Path serverPath, IExternalProcessHandler serverProcess) {
 		this.serverPath = serverPath;
 		this.serverProcess = assertNotNull(serverProcess);
 	}
@@ -31,7 +31,7 @@ public abstract class LanguageServerInstance {
 		return serverPath;
 	}
 	
-	public ExternalProcessHelper getServerProcess() {
+	public IExternalProcessHandler getServerProcess() {
 		return serverProcess;
 	}
 	

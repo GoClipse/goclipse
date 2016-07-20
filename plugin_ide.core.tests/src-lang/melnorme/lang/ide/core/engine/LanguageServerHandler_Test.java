@@ -29,8 +29,8 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper_Test.TestsExternalProcessHelper;
+import melnorme.utilbox.process.IExternalProcessHandler;
 
 public class LanguageServerHandler_Test extends CommonCoreTest {
 	
@@ -73,7 +73,7 @@ public class LanguageServerHandler_Test extends CommonCoreTest {
 					
 					new CountDownLatch(1).await(); // await forever until interrupted
 				} catch(InterruptedException e) {
-					ExternalProcessHelper eph = new TestsExternalProcessHelper(true, false, new CancelMonitor());
+					IExternalProcessHandler eph = new TestsExternalProcessHelper(true, false, new CancelMonitor());
 					return new LanguageServerInstance(getServerPath(), eph) {
 						@Override
 						protected String getLanguageServerName() {
