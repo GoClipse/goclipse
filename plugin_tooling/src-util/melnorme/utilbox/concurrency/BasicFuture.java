@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -32,15 +34,15 @@ import melnorme.utilbox.core.fntypes.Result;
  */
 public interface BasicFuture<RESULT> {
 	
-    /** See {@link Future#isCancelled()} */
+    /** @return true if execution of this future has terminated already. */
+    boolean isTerminated();
+    
+    /** @return true if execution of this future has terminated with a cancellation. */
     boolean isCancelled();
     
-    /** See {@link Future#isDone()} */
-    boolean isDone();
-    
-    /** @return true if completed with a result, without being cancelled. */
-	default boolean isCompletedWithResult() {
-		return isDone() && !isCancelled();
+    /** @return true if terminated with a result, without being cancelled. */
+	default boolean isCompletedSuccessfully() {
+		return isTerminated() && !isCancelled();
 	}
 	
 	
@@ -61,5 +63,25 @@ public interface BasicFuture<RESULT> {
 			throw new OperationCancellation();
 		}
 	}
+	
+	/**
+	 * It is only legal to call this method if the future has terminated already.
+	 * @return the result or throw OperationCancellation if cancelled. 
+	 */
+	default RESULT getResult_forTerminated() throws OperationCancellation {
+		assertTrue(isTerminated());
+		
+		if(isCancelled()) {
+			throw new OperationCancellation();
+		}
+		return getResult_forSuccessfulyCompleted();
+	}
+	
+	/**
+	 * It is only legal to call this method if the future has completed successfully.
+	 * ({@link #isCompletedSuccessfully()} == true)
+	 * @return the result or throw OperationCancellation if cancelled. 
+	 */
+	RESULT getResult_forSuccessfulyCompleted();
 	
 }

@@ -11,6 +11,7 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -35,18 +36,22 @@ public class CompletableResult<DATA>
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
 	
-    protected volatile ResultStatus status = ResultStatus.NOT_COMPLETED;
+    protected volatile ResultStatus status = ResultStatus.NOT_TERMINATED;
 	protected volatile DATA result;
 	
-	public static enum ResultStatus { NOT_COMPLETED, RESULT_SET, CANCELLED }
+	public static enum ResultStatus { NOT_TERMINATED, RESULT_SET, CANCELLED }
 	
 	public CompletableResult() {
 		super();
 	}
 	
 	@Override
-	public boolean isDone() {
-		return status != ResultStatus.NOT_COMPLETED;
+	public boolean isTerminated() {
+		return status != ResultStatus.NOT_TERMINATED;
+	}
+	
+	public boolean isCompleted() {
+		return isTerminated();
 	}
 	
 	@Override
@@ -60,7 +65,7 @@ public class CompletableResult<DATA>
 	
 	public void setResult(DATA result) {
 		synchronized (lock) {
-			if(isDone()) {
+			if(isTerminated()) {
 				if(isCancelled()) {
 					return;
 				}
@@ -82,7 +87,7 @@ public class CompletableResult<DATA>
 	 */
 	public boolean setCancelledResult() {
 		synchronized (lock) {
-			if(isDone()) {
+			if(isTerminated()) {
 				return false;
 			} else {
 				status = ResultStatus.CANCELLED;
@@ -97,10 +102,16 @@ public class CompletableResult<DATA>
 	}
 	
 	public void awaitCompletion() throws InterruptedException {
+		if(isCompleted()) {
+			return; // Early check so that InterruptedException is not thrown
+		}
 		completionLatch.await();
 	}
 	
 	public void awaitCompletion(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+		if(isCompleted()) {
+			return; // Early check so that InterruptedException is not thrown
+		}
 		boolean success = completionLatch.await(timeout, unit);
 		if(!success) {
 			throw new TimeoutException();
@@ -111,20 +122,19 @@ public class CompletableResult<DATA>
 	public DATA awaitResult() 
 			throws OperationCancellation, InterruptedException {
 		awaitCompletion();
-		return getResult_afterCompletion();
+		return getResult_forTerminated();
 	}
 	
 	@Override
 	public DATA awaitResult(long timeout, TimeUnit unit) 
 			throws OperationCancellation, InterruptedException, TimeoutException {
 		awaitCompletion(timeout, unit);
-		return getResult_afterCompletion();
+		return getResult_forTerminated();
 	}
 	
-	protected DATA getResult_afterCompletion() throws OperationCancellation {
-		if(isCancelled()) {
-			throw new OperationCancellation();
-		}
+	@Override
+	public DATA getResult_forSuccessfulyCompleted() {
+		assertTrue(isCompletedSuccessfully());
 		return result;
 	}
 	

@@ -24,7 +24,6 @@ import melnorme.utilbox.concurrency.Future2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.RunnableFuture2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
@@ -82,7 +81,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 		public ReadAllBytesTask(InputStream is) {
 			this.is = is;
-			this.runnableFuture = RunnableFuture2.toResultFuture(this::doRun);
+			this.runnableFuture = IRunnableFuture2.toResultFuture(this::doRun);
 		}
 		
 		public Future2<Result<ByteArrayOutputStreamExt, IOException>> asRunnableFuture() {

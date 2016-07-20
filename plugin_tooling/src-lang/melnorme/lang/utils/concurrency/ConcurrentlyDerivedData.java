@@ -191,7 +191,7 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	
 	public class DataUpdateFuture implements NonCancellableFuture<DATA> {
 		@Override
-		public boolean isDone() {
+		public boolean isTerminated() {
 			return !isStale();
 		}
 		
@@ -209,6 +209,13 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 			}
 			return data;
 		}
+		
+		@Override
+		public DATA getResult_forSuccessfulyCompleted() {
+			assertTrue(isCompletedSuccessfully());
+			return data;
+		}
+		
 	}
 
 	/* -----------------  ----------------- */

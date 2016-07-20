@@ -11,6 +11,7 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public interface Future2<RESULT> extends BasicFuture<RESULT> {
 	
@@ -29,6 +30,7 @@ public interface Future2<RESULT> extends BasicFuture<RESULT> {
 	default RESULT cancelOrGetResult() throws OperationCancellation {
 		tryCancel();
 		try {
+			assertTrue(isTerminated());
 			return awaitResult();
 		} catch(InterruptedException e) {
 			throw assertFail();

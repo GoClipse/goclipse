@@ -10,7 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import java.util.concurrent.Executor;
+import melnorme.utilbox.core.fntypes.Callable2;
+import melnorme.utilbox.core.fntypes.Result;
 
 /**
  * A {@link Runnable} future that can complete by executing it's {@link #run()} method.
@@ -29,9 +30,13 @@ public interface IRunnableFuture2<RET> extends Runnable, ICancellableTask, Futur
 	
 	/* -----------------  ----------------- */
 	
-	default IRunnableFuture2<RET> submitTo(Executor executor) {
-		executor.execute(this);
-		return this;
+	public static <RET> IRunnableFuture2<RET> toFuture(Callable2<RET, RuntimeException> callable) {
+		return new RunnableFuture2<>(callable);
+	}
+	
+	public static <RET, EXC extends Throwable> IRunnableFuture2<Result<RET, EXC>> toResultFuture(
+			Callable2<RET, EXC> callable) {
+		return toFuture(callable::callToResult);
 	}
 	
 }
