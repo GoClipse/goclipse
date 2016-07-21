@@ -112,7 +112,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 	}
 	
 	public static class TestsExternalProcessHelper 
-		extends AbstractExternalProcessHelper<EndlessReadTask, EndlessReadTask> {
+		extends ExternalProcessHandler<EndlessReadTask, EndlessReadTask> {
 		
 		protected final MockProcess mockProcess;
 		

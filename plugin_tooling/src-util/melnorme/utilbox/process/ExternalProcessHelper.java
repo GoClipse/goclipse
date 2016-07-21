@@ -28,10 +28,10 @@ import melnorme.utilbox.process.ExternalProcessHelper.ReadAllBytesTask;
  * Helper for running external processes.
  * Reads all stdout and stderr output into a byte array (using worker threads)
  * 
- * @see AbstractExternalProcessHelper
+ * @see ExternalProcessHandler
  */
 public class ExternalProcessHelper 
-	extends AbstractExternalProcessHelper<ReadAllBytesTask, ReadAllBytesTask> 
+	extends ExternalProcessHandler<ReadAllBytesTask, ReadAllBytesTask> 
 {
 	
 	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {

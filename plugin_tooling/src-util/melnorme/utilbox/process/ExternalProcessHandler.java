@@ -31,7 +31,7 @@ import melnorme.utilbox.misc.StreamUtil;
  * 
  * Subclasses must specify Runnable's for the worker threads reading the process stdout and stderr streams.
  */
-public abstract class AbstractExternalProcessHelper<
+public abstract class ExternalProcessHandler<
 	STDOUT_TASK extends IRunnableFuture2<? extends Result<?, IOException>>, 
 	STDERR_TASK extends IRunnableFuture2<? extends Result<?, IOException>>
 > implements IExternalProcessHandler {
@@ -51,7 +51,7 @@ public abstract class AbstractExternalProcessHelper<
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
 	
-	public AbstractExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders,
+	public ExternalProcessHandler(Process process, boolean readStdErr, boolean startReaders,
 			ICancelMonitor cancelMonitor) {
 		this.process = process;
 		this.readStdErr = readStdErr;
