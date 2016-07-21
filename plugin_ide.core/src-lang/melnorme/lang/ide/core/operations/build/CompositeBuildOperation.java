@@ -50,7 +50,7 @@ public class CompositeBuildOperation implements Operation {
 	}
 	
 	protected void doExecute(IOperationMonitor monitor) throws CommonException, OperationCancellation {
-		if(monitor.isCanceled()) {
+		if(monitor.isCancelled()) {
 			return;
 		}
 		for (Operation subOperation : operations) {

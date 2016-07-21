@@ -49,7 +49,7 @@ public class ExternalProcessHelper
 	
 	@Override
 	protected boolean isCanceled() {
-		return cancelMonitor.isCanceled();
+		return cancelMonitor.isCancelled();
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch;
 
 public interface ICancelMonitor {
 	
-	public boolean isCanceled();
+	public boolean isCancelled();
 	
 	default void checkCancellation() throws OperationCancellation {
 		checkCancelation(this);
@@ -25,7 +25,7 @@ public interface ICancelMonitor {
 	/* -----------------  ----------------- */
 	
 	public static void checkCancelation(ICancelMonitor cm) throws OperationCancellation {
-		if(cm.isCanceled()) {
+		if(cm.isCancelled()) {
 			throw new OperationCancellation();
 		}
 	}
@@ -35,7 +35,7 @@ public interface ICancelMonitor {
 	public static class NullCancelMonitor implements ICancelMonitor {
 		
 		@Override
-		public boolean isCanceled() {
+		public boolean isCancelled() {
 			return false;
 		}
 		
@@ -46,7 +46,7 @@ public interface ICancelMonitor {
 		protected volatile boolean isCancelled = false;
 		
 		@Override
-		public boolean isCanceled() {
+		public boolean isCancelled() {
 			return isCancelled;
 		}
 		
@@ -65,8 +65,8 @@ public interface ICancelMonitor {
 		}
 		
 		@Override
-		public boolean isCanceled() {
-			return super.isCanceled() && parentCancelMonitor.isCanceled();
+		public boolean isCancelled() {
+			return super.isCancelled() && parentCancelMonitor.isCancelled();
 		}
 	}
 	

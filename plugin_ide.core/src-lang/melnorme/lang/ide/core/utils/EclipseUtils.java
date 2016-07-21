@@ -187,7 +187,7 @@ public class EclipseUtils {
 		}
 		
 		@Override
-		public boolean isCanceled() {
+		public boolean isCancelled() {
 			return pm.isCanceled();
 		}
 	}
@@ -211,7 +211,7 @@ public class EclipseUtils {
 		return new NullProgressMonitor() {
 			@Override
 			public boolean isCanceled() {
-				return cm.isCanceled();
+				return cm.isCancelled();
 			}
 		};
 	}

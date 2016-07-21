@@ -46,7 +46,7 @@ public abstract class MonitorRunnableFuture<RET>
 	}
 	
 	protected void updateCancellationFromMonitor() {
-		boolean monitorCancelled = cancelMonitor.isCanceled();
+		boolean monitorCancelled = cancelMonitor.isCancelled();
 		if(monitorCancelled && super.isCancelled() == false) {
 			tryCancel();
 		}

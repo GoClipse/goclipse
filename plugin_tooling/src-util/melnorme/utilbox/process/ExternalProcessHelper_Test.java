@@ -45,7 +45,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		
 		@Override
 		public int read() {
-			if(closed || processTerminationMonitor.isCanceled()) {
+			if(closed || processTerminationMonitor.isCancelled()) {
 				return -1;
 			}
 			return 0;
@@ -84,7 +84,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		
 		@Override
 		public int exitValue() {
-			if(!processTerminationMonitor.isCanceled()) {
+			if(!processTerminationMonitor.isCancelled()) {
 				throw new IllegalThreadStateException();
 			}
 			return 0;
@@ -138,7 +138,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		
 		@Override
 		protected boolean isCanceled() {
-			return this.cancelMonitor.isCanceled();
+			return this.cancelMonitor.isCancelled();
 		}
 		
 	}
@@ -232,7 +232,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		thread.interrupt();
 		
 		// check that EPH is not compromised because of interrupt
-		assertTrue(eph.cancelMonitor.isCanceled() == false);
+		assertTrue(eph.cancelMonitor.isCancelled() == false);
 		assertTrue(eph.process.isAlive());
 		assertTrue(eph.stderrReaderThread.isAlive());
 		assertTrue(eph.mainReaderThread.isAlive());

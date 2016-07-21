@@ -29,14 +29,14 @@ public class OperationMonitor_Test extends CommonToolingTest {
 		BasicOperationMonitor om = new NullOperationMonitor(topCancelMonitor);
 		BiDelegatingOperationMonitor biDelegatingOM = new BiDelegatingOperationMonitor(om);
 		
-		assertTrue(biDelegatingOM.isCanceled() == false);
+		assertTrue(biDelegatingOM.isCancelled() == false);
 		
 		try(IOperationSubMonitor subMonitor = biDelegatingOM.enterSubTask("subTask")) {
-			assertTrue(subMonitor.isCanceled() == false);
+			assertTrue(subMonitor.isCancelled() == false);
 			
 			topCancelMonitor.cancel();
-			assertTrue(biDelegatingOM.isCanceled() == true);
-			assertTrue(subMonitor.isCanceled() == true);
+			assertTrue(biDelegatingOM.isCancelled() == true);
+			assertTrue(subMonitor.isCancelled() == true);
 		}
 	} 
 	
