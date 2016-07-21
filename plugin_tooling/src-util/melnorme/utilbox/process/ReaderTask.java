@@ -15,22 +15,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
+import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.StreamUtil;
 
-/* FIXME: integrate with MonitorRunnableFuture */
 public abstract class ReaderTask<RET> 
-	extends AbstractRunnableFuture2<Result<RET, IOException>> 
+	extends MonitorRunnableFuture<Result<RET, IOException>> 
 {
 	
 	protected final InputStream is;
-	protected final ICancelMonitor cancelMonitor;
 	
 	public ReaderTask(InputStream is, ICancelMonitor cancelMonitor) {
+		super(cancelMonitor);
 		this.is = assertNotNull(is);
-		this.cancelMonitor = assertNotNull(cancelMonitor);
 	}
 	
 	@Override
@@ -45,7 +43,7 @@ public abstract class ReaderTask<RET>
 			byte[] buffer = new byte[BUFFER_SIZE];
 			
 			int read;
-			while((read = is.read(buffer)) != StreamUtil.EOF && !cancelMonitor.isCanceled()) {
+			while((read = is.read(buffer)) != StreamUtil.EOF && !isCancelled()) {
 				notifyReadChunk2(buffer, 0, read);
 			}
 			return doGetReturnValue();

@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitor;
+import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitorWithLatch;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.tests.CommonTest;
 
@@ -29,7 +30,13 @@ public class ExternalProcessHelper_Test extends CommonTest {
 	
 	public static class EndlessInputStream extends InputStream {
 		
+		protected final ICancelMonitor processTerminationMonitor;
+		
 		protected volatile boolean closed = false;
+		
+		public EndlessInputStream(ICancelMonitor processTerminationMonitor) {
+			this.processTerminationMonitor = assertNotNull(processTerminationMonitor);
+		}
 		
 		@Override
 		public void close() {
@@ -38,7 +45,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		
 		@Override
 		public int read() {
-			if(closed) {
+			if(closed || processTerminationMonitor.isCanceled()) {
 				return -1;
 			}
 			return 0;
@@ -46,14 +53,12 @@ public class ExternalProcessHelper_Test extends CommonTest {
 	}
 
 	public static class MockProcess extends Process {
-
-		protected final CancelMonitor terminationMonitor;
 		
-		protected final EndlessInputStream stdoutStream = new EndlessInputStream();
-		protected final EndlessInputStream stderrStream = new EndlessInputStream();
-
-		public MockProcess(CancelMonitor cancelMonitor) {
-			this.terminationMonitor = assertNotNull(cancelMonitor);
+		protected final CancelMonitorWithLatch processTerminationMonitor = new CancelMonitorWithLatch();
+		protected final EndlessInputStream stdoutStream = new EndlessInputStream(processTerminationMonitor);
+		protected final EndlessInputStream stderrStream = new EndlessInputStream(processTerminationMonitor);
+		
+		public MockProcess() {
 		}
 		
 		@Override
@@ -73,13 +78,13 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		
 		@Override
 		public int waitFor() throws InterruptedException {
-			terminationMonitor.getCancelLatch().await();
+			processTerminationMonitor.getCancelLatch().await();
 			return exitValue();
 		}
 		
 		@Override
 		public int exitValue() {
-			if(!terminationMonitor.isCanceled()) {
+			if(!processTerminationMonitor.isCanceled()) {
 				throw new IllegalThreadStateException();
 			}
 			return 0;
@@ -89,7 +94,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		public void destroy() {
 			stdoutStream.close();
 			stderrStream.close();
-			terminationMonitor.cancel();
+			processTerminationMonitor.cancel();
 		}
 	}
 	
@@ -112,7 +117,7 @@ public class ExternalProcessHelper_Test extends CommonTest {
 		protected final MockProcess mockProcess;
 		
 		public TestsExternalProcessHelper(boolean readStdErr, boolean startReaders, ICancelMonitor cancelMonitor) {
-			this(new MockProcess(new CancelMonitor()), readStdErr, startReaders, cancelMonitor);
+			this(new MockProcess(), readStdErr, startReaders, cancelMonitor);
 		}
 		
 		public TestsExternalProcessHelper(MockProcess mockProcess, boolean readStdErr,

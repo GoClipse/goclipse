@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.concurrent.CountDownLatch;
 
 public interface ICancelMonitor {
@@ -30,7 +32,7 @@ public interface ICancelMonitor {
 	
 	/* -----------------  ----------------- */
 	
-	public class NullCancelMonitor implements ICancelMonitor {
+	public static class NullCancelMonitor implements ICancelMonitor {
 		
 		@Override
 		public boolean isCanceled() {
@@ -39,22 +41,46 @@ public interface ICancelMonitor {
 		
 	}
 	
-	public class CancelMonitor implements ICancelMonitor {
+	public static class CancelMonitor implements ICancelMonitor {
 		
 		protected volatile boolean isCancelled = false;
-		protected final CountDownLatch cancelLatch = new CountDownLatch(1);
 		
 		@Override
 		public boolean isCanceled() {
 			return isCancelled;
 		}
 		
+		public void cancel() {
+			isCancelled = true;
+		}
+		
+	}
+	
+	public static class CompositeCancelMonitor extends CancelMonitor {
+		
+		protected final ICancelMonitor parentCancelMonitor;
+		
+		public CompositeCancelMonitor(ICancelMonitor parentCancelMonitor) {
+			this.parentCancelMonitor = assertNotNull(parentCancelMonitor);
+		}
+		
+		@Override
+		public boolean isCanceled() {
+			return super.isCanceled() && parentCancelMonitor.isCanceled();
+		}
+	}
+	
+	public static class CancelMonitorWithLatch extends CancelMonitor {
+		
+		protected final CountDownLatch cancelLatch = new CountDownLatch(1);
+		
 		public CountDownLatch getCancelLatch() {
 			return cancelLatch;
 		}
 		
+		@Override
 		public void cancel() {
-			isCancelled = true;
+			super.cancel();
 			cancelLatch.countDown();
 		}
 		
