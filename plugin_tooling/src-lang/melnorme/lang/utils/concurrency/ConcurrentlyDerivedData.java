@@ -14,13 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.utilbox.concurrency.AsyncSupplier;
 import melnorme.utilbox.concurrency.CancellableTask;
-import melnorme.utilbox.concurrency.NonCancellableFuture;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.fields.ListenerListHelper;
@@ -171,48 +170,43 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	
 	/* -----------------  ----------------- */
 	
-	
-	protected final DataUpdateFuture asFuture = new DataUpdateFuture();
-	
 	/** 
-	 * @return a {@link Future} that can be used to wait for the first non-stale data that becomes available.
+	 * @return a {@link AsyncSupplier} that can be used to wait for the first non-stale data that becomes available.
 	 */
-	public DataUpdateFuture asFuture() {
-		return asFuture;
+	public DataUpdateFuture getSupplierForNextUpdate() {
+		return new DataUpdateFuture();
 	}
 	
 	public DATA awaitUpdatedData() throws InterruptedException {
-		return asFuture().awaitResult();
+		return getSupplierForNextUpdate().awaitResult();
 	}
 	
 	public DATA awaitUpdatedData(IOperationMonitor om) throws OperationCancellation {
-		return asFuture().awaitData(om);
+		return getSupplierForNextUpdate().awaitResult(om);
 	}
 	
-	public class DataUpdateFuture implements NonCancellableFuture<DATA> {
-		@Override
-		public boolean isTerminated() {
-			return !isStale();
+	public class DataUpdateFuture implements AsyncSupplier<DATA> {
+		
+		public void awaitTermination() throws InterruptedException {
+			getLatchForUpdateTask().await();
+		}
+		
+		public void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+			boolean success = getLatchForUpdateTask().await(timeout, unit);
+			if(!success) {
+				throw new TimeoutException();
+			}
 		}
 		
 		@Override
 		public DATA awaitResult() throws InterruptedException {
-			getLatchForUpdateTask().await();
+			awaitTermination();
 			return data;
 		}
 		
 		@Override
 		public DATA awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
-			boolean success = getLatchForUpdateTask().await(timeout, unit);
-			if(!success) {
-				throw new TimeoutException();
-			}
-			return data;
-		}
-		
-		@Override
-		public DATA getResult_forSuccessfulyCompleted() {
-			assertTrue(isCompletedSuccessfully());
+			awaitTermination(timeout, unit);
 			return data;
 		}
 		

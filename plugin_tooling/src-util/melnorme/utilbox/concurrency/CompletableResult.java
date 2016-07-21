@@ -37,11 +37,9 @@ import melnorme.utilbox.core.fntypes.CallableX;
  * as opposed to getting silently swallowed/ignored by an executor worker thread. 
  *
  */
-public class CompletableResult<DATA> 
-	implements BasicFuture<DATA>
-{
+public class CompletableResult<DATA> implements BasicFuture<DATA> {
 	
-	protected final CountDownLatch completionLatch = new CountDownLatch(1);
+	protected final CountDownLatch terminationLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
 	
     protected volatile ResultStatus status = ResultStatus.NOT_TERMINATED;
@@ -59,17 +57,32 @@ public class CompletableResult<DATA>
 		return status != ResultStatus.NOT_TERMINATED;
 	}
 	
-	public boolean isCompleted() {
-		return isTerminated();
-	}
-	
 	@Override
 	public boolean isCancelled() {
 		return status == ResultStatus.CANCELLED;
 	}
 	
-	public CountDownLatch getCompletionLatch() {
-		return completionLatch;
+	protected CountDownLatch getTerminationLatch() {
+		return terminationLatch;
+	}
+	
+	@Override
+	public void awaitTermination() throws InterruptedException {
+		if(isTerminated()) {
+			return; // Early check so that InterruptedException is not thrown
+		}
+		getTerminationLatch().await();
+	}
+	
+	@Override
+	public void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+		if(isTerminated()) {
+			return; // Early check so that InterruptedException is not thrown
+		}
+		boolean success = getTerminationLatch().await(timeout, unit);
+		if(!success) {
+			throw new TimeoutException();
+		}
 	}
 	
 	public void setResultFromCallable(CallableX<DATA, RuntimeException> resultCallable) {
@@ -104,7 +117,7 @@ public class CompletableResult<DATA>
 			this.result = result;
 			this.resultRuntimeException = re;
 			status = ResultStatus.RESULT_SET;
-			completionLatch.countDown();
+			terminationLatch.countDown();
 		}
 	}
 	
@@ -121,7 +134,7 @@ public class CompletableResult<DATA>
 				return false;
 			} else {
 				status = ResultStatus.CANCELLED;
-				completionLatch.countDown();
+				terminationLatch.countDown();
 				return true;
 			}
 		}
@@ -129,37 +142,6 @@ public class CompletableResult<DATA>
 	
 	protected void handleReSetResult() {
 		throw assertFail();
-	}
-	
-	public void awaitCompletion() throws InterruptedException {
-		if(isCompleted()) {
-			return; // Early check so that InterruptedException is not thrown
-		}
-		completionLatch.await();
-	}
-	
-	public void awaitCompletion(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
-		if(isCompleted()) {
-			return; // Early check so that InterruptedException is not thrown
-		}
-		boolean success = completionLatch.await(timeout, unit);
-		if(!success) {
-			throw new TimeoutException();
-		}
-	}
-	
-	@Override
-	public DATA awaitResult() 
-			throws OperationCancellation, InterruptedException {
-		awaitCompletion();
-		return getResult_forTerminated();
-	}
-	
-	@Override
-	public DATA awaitResult(long timeout, TimeUnit unit) 
-			throws OperationCancellation, InterruptedException, TimeoutException {
-		awaitCompletion(timeout, unit);
-		return getResult_forTerminated();
 	}
 	
 	@Override

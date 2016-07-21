@@ -68,8 +68,8 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	
 	@Override
-	protected ReadAllBytesTask createMainReaderTask() {
-		return mainReader = new ReadAllBytesTask(process.getInputStream(), cancelMonitor) {
+	protected ReadAllBytesTask init_StdOutReaderTask() {
+		return new ReadAllBytesTask(process.getInputStream(), cancelMonitor) {
 			@Override
 			protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
 				super.notifyReadChunk2(buffer, offset, readCount);
@@ -80,8 +80,8 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	}
 	
 	@Override
-	protected ReadAllBytesTask createStdErrReaderTask() {
-		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor) {
+	protected ReadAllBytesTask init_StdErrReaderTask() {
+		return new ReadAllBytesTask(process.getErrorStream(), cancelMonitor) {
 			@Override
 			protected void notifyReadChunk2(byte[] buffer, int offset, int readCount) {
 				super.notifyReadChunk2(buffer, offset, readCount);

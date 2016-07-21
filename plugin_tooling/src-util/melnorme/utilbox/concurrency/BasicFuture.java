@@ -32,7 +32,7 @@ import melnorme.utilbox.core.fntypes.Result;
  * @see Future2
  * 
  */
-public interface BasicFuture<RESULT> {
+public interface BasicFuture<RESULT> extends AsyncSupplier<RESULT> {
 	
     /** @return true if execution of this future has terminated already. */
     boolean isTerminated();
@@ -47,22 +47,10 @@ public interface BasicFuture<RESULT> {
 	
 	
     /* -----------------  ----------------- */
+	
+	void awaitTermination() throws InterruptedException;
     
-	RESULT awaitResult() 
-			throws OperationCancellation, InterruptedException;
-	
-	RESULT awaitResult(long timeout, TimeUnit unit) 
-			throws OperationCancellation, InterruptedException, TimeoutException;
-	
-	/** Same as {@link #awaitResult()}, 
-	 * but throw InterruptedException as an OperationCancellation. */
-	default RESULT awaitResult2() throws OperationCancellation {
-		try {
-			return awaitResult();
-		} catch(InterruptedException e) {
-			throw new OperationCancellation();
-		}
-	}
+	void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
 	
 	/**
 	 * It is only legal to call this method if the future has terminated already.
@@ -83,5 +71,21 @@ public interface BasicFuture<RESULT> {
 	 * @return the result or throw OperationCancellation if cancelled. 
 	 */
 	RESULT getResult_forSuccessfulyCompleted();
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	default RESULT awaitResult() 
+			throws OperationCancellation, InterruptedException {
+		awaitTermination();
+		return getResult_forTerminated();
+	}
+	
+	@Override
+	default RESULT awaitResult(long timeout, TimeUnit unit) 
+			throws OperationCancellation, InterruptedException, TimeoutException {
+		awaitTermination(timeout, unit);
+		return getResult_forTerminated();
+	}
 	
 }

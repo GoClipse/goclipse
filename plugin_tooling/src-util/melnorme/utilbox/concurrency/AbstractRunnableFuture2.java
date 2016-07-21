@@ -11,7 +11,7 @@
 package melnorme.utilbox.concurrency;
 
 public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET> 
-	implements IRunnableFuture2<RET>	
+	implements IRunnableFuture2<RET>
 {
 	
 	public AbstractRunnableFuture2() {
@@ -49,6 +49,12 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	}
 	
 	protected abstract RET internalInvoke();
+	
+	
+	public void completeWithResult(RET result) {
+		cancellableTask.markExecuted();
+		completableResult.setResult(result);
+	}
 	
 	/* -----------------  ----------------- */
 	

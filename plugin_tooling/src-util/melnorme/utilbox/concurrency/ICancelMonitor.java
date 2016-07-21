@@ -66,7 +66,7 @@ public interface ICancelMonitor {
 		
 		@Override
 		public boolean isCancelled() {
-			return super.isCancelled() && parentCancelMonitor.isCancelled();
+			return super.isCancelled() || parentCancelMonitor.isCancelled();
 		}
 	}
 	
