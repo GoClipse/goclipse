@@ -50,14 +50,13 @@ public abstract class AbstractFuture2<RET> implements Future2<RET> {
 	}
 	
 	@Override
-	public RET awaitResult() throws InterruptedException, OperationCancellation {
-		return completableResult.awaitResult();
+	public void awaitTermination() throws InterruptedException {
+		completableResult.awaitTermination();
 	}
 	
 	@Override
-	public RET awaitResult(long timeout, TimeUnit unit) 
-			throws InterruptedException, TimeoutException, OperationCancellation {
-		return completableResult.awaitResult(timeout, unit);
+	public void awaitTermination(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+		completableResult.awaitTermination(timeout, unit);
 	}
 	
 	@Override

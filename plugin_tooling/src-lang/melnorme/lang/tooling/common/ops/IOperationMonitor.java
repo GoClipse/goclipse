@@ -51,8 +51,8 @@ public interface IOperationMonitor extends ICancelMonitor {
 		}
 		
 		@Override
-		public final boolean isCanceled() {
-			return cm.isCanceled();
+		public final boolean isCancelled() {
+			return cm.isCancelled();
 		}
 		
 		@Override
@@ -135,8 +135,8 @@ public interface IOperationMonitor extends ICancelMonitor {
 		}
 		
 		@Override
-		public boolean isCanceled() {
-			return om.isCanceled();
+		public boolean isCancelled() {
+			return om.isCancelled();
 		}
 		
 		@Override

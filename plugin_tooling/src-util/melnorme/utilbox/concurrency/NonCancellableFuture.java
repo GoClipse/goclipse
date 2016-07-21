@@ -11,6 +11,7 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -28,14 +29,25 @@ public interface NonCancellableFuture<DATA> extends BasicFuture<DATA> {
 		return false;
 	}
 	
+	@Override
+	default DATA getResult_forTerminated() {
+		assertTrue(!isCancelled()); 
+		return getResult_forSuccessfulyCompleted();
+	}
+	
 	// Doesn't throw OperationCancellation 
 	@Override
-	public abstract DATA awaitResult() throws InterruptedException;
+	default DATA awaitResult() throws InterruptedException {
+		awaitTermination();
+		return getResult_forTerminated();
+	}
 	
 	// Doesn't throw OperationCancellation
 	@Override
-	public abstract DATA awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
-	
+	default DATA awaitResult(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+		awaitTermination(timeout, unit);
+		return getResult_forTerminated();
+	}
 	
 	@Override
 	default DATA awaitResult2() {
@@ -43,23 +55,6 @@ public interface NonCancellableFuture<DATA> extends BasicFuture<DATA> {
 			return BasicFuture.super.awaitResult2();
 		} catch(OperationCancellation e) {
 			throw assertFail();
-		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	default DATA awaitData(ICancelMonitor cm) throws OperationCancellation {
-		
-		while(true) {
-			cm.checkCancellation();
-			
-			try {
-				return this.awaitResult(100, TimeUnit.MILLISECONDS);
-			} catch(InterruptedException e) {
-				throw new OperationCancellation();
-			} catch(TimeoutException e) {
-				continue;
-			}
 		}
 	}
 	

@@ -70,7 +70,7 @@ public abstract class CancellableTask implements ICancellableTask {
 			}
 			
 			// Can only run once
-			checkExecuted();
+			markExecuted();
 			assertTrue(runningThread == null);
 			runningThread = Thread.currentThread();
 		}
@@ -96,7 +96,7 @@ public abstract class CancellableTask implements ICancellableTask {
 		}
 	}
 	
-	protected void checkExecuted() {
+	public void markExecuted() {
 		assertTrue(executed == false); // Check that run is only called once
 		executed = true;
 	}

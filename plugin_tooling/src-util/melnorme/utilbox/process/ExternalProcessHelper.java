@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.process.ExternalProcessHelper.ReadAllBytesTask;
@@ -28,10 +29,10 @@ import melnorme.utilbox.process.ExternalProcessHelper.ReadAllBytesTask;
  * Helper for running external processes.
  * Reads all stdout and stderr output into a byte array (using worker threads)
  * 
- * @see AbstractExternalProcessHelper
+ * @see ExternalProcessHandler
  */
 public class ExternalProcessHelper 
-	extends AbstractExternalProcessHelper<ReadAllBytesTask, ReadAllBytesTask> 
+	extends ExternalProcessHandler<ReadAllBytesTask, ReadAllBytesTask> 
 {
 	
 	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
@@ -48,18 +49,18 @@ public class ExternalProcessHelper
 	}
 	
 	@Override
-	protected boolean isCanceled() {
-		return cancelMonitor.isCanceled();
+	protected ReadAllBytesTask init_StdOutReaderTask() {
+		return new ReadAllBytesTask(process.getInputStream(), cancelMonitor);
 	}
 	
 	@Override
-	protected ReadAllBytesTask createMainReaderTask() {
-		return mainReader = new ReadAllBytesTask(process.getInputStream(), cancelMonitor);
+	protected ReadAllBytesTask init_StdErrReaderTask() {
+		return new ReadAllBytesTask(process.getErrorStream(), cancelMonitor);
 	}
 	
 	@Override
-	protected ReadAllBytesTask createStdErrReaderTask() {
-		return stderrReader = new ReadAllBytesTask(process.getErrorStream(), cancelMonitor);
+	protected void completeStderrResult(ReadAllBytesTask stderrReaderTask) {
+		stderrReaderTask.completeWithResult(new Result<>(null));
 	}
 	
 	public static class ReadAllBytesTask extends ReaderTask<ByteArrayOutputStreamExt> {
@@ -84,15 +85,12 @@ public class ExternalProcessHelper
 	
 	/* ----------------- result helpers ----------------- */
 	
-	protected ByteArrayOutputStreamExt getStdOutBytes3() throws IOException {
-		return mainReader.getResult_forSuccessfulyCompleted().get();
+	protected ByteArrayOutputStreamExt getStdOutBytes() throws IOException {
+		return stdoutReaderTask.getResult_forSuccessfulyCompleted().get();
 	}
 	
-	protected ByteArrayOutputStreamExt getStdErrBytes3() throws IOException {
-		if(readStdErr) {
-			return stderrReader.getResult_forSuccessfulyCompleted().get();
-		}
-		return null;
+	protected ByteArrayOutputStreamExt getStdErrBytes() throws IOException {
+		return stderrReaderTask.getResult_forSuccessfulyCompleted().get();
 	}
 	
 	public static class ExternalProcessResult {
@@ -142,7 +140,7 @@ public class ExternalProcessHelper
 	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs, boolean destroyOnError) 
 			throws InterruptedException, TimeoutException, OperationCancellation, IOException {
 		awaitTermination(timeoutMs, destroyOnError);
-		return new ExternalProcessResult(process.exitValue(), getStdOutBytes3(), getStdErrBytes3());
+		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes());
 	}
 	
 	public ExternalProcessResult awaitTerminationAndResult_ce(boolean destroyOnError) 

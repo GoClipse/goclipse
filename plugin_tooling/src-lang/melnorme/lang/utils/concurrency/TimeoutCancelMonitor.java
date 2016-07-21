@@ -30,7 +30,7 @@ public class TimeoutCancelMonitor implements ICancelMonitor {
 	}
 	
 	@Override
-	public boolean isCanceled() {
+	public boolean isCancelled() {
 		return System.currentTimeMillis() - startTimeMillis > timeoutMillis;
 	}
 	

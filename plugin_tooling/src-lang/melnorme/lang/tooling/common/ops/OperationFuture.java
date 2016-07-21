@@ -60,8 +60,8 @@ public class OperationFuture<RET> extends MonitorRunnableFuture<OperationResult<
 		}
 		
 		@Override
-		public boolean isCanceled() {
-			return super.isCanceled() || secondCancelMonitor.isCanceled();
+		public boolean isCancelled() {
+			return super.isCancelled() || secondCancelMonitor.isCancelled();
 		}
 		
 	}

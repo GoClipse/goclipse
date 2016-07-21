@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.process;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -17,9 +19,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
-import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.StreamUtil;
@@ -31,19 +33,18 @@ import melnorme.utilbox.misc.StreamUtil;
  * 
  * Subclasses must specify Runnable's for the worker threads reading the process stdout and stderr streams.
  */
-public abstract class AbstractExternalProcessHelper<
-	STDOUT_TASK extends IRunnableFuture2<? extends Result<?, IOException>>, 
-	STDERR_TASK extends IRunnableFuture2<? extends Result<?, IOException>>
+public abstract class ExternalProcessHandler<
+	STDOUT_TASK extends AbstractRunnableFuture2<? extends Result<?, IOException>>, 
+	STDERR_TASK extends AbstractRunnableFuture2<? extends Result<?, IOException>>
 > implements IExternalProcessHandler {
 	
 	protected final Process process;
 	protected final boolean readStdErr;
 	protected final ICancelMonitor cancelMonitor;
 	
-	protected STDOUT_TASK mainReader;
-	protected STDERR_TASK stderrReader; // Can be null
+	protected final STDOUT_TASK stdoutReaderTask;
+	protected final STDERR_TASK stderrReaderTask; // Can be null
 	
-	protected final CountDownLatch readerThreadsTerminationLatch;
 	/** This latch exists to signal that the process has terminated, and also that both reader threads 
 	 * have finished reading all input. This last aspect is very important. */
 	protected final CountDownLatch readersAndProcessTerminationLatch;
@@ -51,40 +52,49 @@ public abstract class AbstractExternalProcessHelper<
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
 	
-	public AbstractExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders,
+	public ExternalProcessHandler(Process process, boolean readStdErr, boolean startReaders,
 			ICancelMonitor cancelMonitor) {
 		this.process = process;
 		this.readStdErr = readStdErr;
 		this.cancelMonitor = cancelMonitor == null ? new NullCancelMonitor() : cancelMonitor;
 		
-		readerThreadsTerminationLatch= new CountDownLatch(2);
-		readersAndProcessTerminationLatch = new CountDownLatch(1);
+		this.readersAndProcessTerminationLatch = new CountDownLatch(1);
 		
-		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
+		this.stdoutReaderTask = assertNotNull(init_StdOutReaderTask());
+		this.stderrReaderTask = assertNotNull(init_StdErrReaderTask());
 		
-		if(readStdErr) {
-			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
-		} else {
-			readerThreadsTerminationLatch.countDown(); // dont start stderr thread, so update latch
-			stderrReaderThread = null;
-		}
+		this.mainReaderThread = new ProcessHelperMainThread(stdoutReaderTask);
+		this.stderrReaderThread = init_StdErrThread(readStdErr);
+		
 		if(startReaders) {
 			startReaderThreads();
 		}
 	}
 	
-	protected abstract STDOUT_TASK createMainReaderTask();
+	protected abstract STDOUT_TASK init_StdOutReaderTask();
 	
-	protected abstract STDERR_TASK createStdErrReaderTask();
+	protected abstract STDERR_TASK init_StdErrReaderTask();
+	
+	protected ProcessHelperStdErrThread init_StdErrThread(boolean readStdErr) {
+		if(readStdErr) {
+			return new ProcessHelperStdErrThread(stderrReaderTask);
+		} else {
+			completeStderrResult(stderrReaderTask);
+			assertNotNull(stderrReaderTask.getResult_forSuccessfulyCompleted());
+			return null;
+		}
+	}
+	
+	protected abstract void completeStderrResult(STDERR_TASK stderrReaderTask);
 	
 	@Override
 	public STDOUT_TASK getStdOutTask() {
-		return mainReader;
+		return stdoutReaderTask;
 	}
 	
 	@Override
 	public STDERR_TASK getStdErrTask() {
-		return stderrReader;
+		return stderrReaderTask;
 	}
 	
 	public void startReaderThreads() {
@@ -104,7 +114,7 @@ public abstract class AbstractExternalProcessHelper<
 	}
 	
 	public boolean areReadersTerminated2() {
-		return readerThreadsTerminationLatch.getCount() == 0;
+		return stdoutReaderTask.isTerminated() && stderrReaderTask.isTerminated();
 	}
 	
 	public boolean areReadersAndProcessTerminated() {
@@ -132,8 +142,6 @@ public abstract class AbstractExternalProcessHelper<
 			try {
 				super.run();
 			} finally {
-				readerThreadsTerminationLatch.countDown();
-				
 				waitForProcessIndefinitely();
 				readersAndProcessTerminationLatch.countDown();
 				
@@ -146,7 +154,7 @@ public abstract class AbstractExternalProcessHelper<
 				try {
 					process.waitFor();
 					// Await stderr too:
-					readerThreadsTerminationLatch.await();
+					stderrReaderThread.join();
 					return;
 				} catch (InterruptedException e) {
 					// retry waitfor, we must ensure process is terminated.
@@ -167,20 +175,13 @@ public abstract class AbstractExternalProcessHelper<
 			setDaemon(true);
 		}
 		
-		@Override
-		public void run() {
-			try {
-				super.run();
-			} finally {
-				readerThreadsTerminationLatch.countDown();
-			}
-		}
-		
 	}
 	
 	/*----------  Termination awaiting functionality ----------*/
 	
-	protected abstract boolean isCanceled();
+	protected boolean isCanceled() {
+		return cancelMonitor.isCancelled();
+	}
 	
 	/**
 	 * Await termination of process, with given timeoutMs timeout in milliseconds (-1 for no timeout).
@@ -225,10 +226,8 @@ public abstract class AbstractExternalProcessHelper<
 			awaitReadersTermination(timeoutMs);
 			
 			// Check for IOExceptions (although I'm not sure this scenario is possible)
-			mainReader.awaitResult2().get();
-			if(stderrReader != null) {
-				stderrReader.awaitResult2().get();
-			}
+			stdoutReaderTask.awaitResult2().get();
+			stderrReaderTask.awaitResult2().get();
 		} catch(Exception e) {
 			if(destroyOnError) {
 				destroyProcess();

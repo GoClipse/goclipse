@@ -13,20 +13,27 @@ package melnorme.lang.utils.concurrency;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitor;
+import melnorme.utilbox.concurrency.ICancelMonitor.CompositeCancelMonitor;
 import melnorme.utilbox.concurrency.IRunnableFuture2;
 
 /**
- * A {@link IRunnableFuture2} with a cancellation monitor
+ * A {@link IRunnableFuture2} with a cancellation monitor.
  */
 public abstract class MonitorRunnableFuture<RET> 
 	extends AbstractRunnableFuture2<RET> 
 {
 	
+	/** The cancel monitor for this Future */
 	private final CancelMonitor cancelMonitor;
 	
 	public MonitorRunnableFuture() {
 		this(new CancelMonitor());
+	}
+	
+	public MonitorRunnableFuture(ICancelMonitor cancelMonitor) {
+		this(new CompositeCancelMonitor(cancelMonitor));
 	}
 	
 	public MonitorRunnableFuture(CancelMonitor cancelMonitor) {
@@ -34,7 +41,27 @@ public abstract class MonitorRunnableFuture<RET>
 	}
 	
 	public CancelMonitor getCancelMonitor() {
+		updateCancellationFromMonitor();
 		return cancelMonitor;
+	}
+	
+	protected void updateCancellationFromMonitor() {
+		boolean monitorCancelled = cancelMonitor.isCancelled();
+		if(monitorCancelled && super.isCancelled() == false) {
+			tryCancel();
+		}
+	}
+	
+	@Override
+	public boolean isTerminated() {
+		updateCancellationFromMonitor();
+		return super.isTerminated();
+	}
+	
+	@Override
+	public boolean isCancelled() {
+		updateCancellationFromMonitor();
+		return super.isCancelled();
 	}
 	
 	@Override

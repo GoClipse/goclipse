@@ -60,7 +60,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 			return computeProposals(sourceOpContext, cm);
 			
 		} catch (OperationCancellation e) {
-			if(cm.isCanceled()) {
+			if(cm.isCancelled()) {
 				throw new OperationSoftFailure(LangUIMessages.ContentAssist_Timeout);
 			}
 			// This shouldn't be possible in most concrete implementations,
