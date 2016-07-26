@@ -13,6 +13,9 @@ package melnorme.utilbox.core.fntypes;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import melnorme.utilbox.misc.HashcodeUtil;
 
 public class Result<DATA, EXC extends Throwable> {
 	
@@ -45,6 +48,25 @@ public class Result<DATA, EXC extends Throwable> {
 		this.resultException = resultException;
 		assertTrue(resultValue == null || resultException == null);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof Result)) return false;
+		
+		Result<?, ?> other = (Result<?, ?>) obj;
+		
+		return 
+			areEqual(resultValue, other.resultValue) && 
+			areEqual(resultException, other.resultException);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(resultValue, resultException);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public DATA get() throws EXC {
 		throwIfExceptionResult();
