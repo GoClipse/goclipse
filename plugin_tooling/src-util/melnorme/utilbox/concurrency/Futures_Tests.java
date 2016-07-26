@@ -78,6 +78,7 @@ public abstract class Futures_Tests extends CommonTest {
 		public void teardown() {
 			if(executor != null) {
 				executor.shutdownNow();
+				executor = null;
 			}
 		}
 		

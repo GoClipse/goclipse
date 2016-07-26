@@ -36,54 +36,56 @@ public class ThreadPoolExecutorExt_Test extends CommonTest {
 	
 	protected void testShutdownAndCancelAll() {
 		
-		ThreadPoolExecutorExt executor = new Tests_ExecutorTaskAgent(getClass().getSimpleName());
-		
-		LatchRunnable2 executingRunnable = new InterruptibleEndlessRunnable();
-		executor.execute(executingRunnable); // Initial task
-		
-		Future<?> futureTask = executor.submit(new InvalidRunnable());
-		
-		MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(new InvalidRunnable());
-		executor.submitTask(monitorFutureTask);
-		
-		IRunnableFuture2<Object> runnableFuture = IRunnableFuture2.toFuture(() -> {
-			throw assertFail();
-		});
-		executor.submitTask(runnableFuture);
-		
-		
-		executingRunnable.awaitEntry();
-		executor.shutdownNowAndCancelAll();
-		
-		
-		// Test that tasks were cancelled by the executor
-		assertTrue(futureTask.isCancelled());
-		verifyThrows(() -> futureTask.get(), CancellationException.class);
-		assertTrue(monitorFutureTask.isCancelled());
-		verifyThrows(() -> monitorFutureTask.awaitResult2(), OperationCancellation.class);
+		try(Tests_ExecutorTaskAgent executor = new Tests_ExecutorTaskAgent(getClass().getSimpleName())) {
+			
+			LatchRunnable2 executingRunnable = new InterruptibleEndlessRunnable();
+			executor.execute(executingRunnable); // Initial task
+			
+			Future<?> futureTask = executor.submit(new InvalidRunnable());
+			
+			MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(new InvalidRunnable());
+			executor.submitTask(monitorFutureTask);
+			
+			IRunnableFuture2<Object> runnableFuture = IRunnableFuture2.toFuture(() -> {
+				throw assertFail();
+			});
+			executor.submitTask(runnableFuture);
+			
+			
+			executingRunnable.awaitEntry();
+			executor.shutdownNowAndCancelAll();
+			
+			
+			// Test that tasks were cancelled by the executor
+			assertTrue(futureTask.isCancelled());
+			verifyThrows(() -> futureTask.get(), CancellationException.class);
+			assertTrue(monitorFutureTask.isCancelled());
+			verifyThrows(() -> monitorFutureTask.awaitResult2(), OperationCancellation.class);
+		}
 	}
 		
 	protected void testShutdownAndCancelAll2() {
 		
-		ThreadPoolExecutorExt executor = new Tests_ExecutorTaskAgent(getClass().getSimpleName());
+		try(Tests_ExecutorTaskAgent executor = new Tests_ExecutorTaskAgent(getClass().getSimpleName())) {
 		
-		InterruptibleEndlessRunnable latchRunnable = new InterruptibleEndlessRunnable();
-		
-		// Initial task
-		MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(latchRunnable);
-		executor.submitTask(monitorFutureTask);
-		
-		latchRunnable.awaitEntry();
-		executor.shutdownNowAndCancelAll();
-		
-		
-		// Test that tasks were cancelled by the executor
-		verifyThrows(() -> monitorFutureTask.awaitResult2(), null);
-		
-		
-		// Ensure executing runnable was interrupted and continued
-		latchRunnable.awaitExit();
-		assertTrue(latchRunnable.interrupted);
+			InterruptibleEndlessRunnable latchRunnable = new InterruptibleEndlessRunnable();
+			
+			// Initial task
+			MonitorRunnableFuture<Void> monitorFutureTask = monitorRunnableFuture(latchRunnable);
+			executor.submitTask(monitorFutureTask);
+			
+			latchRunnable.awaitEntry();
+			executor.shutdownNowAndCancelAll();
+			
+			
+			// Test that tasks were cancelled by the executor
+			verifyThrows(() -> monitorFutureTask.awaitResult2(), null);
+			
+			
+			// Ensure executing runnable was interrupted and continued
+			latchRunnable.awaitExit();
+			assertTrue(latchRunnable.interrupted);
+		}
 	}
 	
 	public static MonitorRunnableFuture<Void> monitorRunnableFuture(Runnable runnable) {
