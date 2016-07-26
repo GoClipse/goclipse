@@ -17,6 +17,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.junit.After;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
@@ -34,15 +35,20 @@ import melnorme.utilbox.process.IExternalProcessHandler;
 
 public class LanguageServerHandler_Test extends CommonCoreTest {
 	
-	
 	protected ExecutorService executor;
 	
 	protected ExecutorService getExecutor() {
-		if(executor != null) {
-			executor.shutdownNow();
-		}
+		cleanup();
 		executor = Executors.newSingleThreadExecutor();
 		return executor;
+	}
+	
+	@After
+	public void cleanup() {
+		if(executor != null) {
+			executor.shutdownNow();
+			executor = null;
+		}
 	}
 	
 	@Test

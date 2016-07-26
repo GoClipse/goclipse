@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.junit.Test;
 
+import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.tests.CommonTestExt;
 
 public class ExecutorTaskAgent_Test extends CommonTestExt {
@@ -32,54 +33,58 @@ public class ExecutorTaskAgent_Test extends CommonTestExt {
 		runMultipleTimes(10, 100, () -> testBasic$());
 	}
 	public void testBasic$() throws Exception {
-		ExecutorTaskAgent agent = new Tests_ExecutorTaskAgent("testShutdownNow");
-		LatchRunnable firstTask = new LatchRunnable(true);
-		LatchRunnable secondTask = new LatchRunnable(true);
-		
-		agent.submit(firstTask);
-		assertTrue(agent.getSubmittedTaskCount() == 1);
-		Future<?> secondTaskFuture = agent.submit(secondTask);
-		assertTrue(agent.getSubmittedTaskCount() == 2);
-		
-		firstTask.awaitTaskEntry();
-		assertTrue(secondTaskFuture.isCancelled() == false);
-		
-		List<Runnable> cancelledTasks = agent.shutdownNowAndCancelAll();
-		assertTrue(cancelledTasks.size() == 1);
-		
-		assertTrue(secondTaskFuture.isCancelled() == true);
-		assertTrue(agent.isShutdown());
-		Thread.sleep(1);
-		assertTrue(agent.isTerminating() == true);
-		assertTrue(agent.isTerminated() == false);
-		firstTask.releaseAll();
-		agent.awaitTermination();
-		assertTrue(agent.isShutdown());
-		assertTrue(agent.isTerminating() == false);
-		assertTrue(agent.isTerminated());
-		
-		testShutdownNow_Interrupt();
+		try(Tests_ExecutorTaskAgent agent = new Tests_ExecutorTaskAgent("testShutdownNow")) {
+			LatchRunnable firstTask = new LatchRunnable(true);
+			LatchRunnable secondTask = new LatchRunnable(true);
+			
+			agent.submit(firstTask);
+			assertTrue(agent.getSubmittedTaskCount() == 1);
+			Future<?> secondTaskFuture = agent.submit(secondTask);
+			assertTrue(agent.getSubmittedTaskCount() == 2);
+			
+			firstTask.awaitTaskEntry();
+			assertTrue(secondTaskFuture.isCancelled() == false);
+			
+			List<Runnable> cancelledTasks = agent.shutdownNowAndCancelAll();
+			assertTrue(cancelledTasks.size() == 1);
+			
+			assertTrue(secondTaskFuture.isCancelled() == true);
+			assertTrue(agent.isShutdown());
+			Thread.sleep(1);
+			assertTrue(agent.isTerminating() == true);
+			assertTrue(agent.isTerminated() == false);
+			firstTask.releaseAll();
+			agent.awaitTermination();
+			assertTrue(agent.isShutdown());
+			assertTrue(agent.isTerminating() == false);
+			assertTrue(agent.isTerminated());
+			
+			testShutdownNow_Interrupt();
+		}
 	}
 	
 	// test that shutdownNow interrupts current task.
 	public void testShutdownNow_Interrupt() throws InterruptedException {
-		ExecutorTaskAgent agent = new Tests_ExecutorTaskAgent("testShutdownNow_Interrupt");
-		LatchRunnable firstTask = new LatchRunnable(false);
-		agent.submit(firstTask);
-		
-		Future<?> future = agent.submit(new LatchRunnable(true));
-		
-		firstTask.awaitTaskEntry();
-		
-		assertTrue(future.isDone() == false);
-		List<Runnable> cancelledTasks = agent.shutdownNowAndCancelAll();
-		assertTrue(cancelledTasks.size() == 1);
-		assertTrue(future.isCancelled());
-		
-		agent.awaitTermination();
+		try(Tests_ExecutorTaskAgent agent = new Tests_ExecutorTaskAgent("testShutdownNow_Interrupt")) {
+			LatchRunnable firstTask = new LatchRunnable(false);
+			agent.submit(firstTask);
+			
+			Future<?> future = agent.submit(new LatchRunnable(true));
+			
+			firstTask.awaitTaskEntry();
+			
+			assertTrue(future.isDone() == false);
+			List<Runnable> cancelledTasks = agent.shutdownNowAndCancelAll();
+			assertTrue(cancelledTasks.size() == 1);
+			assertTrue(future.isCancelled());
+			
+			agent.awaitTermination();
+		}
 	}
 	
-	public static class Tests_ExecutorTaskAgent extends ExecutorTaskAgent {
+	public static class Tests_ExecutorTaskAgent extends ExecutorTaskAgent
+		implements IDisposable
+	{
 		
 		protected final LinkedBlockingQueue<Throwable> uncaughtExceptions;
 		
@@ -97,6 +102,11 @@ public class ExecutorTaskAgent_Test extends CommonTestExt {
 		}
 		
 		@Override
+		public void dispose() {
+			this.shutdownNowAndCancelAll();
+		}
+		
+		@Override
 		public void awaitTermination() throws InterruptedException {
 			super.awaitTermination();
 		}
@@ -109,49 +119,51 @@ public class ExecutorTaskAgent_Test extends CommonTestExt {
 	}
 	
 	public void testExceptionHandling$() throws Exception {
-		
-		Tests_ExecutorTaskAgent agent = new Tests_ExecutorTaskAgent("testExceptionHandling");
-		Future<?> future;
-		
-		future = agent.submit(new LatchRunnable(false));
-		future.cancel(true);
-		
-		try {
-			future.get();
-			assertFail();
-		} catch (CancellationException ce) {
-			// ok
-		}
-		agent.awaitPendingTasks();
-		assertTrue(agent.uncaughtExceptions.size() == 0);
-		
-		
-		Runnable npeRunnable = () -> {
-			throw new RuntimeException("npeRunnable"); // a RuntimeException, representing an internal error
-		};
-		Callable<String> normalTask = () -> {
-			throw new IOException("Some expected exception");
-		};
-		
-		checkExceptionHandling(agent.uncaughtExceptions, agent, 
-			agent.submit(npeRunnable), RuntimeException.class, false);
-		
-		checkExceptionHandling(agent.uncaughtExceptions, agent, 
-			agent.submit(normalTask), IOException.class, true);
-		
-		checkExceptionHandling(agent.uncaughtExceptions, agent, 
-			agent.submit(() -> { throw new RuntimeException("---"); }), RuntimeException.class, false);
-		
-		agent.execute(npeRunnable);
-		
-		agent.shutdown();
-		agent.awaitTermination();
-		
-		while(true) {
-			if(agent.uncaughtExceptions.size() == 1) {
-				break;
+		try(Tests_ExecutorTaskAgent agent = new Tests_ExecutorTaskAgent("testExceptionHandling")) {
+			
+			Future<?> future;
+			
+			future = agent.submit(new LatchRunnable(false));
+			future.cancel(true);
+			
+			try {
+				future.get();
+				assertFail();
+			} catch (CancellationException ce) {
+				// ok
 			}
-			Thread.sleep(20);
+			agent.awaitPendingTasks();
+			assertTrue(agent.uncaughtExceptions.size() == 0);
+			
+			
+			Runnable npeRunnable = () -> {
+				throw new RuntimeException("npeRunnable"); // a RuntimeException, representing an internal error
+			};
+			Callable<String> normalTask = () -> {
+				throw new IOException("Some expected exception");
+			};
+			
+			checkExceptionHandling(agent.uncaughtExceptions, agent, 
+				agent.submit(npeRunnable), RuntimeException.class, false);
+			
+			checkExceptionHandling(agent.uncaughtExceptions, agent, 
+				agent.submit(normalTask), IOException.class, true);
+			
+			checkExceptionHandling(agent.uncaughtExceptions, agent, 
+				agent.submit(() -> { throw new RuntimeException("---"); }), RuntimeException.class, false);
+			
+			agent.execute(npeRunnable);
+			
+			agent.shutdown();
+			agent.awaitTermination();
+			
+			while(true) {
+				if(agent.uncaughtExceptions.size() == 1) {
+					break;
+				}
+				Thread.sleep(20);
+			}
+			
 		}
 	}
 	

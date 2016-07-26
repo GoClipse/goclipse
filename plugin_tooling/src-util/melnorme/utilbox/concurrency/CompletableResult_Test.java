@@ -13,6 +13,7 @@ package melnorme.utilbox.concurrency;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -26,10 +27,13 @@ public class CompletableResult_Test extends CommonTest {
 	@Test
 	public void testResultFuture() throws Exception { testResultFuture$(); }
 	public void testResultFuture$() throws Exception {
+		ExecutorService newSingleThreadExecutor = Executors.newSingleThreadExecutor();
+		owned.add(() -> newSingleThreadExecutor.shutdown());
+		
 		{
 			CompletableResult<String> completableResult = new CompletableResult<>();
 			
-			Executors.newSingleThreadExecutor().execute(() -> {
+			newSingleThreadExecutor.execute(() -> {
 				MiscUtil.sleepUnchecked(100);
 				completableResult.setResult(null);
 			});
@@ -54,7 +58,7 @@ public class CompletableResult_Test extends CommonTest {
 				}
 			};
 			
-			Executors.newSingleThreadExecutor().execute(latchRunnable);
+			newSingleThreadExecutor.execute(latchRunnable);
 			resultFuture.setCancelledResult();
 			setResultLatch.countDown();
 			
