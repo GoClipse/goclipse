@@ -12,10 +12,13 @@ package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.Test;
@@ -23,6 +26,7 @@ import org.junit.Test;
 import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent_Test.Tests_ExecutorTaskAgent;
 import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.tests.CommonTest;
 
 public abstract class Futures_Tests extends CommonTest {
@@ -74,6 +78,7 @@ public abstract class Futures_Tests extends CommonTest {
 		public void teardown() {
 			if(executor != null) {
 				executor.shutdownNow();
+				executor = null;
 			}
 		}
 		
@@ -108,27 +113,37 @@ public abstract class Futures_Tests extends CommonTest {
 			
 			// Test await result
 			FUTURE future = submitToExecutor(() -> "result");
-			assertEquals("result", future.awaitResult());
-			
-			Thread.currentThread().interrupt();
-			assertEquals("result", future.getResult_forSuccessfulyCompleted());
-			Thread.currentThread().interrupt();
-			assertEquals("result", future.getResult_forTerminated());
-			Thread.currentThread().interrupt();
-			assertEquals("result", future.awaitResult());
-			Thread.currentThread().interrupt();
-			assertEquals("result", future.awaitResult(1000, TimeUnit.DAYS));
-			assertTrue(Thread.interrupted());
-			assertTrue(Thread.currentThread().isInterrupted() == false);
-			
+			checkResult(future, "result");
+			assertTrue(future.tryCancel() == false);
+			assertTrue(future.isCompletedSuccessfully());
+			checkResult(future, "result");
 			
 			// Test RuntimeException handling
+			test_result_forRuntimeException();
+		}
+		
+		protected void test_result_forRuntimeException() {
 			verifyThrows(() -> {
 				submitAndAwaitResult(() -> { 
 					throw new RuntimeException("xxx2");
 				});
 			}, RuntimeException.class, "xxx2");
+		}
+		
+		protected void checkResult(FUTURE future, Object result) 
+				throws OperationCancellation, InterruptedException, TimeoutException {
+			assertEquals(result, future.awaitResult());
 			
+			Thread.currentThread().interrupt();
+			assertEquals(result, future.getResult_forSuccessfulyCompleted());
+			Thread.currentThread().interrupt();
+			assertEquals(result, future.getResult_forTerminated());
+			Thread.currentThread().interrupt();
+			assertEquals(result, future.awaitResult());
+			Thread.currentThread().interrupt();
+			assertEquals(result, future.awaitResult(1000, TimeUnit.DAYS));
+			assertTrue(Thread.interrupted());
+			assertTrue(Thread.currentThread().isInterrupted() == false);
 		}
 		
 		protected FUTURE submitToExecutor(CallableX<Object, RuntimeException> callable) {
@@ -138,10 +153,7 @@ public abstract class Futures_Tests extends CommonTest {
 		}
 		
 		protected void submitToExecutor(FUTURE future, ExecutorService executor) {
-			if(executor instanceof ThreadPoolExecutorExt) {
-				ThreadPoolExecutorExt executorExt = (ThreadPoolExecutorExt) executor;
-				executorExt.submitTask(future);
-			}
+			assertTrue(future.canExecute());
 			executor.execute(future);
 		}
 		
@@ -236,11 +248,68 @@ public abstract class Futures_Tests extends CommonTest {
 		
 	}
 	
-	public static class RunnableFuture2_Test extends AbstractFutureTest<IRunnableFuture2<Object>> {
+	public static class RunnableFuture2_Test extends AbstractFutureTest<IRunnableFuture2<?>> {
 		
 		@Override
 		protected IRunnableFuture2<Object> initFuture(CallableX<Object, RuntimeException> callable) {
 			return IRunnableFuture2.toFuture(callable);
+		}
+		
+		@Override
+		public void test_result() throws Exception {
+			super.test_result();
+			
+
+			IRunnableFuture2<Result<Object, RuntimeException>> future = IRunnableFuture2.toResultFuture(() -> { 
+				throw new RuntimeException("xxx2");
+			});
+			
+			submitToExecutor(future, ForkJoinPool.commonPool());
+			Result<Object, RuntimeException> result = future.awaitResult();
+			
+			verifyThrows(() -> {
+				result.get();
+			}, RuntimeException.class, "xxx2");
+
+		}
+		
+	}
+	
+	public static class Future2Adapter_Test extends AbstractFutureTest<RunnableFuture2Adapter<Object>> {
+		
+		@Override
+		protected RunnableFuture2Adapter<Object> initFuture(CallableX<Object, RuntimeException> callable) {
+			return new RunnableFuture2Adapter<>(new FutureTask<>(callable));
+		}
+		
+		@Override
+		protected void checkResult(RunnableFuture2Adapter<Object> future, Object result)
+				throws OperationCancellation, InterruptedException, TimeoutException {
+			super.checkResult(future, new Result<>(result));
+		}
+		
+		@Override
+		protected void test_result_forRuntimeException() {
+			verifyThrows(() -> {
+				submitAndAwaitResult(() -> { 
+					throw new RuntimeException("xxx2");
+				});
+			}, null);
+		}
+		
+		@Test
+		public void test_errors() throws Exception { test_errors$(); }
+		public void test_errors$() throws Exception {
+			
+			CompletableFuture<String> completableFuture = new CompletableFuture<>();
+			Future2Adapter<String> future2Adapter = new Future2Adapter<>(completableFuture);
+			
+			assertTrue(future2Adapter.isCompletedSuccessfully() == false);
+			completableFuture.completeExceptionally(new RuntimeException("XXX"));
+			assertTrue(future2Adapter.isTerminated() == true);
+			assertTrue(future2Adapter.isCompletedSuccessfully() == true);
+			Result<String, Throwable> awaitResult = future2Adapter.awaitResult();
+			verifyThrows(awaitResult::get, RuntimeException.class, "XXX");
 		}
 		
 	}

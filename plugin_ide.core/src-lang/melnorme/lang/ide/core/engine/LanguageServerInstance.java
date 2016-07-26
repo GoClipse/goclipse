@@ -15,9 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.engine.ILanguageEngine;
 import melnorme.utilbox.process.IExternalProcessHandler;
 
-public abstract class LanguageServerInstance {
+public abstract class LanguageServerInstance implements ILanguageEngine {
 	
 	protected final Path serverPath;
 	protected final IExternalProcessHandler serverProcess;

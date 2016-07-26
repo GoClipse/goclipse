@@ -73,13 +73,22 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	@Override
 	public void execute(Runnable command) {
 		executeCount.incrementAndGet();
+		
+		// Check this assertion contract early, and in submitter's thread.
+		execute_checkPreConditions(command);
+		
 		super.execute(command);
+	}
+	
+	public static void execute_checkPreConditions(Runnable command) {
+		if(command instanceof ICancellableTask) {
+			ICancellableTask cancellableTask = (ICancellableTask) command;
+			assertTrue(cancellableTask.canExecute());
+		}
 	}
 	
 	@Override
 	public void submitTask(ICancellableTask runnableTask) {
-		// Check this assertion contract early, and in submitor's thread.
-		assertTrue(runnableTask.canExecute());
 		this.execute(runnableTask);
 	}
 	

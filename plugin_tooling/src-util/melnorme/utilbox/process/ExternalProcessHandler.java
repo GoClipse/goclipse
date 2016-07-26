@@ -154,7 +154,7 @@ public abstract class ExternalProcessHandler<
 				try {
 					process.waitFor();
 					// Await stderr too:
-					stderrReaderThread.join();
+					stderrReaderTask.awaitTermination();
 					return;
 				} catch (InterruptedException e) {
 					// retry waitfor, we must ensure process is terminated.
