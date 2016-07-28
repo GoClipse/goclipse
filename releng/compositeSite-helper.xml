@@ -15,7 +15,7 @@ eclipse -application org.eclipse.ant.core.antRunner -consolelog createCompositeR
 		<p2.composite.repository failOnExists="true">
 			<repository location="${repo.dir}" name="${repo.name}" compressed="false" />
 			<add>
-				<repository location="http://download.eclipse.org/releases/mars" />
+				<repository location="http://download.eclipse.org/tools/cdt/releases/9.0" />
 				<repository location="local-repo" />
 			</add>
 		</p2.composite.repository>

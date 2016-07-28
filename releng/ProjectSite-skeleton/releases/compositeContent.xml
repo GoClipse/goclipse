@@ -2,11 +2,11 @@
 <?compositeMetadataRepository version='1.0.0'?>
 <repository name='LANG_IDE_NAME Software Site' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1436205714794'/>
+    <property name='p2.timestamp' value='1469722449462'/>
     <property name='p2.atomic.composite.loading' value='true'/>
   </properties>
   <children size='2'>
-    <child location='http://download.eclipse.org/tools/cdt/releases/8.8.1'/>
+    <child location='http://download.eclipse.org/tools/cdt/releases/9.0'/>
     <child location='local-repo'/>
   </children>
 </repository>
