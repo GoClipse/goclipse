@@ -54,7 +54,10 @@ public class StatusMessageDialogExt extends StatusMessageDialog2 {
 		}
 		
 		protected void createDetailsMessage(Composite topControl, IDetailsMessage detailsMessage) {
-			String additionalMessage = "\n" + detailsMessage.getDetailsMessage();
+			if(!detailsMessage.getDetailsMessage2().isPresent()) {
+				return;
+			}
+			String additionalMessage = "\n" + detailsMessage.getDetailsMessage2().get();
 			
 			helpControl = SWTFactoryUtil.createLink(topControl, SWT.WRAP, additionalMessage, 
 				gdfFillDefaults().grab(true, true).span(2, 1).create()

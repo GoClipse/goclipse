@@ -219,9 +219,11 @@ public class ResourceUtils {
 	
 	public static void runOperationUnderResource(IResource resource, IOperationMonitor om, Operation operation)
 			throws CommonException, OperationCancellation {
-		runOperation(resource, om, operation);
-		
-		refresh(resource, om);
+		try {
+			runOperation(resource, om, operation);
+		} finally {
+			refresh(resource, om);
+		}
 	}
 	
 	public static void runWorkspaceOperation(IProgressMonitor pm, Operation operation) 
