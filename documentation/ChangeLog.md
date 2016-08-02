@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed editor NPE when opening files from a non-workspace VCS revision. 
+
  * Fixed: NPE when invoking Content Assist inside a comment, string or character.
  * Updated minimum CDT to version `9.0`.
  * Removed preference "Show error dialog if #DEAMON_TOOL failures occur" as it's no longer necessary.

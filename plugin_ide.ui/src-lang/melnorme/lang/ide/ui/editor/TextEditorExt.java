@@ -67,7 +67,7 @@ public class TextEditorExt extends TextEditor {
 		
 		IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(input);
 		IFile file = EditorUtils.getAssociatedFile(input);
-		if(file != null) {
+		if(file != null || annotationModel == null) {
 			return; // No need for external breakpoint watching
 		}
 		breakpointWatcher = new ExternalBreakpointWatcher(input, getDocument(),  annotationModel);
