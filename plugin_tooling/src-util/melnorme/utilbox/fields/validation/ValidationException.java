@@ -10,6 +10,10 @@
  *******************************************************************************/
 package melnorme.utilbox.fields.validation;
 
+import static melnorme.utilbox.core.CoreUtil.option;
+
+import java.util.Optional;
+
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
@@ -32,8 +36,8 @@ public class ValidationException extends StatusException implements IDetailsMess
 	}
 	
 	@Override
-	public String getDetailsMessage() {
-		return detailsMessage;
+	public Optional<String> getDetailsMessage2() {
+		return option(detailsMessage);
 	}
 	
 }

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package melnorme.utilbox.fields.validation;
 
+import java.util.Optional;
 
 public interface IDetailsMessage {
 	
-	String getDetailsMessage();
+	Optional<String> getDetailsMessage2();
 	
 }

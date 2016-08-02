@@ -36,13 +36,13 @@ public class RunToolOperationOnResource extends RunToolOperation {
 	protected void runProcessTask(RunToolTask runToolTask, IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		
-		ResourceUtils.runOperationUnderResource(resource, om, 
-			(pm2) -> {
-				ExternalProcessResult result = runToolTask.runProcess();
-				
-				String toolName = pb.command().get(0);
-				ProcessUtils.validateNonZeroExitValue(toolName, result.exitValue);
-			});
+		ResourceUtils.runOperationUnderResource(resource, om, (pm2) -> {
+			ExternalProcessResult result = runToolTask.runProcess();
+			
+			String toolName = pb.command().get(0);
+			ProcessUtils.validateNonZeroExitValue(toolName, result.exitValue);
+		});
+		
 	}
 	
 }
