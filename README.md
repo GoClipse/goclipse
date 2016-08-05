@@ -68,6 +68,8 @@ See https://github.com/bruno-medeiros/MelnormeEclipse/wiki/Extensive-Compile-Tim
         four, five, six);
 ```
 
+There is also an [Eclipse formatter profile settings file](code-style.xml) you can use, although you are not obliged to format with all rules of that formatter settings. If you make a minor source change, don't format the whole file, but only around the changes you are contributing.
+
 #### Unit tests double-method wrapper:
  
 This code idiom is often used in this project's JUnit tests:
