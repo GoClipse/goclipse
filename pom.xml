@@ -10,7 +10,7 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.25.0</tycho-version>
+		<tycho-version>0.26.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>

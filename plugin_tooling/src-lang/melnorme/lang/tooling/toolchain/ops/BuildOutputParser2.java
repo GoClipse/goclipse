@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
+ *     Pieter Penninckx - added copy constructor for ToolMessageData
  *******************************************************************************/
 package melnorme.lang.tooling.toolchain.ops;
 
@@ -121,6 +122,24 @@ public abstract class BuildOutputParser2 extends AbstractToolResultParser<ArrayL
 		
 		public String sourceBeforeMessageText;
 		public String messageText;
+		
+		// Copy constructor
+		public ToolMessageData(ToolMessageData init) {
+			this.pathString = init.pathString;
+			this.lineString = init.lineString;
+			this.columnString = init.columnString;
+			this.endLineString = init.endLineString;
+			this.endColumnString = init.endColumnString;
+			
+			this.messageTypeString = init.messageTypeString;
+			
+			this.sourceBeforeMessageText = init.sourceBeforeMessageText;
+			this.messageText = init.messageText;
+		}
+		
+		// Default constructor
+		public ToolMessageData() {
+		}
 		
 	}
 	
