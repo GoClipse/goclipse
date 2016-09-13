@@ -89,14 +89,14 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	public static final String PENDING_TXT = "\tpending";
 	
 	protected LangAutoEditStrategy autoEditStrategy;
-	protected InstrumentedLastKeyInfoProvider lastKeyInfoProvider;
+	protected final InstrumentedLastKeyInfoProvider lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
 	
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
 			
 			ILangAutoEditsPreferencesAccess preferences = new Mock_LangAutoEditsPreferencesAccess();
 			
-			lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
+			lastKeyInfoProvider.lastPressedKey = KeyCommand.OTHER;
 			autoEditStrategy = new LangAutoEditStrategy(lastKeyInfoProvider, preferences) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
@@ -172,10 +172,11 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		
 		int keypressOffset = beforeCursor.length();
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, insertedText);
+		LangAutoEditStrategy autoEditStrategy = getAutoEditStrategy();
 		if(docCommand.length == 0 && areEqual(docCommand.text, NL)) {
 			lastKeyInfoProvider.lastPressedKey = KeyCommand.ENTER;
 		}
-		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
+		autoEditStrategy.customizeDocumentCommand(document, docCommand);
 		int replaceLength = deletedText.length();
 		if(caretOffset == textBefore.length()) {
 			caretOffset = -1;
