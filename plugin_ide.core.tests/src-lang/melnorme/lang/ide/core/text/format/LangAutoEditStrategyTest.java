@@ -30,7 +30,7 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
-	protected static class InstrumentedLastKeyInfoProvider implements ILastKeyInfoProvider {
+	public static class InstrumentedLastKeyInfoProvider implements ILastKeyInfoProvider {
 		
 		protected KeyCommand lastPressedKey = KeyCommand.OTHER;
 		
