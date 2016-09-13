@@ -6,11 +6,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.core_text.LANGUAGE_DocumentSetupParticipant;
-import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_FormatEditorOperation;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
+import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
