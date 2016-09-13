@@ -10,16 +10,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.text;
 
-import org.eclipse.jface.text.ITextViewer;
-
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 
 public class GoAutoEditStrategy extends LangAutoEditStrategy {
 	
-	public GoAutoEditStrategy(String contentType, ITextViewer viewer, ILangAutoEditsPreferencesAccess preferences) {
-		super(viewer, TextSettings_Actual.PARTITIONING_ID, contentType, preferences);
+	public GoAutoEditStrategy(String contentType, ILangAutoEditsPreferencesAccess preferences, 
+		ILastKeyInfoProvider lastKeyInfoProvider) 
+	{
+		super(lastKeyInfoProvider, TextSettings_Actual.PARTITIONING_ID, contentType, preferences);
 	}
 	
 }
