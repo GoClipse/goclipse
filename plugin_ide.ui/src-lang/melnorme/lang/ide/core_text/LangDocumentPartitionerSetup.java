@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.core_text;
+package melnorme.lang.ide.core_text;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.utils.EclipseUtils;

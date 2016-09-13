@@ -32,7 +32,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
 	public static class InstrumentedLastKeyInfoProvider implements ILastKeyInfoProvider {
 		
-		protected KeyCommand lastPressedKey = KeyCommand.OTHER;
+		public KeyCommand lastPressedKey = KeyCommand.OTHER;
 		
 		@Override
 		public KeyCommand getLastPressedKey() {

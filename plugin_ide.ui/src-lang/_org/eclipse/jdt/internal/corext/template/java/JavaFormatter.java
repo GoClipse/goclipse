@@ -33,7 +33,7 @@ import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 
-import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 
 /**
  * A template editor using the Java formatter to format a template buffer.

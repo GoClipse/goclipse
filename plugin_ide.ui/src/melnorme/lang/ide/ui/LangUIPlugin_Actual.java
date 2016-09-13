@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.googlecode.goclipse.core_text.GoDocumentSetupParticipant;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
 import com.googlecode.goclipse.ui.editor.GoDocTextHover;
 import com.googlecode.goclipse.ui.editor.actions.GoFmtEditorOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
-import LANG_PROJECT_ID.ide.core_text.GoDocumentSetupParticipant;
-import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
+import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
