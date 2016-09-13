@@ -1,9 +1,6 @@
 package melnorme.lang.ide.core;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.rules.IPartitionTokenScanner;
-
-import com.googlecode.goclipse.core.text.GoPartitionScanner;
 
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -27,10 +24,6 @@ public class TextSettings_Actual {
 			return toString();
 		}
 		
-	}
-	
-	public static IPartitionTokenScanner createPartitionScanner() {
-		return new GoPartitionScanner();
 	}
 	
 	/* ----------------- Common code ----------------- */

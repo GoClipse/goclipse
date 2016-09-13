@@ -2,9 +2,11 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core_text.GoDocumentSetupParticipant;
+import com.googlecode.goclipse.core_text.GoPartitionScanner;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
 import com.googlecode.goclipse.ui.editor.GoDocTextHover;
@@ -35,9 +37,15 @@ public final class LangUIPlugin_Actual {
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = GoPluginImages.class;
 	
+	/* ----------------- text ----------------- */
+	
 	protected static void initTextHovers_afterProblemHover(
 			List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(GoDocTextHover.class);
+	}
+	
+	public static IPartitionTokenScanner createPartitionScanner() {
+		return new GoPartitionScanner();
 	}
 	
 	public static GoAutoEditStrategy createAutoEditStrategy(String contentType, 

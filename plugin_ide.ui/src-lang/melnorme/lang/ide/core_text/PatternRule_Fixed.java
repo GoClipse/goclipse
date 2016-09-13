@@ -1,4 +1,4 @@
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;

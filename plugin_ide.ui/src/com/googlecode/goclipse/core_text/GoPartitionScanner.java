@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.core.text;
+package com.googlecode.goclipse.core_text;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.MultiLineRule;
@@ -6,7 +6,7 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.core.text.LangPartitionScanner;
+import melnorme.lang.ide.core_text.LangPartitionScanner;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class GoPartitionScanner extends LangPartitionScanner {

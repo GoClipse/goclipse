@@ -8,13 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
+import melnorme.lang.ide.core_text.BufferedRuleBasedScannerExt;
+import melnorme.lang.ide.core_text.CharacterScanner_ReaderHelper;
 import melnorme.lang.utils.parse.ICharSource;
 import melnorme.lang.utils.parse.ICharacterReader;
 import melnorme.lang.utils.parse.ParseSource_Test;

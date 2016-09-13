@@ -10,7 +10,7 @@ import org.eclipse.jface.text.rules.WordRule;
 import com.googlecode.goclipse.tooling.lexer.GoNumberLexingRule;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
-import melnorme.lang.ide.core.text.DefaultPredicateRule;
+import melnorme.lang.ide.core_text.DefaultPredicateRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.tooling.parser.lexer.ILexingRule2;

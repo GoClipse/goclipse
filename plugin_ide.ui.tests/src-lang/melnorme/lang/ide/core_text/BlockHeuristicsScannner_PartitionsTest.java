@@ -8,15 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.text.AbstractDocumentScanner;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.FnTokenAdvance;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
+
+import melnorme.lang.ide.core.text.AbstractDocumentScanner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.FnTokenAdvance;
 
 public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScannnerTest {
 	
@@ -61,19 +62,19 @@ public class BlockHeuristicsScannner_PartitionsTest extends BlockHeuristicsScann
 			advanceTokenFn.advanceToken();
 			if(bounce) {
 				if(i != 0) {
-					int tokenSaved = scanner.token;
-					int positionSaved = scanner.pos;
+					int tokenSaved = scanner.getLastToken();
+					int positionSaved = scanner.getPosition();
 					advanceTokenFn.revertToken();
 					advanceTokenFn.advanceToken();
-					assertTrue(tokenSaved == scanner.token);
-					assertTrue(positionSaved == scanner.pos);
+					assertTrue(tokenSaved == scanner.getLastToken());
+					assertTrue(positionSaved == scanner.getPosition());
 				}
 			}
 			String tokenStr = forward ? 
-					document.get(oldPos, scanner.pos - oldPos) : 
-					document.get(scanner.pos, oldPos - scanner.pos);
+					document.get(oldPos, scanner.getPosition() - oldPos) : 
+					document.get(scanner.getPosition(), oldPos - scanner.getPosition());
 			assertEquals(tokenStr, expectedToken);
-			assertEquals(scanner.token, expectedToken.length() == 1 ? 
+			assertEquals(scanner.getLastToken(), expectedToken.length() == 1 ? 
 					expectedToken.charAt(0) : AbstractDocumentScanner.TOKEN_OUTSIDE);
 		}
 		assertTrue(scanner.getPosition() == (forward ? document.getLength() : 0));

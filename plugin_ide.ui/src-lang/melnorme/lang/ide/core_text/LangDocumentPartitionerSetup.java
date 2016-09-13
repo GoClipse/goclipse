@@ -12,6 +12,7 @@ package melnorme.lang.ide.core_text;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
@@ -45,7 +46,7 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 	}
 	
 	public FastPartitioner createDocumentPartitioner() {
-		IPartitionTokenScanner scanner = TextSettings_Actual.createPartitionScanner();
+		IPartitionTokenScanner scanner = LangUIPlugin_Actual.createPartitionScanner();
 		return new FastPartitioner(scanner, LEGAL_CONTENT_TYPES);
 	}
 	

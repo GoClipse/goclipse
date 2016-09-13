@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import java.util.function.Function;
 import melnorme.utilbox.misc.ArrayUtil;

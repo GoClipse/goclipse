@@ -21,8 +21,8 @@ import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 
-import melnorme.lang.ide.core.text.BufferedRuleBasedScannerExt;
-import melnorme.lang.ide.core.text.CharacterScanner_ReaderHelper;
+import melnorme.lang.ide.core_text.BufferedRuleBasedScannerExt;
+import melnorme.lang.ide.core_text.CharacterScanner_ReaderHelper;
 import melnorme.lang.ide.ui.text.coloring.ILangTokenScanner;
 import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
