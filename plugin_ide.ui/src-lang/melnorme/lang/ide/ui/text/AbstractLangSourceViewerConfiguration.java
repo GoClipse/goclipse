@@ -192,8 +192,9 @@ public abstract class AbstractLangSourceViewerConfiguration extends LangBasicSou
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
-			return array(
-				LangUIPlugin_Actual.createAutoEditStrategy(contentType, new VerifyKeyRecorder(sourceViewer)));
+			return array(new AutoEditStrategyAdapter(
+				LangUIPlugin_Actual.createAutoEditStrategy(contentType, new VerifyKeyRecorder(sourceViewer))
+			));
 		} else {
 			return super.getAutoEditStrategies(sourceViewer, contentType);
 		}

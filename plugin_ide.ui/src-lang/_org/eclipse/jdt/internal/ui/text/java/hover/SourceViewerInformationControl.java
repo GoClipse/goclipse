@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;

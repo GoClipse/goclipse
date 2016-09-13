@@ -2,6 +2,19 @@
 <?eclipse version="3.4"?>
 <plugin>
 	
+	<extension point="org.eclipse.core.filebuffers.documentSetup"
+		id="GoDocumentSetupParticipant"
+		name="Go Document Setup Participant"
+		>	
+		<participant
+			class="com.googlecode.goclipse.core_text.GoDocumentSetupParticipant"
+			contentTypeId="com.googlecode.goclipse.gosourcefile">
+		</participant>
+	</extension>
+	
+	
+	<!-- ============ Actual UI ============= -->
+	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
 		<image
 			icon="icons/go-nature.png"

@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package LANG_PROJECT_ID.ide.core_text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
@@ -51,23 +51,8 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 	
 	protected FastPartitioner setupDocumentPartitioner(IDocument document, String partitioning) {
 		FastPartitioner partitioner = createDocumentPartitioner();
-		setupDocumentPartitioner(document, partitioning, partitioner);
+		EclipseUtils.setupDocumentPartitioner(document, partitioning, partitioner);
 		return partitioner;
-	}
-	
-	public static void setupDocumentPartitioner(IDocument document, String partitioning, 
-			IDocumentPartitioner partitioner) {
-		assertNotNull(document);
-		assertNotNull(partitioning);
-		assertNotNull(partitioner);
-		
-		partitioner.connect(document);
-		if (document instanceof IDocumentExtension3) {
-			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
-			extension3.setDocumentPartitioner(partitioning, partitioner);
-		} else {
-			document.setDocumentPartitioner(partitioner);
-		}
 	}
 	
 	public void setupPartitioningIfNotSet(IDocument document) {

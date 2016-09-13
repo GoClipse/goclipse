@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -34,6 +32,8 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.RangeMarker;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
+
+import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 
 /**
  * A template editor using the Java formatter to format a template buffer.

@@ -14,16 +14,16 @@ package melnorme.lang.ide.core.text.format;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DocumentCommand;
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.text.DocumentCommand2;
+import melnorme.lang.ide.core.text.IAutoEditStrategy2;
 import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
 
-public abstract class AbstractAutoEditStrategy implements IAutoEditStrategy {
+public abstract class AbstractAutoEditStrategy implements IAutoEditStrategy2 {
 	
 	protected final ILastKeyInfoProvider lastKeyInfoProvider;
 	
@@ -52,7 +52,7 @@ public abstract class AbstractAutoEditStrategy implements IAutoEditStrategy {
 	protected String docContents;
 	
 	@Override
-	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
+	public void customizeDocumentCommand(IDocument doc, DocumentCommand2 cmd) {
 		if (cmd.doit == false)
 			return;
 		
@@ -64,15 +64,15 @@ public abstract class AbstractAutoEditStrategy implements IAutoEditStrategy {
 		}
 	}
 	
-	protected abstract void doCustomizeDocumentCommand(IDocument doc, DocumentCommand cmd) 
+	protected abstract void doCustomizeDocumentCommand(IDocument doc, DocumentCommand2 cmd) 
 			throws BadLocationException;
 	
 	@SuppressWarnings("unused")
-	public boolean isSimpleNewLineKeyPress(DocumentCommand cmd) {
+	public boolean isSimpleNewLineKeyPress(DocumentCommand2 cmd) {
 		return keyWasEnter();
 	}
 	
-	public static boolean isSimpleKeyPressCommand(DocumentCommand cmd) {
+	public static boolean isSimpleKeyPressCommand(DocumentCommand2 cmd) {
 		return cmd.length == 0 && cmd.text.length() == 1;
 	}
 	

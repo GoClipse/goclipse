@@ -10,6 +10,8 @@ import com.googlecode.goclipse.ui.editor.GoDocTextHover;
 import com.googlecode.goclipse.ui.editor.actions.GoFmtEditorOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
+import LANG_PROJECT_ID.ide.core_text.GoDocumentSetupParticipant;
+import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
@@ -41,6 +43,10 @@ public final class LangUIPlugin_Actual {
 	public static GoAutoEditStrategy createAutoEditStrategy(String contentType, 
 		ILastKeyInfoProvider lastKeyInfoProvider) {
 		return new GoAutoEditStrategy(contentType, new LangAutoEditsPreferencesAccess(), lastKeyInfoProvider);
+	}
+	
+	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
+		return new GoDocumentSetupParticipant();
 	}
 	
 	public static StructureElementLabelProvider getStructureElementLabelProvider() {

@@ -1,13 +1,11 @@
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.utilbox.misc.ArrayUtil;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
-import com.googlecode.goclipse.core.text.GoDocumentSetupParticipant;
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
+
+import melnorme.utilbox.misc.ArrayUtil;
 
 
 public class TextSettings_Actual {
@@ -33,10 +31,6 @@ public class TextSettings_Actual {
 	
 	public static IPartitionTokenScanner createPartitionScanner() {
 		return new GoPartitionScanner();
-	}
-	
-	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
-		return new GoDocumentSetupParticipant();
 	}
 	
 	/* ----------------- Common code ----------------- */

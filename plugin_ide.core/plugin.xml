@@ -59,16 +59,6 @@
 		</content-type>
 	</extension>
 		
-	<extension point="org.eclipse.core.filebuffers.documentSetup"
-		id="GoDocumentSetupParticipant"
-		name="Go Document Setup Participant"
-		>	
-		<participant
-			class="com.googlecode.goclipse.core.text.GoDocumentSetupParticipant"
-			contentTypeId="com.googlecode.goclipse.gosourcefile">
-		</participant>
-	</extension>
-	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	
 	<extension

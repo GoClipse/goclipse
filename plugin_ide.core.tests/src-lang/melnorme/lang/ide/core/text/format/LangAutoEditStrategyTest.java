@@ -15,12 +15,12 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.DocumentCommand2;
 import melnorme.lang.ide.core.text.SamplePartitionScanner;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
 import melnorme.lang.ide.core.text.TextSourceUtils;
@@ -30,7 +30,7 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
-	protected static class InstrumentedLastKeyInfoProvider implements ILastKeyInfoProvider {
+	public static class InstrumentedLastKeyInfoProvider implements ILastKeyInfoProvider {
 		
 		protected KeyCommand lastPressedKey = KeyCommand.OTHER;
 		
@@ -89,14 +89,14 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	public static final String PENDING_TXT = "\tpending";
 	
 	protected LangAutoEditStrategy autoEditStrategy;
-	protected InstrumentedLastKeyInfoProvider lastKeyInfoProvider;
+	protected final InstrumentedLastKeyInfoProvider lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
 	
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
 			
 			ILangAutoEditsPreferencesAccess preferences = new Mock_LangAutoEditsPreferencesAccess();
 			
-			lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
+			lastKeyInfoProvider.lastPressedKey = KeyCommand.OTHER;
 			autoEditStrategy = new LangAutoEditStrategy(lastKeyInfoProvider, preferences) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
@@ -107,15 +107,14 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		return autoEditStrategy;
 	}
 	
-	protected DocumentCommand createDocumentCommand(int start, int length, String text) {
-		DocumentCommand documentCommand = new DocumentCommand() {};
+	protected DocumentCommand2 createDocumentCommand(int start, int length, String text) {
+		DocumentCommand2 documentCommand = new DocumentCommand2() {};
 		documentCommand.doit = true;
 		documentCommand.text = text;
 		
 		documentCommand.offset = start;
 		documentCommand.length = length;
 		
-		documentCommand.owner = null;
 		documentCommand.caretOffset = -1;
 		documentCommand.shiftsCaret = true;
 		return documentCommand;
@@ -171,11 +170,12 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		Document document = setupDocument(beforeCursor + afterCursor);
 		
 		int keypressOffset = beforeCursor.length();
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, insertedText);
+		DocumentCommand2 docCommand = createDocumentCommand(keypressOffset, 0, insertedText);
+		LangAutoEditStrategy autoEditStrategy = getAutoEditStrategy();
 		if(docCommand.length == 0 && areEqual(docCommand.text, NL)) {
 			lastKeyInfoProvider.lastPressedKey = KeyCommand.ENTER;
 		}
-		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
+		autoEditStrategy.customizeDocumentCommand(document, docCommand);
 		int replaceLength = deletedText.length();
 		if(caretOffset == textBefore.length()) {
 			caretOffset = -1;
@@ -193,11 +193,11 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		return document;
 	}
 	
-	protected void checkCommand(DocumentCommand documentCommand, String text, int offset, int length) {
+	protected void checkCommand(DocumentCommand2 documentCommand, String text, int offset, int length) {
 		checkCommand(documentCommand, text, offset, length, -1);
 	}
 	
-	protected void checkCommand(DocumentCommand documentCommand, String text, int offset, int length, 
+	protected void checkCommand(DocumentCommand2 documentCommand, String text, int offset, int length, 
 			int caretOffset) {
 		assertEquals(documentCommand.text, text);
 		assertTrue(documentCommand.offset == offset);
@@ -643,19 +643,19 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	}
 	
 	protected void testDeleteDeindent(String srcPre, String srcIndent, String sourceAfter) {
-		DocumentCommand delCommand = applyDelCommand(srcPre, srcIndent + sourceAfter);
+		DocumentCommand2 delCommand = applyDelCommand(srcPre, srcIndent + sourceAfter);
 		getAutoEditStrategy().customizeDocumentCommand(getDocument(), delCommand);
 		checkCommand(delCommand, "", srcPre.length(), srcIndent.length());
 	}
 	
 	protected void testBackSpaceDeindent(String srcPre, String srcIndent, String sourceAfter) {
-		DocumentCommand bsCommand = applyBackSpaceCommand(srcPre + srcIndent, sourceAfter);
+		DocumentCommand2 bsCommand = applyBackSpaceCommand(srcPre + srcIndent, sourceAfter);
 		getAutoEditStrategy().customizeDocumentCommand(getDocument(), bsCommand);
 		checkCommand(bsCommand, "", srcPre.length(), srcIndent.length());
 	}
 	
 	
-	protected DocumentCommand applyBackSpaceCommand(String srcPre, String sourceAfter) {
+	protected DocumentCommand2 applyBackSpaceCommand(String srcPre, String sourceAfter) {
 		getDocument().set(srcPre + sourceAfter);
 		int keypressOffset = srcPre.length();
 		int length;
@@ -668,11 +668,11 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		lastKeyInfoProvider.lastPressedKey = KeyCommand.BACKSPACE;
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset - length, length, "");
+		DocumentCommand2 docCommand = createDocumentCommand(keypressOffset - length, length, "");
 		return docCommand;
 	}
 	
-	protected DocumentCommand applyDelCommand(String sourcePre, String sourceAfter) {
+	protected DocumentCommand2 applyDelCommand(String sourcePre, String sourceAfter) {
 		getDocument().set(sourcePre + sourceAfter);
 		int keypressOffset = sourcePre.length();
 		int length;
@@ -685,21 +685,21 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		lastKeyInfoProvider.lastPressedKey = KeyCommand.DELETE;
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset, length, "");
+		DocumentCommand2 docCommand = createDocumentCommand(keypressOffset, length, "");
 		return docCommand;
 	}
 	
 	protected void testBackSpaceCommandWithNoEffect(String sourcePre, String sourceAfter) {
-		DocumentCommand bsCommand = applyBackSpaceCommand(sourcePre, sourceAfter);
+		DocumentCommand2 bsCommand = applyBackSpaceCommand(sourcePre, sourceAfter);
 		testCommandWithNoEffect(bsCommand);
 	}
 	
 	protected void testDeleteCommandWithNoEffect(String sourcePre, String sourceAfter) {
-		DocumentCommand delCommand = applyDelCommand(sourcePre, sourceAfter);
+		DocumentCommand2 delCommand = applyDelCommand(sourcePre, sourceAfter);
 		testCommandWithNoEffect(delCommand);
 	}
 	
-	protected void testCommandWithNoEffect(DocumentCommand bsCommand) {
+	protected void testCommandWithNoEffect(DocumentCommand2 bsCommand) {
 		int length = bsCommand.length;
 		int offset = bsCommand.offset;
 		String text = bsCommand.text;
