@@ -2,10 +2,12 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.core_text.LANGUAGE_DocumentSetupParticipant;
+import LANG_PROJECT_ID.ide.core_text.LANGUAGE_PartitionScanner;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_FormatEditorOperation;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -33,9 +35,15 @@ public final class LangUIPlugin_Actual {
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = LANGUAGE_Images.class;
 	
+	/* ----------------- text ----------------- */
+	
 	@SuppressWarnings("unused")
 	protected static void initTextHovers_afterProblemHover(
 			List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
+	}
+	
+	public static IPartitionTokenScanner createPartitionScanner() {
+		return new LANGUAGE_PartitionScanner();
 	}
 	
 	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(String contentType, 

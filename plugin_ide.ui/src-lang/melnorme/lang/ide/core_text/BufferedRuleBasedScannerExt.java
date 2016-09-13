@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Bruno Medeiros - add lookahead method
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;

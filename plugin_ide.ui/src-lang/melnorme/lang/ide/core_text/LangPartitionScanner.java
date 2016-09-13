@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -20,6 +20,7 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 
+import LANG_PROJECT_ID.ide.core_text.RuleBasedPartitionScannerExt;
 import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
 import melnorme.utilbox.collections.ArrayList2;
 

@@ -8,10 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import melnorme.lang.ide.core.text.AbstractDocumentScanner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -67,11 +71,11 @@ public class BlockHeuristicsScannnerTest extends Scanner_BaseTest {
 		
 		assertTrue(balance == expecBalance);
 		assertTrue(scanner.getPosition() == srcPre.length());
-		assertTrue((scanner.token == AbstractDocumentScanner.TOKEN_INVALID) == expecInvalidLeft);
+		assertTrue((scanner.getLastToken() == AbstractDocumentScanner.TOKEN_INVALID) == expecInvalidLeft);
 		
 		if(balance == 0) {
 			int blockEndOffset = srcBefore.length();
-			if (scanner.token != AbstractDocumentScanner.TOKEN_INVALID) {
+			if (scanner.getLastToken() != AbstractDocumentScanner.TOKEN_INVALID) {
 				balance = scanner.scanToBlockEnd(scanner.getPosition());
 				assertTrue(balance == 0);
 				assertEquals(scanner.getPosition()-1, blockEndOffset);
@@ -90,7 +94,7 @@ public class BlockHeuristicsScannnerTest extends Scanner_BaseTest {
 		
 		assertTrue(balance == expecBalance);
 		assertTrue(scanner.getPosition() == reversePosition(srcPre.length()));
-		assertTrue((scanner.token == AbstractDocumentScanner.TOKEN_INVALID) == expecInvalidLeft);
+		assertTrue((scanner.getLastToken() == AbstractDocumentScanner.TOKEN_INVALID) == expecInvalidLeft);
 	}
 	
 	protected String reverse(String string) {

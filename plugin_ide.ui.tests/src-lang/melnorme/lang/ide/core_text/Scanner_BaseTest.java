@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.ide.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -17,6 +17,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.ArrayUtil;

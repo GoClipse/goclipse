@@ -8,12 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.core.text;
+package LANG_PROJECT_ID.ide.core_text;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.core.text.LangPartitionScanner;
+import melnorme.lang.ide.core_text.LangPartitionScanner;
 import melnorme.lang.tooling.parser.lexer.CharacterLexingRule;
 import melnorme.utilbox.collections.ArrayList2;
 

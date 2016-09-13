@@ -84,6 +84,10 @@ public class AbstractDocumentScanner {
 		return pos;
 	}
 	
+	public int getLastToken() {
+		return token;
+	}
+	
 	protected void setPosition(int pos) {
 		this.pos = pos;
 	}
@@ -119,7 +123,7 @@ public class AbstractDocumentScanner {
 		}
 	}
 	
-	protected final int readNextCharacter() {
+	public final int readNextCharacter() {
 		if(pos >= posLimit) {
 			return token = TOKEN_EOF;
 		} else {
@@ -142,11 +146,11 @@ public class AbstractDocumentScanner {
 		}
 	}
 	
-	protected final void revertPreviousCharacter()  {
+	public final void revertPreviousCharacter()  {
 		pos++;
 	}
 	
-	protected final void revertNextCharacter()  {
+	public final void revertNextCharacter()  {
 		pos--;
 	}
 	

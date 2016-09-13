@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text.format;
+package melnorme.lang.ide.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
@@ -21,9 +21,11 @@ import org.junit.Test;
 
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.DocumentCommand2;
-import melnorme.lang.ide.core.text.SamplePartitionScanner;
-import melnorme.lang.ide.core.text.Scanner_BaseTest;
 import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
+import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;

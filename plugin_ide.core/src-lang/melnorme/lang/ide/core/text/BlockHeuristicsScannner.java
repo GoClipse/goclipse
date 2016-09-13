@@ -136,30 +136,30 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 		return result;
 	}
 	
-	protected abstract class FnTokenAdvance {
+	public abstract class FnTokenAdvance {
 		
-		protected abstract int advanceToken() ;
+		public abstract int advanceToken() ;
 		
-		protected abstract void revertToken() ;
+		public abstract void revertToken() ;
 	}
 	
-	protected final FnTokenAdvance prevTokenFn = new FnTokenAdvance() {
+	public final FnTokenAdvance prevTokenFn = new FnTokenAdvance() {
 		@Override
-		protected int advanceToken() {
+		public int advanceToken() {
 			return readPreviousCharacter();
 		}
 		@Override
-		protected void revertToken() {
+		public void revertToken() {
 			revertPreviousCharacter();
 		}
 	};
-	protected final FnTokenAdvance nextTokenFn = new FnTokenAdvance() {
+	public final FnTokenAdvance nextTokenFn = new FnTokenAdvance() {
 		@Override
-		protected int advanceToken() {
+		public int advanceToken() {
 			return readNextCharacter();
 		}
 		@Override
-		protected void revertToken() {
+		public void revertToken() {
 			revertNextCharacter();
 		}
 	};
