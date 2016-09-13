@@ -11,55 +11,40 @@
 package melnorme.lang.ide.core.text.format;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITextViewerExtension;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.VerifyKeyListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.widgets.Event;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
 
 public abstract class AbstractAutoEditStrategy implements IAutoEditStrategy {
 	
-	protected Event lastKeyEvent;
+	protected final ILastKeyInfoProvider lastKeyInfoProvider;
 	
-	public AbstractAutoEditStrategy(ITextViewer viewer) {
-		lastKeyEvent = new Event();
-		if (viewer instanceof ITextViewerExtension) {
-			VerifyKeyRecorder verifyKeyRecorder = new VerifyKeyRecorder();
-			((ITextViewerExtension) viewer).appendVerifyKeyListener(verifyKeyRecorder);
-			// Minor leak issue: we should remove verifyKeyRecorder if viewer is unconfigured
-		} else {
-			// allways use blank event in lastKeyEvent
-		}
+	public AbstractAutoEditStrategy(ILastKeyInfoProvider lastKeyInfoProvider) {
+		this.lastKeyInfoProvider = assertNotNull(lastKeyInfoProvider);
 	}
 	
-	public final class VerifyKeyRecorder implements VerifyKeyListener {
-		@Override
-		public void verifyKey(VerifyEvent event) {
-			lastKeyEvent.character = event.character;
-			lastKeyEvent.keyCode = event.keyCode;
-			lastKeyEvent.stateMask = event.stateMask;
-		}
+	public KeyCommand getLastPressedKey() {
+		return assertNotNull(lastKeyInfoProvider.getLastPressedKey());
 	}
 	
 	protected boolean keyWasBackspace() {
-		return lastKeyEvent.character == SWT.BS;
+		return getLastPressedKey() == KeyCommand.BACKSPACE;
 	}
 	
 	protected boolean keyWasDelete() {
-		return lastKeyEvent.character == SWT.DEL;
+		return getLastPressedKey() == KeyCommand.DELETE;
 	}
 	
 	protected boolean keyWasEnter() {
-		return lastKeyEvent.character == SWT.CR;
+		return getLastPressedKey() == KeyCommand.ENTER;
 	}
 	
 	/* -----------------  ----------------- */

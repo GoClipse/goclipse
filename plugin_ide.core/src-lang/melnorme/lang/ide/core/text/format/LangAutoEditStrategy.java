@@ -20,14 +20,13 @@ import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 
 /**
  * LangAutoEditStrategy provides a common auto-edit strategy of smart indenting and de-indenting, 
@@ -49,13 +48,17 @@ public class LangAutoEditStrategy extends AbstractAutoEditStrategy {
 	protected final String partitioning;
 	protected final String contentType;
 	
-	protected LangAutoEditStrategy(ITextViewer viewer, ILangAutoEditsPreferencesAccess preferences) {
-		this(viewer, IDocumentExtension3.DEFAULT_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE, preferences);
+	protected LangAutoEditStrategy(ILastKeyInfoProvider lastKeyInfoProvider,
+		ILangAutoEditsPreferencesAccess preferences) {
+		this(lastKeyInfoProvider, IDocumentExtension3.DEFAULT_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE,
+			preferences);
 	}
 	
-	public LangAutoEditStrategy(ITextViewer viewer, String partitioning, String contentType,
-			ILangAutoEditsPreferencesAccess preferences) {
-		super(viewer);
+	public LangAutoEditStrategy(ILastKeyInfoProvider lastKeyInfoProvider,
+		String partitioning, String contentType,
+		ILangAutoEditsPreferencesAccess preferences
+	) {
+		super(lastKeyInfoProvider);
 		this.preferences = preferences;
 		this.partitioning = partitioning;
 		this.contentType = contentType;

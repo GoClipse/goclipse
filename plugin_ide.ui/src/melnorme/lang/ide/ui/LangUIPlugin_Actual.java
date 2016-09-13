@@ -2,13 +2,13 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_FormatEditorOperation;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
@@ -36,8 +36,9 @@ public final class LangUIPlugin_Actual {
 			List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 	}
 	
-	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
-		return new LANGUAGE_AutoEditStrategy(contentType, sourceViewer, new LangAutoEditsPreferencesAccess());
+	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(String contentType, 
+		ILastKeyInfoProvider lastKeyInfoProvider) {
+		return new LANGUAGE_AutoEditStrategy(contentType, new LangAutoEditsPreferencesAccess(), lastKeyInfoProvider);
 	}
 	
 	public static StructureElementLabelProvider getStructureElementLabelProvider() {

@@ -18,20 +18,28 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.swt.SWT;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.SamplePartitionScanner;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
 import melnorme.lang.ide.core.text.TextSourceUtils;
-import melnorme.lang.ide.core.text.format.FormatterIndentMode;
-import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
-import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 public class LangAutoEditStrategyTest extends Scanner_BaseTest {
+	
+	protected static class InstrumentedLastKeyInfoProvider implements ILastKeyInfoProvider {
+		
+		protected KeyCommand lastPressedKey = KeyCommand.OTHER;
+		
+		@Override
+		public KeyCommand getLastPressedKey() {
+			return lastPressedKey;
+		}
+		
+	}
 	
 	public static class Mock_LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccess {
 		@Override
@@ -81,13 +89,15 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	public static final String PENDING_TXT = "\tpending";
 	
 	protected LangAutoEditStrategy autoEditStrategy;
+	protected InstrumentedLastKeyInfoProvider lastKeyInfoProvider;
 	
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
 			
 			ILangAutoEditsPreferencesAccess preferences = new Mock_LangAutoEditsPreferencesAccess();
 			
-			autoEditStrategy = new LangAutoEditStrategy(null, preferences) {
+			lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
+			autoEditStrategy = new LangAutoEditStrategy(lastKeyInfoProvider, preferences) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 					return Scanner_BaseTest.createBlockHeuristicScannerWithSamplePartitioning(doc);
@@ -163,7 +173,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		int keypressOffset = beforeCursor.length();
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, insertedText);
 		if(docCommand.length == 0 && areEqual(docCommand.text, NL)) {
-			getAutoEditStrategy().lastKeyEvent.character = SWT.CR;
+			lastKeyInfoProvider.lastPressedKey = KeyCommand.ENTER;
 		}
 		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
 		int replaceLength = deletedText.length();
@@ -657,7 +667,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		} catch (BadLocationException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-		getAutoEditStrategy().lastKeyEvent.character = SWT.BS;
+		lastKeyInfoProvider.lastPressedKey = KeyCommand.BACKSPACE;
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset - length, length, "");
 		return docCommand;
 	}
@@ -674,7 +684,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		} catch (BadLocationException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-		getAutoEditStrategy().lastKeyEvent.character = SWT.DEL;
+		lastKeyInfoProvider.lastPressedKey = KeyCommand.DELETE;
 		DocumentCommand docCommand = createDocumentCommand(keypressOffset, length, "");
 		return docCommand;
 	}
