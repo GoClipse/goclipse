@@ -43,18 +43,6 @@
 		</content-type>
 	</extension>
 	
-	<extension point="org.eclipse.core.filebuffers.documentSetup"
-		id="LANG_PROJECT_ID.DocumentSetupParticipant"
-		name="LANG_NAME Document Setup Participant"
-		>
-		<participant
-			class="LANG_PROJECT_ID.ide.core.text.LANGUAGE_DocumentSetupParticipant"
-			contentTypeId="LANG_PROJECT_ID.ide.core.content.source">
-		</participant>
-	</extension>
-	
-	
-	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	
 	<extension point="org.eclipse.core.resources.builders"

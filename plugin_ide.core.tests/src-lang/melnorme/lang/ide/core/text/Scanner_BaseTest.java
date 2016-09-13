@@ -11,16 +11,16 @@
 package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.tests.CommonTest;
 
 
 public abstract class Scanner_BaseTest extends CommonTest {
@@ -74,7 +74,7 @@ public abstract class Scanner_BaseTest extends CommonTest {
 	public static FastPartitioner setupPartitioner(Document document, IPartitionTokenScanner partitionScanner,
 			String partitioning, String[] legalContentTypes) {
 		FastPartitioner fp = new FastPartitioner(partitionScanner, legalContentTypes);
-		LangDocumentPartitionerSetup.setupDocumentPartitioner(document, partitioning, fp);
+		EclipseUtils.setupDocumentPartitioner(document, partitioning, fp);
 		return fp;
 	}
 	

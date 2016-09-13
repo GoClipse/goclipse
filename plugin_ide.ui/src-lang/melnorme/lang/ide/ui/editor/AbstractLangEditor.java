@@ -38,7 +38,6 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.prefs.EclipsePreferencesAdapter;
@@ -113,7 +112,7 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		
 		IDocument doc = getDocumentProvider().getDocument(input);
 		// Setup up partitioning if not set. It can happen if opening non-language files in the language editor.
-		TextSettings_Actual.createDocumentSetupHelper().setupPartitioningIfNotSet(doc);
+		LangUIPlugin_Actual.createDocumentSetupHelper().setupPartitioningIfNotSet(doc);
 		
 		internalDoSetInput(input);
 	}

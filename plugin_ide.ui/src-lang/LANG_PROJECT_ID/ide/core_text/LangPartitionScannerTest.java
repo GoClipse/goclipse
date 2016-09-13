@@ -1,4 +1,3 @@
-package melnorme.lang.ide.core.text;
 /*******************************************************************************
  * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
@@ -9,7 +8,7 @@ package melnorme.lang.ide.core.text;
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-
+package LANG_PROJECT_ID.ide.core_text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;

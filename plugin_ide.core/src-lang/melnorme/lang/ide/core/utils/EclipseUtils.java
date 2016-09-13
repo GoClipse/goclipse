@@ -27,6 +27,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -250,6 +253,23 @@ public class EclipseUtils {
 		
 		public R execute() throws CoreException, CommonException;
 		
+	}
+	
+	/* ----------------- text ----------------- */
+		
+	public static void setupDocumentPartitioner(IDocument document, String partitioning, 
+			IDocumentPartitioner partitioner) {
+		assertNotNull(document);
+		assertNotNull(partitioning);
+		assertNotNull(partitioner);
+		
+		partitioner.connect(document);
+		if (document instanceof IDocumentExtension3) {
+			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+			extension3.setDocumentPartitioner(partitioning, partitioner);
+		} else {
+			document.setDocumentPartitioner(partitioner);
+		}
 	}
 	
 }

@@ -33,6 +33,7 @@ import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.text.ISourceBufferExt;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.utilbox.core.CommonException;
@@ -52,7 +53,7 @@ public class LangTextMergeViewer extends TextMergeViewer {
 	
 	@Override
 	protected IDocumentPartitioner getDocumentPartitioner() {
-		return TextSettings_Actual.createDocumentSetupHelper().createDocumentPartitioner();
+		return LangUIPlugin_Actual.createDocumentSetupHelper().createDocumentPartitioner();
 	}
 	
 	@Override

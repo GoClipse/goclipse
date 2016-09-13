@@ -5,6 +5,8 @@ import java.util.List;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
+import LANG_PROJECT_ID.ide.core_text.LANGUAGE_DocumentSetupParticipant;
+import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_FormatEditorOperation;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -39,6 +41,10 @@ public final class LangUIPlugin_Actual {
 	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(String contentType, 
 		ILastKeyInfoProvider lastKeyInfoProvider) {
 		return new LANGUAGE_AutoEditStrategy(contentType, new LangAutoEditsPreferencesAccess(), lastKeyInfoProvider);
+	}
+	
+	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
+		return new LANGUAGE_DocumentSetupParticipant();
 	}
 	
 	public static StructureElementLabelProvider getStructureElementLabelProvider() {

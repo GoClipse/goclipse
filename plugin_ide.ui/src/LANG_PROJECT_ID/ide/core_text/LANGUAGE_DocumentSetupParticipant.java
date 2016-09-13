@@ -8,9 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.core.text;
-
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+package LANG_PROJECT_ID.ide.core_text;
 
 public class LANGUAGE_DocumentSetupParticipant extends LangDocumentPartitionerSetup {
 	
