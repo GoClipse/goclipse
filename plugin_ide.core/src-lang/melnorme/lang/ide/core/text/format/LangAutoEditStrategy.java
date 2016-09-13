@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
@@ -26,6 +25,7 @@ import org.eclipse.jface.text.TextUtilities;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.DocumentCommand2;
 import melnorme.lang.ide.core.text.TextSourceUtils;
 
 /**
@@ -68,7 +68,7 @@ public class LangAutoEditStrategy extends AbstractAutoEditStrategy {
 	protected String indentUnit;
 	
 	@Override
-	protected void doCustomizeDocumentCommand(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+	protected void doCustomizeDocumentCommand(IDocument doc, DocumentCommand2 cmd) throws BadLocationException {
 		parenthesesAsBlocks = preferences.parenthesesAsBlocks();
 		indentUnit = preferences.getIndentUnit();
 		boolean isSmartIndent = preferences.isSmartIndent();
@@ -97,7 +97,7 @@ public class LangAutoEditStrategy extends AbstractAutoEditStrategy {
 	
 	/* ------------------------------------- */
 	
-	protected void smartIndentAfterNewLine(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+	protected void smartIndentAfterNewLine(IDocument doc, DocumentCommand2 cmd) throws BadLocationException {
 		if(cmd.length > 0 || cmd.text == null)
 			return;
 		
@@ -233,7 +233,7 @@ public class LangAutoEditStrategy extends AbstractAutoEditStrategy {
 	
 	/* ------------------------------------- */
 	
-	protected boolean smartDeIndentAfterDeletion(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+	protected boolean smartDeIndentAfterDeletion(IDocument doc, DocumentCommand2 cmd) throws BadLocationException {
 		if(!preferences.isSmartDeIndent())
 			return false;
 		
@@ -324,7 +324,7 @@ public class LangAutoEditStrategy extends AbstractAutoEditStrategy {
 	
 	/* ------------------------------------- */
 	
-	protected void smartIndentOnKeypress(IDocument doc, DocumentCommand cmd) {
+	protected void smartIndentOnKeypress(IDocument doc, DocumentCommand2 cmd) {
 		assertTrue(cmd.text.length() == 1);
 		
 		int offset = cmd.offset;
