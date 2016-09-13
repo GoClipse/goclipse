@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.prefs;
+package melnorme.lang.ide.ui.utils.prefs;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
