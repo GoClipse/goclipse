@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils.CoreOperation;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.ide.ui.utils.operations.RunnableContextUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -67,7 +68,7 @@ public abstract class ProjectCreationOperation {
 	
 	protected boolean runOperation(boolean isCancellabe, String errorTitle, CoreOperation operation) {
 		try {
-			ResourceUtils.runOperationInWorkspace(getRunnableContext(), isCancellabe, operation);
+			RunnableContextUtils.runOperationInWorkspace(getRunnableContext(), isCancellabe, operation);
 			return true;
 		} catch(OperationCancellation e) {
 			return false;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.prefs;
+package melnorme.lang.ide.ui.utils.prefs;
 
 import java.util.List;
 
