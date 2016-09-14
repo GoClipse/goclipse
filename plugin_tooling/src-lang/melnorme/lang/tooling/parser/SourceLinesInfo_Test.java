@@ -24,6 +24,7 @@ public class SourceLinesInfo_Test extends CommonTest {
 	public void test$() throws Exception {
 		
 		getSourceLinesInfo("");
+		getSourceLinesInfo("\n");
 		SourceLinesInfo  sourceLinesInfo = getSourceLinesInfo("12345\n12345");
 		
 		testOffset(sourceLinesInfo, 1, 0, 0, 1);
@@ -33,7 +34,7 @@ public class SourceLinesInfo_Test extends CommonTest {
 		
 		verifyThrows(() -> sourceLinesInfo.getValidatedOffset_1(1, 10), null, "Invalid column, out of bounds");
 		verifyThrows(() -> sourceLinesInfo.getValidatedOffset_1(2, 10), null, "line+column, out of bounds");
-		verifyThrows(() -> sourceLinesInfo.getValidatedOffset_1(3, 1), null, "Invalid line: 3 is over the max bound: 3");
+		verifyThrows(() -> sourceLinesInfo.getValidatedOffset_1(3, 1), null, "Invalid line: 3 is over the max bound: 2");
 		
 		assertEquals(sourceLinesInfo.getValidatedOffset_1(1, 1), 0);
 		assertEquals(sourceLinesInfo.getValidatedOffset_1(2, 1), 6);
