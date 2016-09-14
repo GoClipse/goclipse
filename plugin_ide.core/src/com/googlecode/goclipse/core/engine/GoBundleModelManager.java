@@ -33,6 +33,12 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 	
 	public static class GoBundleModel extends LangBundleModel {
 		
+		// Made public
+		@Override
+		public synchronized void notifyProjectInfo(IProject project) {
+			super.notifyProjectInfo(project);
+		}
+		
 	}
 	
 	public GoBundleModelManager() {
@@ -50,8 +56,9 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 				) {
 					IProject project = ResourceUtils.getProjectAt(location);
 					// Trigger a model change notification
-					/* FIXME: review, possible BUG here*/
-					model.setBundleInfo(project, model.getBundleInfo(project));
+					// This is likely not the best abstraction level to do this
+					
+					model.notifyProjectInfo(project);
 				}
 			}
 		});
