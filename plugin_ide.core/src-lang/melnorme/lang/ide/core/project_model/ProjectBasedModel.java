@@ -57,6 +57,14 @@ public abstract class ProjectBasedModel<INFO> {
 		return newProjectInfo;
 	}
 	
+	protected synchronized void notifyProjectInfo(IProject project) {
+		String projectName = project.getName();
+		INFO info = projectInfos.get(projectName);
+		if(info != null) {
+			notifyProjectInfoAdded(project, info);
+		}
+	}
+	
 	/**
 	 * Set a new project info, but only if the current info is the same as given oldProjectInfo
 	 */
