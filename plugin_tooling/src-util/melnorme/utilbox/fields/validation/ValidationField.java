@@ -11,9 +11,11 @@
 package melnorme.utilbox.fields.validation;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.fntypes.RunnableX;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.StatusException;
 
 public class ValidationField extends Field<IStatusMessage> implements ValidationSource {
 	
@@ -31,8 +33,9 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 		addFieldValidation(init, field, new ValidatableField<>(field, validator));
 	}
 	
-	public final void addFieldValidationX(boolean init, IFieldView<?> field, ValidationSourceX validationSource) {
-		addFieldValidation(init, field, validationSource);
+	public final void addFieldValidationX(boolean init, IFieldView<?> field, 
+		RunnableX<StatusException> validationRunnable) {
+		addFieldValidation(init, field, ValidationSource.fromRunnable(validationRunnable));
 	}
 	
 	public void addFieldValidation(boolean init, IFieldView<?> field, ValidationSource validationSource) {
