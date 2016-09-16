@@ -25,7 +25,6 @@ import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
-import melnorme.utilbox.status.StatusException;
 
 public class BuildTargetEditor extends CompositeWidget {
 	
@@ -115,14 +114,6 @@ public class BuildTargetEditor extends CompositeWidget {
 			this.label = LangUIMessages.Fields_BuildCommand;
 		}
 		
-		@Override
-		protected void validateArguments() throws StatusException {
-			try {
-				super.validateArguments();
-			} catch(StatusException se) {
-				throw se;
-			}
-		}
 	}
 	
 	public class ProgramPathField extends EnablementButtonTextField {

@@ -53,7 +53,7 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 				layoutColumns = 4;
 			}
 			
-			toolLocationField.addFieldValidator(false, languageToolPathValidator);
+			toolLocationField.addFieldValidator2(false, languageToolPathValidator);
 			
 			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.LANGUAGE_SERVER_PATH);
 		}

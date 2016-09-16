@@ -16,7 +16,6 @@ import melnorme.lang.utils.validators.NumberValidator;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
-import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
 
@@ -25,11 +24,7 @@ public class NumberField extends TextFieldExt {
 	public NumberField(String label, int textLimit) {
 		super(label, textLimit);
 		
-		getValidation().addFieldValidation(true, this, this::validatePositiveNumber);
-	}
-	
-	public IStatusMessage validatePositiveNumber() {
-		return validatePositiveNumber(getFieldValue());
+		addFieldValidator2(true, this::validatePositiveNumber);
 	}
 	
 	public StatusException validatePositiveNumber(String number) {

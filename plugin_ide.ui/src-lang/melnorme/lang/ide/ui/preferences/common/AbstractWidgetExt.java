@@ -35,7 +35,11 @@ public abstract class AbstractWidgetExt extends AbstractWidget implements IValid
 		return validation;
 	}
 	
-	public ValidationField getValidation() {
+	public ValidationField validation() {
+		return validation;
+	}
+	
+	public final ValidationField getValidation() {
 		return validation;
 	}
 	

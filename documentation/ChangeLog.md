@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed stale validation message for location field in New Project Wizard.
  * Fixed editor NPE when opening files from a non-workspace VCS revision. 
 
  * Fixed: NPE when invoking Content Assist inside a comment, string or character.

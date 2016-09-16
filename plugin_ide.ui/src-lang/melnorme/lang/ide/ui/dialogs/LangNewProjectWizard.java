@@ -68,7 +68,7 @@ public abstract class LangNewProjectWizard extends Wizard
 	
 	public IProject getProject() throws CoreException {
 		try {
-			return getFirstPage().getProjectHandle2();
+			return getFirstPage().nameGroup.getProjectHandle2();
 		} catch(CommonException ce) {
 			throw EclipseCore.createCoreException(ce);
 		}
@@ -94,7 +94,7 @@ public abstract class LangNewProjectWizard extends Wizard
 		
 		if(selection != null && selection.getFirstElement() instanceof IProject) {
 			IProject selectedProject = (IProject) selection.getFirstElement();
-			getFirstPage().getNameGroup().getNameField().setFieldValue(selectedProject.getName());
+			getFirstPage().getNameGroup().nameField().setFieldValue(selectedProject.getName());
 		}
 	}
 	

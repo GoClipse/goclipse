@@ -10,12 +10,13 @@
  *******************************************************************************/
 package melnorme.utilbox.fields.validation;
 
+import static melnorme.utilbox.core.CoreUtil.list;
+
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.core.fntypes.RunnableX;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 import melnorme.utilbox.status.IStatusMessage;
-import melnorme.utilbox.status.StatusException;
 
 public class ValidationField extends Field<IStatusMessage> implements ValidationSource {
 	
@@ -29,30 +30,59 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 		validators.add(() -> explicitStatus);
 	}
 	
-	public <SOURCE> void addFieldValidator(boolean init, IFieldView<SOURCE> field, Validator<SOURCE, ?> validator) {
-		addFieldValidation(init, field, new ValidatableField<>(field, validator));
+	/**
+	 * {@link #addFieldValidation2(boolean, IFieldView, ValidationSource)}
+	 */
+	public void addFieldValidation2(IFieldView<?> field, ValidationSource validationSource) {
+		addFieldValidation2(true, field, validationSource); 
 	}
 	
-	public final void addFieldValidationX(boolean init, IFieldView<?> field, 
-		RunnableX<StatusException> validationRunnable) {
-		addFieldValidation(init, field, ValidationSource.fromRunnable(validationRunnable));
+	/**
+	 * {@link #addFieldValidation2(boolean, Indexable, ValidationSource)}
+	 */
+	protected void addFieldValidation2(boolean init, IFieldView<?> field, ValidationSource validationSource) {
+		addFieldValidation2(init, list(field), validationSource);
 	}
 	
+	/**
+	 * Add a validation source derived from given field.
+	 * 
+	 * Note: it is highly recommended that given validationSource calculation only depends from given fields,
+	 * otherwise a manual call to {@link #updateValidation()} will be required to update this validation field
+	 * 
+	 * @param init
+	 * @param field
+	 * @param validationSource
+	 */
+	public void addFieldValidation2(boolean init, Indexable<IFieldView<?>> fields, ValidationSource validationSource) {
+		validators.add(validationSource);
+		for (IFieldView<?> sourceField : fields) {
+			sourceField.registerListener(init, (__) -> updateValidation());
+		}
+	}
+	
+	/*FIXME: remove deprecateds */
+	@Deprecated
 	public void addFieldValidation(boolean init, IFieldView<?> field, ValidationSource validationSource) {
 		validators.add(validationSource);
-		field.registerListener(init, (__) -> updateFieldValue());
+		field.registerListener(init, (__) -> updateValidation());
 	}
 	
-	public void addValidatableField(boolean init, IValidatableField<?> statusField) {
-		addFieldValidation(init, statusField, statusField);
+	public <SOURCE> void addFieldValidator2(boolean init, IFieldView<SOURCE> field, Validator<SOURCE, ?> validator) {
+		addFieldValidation2(init, field, new ValidatableField<>(field, validator));
 	}
 	
 	public void addStatusField(boolean init, IFieldView<IStatusMessage> statusField) {
-		addFieldValidation(init, statusField, () -> statusField.getFieldValue());
+		addFieldValidation2(init, statusField, () -> statusField.getFieldValue());
 	}
 	
-	public void updateFieldValue() {
+	public void updateValidation() {
 		setFieldValue(ValidationSource.getHighestStatus(validators));
+	}
+
+	@Deprecated
+	public void updateFieldValue() {
+		updateValidation();
 	}
 	
 	@Override
