@@ -2,6 +2,7 @@
 
 ### (NextVersion)
  * Fixed stale validation message for location field in New Project Wizard.
+ * Fixed stale validation message for Build Command field in Build Targets property page and Launch Configurations dialog.
  * Fixed editor NPE when opening files from a non-workspace VCS revision. 
 
 ### 0.16.1

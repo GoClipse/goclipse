@@ -108,7 +108,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 			super("gofmt:", "Use default location (from Go installation).");
 			
 			prefContext.bindToPreference(asEffectiveValueProperty(), GoToolPreferences.GOFMT_Path.getPreference());
-			buttonTextField.addFieldValidator2(true, GoToolPreferences.GOFMT_Path.getValidator());
+			buttonTextField.addFieldValidator2(GoToolPreferences.GOFMT_Path.getValidator());
 			
 			this.formatOnSaveField = new CheckBoxField("Format automatically on editor save.");
 			

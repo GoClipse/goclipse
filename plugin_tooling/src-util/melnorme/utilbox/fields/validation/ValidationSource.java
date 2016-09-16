@@ -10,10 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.fields.validation;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.function.Supplier;
-
 import melnorme.utilbox.core.fntypes.RunnableX;
 import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.StatusException;
@@ -27,18 +23,17 @@ public interface ValidationSource {
 	public IStatusMessage getValidationStatus();
 	
 	
-	/*FIXME: review this */
 	default void validate() throws StatusException {
 		throwValidation(getValidationStatus());
 	}
-	
-	/* -----------------  ----------------- */
 	
 	public static void throwValidation(IStatusMessage validationStatus) throws StatusException {
 		if(validationStatus != null) {
 			throw validationStatus.toStatusException();
 		}
 	}
+	
+	/* -----------------  ----------------- */
 	
 	public static ValidationSource fromRunnable(RunnableX<StatusException> validationRunnable) {
 		return () -> validateFromRunnable(validationRunnable);
@@ -55,7 +50,17 @@ public interface ValidationSource {
 	
 	/* -----------------  ----------------- */
 	
-	static IStatusMessage getHighestStatus(Iterable<? extends ValidationSource> validationSources) {
+	public static IStatusMessage getValidationStatus(ValidationSource... sources) {
+		for (ValidationSource validationSource : sources) {
+			IStatusMessage validationStatus = validationSource.getValidationStatus();
+			if(validationSource != null) {
+				return validationStatus;
+			}
+		}
+		return null;
+	}
+	
+	public static IStatusMessage getHighestStatus(Iterable<? extends ValidationSource> validationSources) {
 		IStatusMessage highestSE = null;
 		for(ValidationSource validationSource : validationSources) {
 			
@@ -68,25 +73,6 @@ public interface ValidationSource {
 			
 		}
 		return highestSE;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static class ValidatableField<SOURCE> implements ValidationSource {
-		
-		public final Supplier<SOURCE> property;
-		public final Validator<SOURCE, ?> validator;
-		
-		public ValidatableField(Supplier<SOURCE> field, Validator<SOURCE, ?> validator) {
-			this.property = assertNotNull(field);
-			this.validator = assertNotNull(validator);
-		}
-		
-		@Override
-		public IStatusMessage getValidationStatus() {
-			return validateFromRunnable(() -> validator.validateField(property.get()));
-		}
-		
 	}
 	
 }

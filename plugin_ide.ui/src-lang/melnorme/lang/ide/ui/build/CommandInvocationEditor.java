@@ -54,11 +54,10 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		commandArgumentsField = init_createButtonTextField();
 		addChildWidget(commandArgumentsField);
 		
-		/*FIXME: bug here*/
+		commandArgumentsField.addChangeListener(this::updateCommandInvocationField);
 		commandArgumentsField.validation().addFieldValidation2(commandArgumentsField, 
 			ValidationSource.fromRunnable(this::validateArguments));
 		commandArgumentsField.onlyValidateWhenEnabled = false;
-		commandArgumentsField.addChangeListener(this::updateCommandInvocationField);
 		
 		createButtonArea();
 		

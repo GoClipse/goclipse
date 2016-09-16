@@ -30,6 +30,22 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 		validators.add(() -> explicitStatus);
 	}
 	
+	@Override
+	public IStatusMessage getValidationStatus() {
+		return getFieldValue();
+	}
+	
+	public void updateValidation() {
+		setFieldValue(ValidationSource.getHighestStatus(validators));
+	}
+	
+	public void setExplicitStatus(IStatusMessage explicitStatus) {
+		this.explicitStatus = explicitStatus;
+		updateValidation();
+	}
+	
+	/* -----------------  ----------------- */
+	
 	/**
 	 * {@link #addFieldValidation2(boolean, IFieldView, ValidationSource)}
 	 */
@@ -48,7 +64,7 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 	 * Add a validation source derived from given field.
 	 * 
 	 * Note: it is highly recommended that given validationSource calculation only depends from given fields,
-	 * otherwise a manual call to {@link #updateValidation()} will be required to update this validation field
+	 * otherwise a manual call to {@link #updateValidation()} will be required to update this validation field.
 	 * 
 	 * @param init
 	 * @param field
@@ -61,42 +77,8 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 		}
 	}
 	
-	/*FIXME: remove deprecateds */
-	@Deprecated
-	public void addFieldValidation(boolean init, IFieldView<?> field, ValidationSource validationSource) {
-		validators.add(validationSource);
-		field.registerListener(init, (__) -> updateValidation());
-	}
-	
-	public <SOURCE> void addFieldValidator2(boolean init, IFieldView<SOURCE> field, Validator<SOURCE, ?> validator) {
-		addFieldValidation2(init, field, new ValidatableField<>(field, validator));
-	}
-	
 	public void addStatusField(boolean init, IFieldView<IStatusMessage> statusField) {
 		addFieldValidation2(init, statusField, () -> statusField.getFieldValue());
-	}
-	
-	public void updateValidation() {
-		setFieldValue(ValidationSource.getHighestStatus(validators));
-	}
-
-	@Deprecated
-	public void updateFieldValue() {
-		updateValidation();
-	}
-	
-	@Override
-	public IStatusMessage getValidationStatus() {
-		return getFieldValue();
-	}
-	
-	public void setExplicitStatus(IStatusMessage explicitStatus) {
-		doSetExplicitStatus(explicitStatus);
-		updateFieldValue();
-	}
-	
-	protected void doSetExplicitStatus(IStatusMessage explicitStatus) {
-		this.explicitStatus = explicitStatus;
 	}
 	
 }
