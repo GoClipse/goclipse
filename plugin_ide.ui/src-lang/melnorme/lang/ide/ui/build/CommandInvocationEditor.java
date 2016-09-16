@@ -29,6 +29,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 import melnorme.utilbox.fields.Field;
+import melnorme.utilbox.fields.validation.ValidationSource;
 import melnorme.utilbox.status.StatusException;
 
 public class CommandInvocationEditor extends EnablementCompositeWidget<CommandInvocation> {
@@ -51,9 +52,12 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		this.variablesResolver = variablesResolver;
 		
 		commandArgumentsField = init_createButtonTextField();
-		commandArgumentsField.addFieldValidationX(true, this::validateArguments);
-		commandArgumentsField.onlyValidateWhenEnabled = false;
 		addChildWidget(commandArgumentsField);
+		
+		/*FIXME: bug here*/
+		commandArgumentsField.validation().addFieldValidation2(commandArgumentsField, 
+			ValidationSource.fromRunnable(this::validateArguments));
+		commandArgumentsField.onlyValidateWhenEnabled = false;
 		commandArgumentsField.addChangeListener(this::updateCommandInvocationField);
 		
 		createButtonArea();
@@ -131,12 +135,16 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	/* -----------------  ----------------- */
 	
 	protected void validateArguments() throws StatusException {
-		CommandInvocation fieldValue = getFieldValue();
+		validateArguments(field());
+	}
+	
+	protected void validateArguments(Field<CommandInvocation> field) throws StatusException {
+		CommandInvocation fieldValue = field.get();
 		if(fieldValue == null) {
 			return;
 		}
 		
-		fieldValue.validate(variablesResolver);
+		fieldValue.evaluateCommandArguments(variablesResolver);
 	}
 	
 	/* ----------------- button handlers ----------------- */

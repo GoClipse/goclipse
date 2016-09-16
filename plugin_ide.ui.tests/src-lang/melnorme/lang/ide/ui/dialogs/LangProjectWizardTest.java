@@ -90,7 +90,7 @@ public abstract class LangProjectWizardTest extends CommonUITest {
 	protected abstract LangNewProjectWizard createNewProjectWizard();
 	
 	protected void firstPage_setProjectName(String name) {
-		wizard.getFirstPage().getNameGroup().getNameField().setFieldValue(name);
+		wizard.getFirstPage().getNameGroup().nameField().setFieldValue(name);
 	}
 	
 	protected void simulatePressCancel() {

@@ -214,7 +214,7 @@ public class BuildTarget extends AbstractValidator {
 	
 	public void validateForBuild(ToolManager toolManager) throws StatusException {
 		IVariablesResolver variablesResolver = toolManager.getVariablesManager(option(getProject()));
-		getEffectiveBuildCommand2().validate(variablesResolver);
+		getEffectiveBuildCommand2().evaluateCommandArguments(variablesResolver);
 		getValidExecutableLocation(); // TODO: Build Target Editor validate this
 	}
 	

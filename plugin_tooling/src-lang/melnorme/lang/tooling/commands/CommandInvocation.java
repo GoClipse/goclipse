@@ -112,10 +112,6 @@ public class CommandInvocation {
 		return pb;
 	}
 	
-	public void validate(IVariablesResolver variablesResolver) throws StatusException {
-		evaluateCommandArguments(variablesResolver);
-	}
-	
 	public String evaluateCommandArguments(IVariablesResolver variablesResolver) throws StatusException {
 		return getValidatedCommandArguments(variablesResolver).getValidatedValue();
 	}

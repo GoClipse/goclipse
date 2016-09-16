@@ -19,9 +19,7 @@ import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.util.swt.components.FieldWidget;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IField;
 import melnorme.utilbox.fields.IProperty;
-import melnorme.utilbox.fields.validation.ValidationField;
 
 public class PreferencesPageContext implements IPreferencesEditor {
 	
@@ -49,7 +47,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	}
 	public void bindToPreference(FieldWidget<String> field, SettingsField<?> prefField) {
 		bindToPreference(field, prefField.getGlobalPreference());
-		field.addFieldValidator(true, prefField.getValidator());
+		field.validation().addFieldValidator2(true, field, prefField.getValidator());
 	}
 	public <T> void bindToPreference(IProperty<T> field, IProjectPreference<T> pref) {
 		bindToPreference(field, pref.getGlobalPreference());
@@ -93,14 +91,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	public void bindToValidatedPreference(FieldWidget<String> field, DerivedValuePreference<?> derivedPref) {
 		bindToPreference(field, derivedPref.getPreference());
 		
-		field.addFieldValidator(true, derivedPref.getValidator());
-	}
-	
-	public void bindToValidatedPreference(IField<String> field, DerivedValuePreference<?> derivedPref, 
-			ValidationField validation) {
-		bindToPreference(field, derivedPref.getPreference());
-		
-		validation.addFieldValidator(true, field, derivedPref.getValidator());
+		field.addFieldValidator2(true, derivedPref.getValidator());
 	}
 	
 }

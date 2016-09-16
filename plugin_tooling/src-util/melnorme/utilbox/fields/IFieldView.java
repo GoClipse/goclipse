@@ -20,6 +20,8 @@ import melnorme.utilbox.ownership.IOwner;
 
 /**
  * A read-only access for an observable value.
+ * 
+ * Whenever the observable value changes, the registered listeners are notified.
  */
 public interface IFieldView<VALUE> extends Supplier<VALUE> {
 	

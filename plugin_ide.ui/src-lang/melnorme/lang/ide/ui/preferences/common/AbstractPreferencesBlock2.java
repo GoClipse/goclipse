@@ -19,7 +19,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
@@ -35,10 +34,6 @@ public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt {
 	
 	public AbstractPreferencesBlock2(PreferencesPageContext prefContext) {
 		this.prefContext = assertNotNull(prefContext);
-	}
-	
-	public final void bindToDerivedPreference(FieldWidget<String> field, DerivedValuePreference<?> pref) {
-		prefContext.bindToValidatedPreference(field, pref, validation);
 	}
 	
 	/* -----------------  ----------------- */
@@ -92,7 +87,7 @@ public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt {
 	
 	protected NumberField createNumberField(String label, int textLimit) {
 		NumberField numberField = new NumberField(label, textLimit);
-		validation.addValidatableField(false, numberField);
+		validation.addFieldValidation2(numberField, numberField);
 		return numberField;
 	}
 	
