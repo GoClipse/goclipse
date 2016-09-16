@@ -47,7 +47,6 @@ import melnorme.util.swt.components.fields.TextFieldWidget;
 import melnorme.util.swt.components.misc.StatusMessageWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.fields.validation.ValidationSource;
 import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.Severity;
@@ -123,11 +122,10 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		locationGroup.createComponent(parent, sectionGDF().create());
 		createContents_ValidationGroups(parent);
 		
-		FieldChangeListener listener = this::validateDialog;
-		nameGroup.nameField.addChangeListener(listener);
-		locationGroup.addChangeListener(listener);
+		nameGroup.nameField.addChangeListener(this::updateValidationMessage);
+		locationGroup.addChangeListener(this::updateValidationMessage);
 		
-		validateDialog();
+		updateValidationMessage();
 	}
 	
 	protected void createContents_ValidationGroups(Composite parent) {
@@ -152,7 +150,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			addChildWidget(nameField);
 			this.layoutColumns = 2;
 			
-			nameField.addFieldValidator2(true, this::getProjectHandleFor);
+			nameField.addFieldValidator2(this::getProjectHandleFor);
 		}
 		
 		public TextFieldWidget nameField() {
@@ -340,8 +338,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		LangCore.settings().SDK_LOCATION.getValue();
 	}
 	
-	protected boolean validateDialog() {
-		IStatusMessage validationStatus = getValidationStatus();
+	protected boolean updateValidationMessage() {
+		IStatusMessage validationStatus = ValidationSource.getValidationStatus(nameGroup, locationGroup);
 		
 		boolean valid;
 		if(validationStatus == null) {
@@ -361,16 +359,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		prefValidationGroup.updateWidgetFromInput();
 		
 		return valid;
-	}
-	
-	protected IStatusMessage getValidationStatus() {
-		try {
-			nameGroup.validate();
-			locationGroup.validate();
-			return null;
-		} catch(StatusException e) {
-			return e;
-		}
 	}
 	
 }

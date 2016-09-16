@@ -120,9 +120,8 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	
 	/* -----------------  ----------------- */
 	
-	/*FIXME: */
-	public void addFieldValidator2(boolean init, Validator<VALUE, ?> validator) {
-		getValidation().addFieldValidator2(init, this, validator);
+	public void addFieldValidator2(Validator<VALUE, ?> validator) {
+		validation().addFieldValidation2(this, validator.toValidationSource(this));
 	}
 	
 }

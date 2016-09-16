@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.fields.validation;
 
+import java.util.function.Supplier;
+
 import melnorme.utilbox.status.StatusException;
 
 /**
@@ -18,5 +20,11 @@ import melnorme.utilbox.status.StatusException;
 public interface Validator<VALUE, RESULT> {
 	
 	public RESULT validateField(VALUE value) throws StatusException;
+	
+	/* -----------------  ----------------- */
+	
+	default ValidationSource toValidationSource(Supplier<VALUE> supplier) {
+		return ValidationSource.fromRunnable(() -> this.validateField(supplier.get()));
+	}
 	
 }

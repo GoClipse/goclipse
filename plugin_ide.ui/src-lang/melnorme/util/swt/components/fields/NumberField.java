@@ -24,7 +24,7 @@ public class NumberField extends TextFieldExt {
 	public NumberField(String label, int textLimit) {
 		super(label, textLimit);
 		
-		addFieldValidator2(true, this::validatePositiveNumber);
+		addFieldValidator2(this::validatePositiveNumber);
 	}
 	
 	public StatusException validatePositiveNumber(String number) {

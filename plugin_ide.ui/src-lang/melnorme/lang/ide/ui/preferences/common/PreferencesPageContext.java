@@ -47,7 +47,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	}
 	public void bindToPreference(FieldWidget<String> field, SettingsField<?> prefField) {
 		bindToPreference(field, prefField.getGlobalPreference());
-		field.validation().addFieldValidator2(true, field, prefField.getValidator());
+		field.addFieldValidator2(prefField.getValidator());
 	}
 	public <T> void bindToPreference(IProperty<T> field, IProjectPreference<T> pref) {
 		bindToPreference(field, pref.getGlobalPreference());
@@ -91,7 +91,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	public void bindToValidatedPreference(FieldWidget<String> field, DerivedValuePreference<?> derivedPref) {
 		bindToPreference(field, derivedPref.getPreference());
 		
-		field.addFieldValidator2(true, derivedPref.getValidator());
+		field.addFieldValidator2(derivedPref.getValidator());
 	}
 	
 }
