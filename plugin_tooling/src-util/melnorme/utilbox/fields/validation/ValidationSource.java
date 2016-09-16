@@ -14,60 +14,42 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.function.Supplier;
 
+import melnorme.utilbox.core.fntypes.RunnableX;
 import melnorme.utilbox.status.IStatusMessage;
 import melnorme.utilbox.status.StatusException;
-import melnorme.utilbox.status.StatusLevel;
 
 public interface ValidationSource {
 	
+	/**
+	 * Provide a validation status.
+	 * @return the validation {@link IStatusMessage}, or null if none.	
+	 */
 	public IStatusMessage getValidationStatus();
 	
-	default StatusLevel getValidationStatusLevel() {
-		IStatusMessage se = getValidationStatus();
-		return se == null ? StatusLevel.OK : se.getSeverity().toStatusLevel(); 
+	
+	/*FIXME: review this */
+	default void validate() throws StatusException {
+		throwValidation(getValidationStatus());
 	}
 	
-	default void validate() throws StatusException {
-		IStatusMessage validationStatus = getValidationStatus();
+	/* -----------------  ----------------- */
+	
+	public static void throwValidation(IStatusMessage validationStatus) throws StatusException {
 		if(validationStatus != null) {
 			throw validationStatus.toStatusException();
 		}
 	}
 	
-	/**
-	 * Essentially the same as {@link ValidationSource}, but for implementers 
-	 * wishing to implement the {@link #validate()} method instead of {@link #getValidationStatus()}.
-	 */
-	public static interface ValidationSourceX extends ValidationSource {
-		
-		@Override
-		default IStatusMessage getValidationStatus() {
-			try {
-				validate();
-				return null;
-			} catch(StatusException e) {
-				return e;
-			}
-		}
-		
-		@Override
-		abstract void validate() throws StatusException;
-		
+	public static ValidationSource fromRunnable(RunnableX<StatusException> validationRunnable) {
+		return () -> validateFromRunnable(validationRunnable);
 	}
 	
-	public static class ValidatableField<SOURCE> implements ValidationSourceX {
-		
-		public final Supplier<SOURCE> property;
-		public final Validator<SOURCE, ?> validator;
-		
-		public ValidatableField(Supplier<SOURCE> field, Validator<SOURCE, ?> validator) {
-			this.property = assertNotNull(field);
-			this.validator = assertNotNull(validator);
-		}
-		
-		@Override
-		public void validate() throws StatusException {
-			validator.validateField(property.get());
+	public static StatusException validateFromRunnable(RunnableX<StatusException> runnable) {
+		try {
+			runnable.run();
+			return null;
+		} catch(StatusException e) {
+			return e;
 		}
 	}
 	
@@ -86,6 +68,25 @@ public interface ValidationSource {
 			
 		}
 		return highestSE;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class ValidatableField<SOURCE> implements ValidationSource {
+		
+		public final Supplier<SOURCE> property;
+		public final Validator<SOURCE, ?> validator;
+		
+		public ValidatableField(Supplier<SOURCE> field, Validator<SOURCE, ?> validator) {
+			this.property = assertNotNull(field);
+			this.validator = assertNotNull(validator);
+		}
+		
+		@Override
+		public IStatusMessage getValidationStatus() {
+			return validateFromRunnable(() -> validator.validateField(property.get()));
+		}
+		
 	}
 	
 }

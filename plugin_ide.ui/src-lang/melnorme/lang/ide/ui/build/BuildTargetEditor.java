@@ -19,7 +19,6 @@ import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.commands.CommandInvocation.ValidatedCommandArgumentsSource;
 import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
@@ -121,9 +120,7 @@ public class BuildTargetEditor extends CompositeWidget {
 			try {
 				super.validateArguments();
 			} catch(StatusException se) {
-				if(se.getMessage() == ValidatedCommandArgumentsSource.MSG_NO_COMMAND_SPECIFIED) {
-					throw new StatusException("No build command supplied.");
-				}
+				throw se;
 			}
 		}
 	}

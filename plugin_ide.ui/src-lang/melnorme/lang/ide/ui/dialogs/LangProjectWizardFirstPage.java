@@ -143,15 +143,14 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	public static class NameGroup extends CompositeWidget {
 		
-		protected TextFieldWidget textField = new TextFieldWidget(WizardMessages.LangNewProject_NameGroup_label);
+		protected final TextFieldWidget textField = new TextFieldWidget(WizardMessages.LangNewProject_NameGroup_label);
 		
 		public NameGroup() {
 			super(true);
 			addChildWidget(textField);
 			this.layoutColumns = 2;
 			
-			ValidationSourceX validationSource = this::validateProjectName;
-			validation.addFieldValidation(true, textField, validationSource);
+			validation.addFieldValidationX(true, textField, this::validateProjectName);
 		}
 		
 		public String getName() {
