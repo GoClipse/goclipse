@@ -16,9 +16,7 @@
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
-		<ide.targetPlatform>releng/target-platform/IDE</ide.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
-		
 	</properties>
 
 	<modules>
@@ -32,6 +30,36 @@
 		<module>feature</module>
 		<module>releng/repository</module>
 	</modules>
+	
+	<!-- 
+		All pom dependencies must be listed ahead in <dependencies>: 
+		
+		NOTE: they also need to be added to 
+			releng/repository/pom.xml  (for the redistrubtion p2 repo)
+			target-platform/pom.xml    (just for generation of development-time target platform)
+	-->
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.eclipsesource.minimal-json</groupId>
+			<artifactId>minimal-json</artifactId>
+			<version>0.9.4</version>
+		</dependency>
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<layout>p2</layout>
+			<id>neon</id>
+			<url>http://download.eclipse.org/releases/neon</url>
+		</repository>
+		<repository>
+			<layout>p2</layout>
+			<id>orbit</id>
+			<url>http://archive.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/</url>
+		</repository>
+	</repositories>
+	
 
 	<!-- Core build -->
 	
@@ -84,14 +112,7 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<target>
-						<artifact>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>ide-aggregator</artifactId>
-							<version>1-SNAPSHOT</version>
-							<classifier>${ide.targetPlatform}</classifier>
-						</artifact>
-					</target>
+					<pomDependencies>consider</pomDependencies>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -105,9 +126,9 @@
 			
 			<build>
 				<plugins>
-					<plugin>  
-						<groupId>org.apache.maven.plugins</groupId>  
-						<artifactId>maven-jarsigner-plugin</artifactId>  
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
 						<version>1.2</version>  
 						<configuration>
 							<keystore>${signing.keystore}</keystore>

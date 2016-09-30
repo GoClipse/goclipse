@@ -15,6 +15,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
@@ -80,6 +81,16 @@ public class LangTemplateProposal extends TemplateProposal implements
 	@Override
 	public String toString() {
 		return getDisplayString();
+	}
+	
+	/* -----------------  Prefix Completion  ----------------- */
+	
+	@Override
+	public CharSequence getPrefixCompletionText(IDocument document, int completionOffset) {
+		// Template proposals should not have an prefix auto-inserted if is selection
+		if (isSelectionTemplate())
+			return "";
+		return getTemplate().getName();
 	}
 	
 	/* ----------------- JDT copied stuff: ----------------- */

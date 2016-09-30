@@ -17,10 +17,17 @@ Developers Guide
 </div>
    * Note: The actual project names will be different from those in the screenshot above.
    * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
- * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` (You can use the Open Resource dialog to help find this file, press Ctrl-R and type `IDE.target` in the dialog). Then click "Set as Target Platform" once the file is opened, as seen here: 
+ * Setup the target platform. Unfortunately due to limitations in Tycho/PDE tooling ([more info](https://github.com/tesla/m2eclipse-tycho/issues/29)) some manual steps are required:
+   1. Open a shell on `target-platform/` and run `mvn package`. This should create a `deps-repository/repository` directory.
+   1. Copy the target platform file: `target-platform/IDE-base.target` to `target-platform/IDE-gen.target`. (this last filename is already git-ignored).
+   1. Open `target-platform/IDE-gen.target` in Eclipse, so that it opens under the PDE editor. 
+   1. Click "Add", then select "Software Site". 
+   1. On the "Add Software Site" dialog, click "Add...", then "Local...", navigate to Git repo directory, then choose the `target-platform/deps-repository/repository` directory.
+   1. On the "Add Software Site" dialog, the new repository should be selected. Click "Select All" to select all deps, then click "Finish". It should look more or less like this:
 <div align="center">
 <a><img src="documentation/README_images/Set_As_Target_Platform.png" /><a/> 
 </div>
+   1. Then finally click "Set as Target Platform".
  * Build the workspace ( "Project / Build All"). Everything should build fine now, there should be no errors.
  * To start the IDE from your workspace: Open "Run / Run Configurations ...". Click on "Eclipse Application" to create a new launch for the plugins in your workspace. The default new configuration that is created should already be ready to be launched.
  * **Additional tip:** Locate the `bin-maven` folder in the top-level project, open its Properties from the Project Explorer context menu, and mark that directory as "Derived" in the "Resources" property page. This will prevent those folder resources to appear in UI operations such as "Open Resource" for example. 
