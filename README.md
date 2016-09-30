@@ -16,7 +16,8 @@ Developers Guide
    * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
  * Setup the target platform. Unfortunately due to limitations in Tycho/PDE tooling ([more info](https://github.com/tesla/m2eclipse-tycho/issues/29)) some manual steps are required:
    1. Open a shell on `target-platform/` and run `mvn package`. This should create a `deps-repository/repository` directory.
-   1. Open the target platform file: `target-platform/IDE.target`. 
+   1. Copy the target platform file: `target-platform/IDE-base.target` to `target-platform/IDE-gen.target`. (this last filename is already git-ignored).
+   1. Open `target-platform/IDE-gen.target` in Eclipse, so that it opens under the PDE editor. 
    1. Click "Add", then select "Software Site". 
    1. On the "Add Software Site" dialog, click "Add...", then "Local...", navigate to Git repo directory, then choose the `target-platform/deps-repository/repository` directory.
    1. On the "Add Software Site" dialog, the new repository should be selected. Click "Select All" to select all deps, then click "Finish". It should look more or less like this:

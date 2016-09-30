@@ -16,9 +16,7 @@
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
-		<ide.targetPlatform>releng/target-platform/IDE</ide.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
-		
 	</properties>
 
 	<modules>

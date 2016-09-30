@@ -1,1 +1,2 @@
-deps-repository/
+/deps-repository/
+/IDE-gen.target
