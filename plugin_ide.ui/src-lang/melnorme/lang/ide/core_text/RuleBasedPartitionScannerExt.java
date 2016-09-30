@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package LANG_PROJECT_ID.ide.core_text;
+package melnorme.lang.ide.core_text;
 
 
 import org.eclipse.jface.text.IDocument;
@@ -18,7 +18,6 @@ import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 
-import melnorme.lang.ide.core_text.BufferedRuleBasedScannerExt;
 import melnorme.utilbox.collections.ArrayList2;
 
 
