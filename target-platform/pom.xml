@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>LANG_PROJECT_ID</groupId>
+		<groupId>com.googlecode.goclipse</groupId>
 		<artifactId>ide-aggregator</artifactId>
 		<version>1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
