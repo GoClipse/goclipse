@@ -69,17 +69,8 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		assertTrue(parseSource.lookaheadMatches("def"));
 		parseSource.consumeAmount(3);
 		assertTrue(parseSource.lookaheadMatches(""));
-		// Design aspect: allow consuming beyond end?
-		{
-			parseSource.consumeAmount(2);
-			assertTrue(parseSource.lookaheadIsEOS());
-			parseSource.consume();
-			assertTrue(parseSource.lookaheadIsEOS());
-			parseSource.unread();
-			parseSource.unread();
-			parseSource.unread();
-			assertTrue(parseSource.lookaheadIsEOS());
-		}
+		
+		test_consumeBeyondEnd();
 		parseSource.unread();
 		assertTrue(parseSource.lookaheadMatches("f"));
 		
@@ -99,6 +90,20 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		assertTrue(parseSource.consumeUntil("de", true).equals("abc"));
 		assertTrue(parseSource.lookahead() == 'f');
 		assertTrue(parseSource.lookaheadMatches("f"));
+	}
+	
+	protected void test_consumeBeyondEnd() {
+		assertTrue(parseSource.lookaheadIsEOS());
+		assertTrue(parseSource.lookaheadMatches(""));
+		
+		parseSource.consumeAmount(2);
+		assertTrue(parseSource.lookaheadIsEOS());
+		parseSource.consume();
+		assertTrue(parseSource.lookaheadIsEOS());
+		parseSource.unread();
+		parseSource.unread();
+		parseSource.unread();
+		assertTrue(parseSource.lookaheadIsEOS());
 	}
 	
 	protected void testCharSource() throws Exception {

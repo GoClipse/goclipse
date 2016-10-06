@@ -32,6 +32,11 @@ public class CharacterScanner_ReaderHelper_Test {
 		}
 		
 		@Override
+		protected void test_consumeBeyondEnd() {
+			// Do nothing, not allowed with this class
+		}
+		
+		@Override
 		protected void checkBufferedCount(ICharSource<?> parseSource, int expected) {
 			// Ignore
 		}

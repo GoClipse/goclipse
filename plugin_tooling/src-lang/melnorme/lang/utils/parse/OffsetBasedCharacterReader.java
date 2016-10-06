@@ -34,7 +34,7 @@ public abstract class OffsetBasedCharacterReader<EXC extends Exception> extends 
 	
 	@Override
 	protected void consume_next_invariant(int next) {
-		// allow EOS
+		// allow consume at EOS
 	}
 	
 	@Override
