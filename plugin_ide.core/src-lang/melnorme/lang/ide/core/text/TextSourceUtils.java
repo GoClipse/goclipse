@@ -71,7 +71,7 @@ public class TextSourceUtils {
 		assertTrue(offset <= endLimit);
 		
 		StringCharSource parseSource = new StringCharSource(source);
-		parseSource.consume(offset);
+		parseSource.consumeAmount(offset);
 		
 		while(offset < endLimit) {
 			

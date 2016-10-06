@@ -33,11 +33,26 @@ public abstract class OffsetBasedCharacterReader<EXC extends Exception> extends 
 	}
 	
 	@Override
+	protected void consume_next_invariant(int next) {
+		// allow consume at EOS
+	}
+	
+	@Override
 	protected void doConsume() throws EXC {
 		readPosition++;
 		invariant();
 	}
 	
+	/**
+	 * Same as {@link IBasicCharSource#consumeAmount(int)} but one is allowed to consume beyond EOS.
+	 */
+	@Override
+	public void consumeAmount(int count) throws EXC {
+		readPosition += count;
+		invariant();
+	}
+	
+	@Override
 	public void unread() throws EXC {
 		readPosition--;
 		invariant();

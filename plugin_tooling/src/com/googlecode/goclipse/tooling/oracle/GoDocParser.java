@@ -83,7 +83,7 @@ public class GoDocParser {
 	
 	public String getLineTextAt(String text, int offset) {
 		StringCharSource charSource = new StringCharSource(text);
-		charSource.consume(offset);
+		charSource.consumeAmount(offset);
 		return LexingUtils.stringUntilNewline(charSource);
 	}
 	

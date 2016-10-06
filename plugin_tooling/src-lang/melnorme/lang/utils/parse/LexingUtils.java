@@ -85,6 +85,14 @@ public class LexingUtils {
 		return count;
 	}
 	
+	public static <E extends Exception> int countWhitespace(ICharSource<E> reader) throws E {
+		int count = 0;
+		while(Character.isWhitespace(reader.lookahead(count))) {
+			count++;
+		}
+		return count;
+	}
+	
 	public static <E extends Exception> int skipWhitespaceExceptNL(IBasicCharSource<E> reader) throws E {
 		int count = 0;
 		while(Character.isWhitespace(reader.lookahead())) {

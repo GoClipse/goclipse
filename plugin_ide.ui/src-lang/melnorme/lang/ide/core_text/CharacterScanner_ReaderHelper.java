@@ -46,4 +46,9 @@ public class CharacterScanner_ReaderHelper extends BasicCharSource<RuntimeExcept
 		scanner.read();
 	}
 	
+	@Override
+	public void unread() throws RuntimeException {
+		scanner.unread();
+	}
+	
 }

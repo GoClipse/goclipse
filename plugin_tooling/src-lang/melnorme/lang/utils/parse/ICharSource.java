@@ -36,32 +36,26 @@ public interface ICharSource<EXC extends Exception> extends IBasicCharSource<EXC
 	
 	/* -----------------  Some common helpers  ----------------- */
 	
-	default void consume(int amount) throws EXC {
-		while(amount-- > 0) {
-			consume();
-		}
-	}
-	
 	default boolean tryConsume(String string) throws EXC {
 		for(int ix = 0; ix < string.length(); ix++) {
 			if(lookahead(ix) != string.charAt(ix)) {
 				return false;
 			}
 		}
-		consume(string.length());
+		consumeAmount(string.length());
 		return true;
 	}
 	
 	default String consumeString(int length) throws EXC {
 		String string = lookaheadString(0, length);
-		consume(length);
+		consumeAmount(length);
 		return string;
 	}
 	
 	default void consumeAhead(String string) throws EXC {
 		assertNotNull(string);
 		assertTrue(lookaheadMatches(string));
-		consume(string.length());
+		consumeAmount(string.length());
 	}
 	
 	default boolean lookaheadMatches(String string) throws EXC {
@@ -93,7 +87,7 @@ public interface ICharSource<EXC extends Exception> extends IBasicCharSource<EXC
 	
 	default String consumeUntil(String string) throws EXC {
 		String stringUntil = stringUntil(string);
-		consume(stringUntil.length());
+		consumeAmount(stringUntil.length());
 		return stringUntil;
 	}
 	

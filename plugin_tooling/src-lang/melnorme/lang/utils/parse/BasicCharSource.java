@@ -24,9 +24,13 @@ public abstract class BasicCharSource<EXC extends Exception> implements IBasicCh
 	public final char consume() throws EXC {
 		checkedHasNext = false;
 		int next = lookahead();
-		assertTrue(next >= 0);
+		consume_next_invariant(next);
 		doConsume();
 		return (char) next;
+	}
+	
+	protected void consume_next_invariant(int next) {
+		assertTrue(next != EOS);
 	}
 	
 	protected abstract void doConsume() throws EXC;

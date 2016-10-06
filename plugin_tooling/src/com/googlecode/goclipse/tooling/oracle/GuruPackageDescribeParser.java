@@ -296,7 +296,7 @@ public class GuruPackageDescribeParser extends AbstractStructureParser {
 	protected int heuristic_determinTokenLength(int offset, String source) {
 		
 		StringCharSource charSource = new StringCharSource(source);
-		charSource.consume(offset);
+		charSource.consumeAmount(offset);
 		int length = LexingUtils.matchJavaIdentifier(charSource);
 		if (length == 0) {
 			return 1;
