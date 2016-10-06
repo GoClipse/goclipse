@@ -11,7 +11,6 @@
 package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class StringCharSource extends OffsetBasedCharacterReader<RuntimeException> implements ICharacterReader {
 	
@@ -46,13 +45,10 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 	
 	@Override
 	public int bufferedCharCount() {
+		if(readPosition >= source.length()) {
+			return 0;
+		}
 		return source.length() - readPosition;
-	}
-	
-	@Override
-	public void consume(int amount) throws RuntimeException {
-		readPosition += amount;
-		assertTrue(readPosition <= source.length());
 	}
 	
 	@Override

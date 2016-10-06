@@ -26,6 +26,8 @@ public interface IBasicCharSource<EXC extends Exception> {
 		return consume();
 	}
 	
+	void unread() throws EXC;
+	
 	default boolean lookaheadIsEOS() throws EXC {
 		return !hasCharAhead();
 	}
@@ -57,6 +59,15 @@ public interface IBasicCharSource<EXC extends Exception> {
 			return true;
 		}
 		return false;
+	}
+	
+	/** 
+	 * Consume given amount of characters 
+	 */
+	default void consumeAmount(int amount) throws EXC {
+		while(amount-- > 0) {
+			consume();
+		}
 	}
 	
 }

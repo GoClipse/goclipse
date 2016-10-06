@@ -70,7 +70,7 @@ public class CharacterLexingRule extends LexingUtils implements IPredicateLexing
 	protected boolean consumeHexEscapeSequence(ICharacterReader reader) {
 		if(reader.lookahead(0) == 'x' 
 				&& isHexDigit(reader.lookahead(1)) && isHexDigit(reader.lookahead(2))) {
-			reader.consume(3);
+			reader.consumeAmount(3);
 			return true;
 		}
 		return false;

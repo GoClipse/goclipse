@@ -52,7 +52,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		assertTrue(parseSource.lookaheadMatches("", TEST_SOURCE.length()));
 		
 		assertTrue(parseSource.lookaheadString(0, 6).equals(TEST_SOURCE));
-		parseSource.consume(2);
+		parseSource.consumeAmount(2);
 		assertTrue(parseSource.lookaheadString(0, 4).equals("cdef"));
 		
 		init(TEST_SOURCE);
@@ -61,6 +61,27 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		init(TEST_SOURCE);
 		assertTrue(parseSource.tryConsume("abc"));
 		assertTrue(parseSource.lookaheadMatches("def"));
+		
+		init(TEST_SOURCE);
+		parseSource.consumeAmount(0);
+		assertTrue(parseSource.lookaheadMatches(TEST_SOURCE));
+		parseSource.consumeAmount(3);
+		assertTrue(parseSource.lookaheadMatches("def"));
+		parseSource.consumeAmount(3);
+		assertTrue(parseSource.lookaheadMatches(""));
+		// Design aspect: allow consuming beyond end?
+		{
+			parseSource.consumeAmount(2);
+			assertTrue(parseSource.lookaheadIsEOS());
+			parseSource.consume();
+			assertTrue(parseSource.lookaheadIsEOS());
+			parseSource.unread();
+			parseSource.unread();
+			parseSource.unread();
+			assertTrue(parseSource.lookaheadIsEOS());
+		}
+		parseSource.unread();
+		assertTrue(parseSource.lookaheadMatches("f"));
 		
 		init(TEST_SOURCE);
 		assertTrue(parseSource.stringUntil("z").equals("abcdef"));
@@ -186,6 +207,18 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		@Override
 		protected ICharacterReader createParseSource(String source) {
 			return new StringCharSource(source);
+		}
+		
+		@Override
+		protected void checkBufferedCount(ICharSource<?> parseSource, int expected) {
+			assertTrue(parseSource.bufferedCharCount() == source.length() - sourceIx);
+		}
+	}
+	
+	public static class SubReader_Test extends ParseSource_Test {
+		@Override
+		protected ICharacterReader createParseSource(String source) {
+			return new CharacterReader_SubReader(new StringCharSource(source));
 		}
 		
 		@Override

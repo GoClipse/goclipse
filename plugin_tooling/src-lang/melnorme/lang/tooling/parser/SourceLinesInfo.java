@@ -148,7 +148,7 @@ public class SourceLinesInfo {
 	
 	public int getIdentifierAt(int validatedOffset) {
 		StringCharSource parser = new StringCharSource(source);
-		parser.consume(validatedOffset);
+		parser.consumeAmount(validatedOffset);
 		return LexingUtils.matchJavaIdentifier(parser);
 	}
 	

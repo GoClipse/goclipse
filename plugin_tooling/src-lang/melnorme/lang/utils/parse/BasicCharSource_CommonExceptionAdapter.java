@@ -40,6 +40,15 @@ public class BasicCharSource_CommonExceptionAdapter implements IBasicCharSource<
 		}
 	}
 	
+	@Override
+	public void unread() throws CommonException {
+		try {
+			source.unread();
+		} catch(Exception e) {
+			throw new CommonException(getDefaultMessage(), e);
+		}
+	}
+	
 	protected String getDefaultMessage() {
 		return "Error reading from char source.";
 	}

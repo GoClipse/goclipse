@@ -49,7 +49,7 @@ public class CharacterReader_SubReader extends OffsetBasedCharacterReader<Runtim
 	}
 	
 	public void consumeInParentReader() {
-		reader.consume(readPosition);
+		reader.consumeAmount(readPosition);
 		readPosition = 0;
 	}
 	
