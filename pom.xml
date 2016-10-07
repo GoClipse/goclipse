@@ -36,15 +36,10 @@
 		
 		NOTE: they also need to be added to 
 			releng/repository/pom.xml  (for the redistrubtion p2 repo)
-			target-platform/pom.xml    (just for generation of development-time target platform)
+			target-platform/category.xml    (just for generation of development-time target platform)
 	-->
 	
 	<dependencies>
-		<dependency>
-			<groupId>com.eclipsesource.minimal-json</groupId>
-			<artifactId>minimal-json</artifactId>
-			<version>0.9.4</version>
-		</dependency>
 	</dependencies>
 	
 	<repositories>
