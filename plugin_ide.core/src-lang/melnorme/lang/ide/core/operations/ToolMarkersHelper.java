@@ -34,6 +34,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
@@ -84,9 +85,13 @@ public class ToolMarkersHelper {
 	public void addErrorMarkers(ToolSourceMessage toolMessage, Location rootPath) throws CoreException {
 		Location loc = rootPath.resolve(toolMessage.getFilePath()); // Absolute paths will remain unchanged.
 		
-		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(loc.toUri());
-		for(IFile file : files) {
-			addErrorMarker(file, toolMessage, getMarkerType());
+		ArrayList2<IResource> resources = new ArrayList2<>();
+		
+		resources.addElements(ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(loc.toUri()));
+		resources.addElements(ResourceUtils.getWorkspaceRoot().findContainersForLocationURI(loc.toUri()));
+		
+		for(IResource resource : resources) {
+			addErrorMarker(resource, toolMessage, getMarkerType());
 		}
 	}
 	
