@@ -12,6 +12,8 @@ package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.io.Reader;
+
 public class StringCharSource extends OffsetBasedCharacterReader<RuntimeException> implements ICharacterReader {
 	
 	protected final String source;
@@ -55,10 +57,56 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 	protected void doUnread() {
 	}
 	
-	/* -----------------  ----------------- */
-	
 	protected String sourceSubString(int startPos, int endPos) {
 		return source.substring(readPosition + startPos, readPosition + endPos);
+	}
+	
+	/**
+	 * Copy characters from the current position onwards to a buffer.
+	 * 
+	 * @param buf Buffer to copy data to
+	 * @param off Offset in the buffer of the first position to which data should be copied.
+	 * @param len Number of characters to copy.
+	 * @return the actual number of characters that has been copied.
+	 */
+	public int copyToBuffer(char [] buf, int off, int len) {
+		int numberOfCharactersToRead = bufferedCharCount();
+		if (numberOfCharactersToRead > len) {
+			numberOfCharactersToRead = len;
+		}
+		source.getChars(readPosition, readPosition + numberOfCharactersToRead, buf, off);
+		readPosition += numberOfCharactersToRead;
+		return numberOfCharactersToRead;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public StringCharSourceReader toReader() {
+		return new StringCharSourceReader(this);
+	}
+	
+	public static class StringCharSourceReader extends Reader {
+		
+		protected StringCharSource child;
+		
+		public StringCharSourceReader(StringCharSource child) {
+			this.child = child;
+		}
+		
+		@Override
+		public void close() {
+			// No need to close anything
+		}
+
+		@Override
+		public int read(char[] cbuf, int off, int len) {
+			int result = this.child.copyToBuffer(cbuf, off, len);
+			if (result == 0) {
+				return -1; // Indicate that the end of the stream has been reached.
+			} else {
+				return result;
+			}
+		}
 	}
 	
 }
