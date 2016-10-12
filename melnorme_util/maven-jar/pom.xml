@@ -22,24 +22,13 @@
 	<packaging>jar</packaging>
 	
 	<properties>
-		
+		<source.dir>../src</source.dir>
+		<source_tests.dir>../src-test</source_tests.dir>
 	</properties>
 	
+	
 	<build>
-		<!-- This source folder and resource configuration must match the PDE osgi bundle build -->
-		
-		<sourceDirectory>../src</sourceDirectory>
-		<testSourceDirectory>../src-test</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>../src</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>../src-test</directory>
-			</testResource>
-		</testResources>
+	
 	</build>
- 	
+	
 </project>

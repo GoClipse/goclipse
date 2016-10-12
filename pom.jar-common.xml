@@ -34,10 +34,34 @@
 		<module>melnorme_util/maven-jar</module>
 	</modules>
 	
-	<!--  -->
+	<!--	-->
 	
 	<build>
+	
+		<!-- This source folder and resource configuration must match the PDE OSGi bundle build -->
+		
+		<sourceDirectory>${source.dir}</sourceDirectory>
+		<testSourceDirectory>${source_tests.dir}</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>${source.dir}</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>${source_tests.dir}</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
+		
 		<plugins>
+		
+		
 			<!-- Default to Java 8 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
