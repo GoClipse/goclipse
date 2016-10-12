@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" 
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.googlecode.goclipse</groupId>
+		<artifactId>jar-common-parent</artifactId>
+		<version>1-SNAPSHOT</version>
+		<relativePath>../../pom.jar-common.xml</relativePath>
+	</parent>
+	
+	<groupId>com.github.bruno-medeiros</groupId>
+	<artifactId>melnorme_util</artifactId>
+	<version>0.10.0-SNAPSHOT</version>
+	
+	<name>Melnorme Utils</name>
+	<url>http://github.com/bruno-medeiros/MelnormeEclipse/melnorme_util</url>
+	
+	<packaging>jar</packaging>
+	
+	<properties>
+		<source.dir>../src</source.dir>
+		<source_tests.dir>../src-test</source_tests.dir>
+	</properties>
+	
+	
+	<build>
+	
+	</build>
+	
+</project>

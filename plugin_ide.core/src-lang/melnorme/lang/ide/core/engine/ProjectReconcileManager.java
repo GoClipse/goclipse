@@ -21,9 +21,9 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
-import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICommonExecutor;
+import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.CompletableResult.CompletableLatch;
 import melnorme.utilbox.core.CommonException;

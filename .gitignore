@@ -1,3 +1,4 @@
-/*/bin/
-/releng/plugin_jvmcheck/bin/
 /bin-maven
+/*/bin/
+/*/*/bin/
+/releng/plugin_jvmcheck/bin/

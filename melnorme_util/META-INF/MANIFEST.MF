@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: melnorme_util
+Bundle-Version: 0.10.0.qualifier
+Bundle-Name: Melnorme Utils
+Bundle-Vendor: https://github.com/bruno-medeiros/MelnormeEclipse
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.11.0"
+Export-Package: melnorme.utilbox.collections,
+ melnorme.utilbox.collections.iter,
+ melnorme.utilbox.concurrency,
+ melnorme.utilbox.core,
+ melnorme.utilbox.core.fntypes,
+ melnorme.utilbox.fields,
+ melnorme.utilbox.fields.validation,
+ melnorme.utilbox.misc,
+ melnorme.utilbox.ownership,
+ melnorme.utilbox.process,
+ melnorme.utilbox.status,
+ melnorme.utilbox.tests,
+ melnorme.utilbox.tree
+
