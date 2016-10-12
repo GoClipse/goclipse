@@ -21,10 +21,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
 	<modules>
-		<module>melnorme_util/module</module>
+		<module>melnorme_util/maven-jar</module>
 	</modules>
 	
+	<!--  -->
 	
 	<build>
 		<plugins>

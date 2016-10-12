@@ -12,7 +12,6 @@
 		<relativePath>../../pom.jar-common.xml</relativePath>
 	</parent>
 	
-	
 	<groupId>com.github.bruno-medeiros</groupId>
 	<artifactId>melnorme_util</artifactId>
 	<version>0.10.0-SNAPSHOT</version>
@@ -22,28 +21,23 @@
 	
 	<packaging>jar</packaging>
 	
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<properties>
+		
+	</properties>
 	
 	<build>
 		<!-- This source folder and resource configuration must match the PDE osgi bundle build -->
 		
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>src-test</testSourceDirectory>
+		<sourceDirectory>../src</sourceDirectory>
+		<testSourceDirectory>../src-test</testSourceDirectory>
 		<resources>
 			<resource>
-				<directory>src</directory>
+				<directory>../src</directory>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>src-test</directory>
+				<directory>../src-test</directory>
 			</testResource>
 		</testResources>
 	</build>
