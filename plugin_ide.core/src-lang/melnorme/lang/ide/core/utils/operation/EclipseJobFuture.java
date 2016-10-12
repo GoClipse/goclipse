@@ -26,7 +26,7 @@ import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.lang.tooling.common.ops.OperationFuture.BiDelegatingOperationMonitor;
 import melnorme.lang.utils.concurrency.JobFuture;
-import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
+import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.OperationCancellation;
 
 public class EclipseJobFuture<RET> extends MonitorRunnableFuture<RET> implements JobFuture<RET> {

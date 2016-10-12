@@ -8,15 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.utils.concurrency;
+package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
-import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.CompositeCancelMonitor;
-import melnorme.utilbox.concurrency.IRunnableFuture2;
 
 /**
  * A {@link IRunnableFuture2} with a cancellation monitor.

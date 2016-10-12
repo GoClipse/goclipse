@@ -13,8 +13,8 @@ package melnorme.lang.tooling.common.ops;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor.DelegatingOperationMonitor;
-import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.IRunnableFuture2;
+import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.core.fntypes.OperationResult;
 

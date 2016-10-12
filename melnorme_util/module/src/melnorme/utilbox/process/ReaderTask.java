@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-import melnorme.lang.utils.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.StreamUtil;
 
