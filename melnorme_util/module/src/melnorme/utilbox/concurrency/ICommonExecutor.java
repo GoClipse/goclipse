@@ -39,9 +39,13 @@ public interface ICommonExecutor extends IBasicExecutor {
 	
 	/** Same as {@link ExecutorService#submit(Runnable)}, but returning a {@link BasicFuture}. */
 	default <RET> BasicFuture<RET> submitBasicRunnable(Runnable runnable) {
-		return submitBasicCallable(() -> {
-			runnable.run();
-			return null;
+		// need to use anon-class instead of lambda, javac errors on lambda expresion
+		return submitBasicCallable(new CallableX<RET, RuntimeException>() {
+			@Override
+			public RET call() throws RuntimeException {
+				runnable.run();
+				return null;
+			}
 		});
 	}
 	

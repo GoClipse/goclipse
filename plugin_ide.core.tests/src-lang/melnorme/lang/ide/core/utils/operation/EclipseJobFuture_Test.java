@@ -15,12 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.ExecutorService;
 
 import melnorme.utilbox.concurrency.Futures_Tests.AbstractFutureTest;
-import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.SupplierExt;
 
 public class EclipseJobFuture_Test extends AbstractFutureTest<EclipseJobFuture<?>> {
 	
 	@Override
-	protected EclipseJobFuture<?> initFuture(CallableX<Object, RuntimeException> callable) {
+	protected EclipseJobFuture<?> initFuture(SupplierExt<Object> callable) {
 		return new EclipseJobFuture<>("Test", (pm) -> callable.call(), false);
 	}
 	

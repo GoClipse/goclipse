@@ -133,7 +133,7 @@ public class ReflectionUtils {
 	}
 	
 	/** Reads the static field with given fieldName in given klass. */
-	public static <R> R readStaticField(Class<?> klass, String fieldName) throws NoSuchFieldException {
+	public static <T, R> R readStaticField(Class<T> klass, String fieldName) throws NoSuchFieldException {
 		return readAvailableField(klass, null, fieldName);
 	}
 	

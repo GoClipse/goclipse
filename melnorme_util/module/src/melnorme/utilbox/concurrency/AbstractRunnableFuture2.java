@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import melnorme.utilbox.core.fntypes.CallableX;
+
 public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET> 
 	implements IRunnableFuture2<RET>
 {
@@ -45,7 +47,13 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	}
 	
 	protected void internalTaskRun() {
-		completableResult.setResultFromCallable(this::internalInvoke);
+		// need to use anon-class instead of lambda, javac errors on lambda expresion 
+		completableResult.setResultFromCallable(new CallableX<RET, RuntimeException>() {
+			@Override
+			public RET call() throws RuntimeException {
+				return internalInvoke();
+			}
+		});
 	}
 	
 	protected abstract RET internalInvoke();

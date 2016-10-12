@@ -24,8 +24,8 @@ import org.junit.After;
 import org.junit.Test;
 
 import melnorme.utilbox.concurrency.ExecutorTaskAgent_Test.Tests_ExecutorTaskAgent;
-import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.core.fntypes.Result;
+import melnorme.utilbox.core.fntypes.SupplierExt;
 import melnorme.utilbox.tests.CommonTest;
 
 public abstract class Futures_Tests extends CommonTest {
@@ -106,7 +106,7 @@ public abstract class Futures_Tests extends CommonTest {
 			return future;
 		}
 		
-		protected abstract FUTURE initFuture(CallableX<Object, RuntimeException> callable);
+		protected abstract FUTURE initFuture(SupplierExt<Object> callable);
 		
 		public void test_result() throws Exception {
 			
@@ -145,7 +145,7 @@ public abstract class Futures_Tests extends CommonTest {
 			assertTrue(Thread.currentThread().isInterrupted() == false);
 		}
 		
-		protected FUTURE submitToExecutor(CallableX<Object, RuntimeException> callable) {
+		protected FUTURE submitToExecutor(SupplierExt<Object> callable) {
 			FUTURE future = initFuture(callable);
 			submitToExecutor(future, ForkJoinPool.commonPool());
 			return future;
@@ -156,7 +156,7 @@ public abstract class Futures_Tests extends CommonTest {
 			executor.execute(future);
 		}
 		
-		protected <EXC extends Exception> FUTURE submitAndAwaitResult(CallableX<Object, RuntimeException> callable)
+		protected <EXC extends Exception> FUTURE submitAndAwaitResult(SupplierExt<Object> callable)
 				throws OperationCancellation, InterruptedException, EXC {
 			FUTURE future = submitToExecutor(callable);
 			future.awaitResult();
@@ -236,7 +236,7 @@ public abstract class Futures_Tests extends CommonTest {
 	public static class MonitorFuture_Test extends AbstractFutureTest<MonitorRunnableFuture<Object>> {
 		
 		@Override
-		protected MonitorRunnableFuture<Object> initFuture(CallableX<Object, RuntimeException> callable) {
+		protected MonitorRunnableFuture<Object> initFuture(SupplierExt<Object> callable) {
 			return new MonitorRunnableFuture<Object>() {
 				@Override
 				protected Object internalInvoke() {
@@ -250,7 +250,7 @@ public abstract class Futures_Tests extends CommonTest {
 	public static class RunnableFuture2_Test extends AbstractFutureTest<IRunnableFuture2<?>> {
 		
 		@Override
-		protected IRunnableFuture2<Object> initFuture(CallableX<Object, RuntimeException> callable) {
+		protected IRunnableFuture2<Object> initFuture(SupplierExt<Object> callable) {
 			return IRunnableFuture2.toFuture(callable);
 		}
 		
@@ -277,7 +277,7 @@ public abstract class Futures_Tests extends CommonTest {
 	public static class Future2Adapter_Test extends AbstractFutureTest<RunnableFuture2Adapter<Object>> {
 		
 		@Override
-		protected RunnableFuture2Adapter<Object> initFuture(CallableX<Object, RuntimeException> callable) {
+		protected RunnableFuture2Adapter<Object> initFuture(SupplierExt<Object> callable) {
 			return new RunnableFuture2Adapter<>(new FutureTask<>(callable));
 		}
 		
