@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" 
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.github.bruno-medeiros</groupId>
+	<artifactId>melnorme_util</artifactId>
+	<version>0.10.0-SNAPSHOT</version>
+	
+	<name>Melnorme Utils</name>
+	<url>http://github.com/bruno-medeiros/MelnormeEclipse/melnorme_util</url>
+	
+	<packaging>jar</packaging>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<!-- This source folder and resource configuration must match the PDE osgi bundle build -->
+		
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>src-test</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src-test</directory>
+			</testResource>
+		</testResources>
+		
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+				<configuration>
+					<excludes>
+						<!-- Empty so that no class is excluded, otherwise the default excludes inner classes. -->
+						<exclude></exclude>
+					</excludes>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+ 	
+</project>
