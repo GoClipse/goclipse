@@ -13,9 +13,7 @@ package com.googlecode.goclipse.tooling.oracle;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.google.gson.JsonObject;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
@@ -23,6 +21,8 @@ import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceLocation;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
+import melnorme.lang.utils.gson.GsonHelper;
+import melnorme.lang.utils.gson.JsonParserX;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -65,30 +65,30 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation implement
 	}
 	
 	public static class GuruFindDefinitionResultParser {
+		
+	protected final GsonHelper helper = new GsonHelper();
 	
 	protected SourceLocation parseJsonResult(String output) throws CommonException {
 		try {
 			return assertNotNull(doParseJsonResult(output));
-		} catch(JSONException e) {
-			throw new CommonException("Error parsing JSON output: ", e);
 		} catch(OperationSoftFailure sf) {
 			throw new CommonException(sf.getMessage());
 		}
 	}
 	
 	protected SourceLocation doParseJsonResult(String output) 
-			throws JSONException, CommonException, OperationSoftFailure {
-		JSONObject describe = new JSONObject(output);
+			throws CommonException, OperationSoftFailure {
+		JsonObject describe = new JsonParserX().parseObject(output, true);
 		
-		String desc = describe.getString("desc");
-		String detail = describe.getString("detail");
+		String desc = helper.getString(describe, "desc");
+		String detail = helper.getString(describe, "detail");
 		
 		if(areEqual(desc, "source file")) {
 			return null;
 		}
 		
 		if(areEqual(desc, "identifier")) {
-			JSONObject value = describe.getJSONObject("value");
+			JsonObject value = helper.getObject(describe, "value");
 			String sourceLocStr = getString(value, "objpos", "Definition not available.");
 			return ToolOutputParseHelper.parsePathLineColumn(sourceLocStr, ":");
 		}
@@ -99,7 +99,7 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation implement
 				desc = StringUtil.segmentAfterMatch(desc, DEFINITION_OF);
 				throw new CommonException("Already at a definition: " + desc);
 			}
-			JSONObject value = describe.getJSONObject("type");
+			JsonObject value = helper.getObject(describe, "type");
 			String sourceLocStr = getString(value, "namepos", "Definition not available.");
 			return ToolOutputParseHelper.parsePathLineColumn(sourceLocStr, ":");
 		}
@@ -108,7 +108,7 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation implement
 			"Selected position does not refer to a definition. Rather, it's a:\n" + desc);
 	}
 	
-	protected String getString(JSONObject value, String key, String resultErrorMessage) throws OperationSoftFailure {
+	protected String getString(JsonObject value, String key, String resultErrorMessage) throws OperationSoftFailure {
 		String pathStr = getStringOrNull(value, key);
 		if(pathStr == null) {
 			throw new OperationSoftFailure(resultErrorMessage);
@@ -116,15 +116,12 @@ public class GuruFindDefinitionOperation extends GuruDescribeOperation implement
 		return pathStr;
 	}
 	
-	protected String getStringOrNull(JSONObject value, String key) {
-		if(value.has(key)) {
-			try {
-				return value.getString(key);
-			} catch(JSONException e) {
-				return null;
-			}
+	protected String getStringOrNull(JsonObject element, String key) {
+		try {
+			return helper.getOptionalString(element, key);
+		} catch(CommonException e) {
+			return null;
 		}
-		return null;
 	}
 
 	}

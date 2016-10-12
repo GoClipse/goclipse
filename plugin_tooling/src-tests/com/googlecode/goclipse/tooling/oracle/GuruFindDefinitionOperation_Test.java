@@ -12,7 +12,6 @@ package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.json.JSONException;
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
@@ -45,8 +44,7 @@ public class GuruFindDefinitionOperation_Test extends CommonGoToolingTest {
 			null);
 	}
 	
-	protected void testParseResult(String toolOutput, SourceLocation expectedResult) throws JSONException,
-			CommonException {
+	protected void testParseResult(String toolOutput, SourceLocation expectedResult) throws CommonException {
 		try {
 			SourceLocation result = new GuruFindDefinitionResultParser().parseJsonResult(toolOutput);
 			assertAreEqual(result, expectedResult);

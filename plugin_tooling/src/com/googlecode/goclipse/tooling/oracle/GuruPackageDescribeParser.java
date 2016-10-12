@@ -11,8 +11,6 @@
 package com.googlecode.goclipse.tooling.oracle;
 
 
-import static com.googlecode.goclipse.tooling.oracle.JSONParseHelpers.readOptionalString;
-import static com.googlecode.goclipse.tooling.oracle.JSONParseHelpers.readString;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import static melnorme.utilbox.core.CoreUtil.list;
 
@@ -21,9 +19,9 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
@@ -37,6 +35,8 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
+import melnorme.lang.utils.gson.GsonHelper;
+import melnorme.lang.utils.gson.JsonParserX;
 import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
@@ -47,6 +47,8 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GuruPackageDescribeParser extends AbstractStructureParser {
+	
+	protected final GsonHelper helper = new GsonHelper();
 	
 	public GuruPackageDescribeParser(Location location, String goSource) {
 		super(location, goSource);
@@ -63,50 +65,37 @@ public class GuruPackageDescribeParser extends AbstractStructureParser {
 	
 	@Override
 	public SourceFileStructure parse(String describeOutput) throws CommonException {
-		
-		ArrayList2<StructureElement> elements;
-		try {
-			elements = doParseJsonResult(describeOutput);
-		} catch(JSONException e) {
-			throw new CommonException("Error parsing JSON output: ", e);
-		}
+		ArrayList2<StructureElement> elements = doParseJsonResult(describeOutput);
 		
 		return new SourceFileStructure(location, elements, null);
 	}
 	
 	protected ArrayList2<StructureElement> doParseJsonResult(String output) 
-			throws JSONException, CommonException {
-		JSONObject describe = new JSONObject(output);
+			throws CommonException {
+		JsonObject describe = new JsonParserX().parseObject(output, true);
 		
-		JSONObject packageObj = describe.getJSONObject("package");
+		JsonObject packageObj = helper.getObject(describe, "package");
 		
-		JSONArray members = getOptionalJSONArray(packageObj, "members");
+		JsonArray members = helper.getOptionalArray(packageObj, "members");
 		return parseElements(members, false);
 	}
 	
-	protected JSONArray getOptionalJSONArray(JSONObject packageObj, String key) throws JSONException {
-		if(!packageObj.has(key)) {
-			return null;
-		}
-		return packageObj.getJSONArray(key);
-	}
-	
-	protected ArrayList2<StructureElement> parseElements(JSONArray members, boolean parsingMethods) 
-			throws JSONException, CommonException {
+	protected ArrayList2<StructureElement> parseElements(JsonArray members, boolean parsingMethods) 
+			throws CommonException {
 		ArrayList2<StructureElement> elements = new ArrayList2<>();
 		
 		if(members != null) {
-			for(int i = 0; i < members.length(); i++) {
-				Object object = members.get(i);
-				if(object instanceof JSONObject) {
-					JSONObject jsonObject = (JSONObject) object;
-					StructureElement element = parseStructureElement(jsonObject, parsingMethods);
-					if(element == null) {
+			for(int i = 0; i < members.size(); i++) {
+				JsonElement arrayElement = members.get(i);
+				if(arrayElement.isJsonObject()) {
+					JsonObject jsonObject = arrayElement.getAsJsonObject();
+					StructureElement structureElement = parseStructureElement(jsonObject, parsingMethods);
+					if(structureElement == null) {
 						continue; // Can happen for external elements
 					}
-					elements.add(element);	
+					elements.add(structureElement);	
 				} else {
-					throw new CommonException("'members' element is not a JSONObject: " + object);
+					throw new CommonException("'members' array element is not a JSONObject: " + arrayElement);
 				}
 			}
 		}
@@ -130,11 +119,11 @@ public class GuruPackageDescribeParser extends AbstractStructureParser {
 		return elements;
 	}
 	
-	protected StructureElement parseStructureElement(JSONObject object, boolean parsingMethods) 
-			throws JSONException, CommonException {
-		String name = readString(object, "name");
+	protected StructureElement parseStructureElement(JsonObject object, boolean parsingMethods) 
+			throws CommonException {
+		String name = helper.getString(object, "name");
 		
-		String posString = readString(object, "pos");
+		String posString = helper.getString(object, "pos");
 		SourceFileLocation elementSourceFileLoc = SourceFileLocation.parseSourceRange(posString, ':');
 		
 		SourceRange nameSourceRange;
@@ -146,9 +135,9 @@ public class GuruPackageDescribeParser extends AbstractStructureParser {
 			sourceRange = nameSourceRange = elementSourceFileLoc.parseSourceRangeFrom1BasedIndex(sourceLinesInfo);
 		}
 		
-		String type = readOptionalString(object, "type");
+		String type = helper.getOptionalString(object, "type");
 		
-		String kindString = readOptionalString(object, "kind");
+		String kindString = helper.getOptionalString(object, "kind");
 		
 		StructureElementKind elementKind;
 		if(parsingMethods) {
@@ -190,7 +179,7 @@ public class GuruPackageDescribeParser extends AbstractStructureParser {
 		
 		ElementAttributes elementAttributes = new ElementAttributes(protection);
 		
-		JSONArray methods = getOptionalJSONArray(object, "methods");
+		JsonArray methods = helper.getOptionalArray(object, "methods");
 		Indexable<StructureElement> children = parseElements(methods, true);
 		
 		if(!isSourceElementLocation(elementSourceFileLoc.getFileLocation())) {
