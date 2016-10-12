@@ -10,12 +10,11 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Enumeration;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import melnorme.lang.tests.CommonToolingTest;
-import java.util.function.Function;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -125,11 +124,6 @@ public class MiscFileUtils {
 				fileVisitor.apply(file);
 			}
 		}
-	}
-	
-	
-	public static void unzipFile(File zipFile, File parentDir) throws IOException {
-		unzipFile(zipFile, parentDir, CommonToolingTest.testsLogger);
 	}
 	
 	public static void unzipFile(File zipFile, File parentDir, PrintStream logger) throws ZipException, IOException {

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tests;
+package melnorme.lang.tooling.parser.lexer;
 
 
 import org.junit.Test;

@@ -43,7 +43,7 @@ public class LangToolingTestResources {
 		if(testResourcesDir == null) {
 			// Assume a default based on process working directory
 			// This is so test can be started from typical Eclipse workspace without setting up VM properties
-			testResourcesDir = "../plugin_tooling/"+TESTDATA;
+			testResourcesDir = "../plugin_tooling.tests/"+TESTDATA;
 		}
 		Path path = PathUtil.createValidPath(testResourcesDir);
 		this.testResourcesDir = Location.create_fromValid(path.toAbsolutePath());

@@ -8,9 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tests;
+package melnorme.lang.tooling.parser.lexer;
 
 
+import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
 import melnorme.lang.utils.parse.StringCharSource;
 

@@ -25,6 +25,11 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-plugin</type>
+								<id>LANG_PROJECT_ID.tooling.tests</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
 								<id>LANG_PROJECT_ID.ide.core.tests</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
@@ -40,6 +45,11 @@
 				<configuration>
 					<useUIHarness>true</useUIHarness>
 					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>LANG_PROJECT_ID.tooling.tests</artifactId>
+							<version>0.0.0</version>
+						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>LANG_PROJECT_ID.ide.core.tests</artifactId>

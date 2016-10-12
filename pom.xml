@@ -24,6 +24,7 @@
 		<module>melnorme_util</module>
 		<module>releng/plugin_jvmcheck</module>
 		<module>plugin_tooling</module>
+		<module>plugin_tooling.tests</module>
 		<module>plugin_ide.core</module>
 		<module>plugin_ide.core.tests</module>
 		<module>plugin_ide.ui</module>
