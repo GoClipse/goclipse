@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.utils.gson;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -17,12 +18,25 @@ import melnorme.utilbox.core.CommonException;
 
 public class GsonHelper {
 	
+	protected CommonException wrongTypeException(String key, String expectedType) throws CommonException {
+		return CommonException.fromMsgFormat("Member `{0}` is not a {1}.", key, expectedType);
+	}
+	
 	public JsonObject getObject(JsonObject jsonObject, String key) throws CommonException {
 		JsonElement element = jsonObject.get(key);
 		if(element != null && element.isJsonObject()) {
 			return element.getAsJsonObject();
 		} else {
 			throw wrongTypeException(key, "Object");
+		}
+	}
+	
+	public JsonArray getArray(JsonObject jsonObject, String key) throws CommonException {
+		JsonElement element = jsonObject.get(key);
+		if(element != null && element.isJsonArray()) {
+			return element.getAsJsonArray();
+		} else {
+			throw wrongTypeException(key, "Array");
 		}
 	}
 	
@@ -79,6 +93,13 @@ public class GsonHelper {
 		return getObject(jsonObject, key);
 	}
 	
+	public JsonArray getOptionalArray(JsonObject jsonObject, String key) throws CommonException {
+		if(!isPresent(jsonObject, key)) {
+			return null;
+		}
+		return getArray(jsonObject, key);
+	}
+	
 	public String getOptionalString(JsonObject jsonObject, String key) throws CommonException {
 		return getOptionalString(jsonObject, key, null);
 	}
@@ -109,10 +130,6 @@ public class GsonHelper {
 			return defaultValue;
 		}
 		return getInteger(jsonObject, key);
-	}
-	
-	protected CommonException wrongTypeException(String key, String expectedType) throws CommonException {
-		return CommonException.fromMsgFormat("Member `{0}` is not a {1}.", key, expectedType);
 	}
 	
 }

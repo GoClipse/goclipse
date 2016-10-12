@@ -15,16 +15,31 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.internal.bind.TypeAdapters;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.MalformedJsonException;
 
+import melnorme.utilbox.core.CommonException;
+
 /**
  * An alternative to {@link JsonParser}, which preservers the statically-checked exception throwing API
  */
 public class JsonParserX {
+	
+	public static JsonReader newReader(String json, boolean lenient) {
+		return newReader(new StringReader(json), lenient);
+	}
+	
+	public static JsonReader newReader(Reader reader, boolean lenient) {
+		JsonReader jsonReader = new JsonReader(reader);
+		jsonReader.setLenient(lenient);
+		return jsonReader;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public JsonElement parse(String json, boolean lenient) throws IOException, JsonSyntaxExceptionX {
 		return parse(new StringReader(json), lenient);
@@ -63,6 +78,37 @@ public class JsonParserX {
 		public JsonSyntaxExceptionX(Throwable cause) {
 			super(cause);
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public JsonElement parse_common(JsonReader reader) throws CommonException {
+		try {
+			return parse(reader);
+		} catch(IOException e) {
+			throw new CommonException("Error reading from input: ", e);
+		} catch(JsonSyntaxExceptionX e) {
+			throw new CommonException("JSON syntax error: ", e);
+		}
+	}
+
+	/* -----------------  ----------------- */
+	
+	public JsonObject parseObject(JsonReader reader) throws CommonException {
+		JsonElement element = parse_common(reader);
+		if(element.isJsonObject()) {
+			return element.getAsJsonObject();
+		} else {
+			throw new CommonException("Parsed JSON element is not a JSON object.");
+		}
+	}
+	
+	public JsonObject parseObject(Reader json, boolean lenient) throws CommonException {
+		return parseObject(newReader(json, lenient));
+	}
+	
+	public JsonObject parseObject(String json, boolean lenient) throws CommonException {
+		return parseObject(newReader(json, lenient));
 	}
 	
 }
