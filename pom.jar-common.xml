@@ -32,6 +32,7 @@
 	
 	<modules>
 		<module>melnorme_util/maven-jar</module>
+		<module>plugin_tooling/maven-jar</module>
 	</modules>
 	
 	<!--	-->
