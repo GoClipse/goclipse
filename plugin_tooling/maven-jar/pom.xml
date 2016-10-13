@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<project 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" 
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.googlecode.goclipse</groupId>
+		<artifactId>jar-common-parent</artifactId>
+		<version>1-SNAPSHOT</version>
+		<relativePath>../../pom.jar-common.xml</relativePath>
+	</parent>
+	
+	<groupId>com.github.bruno-medeiros</groupId>
+	<artifactId>melnorme_tooling</artifactId>
+	<version>0.2.0-SNAPSHOT</version>
+	
+	<name>Melnorme Tooling</name>
+	<url>http://github.com/bruno-medeiros/MelnormeEclipse/plugin_tooling</url>
+	
+	<packaging>jar</packaging>
+	
+	<properties>
+		<source.dir>../source/src-lang</source.dir>
+		<source_tests.dir>../../plugin_tooling.tests/source/src-lang</source_tests.dir>
+	</properties>
+	
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.bruno-medeiros</groupId>
+			<artifactId>melnorme_util</artifactId>
+			<version>0.11.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.bruno-medeiros</groupId>
+			<artifactId>melnorme_util</artifactId>
+			<version>0.11.0-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.2</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.12</version>
+				<executions>
+					<execution>
+						<id>add-src</id>
+						<phase>generate-sources</phase>
+						<goals><goal>add-source</goal></goals>
+						<configuration>
+							<sources>
+								<source>${source.dir}/../src</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-tests-src</id>
+						<phase>generate-test-sources</phase>
+						<goals><goal>add-test-source</goal></goals>
+						<configuration>
+							<sources>
+								<source>${source_tests.dir}/../src</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

@@ -26,6 +26,11 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-plugin</type>
+								<id>com.googlecode.goclipse.tooling.tests</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
 								<id>com.googlecode.goclipse.core.tests</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
@@ -40,6 +45,11 @@
 				<configuration>
 					<useUIHarness>true</useUIHarness>
 					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>com.googlecode.goclipse.tooling.tests</artifactId>
+							<version>0.0.0</version>
+						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>com.googlecode.goclipse.core.tests</artifactId>
