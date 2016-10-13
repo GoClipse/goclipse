@@ -53,14 +53,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.json"
+         id="com.googlecode.goclipse.jvmcheck"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.googlecode.goclipse.jvmcheck"
+         id="melnorme_util"
          download-size="0"
          install-size="0"
          version="0.0.0"
