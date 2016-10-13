@@ -274,15 +274,15 @@ public abstract class Futures_Tests extends CommonTest {
 		
 	}
 	
-	public static class Future2Adapter_Test extends AbstractFutureTest<RunnableFuture2Adapter<Object>> {
+	public static class Future2Adapter_Test extends AbstractFutureTest<RunnableFutureAdapter<Object>> {
 		
 		@Override
-		protected RunnableFuture2Adapter<Object> initFuture(SupplierExt<Object> callable) {
-			return new RunnableFuture2Adapter<>(new FutureTask<>(callable));
+		protected RunnableFutureAdapter<Object> initFuture(SupplierExt<Object> callable) {
+			return new RunnableFutureAdapter<>(new FutureTask<>(callable));
 		}
 		
 		@Override
-		protected void checkResult(RunnableFuture2Adapter<Object> future, Object result)
+		protected void checkResult(RunnableFutureAdapter<Object> future, Object result)
 				throws OperationCancellation, InterruptedException, TimeoutException {
 			super.checkResult(future, new Result<>(result));
 		}
@@ -301,7 +301,7 @@ public abstract class Futures_Tests extends CommonTest {
 		public void test_errors$() throws Exception {
 			
 			CompletableFuture<String> completableFuture = new CompletableFuture<>();
-			Future2Adapter<String> future2Adapter = new Future2Adapter<>(completableFuture);
+			FutureAdapter<String> future2Adapter = new FutureAdapter<>(completableFuture);
 			
 			assertTrue(future2Adapter.isCompletedSuccessfully() == false);
 			completableFuture.completeExceptionally(new RuntimeException("XXX"));

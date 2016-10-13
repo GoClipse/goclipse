@@ -20,20 +20,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.core.fntypes.Result;
-
 /**
  * 
  * Adapt a {@link Future} with the {@link Future2} interface
  * 
  */
-public class Future2Adapter<VALUE> implements Future2<Result<VALUE, Throwable>> {
+public abstract class AbstractFutureAdapter<VALUE, RESULT> implements Future2<RESULT> {
 	
 	protected final Future<VALUE> future;
 	protected volatile boolean hasStarted;
 	
-	public Future2Adapter(Future<VALUE> result) {
-		this.future = assertNotNull(result);
+	public AbstractFutureAdapter(Future<VALUE> future) {
+		this.future = assertNotNull(future);
 	}
 	
 	public Future<VALUE> asStdLibFuture() {
@@ -78,17 +76,23 @@ public class Future2Adapter<VALUE> implements Future2<Result<VALUE, Throwable>> 
 	}
 	
 	@Override
-	public Result<VALUE, Throwable> getResult_forSuccessfulyCompleted() {
+	public RESULT getResult_forSuccessfulyCompleted() {
 		assertTrue(isCompletedSuccessfully());
 		VALUE resultValue;
 		try {
-			resultValue = future.get();
-		} catch(InterruptedException e) {
-			throw assertFail("Not completed");
+			try {
+				resultValue = future.get();
+			} catch(InterruptedException e) {
+				throw assertFail("Not completed");
+			}
 		} catch(ExecutionException e) {
-			return Result.fromException(e.getCause());
+			return createExceptionResult(e);
 		}
-		return Result.fromValue(resultValue);
+		return createResult(resultValue);
 	}
+	
+	protected abstract RESULT createResult(VALUE resultValue);
+	
+	protected abstract RESULT createExceptionResult(ExecutionException e);
 	
 }

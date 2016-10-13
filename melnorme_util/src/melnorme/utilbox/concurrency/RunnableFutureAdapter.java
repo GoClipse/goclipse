@@ -20,16 +20,16 @@ import melnorme.utilbox.core.fntypes.Result;
 /**
  * Adapt a {@link RunnableFuture} with the {@link Future2} interface
  */
-public class RunnableFuture2Adapter<VALUE> extends Future2Adapter<VALUE> 
+public class RunnableFutureAdapter<VALUE> extends FutureAdapter<VALUE> 
 	implements IRunnableFuture2<Result<VALUE, Throwable>> 
 {
 	
 	protected final RunnableFuture<VALUE> future;
 	protected volatile boolean hasStarted;
 	
-	public RunnableFuture2Adapter(RunnableFuture<VALUE> result) {
-		super(result);
-		this.future = assertNotNull(result);
+	public RunnableFutureAdapter(RunnableFuture<VALUE> future) {
+		super(future);
+		this.future = assertNotNull(future);
 	}
 	
 	@Override
