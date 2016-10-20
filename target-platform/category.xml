@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
+	<!-- Note: building the repo fails if there are no bundles listed here, 
+	so add at least one, even if it's redundant -->
+   <bundle id="org.junit"/>
 </site>
