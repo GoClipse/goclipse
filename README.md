@@ -5,7 +5,13 @@ Project website: LANG_IDE_SITE
 Developers Guide
 ================
 
-#### Setting up the development environment:
+### Building the IDE:
+This project uses Maven (and the Tycho plugins) for building. The only prerequisite is to download [Maven](http://maven.apache.org/).
+ * To build LANG_IDE_NAME, run `mvn clean verify` at the root of the repository. This will run the test suite, and afterwards produce a p2 repository (an Eclipse Software Site) at `bin-maven/features.repository/repository`.
+ * To just build without running tests, invoke `mvn clean package`.
+ * To skip just certain long-running tests, invoke `mvn verify -P TestsLiteMode`.
+
+### Setting up a development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
  * Clone the Git repository.
  * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", enable "Search for nested projects", and select all the Eclipse projects that show up. Click finish to import those projects.
@@ -29,14 +35,7 @@ Developers Guide
  * To start the IDE from your workspace: Open "Run / Run Configurations ...". Click on "Eclipse Application" to create a new launch for the plugins in your workspace. The default new configuration that is created should already be ready to be launched.
  * **Additional tip:** Locate the `bin-maven` folder in the top-level project, open its Properties from the Project Explorer context menu, and mark that directory as "Derived" in the "Resources" property page. This will prevent those folder resources to appear in UI operations such as "Open Resource" for example. 
 
-#### Running the tests in Eclipse:
-
-#### Automated Building and Testing:
-Using Maven (and Tycho), it is possible to automatically build LANG_IDE_NAME, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
- * Run `mvn package` to build the LANG_IDE_NAME feature into a p2 repository (which is a local update site). It will be placed at `bin-maven/features.repository/repository`
- * Run `mvn verify` to build LANG_IDE_NAME as above and also run the test suites. You can do `mvn verify -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
-
-#### Creating and deploying a new release:
+### Creating and deploying a new release:
 A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
 
  1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
