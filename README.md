@@ -6,10 +6,9 @@ Developers Guide
 ================
 
 ### Building the IDE:
-This project uses Maven (and the Tycho plugins) for building. The only prerequisite is to download [Maven](http://maven.apache.org/).
- * To build LANG_IDE_NAME, run `mvn clean verify` at the root of the repository. This will run the test suite, and afterwards produce a p2 repository (an Eclipse Software Site) at `bin-maven/features.repository/repository`.
+You will need [Maven](http://maven.apache.org/) for building LANG_IDE_NAME.
+ * To build, run `mvn clean verify` at the root of the repository. This will run the test suite, and afterwards produce a p2 repository (an Eclipse Software Site) at `bin-maven/features.repository/repository`.
  * To just build without running tests, invoke `mvn clean package`.
- * To skip just certain long-running tests, invoke `mvn verify -P TestsLiteMode`.
 
 ### Setting up a development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
