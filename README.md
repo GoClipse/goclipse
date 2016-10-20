@@ -8,7 +8,12 @@ Project website: http://goclipse.github.io/
 Developers Guide
 ================
 
-#### Setting up the development environment:
+### Building the IDE:
+You will need [Maven](http://maven.apache.org/) for building Goclipse.
+ * To build, run `mvn clean verify` at the root of the repository. This will run the test suite, and afterwards produce a p2 repository (an Eclipse Software Site) at `bin-maven/features.repository/repository`.
+ * To just build without running tests, invoke `mvn clean package`.
+
+### Setting up a development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
  * Clone the Git repository.
  * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", enable "Search for nested projects", and select all the Eclipse projects that show up. Click finish to import those projects.
@@ -35,12 +40,7 @@ Developers Guide
 #### Running the tests in Eclipse:
  * In `releng/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
 
-#### Automated Building and Testing:
-Using Maven (and Tycho), it is possible to automatically build Goclipse, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
- * Run `mvn package` to build the IDE feature into a p2 repository (which is a local update site).  It will be placed at `bin-maven/features.repository/repository`
- * Run `mvn verify` to build the IDE as above and also run the test suites. 
-
-#### Creating and deploying a new release:
+### Creating and deploying a new release:
 A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
 
  1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
