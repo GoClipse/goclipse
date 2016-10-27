@@ -91,6 +91,11 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	public void runBuildToolAndProcessOutput(IOperationMonitor om)
 			throws CommonException, OperationCancellation {
 		ProcessBuilder pb = getToolProcessBuilder();
+		runBuildToolAndProcessOutput(pb, om);
+	}
+	
+	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IOperationMonitor om)
+		throws CommonException, OperationCancellation {
 		RunToolTask newRunToolTask = getRunToolTask(opMonitor, pb, buildTargetName, buildCommand, om);
 		ExternalProcessResult toolResult = newRunToolTask.runProcess();
 		processBuildOutput(toolResult, om);

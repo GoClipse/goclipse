@@ -62,7 +62,7 @@ public class GocodeServerManager extends LanguageServerHandler<GocodeServerInsta
 		gocodeSetEnableBuiltins(gocodePath, om, opMonitor, prefixText);
 		
 		ExternalProcessNotifyingHelper process = 
-				toolMgr.new RunToolTask(opMonitor, prefixText, pb, om).startProcess();
+				toolMgr.new RunToolTask(opMonitor, prefixText, null, pb, om).startProcess();
 		
 		return new GocodeServerInstance(gocodePath, process);
 	}
@@ -71,7 +71,7 @@ public class GocodeServerManager extends LanguageServerHandler<GocodeServerInsta
 			IToolOperationMonitor toolOpMonitor, String prefixText)
 			throws CommonException, OperationCancellation {
 		ProcessBuilder pb = new ProcessBuilder(gocodePath.toString(), "set", "propose-builtins", "true");
-		toolMgr.new RunToolTask(toolOpMonitor, prefixText, pb, om).runProcess();
+		toolMgr.new RunToolTask(toolOpMonitor, prefixText, null, pb, om).runProcess();
 	}
 	
 }
