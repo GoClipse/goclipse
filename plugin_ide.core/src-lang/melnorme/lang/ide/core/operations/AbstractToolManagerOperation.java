@@ -45,6 +45,9 @@ public abstract class AbstractToolManagerOperation implements Operation {
 		return ResourceUtils.getProjectLocation2(project);
 	}
 	
+	/**
+	 * Note: buildCommand is used only for UI display purposes
+	 */
 	public RunToolTask getRunToolTask(
 		IToolOperationMonitor opMonitor, 
 		ProcessBuilder pb, 
