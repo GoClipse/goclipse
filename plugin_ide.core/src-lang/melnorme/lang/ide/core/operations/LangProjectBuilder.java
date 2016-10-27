@@ -222,7 +222,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void doClean(IProgressMonitor pm, ProcessBuilder pb) 
 			throws CoreException, CommonException, OperationCancellation {
-		getToolManager().newRunBuildToolOperation(pb, pm).runProcess();
+		getToolManager().newRunBuildToolOperation(pb, EclipseUtils.om(pm)).runProcess();
 	}
 	
 }

@@ -36,6 +36,7 @@ import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 import melnorme.utilbox.status.StatusLevel;
 
@@ -163,8 +164,10 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		}
 		
 		@Override
-		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper) {
-			String infoPrefaceText = getPrefaceText(prefixText, pb);
+		public void handleProcessStart(String prefixText, String suffixText, ProcessBuilder pb, 
+			ProcessStartHelper processStartHelper) 
+		{
+			String infoPrefaceText = getPrefaceText(prefixText, suffixText, pb);
 			
 			try {
 				if(infoPrefaceText != null) {
@@ -232,14 +235,14 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		
 	}
 	
-	protected String getPrefaceText(String prefixText, ProcessBuilder pb) {
+	protected String getPrefaceText(String prefixText, String suffixText, ProcessBuilder pb) {
 		List<String> commandLine = pb.command();
 		
 		prefixText = prefixText == null ? ">> Running: " : prefixText;
 		
 		String argsLabel = DebugPlugin.renderArguments(ArrayUtil.createFrom(commandLine, String.class), null);
-		String infoPrefaceText = prefixText + argsLabel + "\n";
-		return infoPrefaceText;
+		String infoPrefaceText = prefixText + argsLabel;
+		return infoPrefaceText + StringUtil.nullAsEmpty(suffixText) + "\n";
 	}
 	
 	protected String getProcessTerminatedMessage(int exitCode) {

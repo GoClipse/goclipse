@@ -47,7 +47,7 @@ public class RunToolOperation implements Operation {
 	}
 	
 	@Override
-	public void execute(IOperationMonitor pm) throws CommonException, OperationCancellation {
+	public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 		pb = createProcessBuilder();
 		
 		IToolOperationMonitor opHandler = getToolManager().startNewOperation(opViewOptions);
@@ -56,8 +56,8 @@ public class RunToolOperation implements Operation {
 			TextMessageUtils.headerBIG(getOperationStartMessage())
 		);
 		
-		RunToolTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, pm);
-		runProcessTask(runToolTask, pm);
+		RunToolTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, null, null, om);
+		runProcessTask(runToolTask, om);
 	}
 	
 	protected ProcessBuilder createProcessBuilder() throws CommonException {
