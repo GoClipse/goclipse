@@ -17,12 +17,11 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.common.ops.Operation;
+import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractToolManagerOperation implements Operation {
 	
@@ -46,12 +45,13 @@ public abstract class AbstractToolManagerOperation implements Operation {
 		return ResourceUtils.getProjectLocation2(project);
 	}
 	
-	protected ExternalProcessResult runBuildTool(IToolOperationMonitor opMonitor, ProcessBuilder pb, 
-			IOperationMonitor om) 
-			throws CommonException, OperationCancellation {
-		ToolManager toolMgr = getToolManager();
-		RunToolTask newRunToolTask = toolMgr.newRunProcessTask(opMonitor, pb, om);
-		return newRunToolTask.runProcess();
+	public RunToolTask getRunToolTask(
+		IToolOperationMonitor opMonitor, 
+		ProcessBuilder pb, 
+		String buildTargetName, CommandInvocation buildCommand, 
+		IOperationMonitor om
+	) {
+		return getToolManager().newRunProcessTask(opMonitor, pb, buildTargetName, buildCommand, om);
 	}
 	
 }

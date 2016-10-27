@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
@@ -35,12 +37,15 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.lang.utils.EnvUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.lang.utils.validators.PathValidator;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.MapAccess;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -186,9 +191,10 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 		}
 		
 		@Override
-		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper) {
+		public void handleProcessStart(String prefixText, String suffixText, ProcessBuilder pb, 
+			ProcessStartHelper processStartHelper) {
 			for (IToolOperationMonitor monitor : monitors) {
-				monitor.handleProcessStart(prefixText, pb, processStartHelper);
+				monitor.handleProcessStart(prefixText, suffixText, pb, processStartHelper);
 			}
 		}
 		
@@ -210,39 +216,57 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	/* -----------------  ----------------- */
 	
-	public final RunToolTask newRunBuildToolOperation(ProcessBuilder pb, IProgressMonitor pm) {
+	public final RunToolTask newRunBuildToolOperation(ProcessBuilder pb, IOperationMonitor om) {
 		IToolOperationMonitor opHandler = startNewBuildOperation();
-		return newRunProcessTask(opHandler, pb, pm);
+		return newRunProcessTask(opHandler, pb, "clean", null, om);
 	}
 	
-	public final RunToolTask newRunProcessTask(IToolOperationMonitor opMonitor, ProcessBuilder pb, 
-			IProgressMonitor pm) {
-		return newRunProcessTask(opMonitor, pb, EclipseUtils.cm(pm));
-	}
-	public RunToolTask newRunProcessTask(IToolOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
-		String prefixText = ">> Running: ";
-		return new RunToolTask(opMonitor, prefixText, pb, cm);
+	public RunToolTask newRunProcessTask(
+		IToolOperationMonitor opMonitor, 
+		ProcessBuilder pb, 
+		String buildTargetName, CommandInvocation buildCommand, 
+		IOperationMonitor om
+	) {
+		String prefixText;
+		if(buildTargetName != null) {
+			prefixText = MessageFormat.format(">> Running `{0}` with: ", buildTargetName);
+		} else {
+			prefixText = ">> Running: ";	
+		}
+		
+		String suffixText = "";
+		
+		if(buildCommand != null && buildCommand.getEnvironmentVars() != null) {
+			MapAccess<String, String> envVars = buildCommand.getEnvironmentVars();
+			for (Entry<String, String> entry : envVars.entrySet()) {
+				suffixText += "\n   " + entry.getKey() + "=" + entry.getValue();
+			}
+		}
+		
+		return new RunToolTask(opMonitor, prefixText, suffixText, pb, om);
 	}
 	
 	public class RunToolTask extends AbstractRunProcessTask {
 		
 		protected final IToolOperationMonitor opMonitor;
 		protected final String prefixText;
+		protected final String suffixText;
 		
 		public RunToolTask(IToolOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
-			this(opMonitor, null, pb, cm);
+			this(opMonitor, null, null, pb, cm);
 		}
 		
 		public RunToolTask(IToolOperationMonitor opMonitor, String prefixText, 
-				ProcessBuilder pb, ICancelMonitor cm) {
+				String suffixText, ProcessBuilder pb, ICancelMonitor cm) {
 			super(pb, cm);
 			this.prefixText = prefixText;
+			this.suffixText = suffixText;
 			this.opMonitor = assertNotNull(opMonitor);
 		}
 		
 		@Override
 		protected void handleProcessStartResult(ProcessStartHelper psh) {
-			opMonitor.handleProcessStart(prefixText, pb, psh);
+			opMonitor.handleProcessStart(prefixText, suffixText, pb, psh);
 		}
 		
 	}

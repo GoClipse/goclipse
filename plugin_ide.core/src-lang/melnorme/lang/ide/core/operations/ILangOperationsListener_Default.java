@@ -66,7 +66,8 @@ public interface ILangOperationsListener_Default {
 	 */
 	public interface IToolOperationMonitor {
 		
-		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);
+		void handleProcessStart(String prefixText, String suffixText, ProcessBuilder pb, 
+			ProcessStartHelper processStartHelper);
 		
 		void writeInfoMessage(String operationMessage);
 		
@@ -76,7 +77,8 @@ public interface ILangOperationsListener_Default {
 	
 	public class NullToolOperationMonitor implements IToolOperationMonitor {
 		@Override
-		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper psh) {
+		public void handleProcessStart(String prefixText, String suffixText, ProcessBuilder pb, 
+			ProcessStartHelper psh) {
 		}
 		
 		@Override

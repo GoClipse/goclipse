@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.commands.IVariablesResolver;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
@@ -64,8 +65,7 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	@Override
 	public void execute(IOperationMonitor parentOM) throws CommonException, OperationCancellation {
 		parentOM.runSubTask(getBuildOperationName(), (om) -> {
-			ProcessBuilder pb = getToolProcessBuilder();
-			runBuildToolAndProcessOutput(pb, om);
+			runBuildToolAndProcessOutput(om);
 		});
 	}
 	
@@ -88,9 +88,12 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 		return getToolManager().modifyToolProcessBuilder(getConfiguredProcessBuilder2());
 	}
 	
-	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IOperationMonitor om)
+	public void runBuildToolAndProcessOutput(IOperationMonitor om)
 			throws CommonException, OperationCancellation {
-		processBuildOutput(runBuildTool(opMonitor, pb, om), om);
+		ProcessBuilder pb = getToolProcessBuilder();
+		RunToolTask newRunToolTask = getRunToolTask(opMonitor, pb, buildTargetName, buildCommand, om);
+		ExternalProcessResult toolResult = newRunToolTask.runProcess();
+		processBuildOutput(toolResult, om);
 	}
 	
 	protected abstract void processBuildOutput(ExternalProcessResult processResult, IOperationMonitor om)
