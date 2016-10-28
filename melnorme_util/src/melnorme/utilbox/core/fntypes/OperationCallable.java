@@ -21,7 +21,7 @@ public interface OperationCallable<RET> extends Callable<RET> {
 	RET call() throws CommonException, OperationCancellation;
 	
 	default OperationResult<RET> callToResult() {
-		return OperationResult.callToResult(this);
+		return OperationResult.callToOpResult(this);
 	}
 	
 	

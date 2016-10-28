@@ -41,7 +41,7 @@ public class OperationFuture<RET> extends MonitorRunnableFuture<OperationResult<
 	@Override
 	protected OperationResult<RET> internalInvoke() {
 		OperationCallable<RET> toResult = () -> resultOperation.callOp(om);
-		return OperationResult.callToResult(toResult);
+		return OperationResult.callToOpResult(toResult);
 	}
 	
 	/* -----------------  ----------------- */
