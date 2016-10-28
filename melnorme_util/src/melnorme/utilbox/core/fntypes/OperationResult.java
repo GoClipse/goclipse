@@ -52,7 +52,7 @@ public class OperationResult<DATA> extends Result<DATA, Exception> {
 	
 	/* -----------------  ----------------- */
 	
-	public static <RET> OperationResult<RET> callToResult(OperationCallable<RET> operationCallable) {
+	public static <RET> OperationResult<RET> callToOpResult(OperationCallable<RET> operationCallable) {
 		try {
 			return new OperationResult<>(operationCallable.call());
 		} catch(CommonException e) {
