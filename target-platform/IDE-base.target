@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="LANG_IDE_NAME Target" sequenceNumber="34">
+<?pde version="3.8"?><target name="LANG_IDE_NAME Target" sequenceNumber="35">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.junit" version="4.11.0.v201303080030"/>
-<repository location="http://archive.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository/"/>
+<unit id="com.google.gson" version="2.2.4.v201311231704"/>
+<unit id="org.junit" version="4.12.0.v201504281640"/>
+<repository location="http://archive.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.6.0.v20160606-1342"/>
