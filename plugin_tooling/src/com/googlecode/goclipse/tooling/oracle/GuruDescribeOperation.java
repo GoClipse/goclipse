@@ -29,7 +29,7 @@ public class GuruDescribeOperation implements ToolOutputParseHelper {
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset) 
 			throws CommonException {
 		
-		ArrayList2<String> commandLine = new ArrayList2<>(
+		ArrayList2<String> commandLine = ArrayList2.create(
 			guruPath,
 			"-json",
 			"describe",

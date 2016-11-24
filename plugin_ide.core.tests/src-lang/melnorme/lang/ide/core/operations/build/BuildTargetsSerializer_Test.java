@@ -109,9 +109,9 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		testSerialize(new ArrayList2<>());
-		testSerialize(new ArrayList2<>(btd("", false, false, null, null)));
-		testSerialize(new ArrayList2<>(btd("", true, true, cmd("-opt"), "foo.exe")));
-		testSerialize(new ArrayList2<>(
+		testSerialize(ArrayList2.create(btd("", false, false, null, null)));
+		testSerialize(ArrayList2.create(btd("", true, true, cmd("-opt"), "foo.exe")));
+		testSerialize(ArrayList2.create(
 				btd("", false, true, cmd(""), ""),
 				btd("blah", true, false, cmd("-opt"), "foo.exe"),
 				btd("xxx", true, false, null, "foo/bar.ooo")

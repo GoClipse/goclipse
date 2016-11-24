@@ -66,7 +66,7 @@ public abstract class GocodeOutputParser2 extends AbstractToolResultParser<Array
 			handleParseError(new OperationSoftFailure("PANIC from gocode - likely go/gocode version mismatch?"));
 		}
 		
-		List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
+		List<String> completions = ArrayList2.create(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
 		
 		ArrayList2<ToolCompletionProposal> baseResults = new ArrayList2<>();
 		

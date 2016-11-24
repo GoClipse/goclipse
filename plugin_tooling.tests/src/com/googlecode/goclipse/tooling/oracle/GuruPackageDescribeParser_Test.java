@@ -63,7 +63,7 @@ public class GuruPackageDescribeParser_Test extends AbstractStructureParser_Test
 	}
 	
 	protected ArrayList2<StructureElement> elems(StructureElement... expectedElements) {
-		return new ArrayList2<>(expectedElements);
+		return ArrayList2.create(expectedElements);
 	}
 	
 	public StructureElement elem(String name, SourceRange nameSR, StructureElementKind elementKind,
@@ -89,7 +89,7 @@ public class GuruPackageDescribeParser_Test extends AbstractStructureParser_Test
 		AbstractStructureParser parser = createStructureParser();
 		SourceFileStructure structure = parser.parse(describeOutput);
 		
-		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
+		ArrayList2<StructureElement> expectedStructure = ArrayList2.create(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(location, expectedStructure, null);
 		
 		assertAreEqual(structure.getChildren(), expected.getChildren());

@@ -44,7 +44,7 @@ public class GocodeCompletionOperation implements ToolOutputParseHelper {
 	
 	protected void setLibPathForEnvironment() throws CommonException, OperationCancellation {
 		
-		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
+		ArrayList2<String> arguments = ArrayList2.create(gocodePath);
 		
 		if (USE_TCP) {
 			arguments.add("-sock=tcp");
@@ -63,7 +63,7 @@ public class GocodeCompletionOperation implements ToolOutputParseHelper {
 		
 		setLibPathForEnvironment();
 		
-		ArrayList2<String> arguments = new ArrayList2<String>(gocodePath);
+		ArrayList2<String> arguments = ArrayList2.create(gocodePath);
 		
 		if (USE_TCP) {
 			arguments.add("-sock=tcp");

@@ -220,7 +220,7 @@ public class GoBuildManager extends BuildManager {
 
 		@Override
 		protected ArrayList2<String> getDefaultCommandArguments_list(BuildTarget bt) throws CommonException {
-			ArrayList2<String> commandLine = new ArrayList2<>("gometalinter", "-t");
+			ArrayList2<String> commandLine = ArrayList2.create("gometalinter", "-t");
 			addPackageSpecCommand(bt, commandLine);
 			return commandLine;
 		}

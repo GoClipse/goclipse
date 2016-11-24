@@ -63,12 +63,6 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	}
 	
 	@SafeVarargs
-	public ArrayList2(E... elements) {
-		super();
-		addElements(elements);
-	}
-	
-	@SafeVarargs
 	public static <E> ArrayList2<E> create(E... elements) {
 		return new ArrayList2<E>(elements.length).addElements(elements);
 	}

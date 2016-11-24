@@ -396,7 +396,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 			buildType, buildConfig);
 		
 		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, 
-			new ArrayList2<>(btA, btNonExistentButValid, btNonExistent));
+			ArrayList2.create(btA, btNonExistentButValid, btNonExistent));
 		buildMgr.setProjectBuildInfo(project, newProjectBuildInfo);
 		buildMgr.saveProjectInfo(project);
 		

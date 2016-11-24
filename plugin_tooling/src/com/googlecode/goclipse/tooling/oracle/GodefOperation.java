@@ -49,7 +49,7 @@ public class GodefOperation extends AbstractToolInvocationOperation<SourceLocati
 		Location toolLoc = Location.create(toolPath);
 		int byteOffset = goOpContext.getByteOffsetFromEncoding(goOpContext.opContext.getOffset());
 		
-		ArrayList2<String> commandLine = new ArrayList2<>(
+		ArrayList2<String> commandLine = ArrayList2.create(
 			toolLoc.toPathString(),
 			"-f", opContext.getFileLocation().toPathString(),
 			"-i",
