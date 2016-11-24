@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="source/src-lang"/>
+	<classpathentry kind="src" path="src-lang"/>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
