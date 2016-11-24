@@ -34,7 +34,7 @@ public class LANGUAGE_SourceModelManager extends SourceModelManager {
 				SourceRange sr = new SourceRange(0, source.length());
 				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 
 					StructureElementKind.MODULEDEC, new ElementAttributes(null), null, null);
-				return new SourceFileStructure(location, new ArrayList2<StructureElement>(element), null);
+				return new SourceFileStructure(location, ArrayList2.create(element), null);
 			}
 		};
 	}

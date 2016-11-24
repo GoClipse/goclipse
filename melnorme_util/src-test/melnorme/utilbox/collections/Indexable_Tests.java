@@ -35,20 +35,20 @@ public class Indexable_Tests extends CommonTestUtils {
 		
 		testEquals(true, 
 			ArrayView.create(array("Foo", "Bar")), 
-			ListView.create(new ArrayList2<>("Foo", "Bar")),
-			new ArrayList2<>("Foo", "Bar"),
+			ListView.create(ArrayList2.create("Foo", "Bar")),
+			ArrayList2.create("Foo", "Bar"),
 			createArrayList("Foo", "Bar")
 		);
 		
 		testEquals(false, 
-			new ArrayList2<>("asdf"), 
+			ArrayList2.create("asdf"), 
 			ArrayView.create(array("ss")), 
-			ListView.create(new ArrayList2<>("zzz")),
+			ListView.create(ArrayList2.create("zzz")),
 			createArrayList("Foo")
 		);
 		
 		testEquals(false, 
-			new ArrayList2<>("one", "twoo"), 
+			ArrayList2.create("one", "twoo"), 
 			ArrayView.create(array("xxx")), 
 			ListView.create(createArrayList()),
 			createArrayList(1, 2, 3)
@@ -58,7 +58,7 @@ public class Indexable_Tests extends CommonTestUtils {
 	
 	protected ArrayList<Object> createArrayList(Object... objs) {
 		ArrayList<Object> arrayList = new ArrayList<>();
-		arrayList.addAll(new ArrayList2<>(objs));
+		arrayList.addAll(ArrayList2.create(objs));
 		return arrayList;
 	}
 	
@@ -83,11 +83,11 @@ public class Indexable_Tests extends CommonTestUtils {
 		String[] array = ArrayView.create(array("String")).toArray(String.class);
 		assertEqualArrays(array, array("String"));
 		
-		assertTrue(new ArrayList2<>("zero", "one", "two", "two").indexOf("two") == 2);
-		assertTrue(new ArrayList2<>("zero", "one", "two", "zero").indexOf("zero") == 0);
-		assertTrue(new ArrayList2<>("zero", "one", "two", "two").lastIndexOf("two") == 3);
-		assertTrue(new ArrayList2<>("zero", "one", "two", "zero").lastIndexOf("zero") == 3);
-		assertTrue(new ArrayList2<>("zero", "one", "two").lastIndexOf("zero") == 0);
+		assertTrue(ArrayList2.create("zero", "one", "two", "two").indexOf("two") == 2);
+		assertTrue(ArrayList2.create("zero", "one", "two", "zero").indexOf("zero") == 0);
+		assertTrue(ArrayList2.create("zero", "one", "two", "two").lastIndexOf("two") == 3);
+		assertTrue(ArrayList2.create("zero", "one", "two", "zero").lastIndexOf("zero") == 3);
+		assertTrue(ArrayList2.create("zero", "one", "two").lastIndexOf("zero") == 0);
 	}
 	
 }

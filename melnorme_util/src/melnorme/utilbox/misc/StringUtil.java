@@ -345,7 +345,7 @@ public class StringUtil {
 	/** Splits given string using given regex. Return the result as an {@link ArrayList}. */
 	public static ArrayList2<String> splitToList(String string, String regex) {
 		assertNotNull(string);
-		return new ArrayList2<>(string.split(regex));
+		return ArrayList2.create(string.split(regex));
 	}
 	
 	public static String prefixStr(String prefix, String string) {
