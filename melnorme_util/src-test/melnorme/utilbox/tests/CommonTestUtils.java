@@ -13,6 +13,7 @@ package melnorme.utilbox.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,8 +23,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
@@ -99,16 +102,48 @@ public class CommonTestUtils {
 		}
 	}
 	
-	public static void assertAreEqual(Indexable<?> list1, Indexable<?> list2) {
-		if(list1 == null && list2 == null)
+	public static void assertAreEqual(Indexable<?> obtained, Indexable<?> expected) {
+		assertEqualIndexable(obtained, expected);
+	}
+	
+	public static void assertEqualIndexable(Indexable<?> obtained, Indexable<?> expected) {
+		if(obtained == null && expected == null)
 			return;
 		
-		if(list1.size() != list2.size()) {
+		if(obtained.size() != expected.size()) {
 			assertFail();
 		}
-		for (int ix = 0; ix < list1.size(); ix++) {
-			Object obj1 = list1.get(ix);
-			Object obj2 = list2.get(ix);
+		for (int ix = 0; ix < obtained.size(); ix++) {
+			Object obtainedObj = obtained.get(ix);
+			Object expectedObj = expected.get(ix);
+			assertAreEqual(obtainedObj, expectedObj);
+		}
+	}
+	
+	public static void checkEquals(Object obtained, Object expected) {
+		if(!areEqual(expected, obtained)) {
+			System.out.println("== checkEquals failed. Obtained:");
+			System.out.println(obtained);
+			System.out.println("== Expected:");
+			System.out.println(expected);
+			
+			assertFail();
+		}
+	}
+	
+	public static <T> void checkIndexable(
+		Indexable<? extends T> obtained, Indexable<T> expected, BiConsumer<T, T> comparer
+	) {
+		if(obtained == null && expected == null)
+			return;
+		
+		if(obtained.size() != expected.size()) {
+			assertFail();
+		}
+		for (int ix = 0; ix < obtained.size(); ix++) {
+			T obj1 = obtained.get(ix);
+			T obj2 = expected.get(ix);
+			comparer.accept(obj1, obj2);
 			assertAreEqual(obj1, obj2);
 		}
 	}
@@ -187,6 +222,14 @@ public class CommonTestUtils {
 	}
 	
 	/* ---- */
+	
+	public static <E> E unwrapSingle(Iterable<E> removeColl) {
+		Iterator<E> iterator = removeColl.iterator();
+		assertTrue(iterator.hasNext());
+		E next = iterator.next();
+		assertTrue(iterator.hasNext() == false);
+		return next;
+	}
 	
 	public static <E, T extends Set<E>> T removeAll(T set, Collection<?> removeColl) {
 		set.removeAll(removeColl);
