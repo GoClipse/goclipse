@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.core.fntypes.Callable2;
 import melnorme.utilbox.misc.CollectionUtil;
 
 /**
@@ -81,6 +82,18 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	
 	/* -----------------  ----------------- */
 	
+	@Override
+	public <T> Indexable<T> upcastTypeParameter() {
+		return CoreUtil.blindCast(this);
+	}
+	
+	@Override
+	public Object[] copyToArray(Object[] destArray) {
+		return toArray(destArray);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	@SafeVarargs
 	public final ArrayList2<E> addElements(E... elements) {
 		for (E element : elements) {
@@ -112,14 +125,17 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return this;
 	}
 	
-	@Override
-	public Object[] copyToArray(Object[] destArray) {
-		return toArray(destArray);
-	}
-	
-	@Override
-	public <T> Indexable<T> upcastTypeParameter() {
-		return CoreUtil.blindCast(this);
+	public <EXC extends Throwable> void collectUntilNull(Callable2<? extends E, EXC> supplier)
+		throws EXC 
+	{
+		while(true) {
+			E newElement = supplier.invoke();
+			if(newElement == null) {
+				return;
+			} else {
+				add(newElement);
+			}
+		}
 	}
 	
 	@SuppressWarnings("unused")

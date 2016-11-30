@@ -225,6 +225,7 @@ public class CommonTestUtils {
 	
 	public static <E> E unwrapSingle(Iterable<E> removeColl) {
 		Iterator<E> iterator = removeColl.iterator();
+		assertTrue(iterator.hasNext());
 		E next = iterator.next();
 		assertTrue(iterator.hasNext() == false);
 		return next;
