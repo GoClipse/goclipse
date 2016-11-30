@@ -352,6 +352,44 @@ public class StringUtil {
 		return string == null ? "" : prefix + string;
 	}
 	
+	public static String addSuffix(String string, String suffix) {
+		return mapSuffix(string, suffix, "");
+	}
+	
+	public static String mapSuffix(String string, String suffix, String dflt) {
+		return emptyAsNull(string) == null ? dflt : string + suffix;
+	}
+	
+	public static String joinUsingSep(String first, String sep, String second, boolean emptyAsNone) {
+		if(emptyAsNone) {
+			first = emptyAsNull(first);
+			second = emptyAsNull(second);
+		}
+		if(first != null && second != null) {
+			return first + sep + second;
+		}
+		
+		return nullAsEmpty(first == null ? second : first);
+	}
+	
+	public static String mapSurround(String prefix, String string, String suffix) {
+		return mapSurround(prefix, string, suffix, true, "");
+	}
+	
+	public static String mapSurround(String prefix, String string, String suffix, boolean emptyAsNone) {
+		return mapSurround(prefix, string, suffix, emptyAsNone, "");
+	}
+	
+	public static String mapSurround(String prefix, String string, String suffix, boolean emptyAsNone, String dflt) {
+		if(emptyAsNone) {
+			string = emptyAsNull(string);
+		}
+		if(string == null) {
+			return dflt;
+		}
+		return prefix + string + suffix;
+	}
+	
 	public static String asString(String prefix, Object obj) {
 		return obj == null ? "" : prefix + obj.toString();
 	}
