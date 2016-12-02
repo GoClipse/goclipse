@@ -161,7 +161,8 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 				buildMgr.getToolManager().startNewOperation(ProcessStartKind.CHECK_BUILD, clearConsole, false);
 		
 		try {
-			buildMgr.newProjectBuildOperation(opMonitor, project, true, true).execute(new NullOperationMonitor(cm));
+			NullOperationMonitor om = new NullOperationMonitor(cm);
+			buildMgr.newProjectBuildOperation(om, opMonitor, project, true, true).execute();
 		} catch(CommonException e) {
 			opMonitor.writeInfoMessage("Error during auto-check:\n" + e.getSingleLineRender() + "\n");
 		} catch(OperationCancellation e) {

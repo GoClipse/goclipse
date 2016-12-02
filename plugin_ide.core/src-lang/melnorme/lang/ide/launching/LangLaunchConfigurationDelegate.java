@@ -42,13 +42,14 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public abstract class LangLaunchConfigurationDelegate extends LaunchConfigurationDelegate {
+	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
 	
 	public LangLaunchConfigurationDelegate() {
 		super();
@@ -66,11 +67,13 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	protected CompositeBuildTargetSettings buildTargetSettings;
 	protected EclipseProcessLauncher processLauncher;
+	protected BuildTarget buildTarget;
 	
 	@Override
 	public final ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
 		try {
 			buildTargetSettings = getBuildTargetSettings(configuration);
+			buildTarget = buildTargetSettings.getValidBuildTarget();
 			processLauncher = getValidLaunchInfo(configuration, buildTargetSettings);
 		} catch(CommonException ce) {
 			throw EclipseCore.createCoreException(ce);
@@ -136,13 +139,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			ILaunchConfiguration configuration, CompositeBuildTargetSettings buildTargetSettings)
 			throws CommonException, CoreException {
 		
-		BuildManager buildManager = LangCore.getBuildManager();
-		
 		IProject project = buildTargetSettings.getBuildTargetSupplier().getValidProject();
-		
-		BuildTarget buildTarget = buildTargetSettings.getValidBuildTarget();
-		Operation buildOperation = buildTarget == null ? 
-				null : buildManager.newBuildTargetOperation(project, buildTarget);
 		
 		String workingDirectoryString = evaluateStringVars(
 			configuration.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, (String) null));
@@ -164,7 +161,6 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		
 		return new EclipseProcessLauncher(
 			project, 
-			buildOperation, 
 			programLoc,
 			workingDirectory, 
 			programInvocation,
@@ -226,9 +222,11 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	protected boolean doBuildForLaunch(ILaunchConfiguration configuration, String mode,
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		Operation buildOperation = processLauncher.buildOperation;
-		if(buildOperation != null) {
-			buildOperation.execute(EclipseUtils.om(pm));
+		
+		IProject project = this.processLauncher.project;
+
+		if(buildTarget != null) {
+			buildManager.newBuildTargetOperation(EclipseUtils.om(pm), project, buildTarget).execute();
 			return false;
 		} else {
 			return super.buildForLaunch(configuration, mode, pm);

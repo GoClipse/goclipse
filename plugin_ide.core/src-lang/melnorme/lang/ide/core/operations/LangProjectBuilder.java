@@ -35,6 +35,7 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -191,15 +192,12 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			return null; // Ignore auto build
 		}
 		try {
-			createBuildOp().execute(EclipseUtils.om(monitor));
+			IOperationMonitor om = EclipseUtils.om(monitor);
+			buildManager.newProjectBuildOperation(om, workspaceOpMonitor, getProject(), false, false).execute();
 		} catch (CommonException ce) {
 			throw EclipseCore.createCoreException(ce);
 		}
 		return null;
-	}
-	
-	protected Operation createBuildOp() throws CommonException {
-		return buildManager.newProjectBuildOperation(workspaceOpMonitor, getProject(), false, false);
 	}
 	
 	/* ----------------- Clean ----------------- */

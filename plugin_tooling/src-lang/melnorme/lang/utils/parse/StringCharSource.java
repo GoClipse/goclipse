@@ -14,7 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.Reader;
 
-public class StringCharSource extends OffsetBasedCharacterReader<RuntimeException> implements ICharacterReader {
+import melnorme.utilbox.misc.ToStringHelper;
+import melnorme.utilbox.misc.ToStringHelper.ToString;
+
+public class StringCharSource extends OffsetBasedCharacterReader<RuntimeException> 
+	implements ICharacterReader, ToString 
+{
 	
 	protected final String source;
 	
@@ -24,6 +29,16 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 	
 	public String getSource() {
 		return source;
+	}
+	
+	@Override
+	public String toString() {
+		return defaultToString();
+	}
+	
+	@Override
+	public void toString(ToStringHelper sh) {
+		sh.writeElement(getClass().getSimpleName() + " @" + readPosition + " of " + source.length());
 	}
 	
 	/**
@@ -85,12 +100,12 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 		return new StringCharSourceReader(this);
 	}
 	
-	public static class StringCharSourceReader extends Reader {
+	public static class StringCharSourceReader extends Reader implements ToString {
 		
-		protected StringCharSource child;
+		protected StringCharSource charSource;
 		
-		public StringCharSourceReader(StringCharSource child) {
-			this.child = child;
+		public StringCharSourceReader(StringCharSource charSource) {
+			this.charSource = assertNotNull(charSource);
 		}
 		
 		@Override
@@ -100,12 +115,22 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 
 		@Override
 		public int read(char[] cbuf, int off, int len) {
-			int result = this.child.copyToBuffer(cbuf, off, len);
+			int result = this.charSource.copyToBuffer(cbuf, off, len);
 			if (result == 0) {
 				return -1; // Indicate that the end of the stream has been reached.
 			} else {
 				return result;
 			}
+		}
+		
+		@Override
+		public String toString() {
+			return defaultToString();
+		}
+		
+		@Override
+		public void toString(ToStringHelper sh) {
+			charSource.toString(sh);
 		}
 	}
 	
