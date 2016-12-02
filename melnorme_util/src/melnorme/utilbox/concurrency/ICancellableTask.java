@@ -10,32 +10,10 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-/**
- * A concurrent task that can be cancelled.
- */
-public interface ICancellableTask extends Runnable {
+public interface ICancellableTask extends ICancellable, Runnable {
 	
-	/**
-	 * @return whether this task is in a state that allows it to run. 
-	 * Most task implementations can only execute once.
-	 * This method is useful mainly for tests and contract checking.
-	 */
-	abstract boolean canExecute();
-	
-	/** 
-	 * Execute this task.
-	 */
+	/** Execute this task. */
 	@Override
-	abstract void run();
-	
-	/**
-	 * Try to cancel this task.
-	 * If cancelled before the task is run, invoking {@link #run()} will have no effect.
-	 * If cancelled while it is running, the running thread is interrupted.
-	 * Has no effect if it is called after the task has run.
-	 * @return whether the task was cancelled.
-	 * 
-	 */
-	boolean tryCancel();
+	void run();
 	
 }
