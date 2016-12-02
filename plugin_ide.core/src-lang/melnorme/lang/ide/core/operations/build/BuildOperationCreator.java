@@ -60,12 +60,15 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return doCreateClearBuildMarkersOperation();
 	}
 	
-	public CompositeBuildOperation newProjectBuildOperation(Collection2<Operation> buildOps, boolean clearMarkers) 
-			throws CommonException {
+	public CompositeBuildOperation newProjectBuildOperation(
+		IOperationMonitor om,
+		Collection2<Operation> buildOps, 
+		boolean clearMarkers
+	) throws CommonException {
 		operations = ArrayList2.create();
 		
 		if(buildOps.isEmpty()) {
-			return new CompositeBuildOperation(opMonitor, operations, null);
+			return new CompositeBuildOperation(om, operations, null);
 		}
 		
 		addCompositeBuildOperationMessage();
@@ -97,10 +100,14 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		
 		addOperation(newMessageOperation(headerBIG(MSG_BuildTerminated)));
 		
+		return createProjectBuildOperation(om);
+	}
+	
+	public CompositeBuildOperation createProjectBuildOperation(IOperationMonitor om) {
 		// Note: the locking rule has to be the whole workspace, because the build might read dependent projects
 		// and also error markers can be created globally
 		ISchedulingRule rule = ResourceUtils.getWorkspaceRoot();
-		return new CompositeBuildOperation(opMonitor, operations, rule);
+		return new CompositeBuildOperation(om, operations, rule);
 	}
 	
 	protected boolean addOperation(Operation toolOp) {

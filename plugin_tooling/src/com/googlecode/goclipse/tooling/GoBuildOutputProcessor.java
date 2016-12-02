@@ -10,12 +10,12 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.tooling.toolchain.ops.BuildOutputParser2;
+import melnorme.lang.tooling.toolchain.ops.ToolMessageData;
 import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
@@ -30,10 +30,10 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser2 {
 	}
 	
 	@Override
-	public ArrayList<ToolSourceMessage> doParseResult(ExternalProcessResult result) throws CommonException {
+	public ArrayList2<ToolSourceMessage> doParseResult(ExternalProcessResult result) throws CommonException {
 //			validateExitCode(result);
 			
-		ArrayList<ToolSourceMessage> msgs = new ArrayList2<>();
+		ArrayList2<ToolSourceMessage> msgs = new ArrayList2<>();
 		// Parse both stderr and stdout as different commands may output message to different streams
 		// for example go build outputs to stderr, but gometalinter to stdout
 		msgs.addAll(parseOutput(result.getStdErrBytes().toString(StringUtil.UTF8)));
@@ -94,11 +94,11 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser2 {
 	}
 	
 	@Override
-	protected ToolSourceMessage createMessage(ToolMessageData msgdata) throws CommonException {
+	protected void addBuildMessage(ToolMessageData msgdata) throws CommonException {
 		if(msgdata.messageTypeString == null) {
 			msgdata.messageTypeString = StatusLevel.ERROR.toString();
 		}
-		return super.createMessage(msgdata);
+		super.addBuildMessage(msgdata);
 	}
 	
 }

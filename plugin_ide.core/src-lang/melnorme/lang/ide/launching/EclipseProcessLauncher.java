@@ -33,7 +33,6 @@ import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.common.ops.Operation;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -45,7 +44,6 @@ import melnorme.utilbox.misc.StringUtil;
 public class EclipseProcessLauncher {
 	
 	public final IProject project;
-	public final Operation buildOperation;
 	public final Location programFileLocation;
 	public final IPath workingDir;
 	public final CommandInvocation unresolvedProgramInvocation;
@@ -53,14 +51,12 @@ public class EclipseProcessLauncher {
 	
 	public EclipseProcessLauncher(
 			IProject project, 
-			Operation buildOperation, 
 			Location programFileLocation, 
 			IPath workingDir, 
 			CommandInvocation unresolvedProgramInvocation,
 			String processType
 	) {
 		this.project = assertNotNull(project);
-		this.buildOperation = buildOperation; // can be null
 		this.programFileLocation = assertNotNull(programFileLocation);
 		this.workingDir = workingDir;
 		this.unresolvedProgramInvocation = assertNotNull(unresolvedProgramInvocation);
@@ -102,8 +98,6 @@ public class EclipseProcessLauncher {
 		
 		Process sp= null;
 		try {
-			
-			
 			sp = processBuilder.start();
 		} catch (IOException e) {
 			abort(LaunchMessages.errNewJavaProcessFailed, e);

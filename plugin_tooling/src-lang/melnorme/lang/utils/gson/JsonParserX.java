@@ -20,6 +20,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.internal.bind.TypeAdapters;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
 import melnorme.utilbox.core.CommonException;
@@ -109,6 +110,19 @@ public class JsonParserX {
 	
 	public JsonObject parseObject(String json, boolean lenient) throws CommonException {
 		return parseObject(newReader(json, lenient));
+	}
+	
+	public static boolean isEndOfInput(JsonReader jsonReader) throws IOException {
+		try {
+			return jsonReader.peek() == JsonToken.END_DOCUMENT;
+		} catch(IOException e) {
+			// Why the hell GSON doesn't have a proper way to check for empty document?
+			// Need to review on future versions
+			if(e.getMessage().startsWith("End of input")) {
+				return true;
+			}
+			throw e;
+		}
 	}
 	
 }

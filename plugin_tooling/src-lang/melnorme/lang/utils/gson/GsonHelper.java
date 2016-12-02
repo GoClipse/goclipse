@@ -18,16 +18,64 @@ import melnorme.utilbox.core.CommonException;
 
 public class GsonHelper {
 	
-	protected CommonException wrongTypeException(String key, String expectedType) throws CommonException {
-		return CommonException.fromMsgFormat("Member `{0}` is not a {1}.", key, expectedType);
+	protected CommonException wrongPropertyTypeException(String key, String expectedType) throws CommonException {
+		return CommonException.fromMsgFormat("Property `{0}` is not a {1}.", key, expectedType);
 	}
 	
+	protected CommonException wrongTypeException(JsonElement element, String expectedType) throws CommonException {
+		return CommonException.fromMsgFormat("Value {0}, is not a {1}.", element, expectedType);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public JsonObject asObject(JsonElement element) throws CommonException {
+		if(element != null && element.isJsonObject()) {
+			return element.getAsJsonObject();
+		} else {
+			throw wrongTypeException(element, "Object");
+		}
+	}
+	
+	public JsonArray asArray(JsonElement element) throws CommonException {
+		if(element != null && element.isJsonArray()) {
+			return element.getAsJsonArray();
+		} else {
+			throw wrongTypeException(element, "Array");
+		}
+	}
+	
+	public String asString(JsonElement element) throws CommonException {
+		if(element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+			return element.getAsString();
+		} else {
+			throw wrongTypeException(element, "String");
+		}
+	}
+	
+	public boolean asBoolean(JsonElement element) throws CommonException {
+		if(element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean()) {
+			return element.getAsBoolean();
+		} else {
+			throw wrongTypeException(element, "boolean");
+		}
+	}
+	
+	public Number asNumber(JsonElement element) throws CommonException {
+		if(element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber()) {
+			return element.getAsNumber();
+		} else {
+			throw wrongTypeException(element, "Number");
+		}
+	}
+	
+	/* -----------------  ----------------- */
+
 	public JsonObject getObject(JsonObject jsonObject, String key) throws CommonException {
 		JsonElement element = jsonObject.get(key);
 		if(element != null && element.isJsonObject()) {
 			return element.getAsJsonObject();
 		} else {
-			throw wrongTypeException(key, "Object");
+			throw wrongPropertyTypeException(key, "Object");
 		}
 	}
 	
@@ -36,7 +84,7 @@ public class GsonHelper {
 		if(element != null && element.isJsonArray()) {
 			return element.getAsJsonArray();
 		} else {
-			throw wrongTypeException(key, "Array");
+			throw wrongPropertyTypeException(key, "Array");
 		}
 	}
 	
@@ -45,7 +93,7 @@ public class GsonHelper {
 		if(element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
 			return element.getAsString();
 		} else {
-			throw wrongTypeException(key, "String");
+			throw wrongPropertyTypeException(key, "String");
 		}
 	}
 	
@@ -54,7 +102,7 @@ public class GsonHelper {
 		if(element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean()) {
 			return element.getAsBoolean();
 		} else {
-			throw wrongTypeException(key, "boolean");
+			throw wrongPropertyTypeException(key, "boolean");
 		}
 	}
 	
@@ -63,7 +111,7 @@ public class GsonHelper {
 		if(element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber()) {
 			return element.getAsNumber();
 		} else {
-			throw wrongTypeException(key, "Number");
+			throw wrongPropertyTypeException(key, "Number");
 		}
 	}
 	
@@ -101,10 +149,10 @@ public class GsonHelper {
 	}
 	
 	public String getOptionalString(JsonObject jsonObject, String key) throws CommonException {
-		return getOptionalString(jsonObject, key, null);
+		return getStringOr(jsonObject, key, null);
 	}
 	
-	public String getOptionalString(JsonObject jsonObject, String key, String defaultValue) throws CommonException {
+	public String getStringOr(JsonObject jsonObject, String key, String defaultValue) throws CommonException {
 		if(!isPresent(jsonObject, key)) {
 			return defaultValue;
 		}
@@ -118,14 +166,14 @@ public class GsonHelper {
 		return getNumber(jsonObject, key);
 	}
 	
-	public boolean getOptionalBoolean(JsonObject jsonObject, String key, boolean defaultValue) throws CommonException {
+	public boolean getBooleanOr(JsonObject jsonObject, String key, boolean defaultValue) throws CommonException {
 		if(!isPresent(jsonObject, key)) {
 			return defaultValue;
 		}
 		return getBoolean(jsonObject, key);
 	}
 	
-	public int getOptionalInteger(JsonObject jsonObject, String key, int defaultValue) throws CommonException {
+	public int getIntegerOr(JsonObject jsonObject, String key, int defaultValue) throws CommonException {
 		if(!isPresent(jsonObject, key)) {
 			return defaultValue;
 		}
