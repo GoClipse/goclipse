@@ -159,7 +159,7 @@ public class HTMLPrinter {
 		return null;
 	}
 
-	public static void insertPageProlog(StringBuffer buffer, int position, RGB fgRGB, RGB bgRGB, String styleSheet) {
+	public static void insertPageProlog(StringBuffer buffer, RGB fgRGB, RGB bgRGB, String styleSheet) {
 		if (fgRGB == null)
 			fgRGB= FG_COLOR_RGB;
 		if (bgRGB == null)
@@ -173,7 +173,7 @@ public class HTMLPrinter {
 
 		appendColors(pageProlog, fgRGB, bgRGB);
 
-		buffer.insert(position,  pageProlog.toString());
+		buffer.append(pageProlog.toString());
 	}
 
 	private static void appendColors(StringBuffer pageProlog, RGB fgRGB, RGB bgRGB) {
@@ -271,8 +271,8 @@ public class HTMLPrinter {
 		buffer.insert(position,  pageProlog.toString());
 	}
 
-	public static void insertPageProlog(StringBuffer buffer, int position, String styleSheet) {
-		insertPageProlog(buffer, position, null, null, styleSheet);
+	public static void insertPageProlog(StringBuffer buffer, String styleSheet) {
+		insertPageProlog(buffer, null, null, styleSheet);
 	}
 
 	public static void addPageProlog(StringBuffer buffer) {
