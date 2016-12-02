@@ -32,6 +32,10 @@ public class HashMap2<K, V> extends HashMap<K, V> implements MapAccess<K, V> {
 		super(map);
 	}
 	
+	public V get0(K key) {
+		return get(key);
+	}
+	
 	@Override
 	public HashMap2<K, V> copyToHashMap() {
 		return copy();

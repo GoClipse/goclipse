@@ -82,8 +82,8 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	
 	public static void execute_checkPreConditions(Runnable command) {
 		if(command instanceof ICancellableTask) {
-			ICancellableTask cancellableTask = (ICancellableTask) command;
-			assertTrue(cancellableTask.canExecute());
+			ICancellableTask cancellable = (ICancellableTask) command;
+			assertTrue(cancellable.canExecute());
 		}
 	}
 	

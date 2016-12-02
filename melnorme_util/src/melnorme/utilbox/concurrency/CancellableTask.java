@@ -62,7 +62,7 @@ public abstract class CancellableTask implements ICancellableTask {
 	}
 	
 	@Override
-	public final void run() {
+	public void run() {
 		synchronized(this) {
 			
 			if(isCancelled()) {
