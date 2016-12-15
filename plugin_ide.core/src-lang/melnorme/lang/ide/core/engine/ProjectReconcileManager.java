@@ -20,12 +20,14 @@ import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.CompletableResult.CompletableLatch;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.concurrency.CompletableResult.CompletableLatch;
 import melnorme.utilbox.core.CommonException;
 
 abstract class AbstractProjectReconcileManager {
@@ -157,12 +159,16 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 		// We would actually like to clear the console, but due to Eclipse UI bug/limitation
 		// clearing the console activates it. :(
 		boolean clearConsole = false;
+		NullOperationMonitor om = new NullOperationMonitor(cm);
+		
 		IToolOperationMonitor opMonitor = 
 				buildMgr.getToolManager().startNewOperation(ProcessStartKind.CHECK_BUILD, clearConsole, false);
 		
 		try {
-			NullOperationMonitor om = new NullOperationMonitor(cm);
-			buildMgr.requestProjectBuildOperation(opMonitor, project, true, true).execute(om);
+			ArrayList2<BuildTarget> enabledTargets = buildMgr.getValidBuildInfo(project).getEnabledTargets(!true);
+			if(!enabledTargets.isEmpty()) {
+				buildMgr.requestBuildOperation(opMonitor, project, true, enabledTargets).execute(om);
+			}
 		} catch(CommonException e) {
 			opMonitor.writeInfoMessage("Error during auto-check:\n" + e.getSingleLineRender() + "\n");
 		} catch(OperationCancellation e) {
