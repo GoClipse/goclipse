@@ -14,10 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
+import melnorme.lang.tooling.common.ops.BiDelegatingOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.BasicOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
-import melnorme.lang.tooling.common.ops.OperationFuture.BiDelegatingOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitor;
 
 public class OperationMonitor_Test extends CommonToolingTest {

@@ -46,7 +46,7 @@ public interface ResultOperation<RET> extends Function<IOperationMonitor, Operat
 	/* -----------------  ----------------- */
 	
 	default IRunnableFuture2<OperationResult<RET>> toRunnableFuture(IOperationMonitor om) {
-		return new OperationFuture<RET>(ResultOperation.this, om);
+		return OperationFuture.fromResultOperation(om, ResultOperation.this);
 	}
 	
 	/* -----------------  ----------------- */

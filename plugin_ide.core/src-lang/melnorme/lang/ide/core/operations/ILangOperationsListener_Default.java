@@ -11,18 +11,8 @@
 package melnorme.lang.ide.core.operations;
 
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
-import melnorme.utilbox.status.StatusLevel;
 
-public interface ILangOperationsListener_Default {
-	
-	default void notifyMessage(StatusLevel statusLevel, String title, String message) {
-		notifyMessage(null, statusLevel, title, message);
-	}
-	
-	/** Report a message to the user. */
-	void notifyMessage(String msgId, StatusLevel statusLevel, String title, String message);
-	
-	/* -----------------  ----------------- */
+public interface ILangOperationsListener_Default extends IStatusMessageHandler {
 	
 	public enum ProcessStartKind {
 		BUILD,

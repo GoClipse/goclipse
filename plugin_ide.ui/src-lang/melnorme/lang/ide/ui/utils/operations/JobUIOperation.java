@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,10 +24,13 @@ import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class AbstractJobUIOperation extends BasicUIOperation {
+public class JobUIOperation extends BasicUIOperation {
 	
-	public AbstractJobUIOperation(String operationName) {
+	protected final Operation operation;
+	
+	public JobUIOperation(String operationName, Operation operation) {
 		super(operationName);
+		this.operation = assertNotNull(operation);
 	}
 	
 	@Override
@@ -53,14 +58,15 @@ public abstract class AbstractJobUIOperation extends BasicUIOperation {
 				
 			}
 			
-		}
-		.schedule();
+		}.schedule();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected abstract void doBackgroundComputation(IOperationMonitor om) 
-			throws CommonException, OperationCancellation;
+	protected void doBackgroundComputation(IOperationMonitor om) 
+			throws CommonException, OperationCancellation {
+		operation.execute(om);
+	}
 	
 	protected void asynchronous_handleComputationResult()  {
 	}

@@ -19,18 +19,18 @@ import melnorme.utilbox.core.fntypes.OperationResult;
 public interface JobExecutor {
 	
 	<RET> JobFuture<OperationResult<RET>> startOpFunction(
-			String operationName, boolean schedule, Function<IOperationMonitor, OperationResult<RET>> operation)
-	;
+		String operationName, boolean schedule, Function<IOperationMonitor, OperationResult<RET>> operation
+	);
 	
 	default JobFuture<OperationResult<Void>> startOp(
-			String operationName, boolean schedule, Operation operation) 
-	{
+		String operationName, boolean schedule, Operation operation
+	) {
 		return startOpFunction(operationName, schedule, operation);
 	}
 	
 	default <RET> JobFuture<OperationResult<RET>> startResultOp(
-			String operationName, boolean schedule, ResultOperation<RET> resultOperation)
-	{
+		String operationName, boolean schedule, ResultOperation<RET> resultOperation
+	) {
 		return startOpFunction(operationName, schedule, resultOperation);
 	}
 	

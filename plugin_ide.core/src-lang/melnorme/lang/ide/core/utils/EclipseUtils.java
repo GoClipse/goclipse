@@ -168,9 +168,10 @@ public class EclipseUtils {
 	
 	/* ----------------- ops ----------------- */
 	
-	public static void execute_asCore(IOperationMonitor om, Operation commonOperation)
+	public static void execute_asCore(IProgressMonitor pm, Operation commonOperation)
 			throws OperationCancellation, CoreException {
 		try {
+			IOperationMonitor om = EclipseUtils.om(pm);
 			commonOperation.execute(om);
 		} catch (CommonException ce) {
 			throw EclipseCore.createCoreException(ce);

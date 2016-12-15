@@ -60,7 +60,9 @@ import melnorme.utilbox.status.StatusLevel;
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class ToolManager extends EventSource<ILangOperationsListener> {
+public abstract class ToolManager extends EventSource<ILangOperationsListener>
+	implements IStatusMessageHandler
+{
 	
 	protected final CoreSettings settings;
 	
@@ -147,10 +149,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 		notifyMessage(msgId, ce.getSeverity().toStatusLevel(), title, ce.getMessage());
 	}
 	
-	public void notifyMessage(StatusLevel statusLevel, String title, String message) {
-		notifyMessage(null, statusLevel, title, message);
-	}
-	
+	@Override
 	public void notifyMessage(String msgId, StatusLevel statusLevel, String title, String message) {
 		for(ILangOperationsListener listener : getListeners()) {
 			listener.notifyMessage(msgId, statusLevel, title, message);

@@ -226,7 +226,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		IProject project = this.processLauncher.project;
 
 		if(buildTarget != null) {
-			buildManager.newBuildTargetOperation(EclipseUtils.om(pm), project, buildTarget).execute();
+			buildManager.executeBuildTargetOperation(EclipseUtils.om(pm), project, buildTarget);
 			return false;
 		} else {
 			return super.buildForLaunch(configuration, mode, pm);

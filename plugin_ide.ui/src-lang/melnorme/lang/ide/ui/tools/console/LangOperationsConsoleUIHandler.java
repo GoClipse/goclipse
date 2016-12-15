@@ -30,7 +30,8 @@ import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartH
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.StatusMessageDialog;
+import melnorme.lang.ide.ui.utils.StatusMessageDialog2;
+import melnorme.lang.ide.ui.utils.StatusMessageDialogWithIgnore;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.util.swt.SWTUtil;
@@ -38,10 +39,13 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
+import melnorme.utilbox.status.StatusException;
 import melnorme.utilbox.status.StatusLevel;
 
 
 public abstract class LangOperationsConsoleUIHandler implements ILangOperationsListener {
+	
+	public static final String MSG_IgnoreSimilar = "Ignore similar errors during this session.";
 	
 	public LangOperationsConsoleUIHandler() {
 		super();
@@ -57,15 +61,21 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 				if(msgId != null && mutedMessages.contains(msgId)) { 
 					return;
 				}
+				StatusException statusMessage = new StatusException(statusLevel.toSeverity(), message);
+				
 				Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-				StatusMessageDialog dialog = new StatusMessageDialog(shell, title, statusLevel, message) {
-					@Override
-					protected void setIgnoreFutureMessages() {
-						if(msgId != null) {
+				StatusMessageDialog2 dialog;
+				
+				if(msgId == null) {
+					dialog = new StatusMessageDialog2(shell, title, statusMessage);
+				} else {
+					dialog = new StatusMessageDialogWithIgnore(shell, title, statusMessage, MSG_IgnoreSimilar) {
+						@Override
+						protected void setIgnoreFutureMessages() {
 							mutedMessages.add(msgId);
-						}
+						};
 					};
-				};
+				}
 				
 				if(UIOperationsStatusHandler.isIgnoringHandling()) {
 					Display.getCurrent().asyncExec(
