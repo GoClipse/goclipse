@@ -29,7 +29,7 @@ public class EventSource<T> {
 		listeners.removeListener(listener);
 	}
 	
-	protected Indexable<T> getListeners() {
+	public Indexable<T> getListeners() {
 		return listeners.getListeners();
 	}
 	
