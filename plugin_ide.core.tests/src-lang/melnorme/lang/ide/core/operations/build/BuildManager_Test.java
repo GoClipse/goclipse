@@ -18,6 +18,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IProject;
 import org.junit.Test;
 
@@ -29,6 +31,7 @@ import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
+import melnorme.lang.ide.core.operations.build.BuildOperationCreator.ProjectBuildOperation;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.CoreTestWithProject;
@@ -411,6 +414,23 @@ public class BuildManager_Test extends CoreTestWithProject {
 			sampleBT_STRICT)
 		);
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	// Util for other projects
+	public static void clearExistingBuilds(BuildManager buildManager, boolean awaitTermination) {
+		Collection<ProjectBuildOperation> oldBuilds = buildManager.cancelAllBuilds();
+		if(awaitTermination) {
+			for (ProjectBuildOperation oldOperation : oldBuilds) {
+				oldOperation.tryCancel();
+				try {
+					oldOperation.asFuture().awaitResult2();
+				} catch(OperationCancellation e) {
+					// Ok
+				}
+			}
+		}
 	}
 	
 }

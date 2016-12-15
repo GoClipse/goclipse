@@ -30,6 +30,10 @@ public class CompositeBuildOperation implements Operation {
 		this.opFuture = OperationFuture2.fromOperation(this::innerExecute); 
 	}
 	
+	public OperationFuture2<Void> asFuture() {
+		return opFuture;
+	}
+	
 	@Override
 	public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 		assertTrue(opFuture.canExecute());

@@ -40,8 +40,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.operations.build.BuildManager_Test;
 import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -111,8 +113,11 @@ public abstract class CommonCoreTest extends CommonTest {
 	// be obtained the if the method fails its check.
 	@Before
 	public void checkLogErrors_before() throws Throwable {
+		BuildManager_Test.clearExistingBuilds(LangCore.getBuildManager(), true);
+		
 		doCheckLogErrors();
 	}
+	
 	@After
 	public void checkLogErrors_after() throws Throwable {
 		doCheckLogErrors();

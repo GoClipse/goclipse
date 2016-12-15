@@ -10,48 +10,33 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
-import java.io.IOException;
-
+import melnorme.lang.ide.ui.tools.console.ToolsConsole.IOConsoleOutputStreamExt;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
-
-import org.eclipse.ui.console.IOConsoleOutputStream;
 
 public class ConsoleOutputProcessListener implements IProcessOutputListener {
 	
-	protected final IOConsoleOutputStream processStdOut;
-	protected final IOConsoleOutputStream processStdErr;
+	protected final IOConsoleOutputStreamExt processStdOut;
+	protected final IOConsoleOutputStreamExt processStdErr;
 	
-	public ConsoleOutputProcessListener(IOConsoleOutputStream processStdOut, IOConsoleOutputStream processStdErr) {
+	public ConsoleOutputProcessListener(IOConsoleOutputStreamExt processStdOut, IOConsoleOutputStreamExt processStdErr) {
 		this.processStdOut = processStdOut;
 		this.processStdErr = processStdErr;
 	}
 	
 	@Override
 	public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-		try {
-			processStdOut.write(buffer, offset, readCount);
-		} catch (IOException e) {
-			// Ignore, it could simply mean the console page has been closed
-		}
+		processStdOut.write(buffer, offset, readCount);
 	}
 	
 	@Override
 	public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-		try {
-			processStdErr.write(buffer, offset, readCount);
-		} catch (IOException e) {
-			// Ignore, it could simply mean the console page has been closed
-		}
+		processStdErr.write(buffer, offset, readCount);
 	}
 	
 	@Override
 	public void notifyProcessTerminatedAndRead(int exitCode) {
-		try {
-			processStdOut.flush();
-			processStdErr.flush();
-		} catch (IOException e) {
-			// Ignore
-		}
+		processStdOut.flush();
+		processStdErr.flush();
 	}
 	
 }

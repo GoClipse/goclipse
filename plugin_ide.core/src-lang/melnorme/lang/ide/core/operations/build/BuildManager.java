@@ -19,6 +19,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.option;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -588,8 +589,14 @@ public abstract class BuildManager {
 	
 	/* -----------------  ----------------- */
 	
-	protected final HashMap2<Location, ProjectBuildOperation> buildOps = new HashMap2<>();
+	protected HashMap2<Location, ProjectBuildOperation> buildOps = new HashMap2<>();
 	protected final Object buildOps_mutex = new Object();
+	
+	public ProjectBuildOperation getBuildOperation(Location location) {
+		synchronized (buildOps_mutex) {
+			return buildOps.get0(location);
+		}
+	}
 	
 	public ProjectBuildOperation setNewBuildOperation(ProjectBuildOperation newOperation) {
 		Location location = newOperation.getLocation();
@@ -603,15 +610,16 @@ public abstract class BuildManager {
 		return oldOp;
 	}
 	
-	public void cancelAllBuilds() {
+	public Collection<ProjectBuildOperation> cancelAllBuilds() {
 		HashMap2<Location, ProjectBuildOperation> oldBuildOps;
 		synchronized (buildOps_mutex) {
-			oldBuildOps = buildOps.copy();
-			buildOps.clear();
+			oldBuildOps = buildOps;
+			buildOps = new HashMap2<>();
 		}
 		for (ProjectBuildOperation buildOp : oldBuildOps.values()) {
 			buildOp.tryCancel();
 		}
+		return oldBuildOps.values();
 	}
 	
 }
