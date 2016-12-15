@@ -33,6 +33,10 @@ public class OperationResult<DATA> extends Result<DATA, Exception> {
 		return new OperationResult<RET>(null, resultException);
 	}
 	
+	public static <RET> OperationResult<RET> cancellationResult() {
+		return new OperationResult<RET>(null, new OperationCancellation());
+	}
+	
 	@Override
 	public DATA get() throws CommonException, OperationCancellation {
 		throwIfExceptionResult();

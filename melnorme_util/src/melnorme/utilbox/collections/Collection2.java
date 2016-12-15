@@ -54,6 +54,12 @@ public interface Collection2<E> extends Iterable<E> {
 		return CollectionUtil.mapx(this, evalFunction);
 	}
 	
+	default <EXC extends Exception> ArrayList2<E> filterx(
+		ArrayList2<E> into, FunctionX<E, Boolean, EXC> predicate
+	) throws EXC {
+		return CollectionUtil.filter2x(into, this, predicate);
+	}
+	
 	/**
 	 * @return the index in the iteration order of the first element that matches given predicate, or -1 otherwise.
 	 * Note that if the iteration order of this collection is not stable, then the index isn't either.

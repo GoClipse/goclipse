@@ -35,7 +35,8 @@ public interface IRunnableFuture2<RET> extends Runnable, ICancellableTask, Futur
 	}
 	
 	public static <RET, EXC extends Throwable> IRunnableFuture2<Result<RET, EXC>> toResultFuture(
-			Callable2<RET, EXC> callable) {
+		Callable2<RET, EXC> callable
+	) {
 		return toFuture(callable::callToResult);
 	}
 	

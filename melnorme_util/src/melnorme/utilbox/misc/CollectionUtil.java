@@ -229,7 +229,7 @@ public class CollectionUtil {
 	}
 	
 	/** Remove from given list all elements that match given predicate. */
-	public static <E, L extends List<E>> L filter(L list, Predicate<E> predicate) {
+	public static <E, L extends Iterable<E>> L filter(L list, Predicate<E> predicate) {
 		for (Iterator<? extends E> iter = list.iterator(); iter.hasNext(); ) {
 			E obj = iter.next();
 			if(predicate.test(obj)) {
@@ -237,6 +237,28 @@ public class CollectionUtil {
 			}
 		}
 		return list;
+	}
+	
+	public static <ELEM, INTO extends Collection<ELEM>> INTO filter2(
+		INTO into, Iterable<? extends ELEM> from, Predicate<ELEM> predicate
+	) {
+		for (ELEM elem : from) {
+			if(predicate.test(elem)) {
+				into.add(elem);
+			}
+		}
+		return into;
+	}
+	
+	public static <ELEM, INTO extends Collection<ELEM>, EXC extends Exception> INTO filter2x(
+		INTO into, Iterable<? extends ELEM> from, FunctionX<ELEM, Boolean, EXC> predicate
+	) throws EXC {
+		for (ELEM elem : from) {
+			if(predicate.apply(elem) == Boolean.TRUE) {
+				into.add(elem);
+			}
+		}
+		return into;
 	}
 	
 	/** Removes from given list the first element that matches given predicate. 
