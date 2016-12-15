@@ -16,15 +16,20 @@ import melnorme.utilbox.core.fntypes.Callable2;
 
 /**
  * A simple future, completable by means of executing the {@link #run()} method.
- * Cannot be cancelled.
- * 
  */
-public class RunnableFuture2<RET> extends AbstractRunnableFuture2<RET> {
+public class RunnableFuture2<RET> extends AbstractTaskFuture2<RET> 
+	implements IRunnableFuture2<RET>
+{
 	
 	protected final Callable2<RET, RuntimeException> callable;
 	
 	public RunnableFuture2(Callable2<RET, RuntimeException> callable) {
 		this.callable = assertNotNull(callable);
+	}
+	
+	@Override
+	public void run() {
+		runFuture();
 	}
 	
 	@Override
