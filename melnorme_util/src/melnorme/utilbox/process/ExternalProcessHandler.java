@@ -19,9 +19,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.concurrency.AbstractRunnableFuture2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
+import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.fntypes.Result;
 import melnorme.utilbox.misc.StreamUtil;
@@ -34,8 +34,8 @@ import melnorme.utilbox.misc.StreamUtil;
  * Subclasses must specify Runnable's for the worker threads reading the process stdout and stderr streams.
  */
 public abstract class ExternalProcessHandler<
-	STDOUT_TASK extends AbstractRunnableFuture2<? extends Result<?, IOException>>, 
-	STDERR_TASK extends AbstractRunnableFuture2<? extends Result<?, IOException>>
+	STDOUT_TASK extends IRunnableFuture2<? extends Result<?, IOException>>, 
+	STDERR_TASK extends IRunnableFuture2<? extends Result<?, IOException>>
 > implements IExternalProcessHandler {
 	
 	protected final Process process;

@@ -12,11 +12,11 @@ package melnorme.utilbox.concurrency;
 
 import melnorme.utilbox.core.fntypes.CallableX;
 
-public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET> 
-	implements IRunnableFuture2<RET>
+public abstract class AbstractTaskFuture2<RET> extends AbstractFuture2<RET> 
+	implements ICancellable
 {
 	
-	public AbstractRunnableFuture2() {
+	public AbstractTaskFuture2() {
 		super();
 	}
 	
@@ -28,18 +28,13 @@ public abstract class AbstractRunnableFuture2<RET> extends AbstractFuture2<RET>
 	private final CancellableTask cancellableTask = new CancellableTask() {
 		@Override
 		protected void doRun() {
-			AbstractRunnableFuture2.this.internalTaskRun();
+			AbstractTaskFuture2.this.internalTaskRun();
 		}
 	};
 	
 	@Override
 	public boolean canExecute() {
 		return cancellableTask.canExecute();
-	}
-	
-	@Override
-	public void run() {
-		runFuture();
 	}
 	
 	protected void runFuture() {
