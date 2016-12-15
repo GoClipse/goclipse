@@ -403,7 +403,9 @@ public class GoBuildManager extends BuildManager {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected BuildOperationCreator createBuildOperationCreator(IToolOperationMonitor opMonitor, IProject project) {
+	protected BuildOperationCreator createBuildOperationCreator(
+		IToolOperationMonitor opMonitor, IProject project
+	) throws CommonException {
 		return new BuildOperationCreator(project, opMonitor) {
 			@Override
 			protected void addCompositeBuildOperationMessage() throws CommonException {
