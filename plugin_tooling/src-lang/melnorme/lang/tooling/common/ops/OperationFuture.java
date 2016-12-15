@@ -12,7 +12,6 @@ package melnorme.lang.tooling.common.ops;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.common.ops.IOperationMonitor.DelegatingOperationMonitor;
 import melnorme.utilbox.concurrency.IRunnableFuture2;
 import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.core.fntypes.OperationCallable;
@@ -25,6 +24,20 @@ import melnorme.utilbox.core.fntypes.OperationResult;
  */
 public class OperationFuture<RET> extends MonitorRunnableFuture<OperationResult<RET>> {
 	
+	public static <RET> OperationFuture<RET> fromResultOperation(
+		IOperationMonitor om, ResultOperation<RET> resultOperation
+	) {
+		return new OperationFuture<>(resultOperation, om);
+	}
+	
+	public static OperationFuture<Void> fromOperation(
+		IOperationMonitor om, Operation resultOperation
+	) {
+		return new OperationFuture<>(resultOperation, om);
+	}
+	
+	/* -----------------  ----------------- */
+
 	protected final ResultOperation<RET> resultOperation;
 	protected final BiDelegatingOperationMonitor om;
 	
@@ -38,32 +51,14 @@ public class OperationFuture<RET> extends MonitorRunnableFuture<OperationResult<
 		this.om = assertNotNull(dom);
 	}
 	
+	public IOperationMonitor getOperationMonitor() {
+		return om;
+	}
+	
 	@Override
 	protected OperationResult<RET> internalInvoke() {
 		OperationCallable<RET> toResult = () -> resultOperation.callOp(om);
 		return OperationResult.callToOpResult(toResult);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static class BiDelegatingOperationMonitor extends DelegatingOperationMonitor {
-		
-		protected final CancelMonitor secondCancelMonitor;
-		
-		public BiDelegatingOperationMonitor(IOperationMonitor om) {
-			this(om, new CancelMonitor());
-		}
-		
-		public BiDelegatingOperationMonitor(IOperationMonitor om, CancelMonitor cancelMonitor) {
-			super(om);
-			this.secondCancelMonitor = assertNotNull(cancelMonitor);
-		}
-		
-		@Override
-		public boolean isCancelled() {
-			return super.isCancelled() || secondCancelMonitor.isCancelled();
-		}
-		
 	}
 	
 }

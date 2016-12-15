@@ -40,7 +40,7 @@ import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
 import melnorme.lang.ide.ui.utils.BuildUtilities;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.ide.ui.utils.operations.AbstractJobUIOperation;
+import melnorme.lang.ide.ui.utils.operations.JobUIOperation;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
@@ -225,13 +225,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 				BuildUtilities.saveEditors(list(getProject()));
 			}
 			
-			new AbstractJobUIOperation(getJobTitle()) {
-				@Override
-				protected void doBackgroundComputation(IOperationMonitor om)
-						throws CommonException, OperationCancellation {
-					doJobRun(om);
-				}
-			}.execute();
+			new JobUIOperation(getJobTitle(), this::doJobRun).execute();
 		}
 		
 		protected String getJobTitle() {
@@ -253,7 +247,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		@Override
 		protected void doJobRun(IOperationMonitor om) throws CommonException, OperationCancellation {
 			Collection2<BuildTarget> enabledTargets = getBuildInfo().getBuildTargets();
-			getBuildManager().newBuildTargetsOperation(om, getProject(), enabledTargets).execute();
+			getBuildManager().executeBuildTargetsOperation(om, getProject(), enabledTargets);
 		}
 	}
 	
@@ -266,7 +260,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		@Override
 		protected void doJobRun(IOperationMonitor om) throws CommonException, OperationCancellation {
 			ArrayList2<BuildTarget> enabledTargets = getBuildInfo().getEnabledTargets(true);
-			getBuildManager().newBuildTargetsOperation(om, getProject(), enabledTargets).execute();
+			getBuildManager().executeBuildTargetsOperation(om, getProject(), enabledTargets);
 		}
 	}
 	
@@ -349,7 +343,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		protected void doJobRun(IOperationMonitor om) throws CommonException, OperationCancellation {
-			getBuildManager().newBuildTargetOperation(om, getProject(), buildTarget).execute();
+			getBuildManager().executeBuildTargetOperation(om, getProject(), buildTarget);
 		}
 		
 	}

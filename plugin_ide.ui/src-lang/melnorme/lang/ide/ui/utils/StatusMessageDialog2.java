@@ -60,6 +60,8 @@ public class StatusMessageDialog2 extends Dialog {
 		Composite topControl = (Composite) super.createDialogArea(parent);
 		GridLayout gridLayout = (GridLayout) topControl.getLayout();
 		gridLayout.numColumns = 2;
+//		gridLayout.marginHeight = 0;
+//		gridLayout.marginWidth = 0;
 		iconAndMessageWidget.createComponentInlined(topControl);
 		iconAndMessageWidget.messageControlLayoutData().widthHint = 
 				convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
@@ -125,6 +127,12 @@ public class StatusMessageDialog2 extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+	}
+	
+	// public access
+	@Override
+	public void okPressed() {
+		super.okPressed();
 	}
 	
 }

@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.tooling.common.ops.BiDelegatingOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
-import melnorme.lang.tooling.common.ops.OperationFuture.BiDelegatingOperationMonitor;
 import melnorme.lang.utils.concurrency.JobFuture;
 import melnorme.utilbox.concurrency.MonitorRunnableFuture;
 import melnorme.utilbox.concurrency.OperationCancellation;

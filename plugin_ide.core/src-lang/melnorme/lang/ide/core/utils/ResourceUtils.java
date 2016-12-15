@@ -46,6 +46,7 @@ import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.tooling.LocationHandle;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.common.ops.Operation;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.RunnableX;
@@ -134,6 +135,14 @@ public class ResourceUtils {
 	
 	/* -----------------  ----------------- */
 	
+	public static ArrayList2<IResource> getResourcesAt(Location location) {
+		URI uri = location.toUri();
+		IContainer[] containers = getWorkspaceRoot().findContainersForLocationURI(uri);
+		ArrayList2<IResource> resources = ArrayList2.createFrom(containers);
+		resources.addElements(getWorkspaceRoot().findFilesForLocationURI(uri));
+		return resources;
+	}
+	
 	public static IProject getProject(String name) {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 	}
@@ -181,6 +190,10 @@ public class ResourceUtils {
 	public static void runCoreOperation2(ISchedulingRule rule, IProgressMonitor pm, Operation operation)
 			throws CoreException, CommonException, OperationCancellation {
 		assertNotNull(rule);
+		
+		if(pm.isCanceled()) {
+			return;
+		}
 		
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			@Override
