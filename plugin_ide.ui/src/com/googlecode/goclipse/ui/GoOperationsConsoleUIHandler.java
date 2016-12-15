@@ -10,11 +10,10 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import org.eclipse.ui.console.IOConsoleOutputStream;
-
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.tools.console.LangOperationsConsoleUIHandler;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole.IOConsoleOutputStreamExt;
 
 public class GoOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler {
 	
@@ -25,7 +24,7 @@ public class GoOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler
 			@Override
 			protected void ui_bindActivateOnErrorsListeners() {
 				// dont activate on stderr output, because Go build often uses "-v" flag
-				stdErr.setActivateOnWrite(false);
+				stdErr.console().setActivateOnWrite(false);
 			}
 			
 		};
@@ -33,7 +32,7 @@ public class GoOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler
 	
 	@Override
 	protected OperationConsoleMonitor createConsoleHandler(ProcessStartKind kind, ToolsConsole console,
-			IOConsoleOutputStream stdOut, IOConsoleOutputStream stdErr) {
+			IOConsoleOutputStreamExt stdOut, IOConsoleOutputStreamExt stdErr) {
 		OperationConsoleMonitor monitor = super.createConsoleHandler(kind, console, stdOut, stdErr);
 		monitor.errorOnNonZeroExitValueForBuild = true;
 		return monitor;

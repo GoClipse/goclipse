@@ -16,8 +16,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IOConsole;
-import org.eclipse.ui.console.IOConsoleOutputStream;
 
+import melnorme.lang.ide.ui.tools.console.ToolsConsole.IOConsoleOutputStreamExt;
 import melnorme.util.swt.jface.text.ColorManager;
 
 public abstract class AbstractProcessMessageConsole extends IOConsole {
@@ -29,8 +29,8 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 		}
 	}
 	
-	public final IOConsoleOutputStream stdOut;
-	public final IOConsoleOutputStream stdErr;
+	public final IOConsoleOutputStreamExt stdOut;
+	public final IOConsoleOutputStreamExt stdErr;
 	
 	public volatile boolean disposed;
 	
@@ -41,9 +41,9 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 	protected AbstractProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
-		stdOut = newOutputStream();
-		stdErr = newOutputStream();
-		stdErr.setActivateOnWrite(true);
+		stdOut = new IOConsoleOutputStreamExt(newOutputStream());
+		stdErr = new IOConsoleOutputStreamExt(newOutputStream());
+		stdErr.console().setActivateOnWrite(true);
 	}
 	
 	protected void postToUI_initOutputStreamColors() {

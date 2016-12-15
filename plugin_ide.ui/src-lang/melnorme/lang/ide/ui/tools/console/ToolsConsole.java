@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
@@ -17,18 +18,20 @@ import java.io.IOException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 import melnorme.lang.ide.ui.text.coloring.TextStyling;
 import melnorme.util.swt.jface.text.ColorManager;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.ownership.OwnedObjects;
 
 public class ToolsConsole extends AbstractProcessMessageConsole {
 	
-	public final IOConsoleOutputStream infoOut;
-	public final IOConsoleOutputStream stdErr_silent; // An alternative to stdErr that never activate on write
+	public final IOConsoleOutputStreamExt infoOut;
+	public final IOConsoleOutputStreamExt stdErr_silent; // An alternative to stdErr that never activate on write
 	
 	protected final OwnedObjects owned = new OwnedObjects();
 	
@@ -39,8 +42,8 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	protected ToolsConsole(String name, ImageDescriptor imageDescriptor, boolean initializeColors) {
 		super(name, imageDescriptor);
 		
-		infoOut = newOutputStream();
-		stdErr_silent = newOutputStream();
+		infoOut = new IOConsoleOutputStreamExt(newOutputStream());
+		stdErr_silent = new IOConsoleOutputStreamExt(newOutputStream());
 		
 		if(initializeColors) {
 			postToUI_initOutputStreamColors();
@@ -54,21 +57,21 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 		ui_bindActivateOnErrorsListeners();
 		
 		ToolsConsolePrefs.INFO_COLOR.asField().bindOwnedListener(owned, true, 
-			(newValue) -> infoOut.setColor(getManagedColor(newValue)));
+			(newValue) -> infoOut.console().setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.STDERR_COLOR.asField().bindOwnedListener(owned, true, 
 			(newValue) -> {
-				stdErr.setColor(getManagedColor(newValue));
-				stdErr_silent.setColor(getManagedColor(newValue));
+				stdErr.console().setColor(getManagedColor(newValue));
+				stdErr_silent.console().setColor(getManagedColor(newValue));
 			});
 		ToolsConsolePrefs.STDOUT_COLOR.asField().bindOwnedListener(owned, true, 
-			(newValue) -> stdOut.setColor(getManagedColor(newValue)));
+			(newValue) -> stdOut.console().setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.BACKGROUND_COLOR.asField().bindOwnedListener(owned, true, 
 			(newValue) -> setBackground(getManagedColor(newValue)));
 	}
 	
 	protected void ui_bindActivateOnErrorsListeners() {
 		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.asField().bindOwnedListener(owned, true,
-			(newValue) -> stdErr.setActivateOnWrite(newValue)
+			(newValue) -> stdErr.console().setActivateOnWrite(newValue)
 		);
 	}
 	
@@ -90,11 +93,61 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	}
 	
 	public void writeOperationInfo(String string) {
-		try {
-			infoOut.write(string);
-		} catch (IOException e) {
-			// Do nothing
+		infoOut.write(string);
+	}
+	
+	public static class IOConsoleOutputStreamExt {
+		
+		protected IOConsoleOutputStream console;
+
+		public IOConsoleOutputStreamExt(IOConsoleOutputStream console) {
+			this.console = assertNotNull(console);
 		}
+		
+		public IOConsoleOutputStream console() {
+			return console;
+		}
+		
+		public boolean isIgnorinCommands() {
+			return !PlatformUI.isWorkbenchRunning() && DevelopmentCodeMarkers.TESTS_MODE;
+		}
+		
+		public void write(byte[] b, int off, int len) {
+			if(isIgnorinCommands()) {
+				return;
+			}
+
+			try {
+				console.write(b, off, len);
+			} catch(IOException e) {
+				// Ignore
+			}
+		}
+
+		public void write(String string) {
+			if(isIgnorinCommands()) {
+				return;
+			}
+			
+			try {
+				console.write(string);
+			} catch (IOException e) {
+				// Ignore
+			}
+		}
+
+		public void flush() {
+			if(isIgnorinCommands()) {
+				return;
+			}
+			
+			try {
+				console.flush();
+			} catch (IOException e) {
+				// Ignore
+			}
+		}
+		
 	}
 	
 }

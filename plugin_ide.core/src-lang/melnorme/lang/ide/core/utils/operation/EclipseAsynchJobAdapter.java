@@ -42,7 +42,9 @@ public class EclipseAsynchJobAdapter extends Job {
 	}
 	
 	
-	public static void runUnderAsynchJob(String jobName, IRunnableWithJob runnable) throws InterruptedException {
+	public static Job runUnderAsynchJob(
+		String jobName, IRunnableWithJob runnable
+	) throws InterruptedException {
 		EclipseAsynchJobAdapter job = new EclipseAsynchJobAdapter(jobName);
 		job.schedule();
 		
@@ -55,6 +57,7 @@ public class EclipseAsynchJobAdapter extends Job {
 		} finally {
 			job.done(EclipseCore.createOkStatus(null));
 		}
+		return job;
 	}
 	
 	public static interface IRunnableWithJob {

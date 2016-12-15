@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.tools.console;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
@@ -21,14 +20,14 @@ import melnorme.lang.ide.ui.utils.ConsoleUtils;
 
 public class EngineToolsConsole extends ToolsConsole {
 	
-	public final IOConsoleOutputStream serverStdOut;
-	public final IOConsoleOutputStream serverStdErr;
+	public final IOConsoleOutputStreamExt serverStdOut;
+	public final IOConsoleOutputStreamExt serverStdErr;
 	
 	public EngineToolsConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor, false);
 
-		serverStdOut = newOutputStream();
-		serverStdErr = newOutputStream();
+		serverStdOut = new IOConsoleOutputStreamExt(newOutputStream());
+		serverStdErr = new IOConsoleOutputStreamExt(newOutputStream());
 		
 		postToUI_initOutputStreamColors();
 	}
@@ -37,11 +36,11 @@ public class EngineToolsConsole extends ToolsConsole {
 	protected void ui_initStreamColors() {
 		super.ui_initStreamColors();
 		
-		serverStdOut.setColor(getColorManager().getColor(new RGB(128, 0, 128)));
-		serverStdErr.setColor(getColorManager().getColor(new RGB(255, 0, 200)));
-		serverStdErr.setFontStyle(SWT.BOLD);
+		serverStdOut.console().setColor(getColorManager().getColor(new RGB(128, 0, 128)));
+		serverStdErr.console().setColor(getColorManager().getColor(new RGB(255, 0, 200)));
+		serverStdErr.console().setFontStyle(SWT.BOLD);
 		
-		stdErr.setActivateOnWrite(false);
+		stdErr.console().setActivateOnWrite(false);
 	}
 	
 	public static EngineToolsConsole getConsole() {
