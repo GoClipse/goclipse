@@ -4,7 +4,8 @@
  * Default setting for "auto-insert" of Code Snippets is now false.
  * Fixed stale validation message for location field in New Project Wizard.
  * Fixed stale validation message for Build Command field in Build Targets property page and Launch Configurations dialog.
- * Fixed editor NPE when opening files from a non-workspace VCS revision. 
+ * Fixed editor NPE when opening files from a non-workspace VCS revision.
+ * Invoking a build operation for a project now immediately cancels the pending build operation for that project, if any. 
 
 ### 0.16.1
  * Updated minimum CDT to version `9.0` (CDT from Eclipse Neon).
