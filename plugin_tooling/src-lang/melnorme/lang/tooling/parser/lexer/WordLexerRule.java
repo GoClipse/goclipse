@@ -20,6 +20,8 @@ public class WordLexerRule<TOKEN> implements ILexingRule2<TOKEN> {
 	protected final TOKEN defaultWordToken;
 	protected final HashMap2<String, TOKEN> tokenMap = new HashMap2<>();
 	
+	protected String lastEvaluatedWord;
+	
 	public WordLexerRule(TOKEN whitespaceToken, TOKEN defaultWordToken) {
 		this.whitespaceToken = whitespaceToken;
 		this.defaultWordToken = defaultWordToken;
@@ -41,12 +43,12 @@ public class WordLexerRule<TOKEN> implements ILexingRule2<TOKEN> {
 			return whitespaceToken;
 		}
 		
-		String word = LexingUtils.readJavaIdentifier(reader);
-		if(word.isEmpty()) {
+		lastEvaluatedWord = LexingUtils.readJavaIdentifier(reader);
+		if(lastEvaluatedWord.isEmpty()) {
 			return null;
 		}
 		
-		TOKEN keywordToken = tokenMap.get(word);
+		TOKEN keywordToken = tokenMap.get(lastEvaluatedWord);
 		return (keywordToken == null) ? defaultWordToken : keywordToken;
 	}
 	
