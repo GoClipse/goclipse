@@ -11,7 +11,7 @@
  1. Start Eclipse, go to `Help -> Install New Software...`
  1. Click the `Add...` button, then enter the Update Site URL: **http://goclipse.github.io/releases/** in the Location field, click OK.
  1. Select the recently added update site in the `Work with:` dropdown. Type `GoClipse` in the filter box. Now the Goclipse feature should appear below.
- 1. Select the `GoClipse` feature, and complete the wizard. 
+ 1. Select the `GoClipse` feature, make sure "Contact all update sites during install to find required software" is enabled, and complete the wizard. 
   * Dependencies such as CDT will automatically be added during installation.
  1. Restart Eclipse. 
  1. Follow the instructions from the User Guide's [Configuration section](UserGuide.md#configuration) to configure the required external tools. It is recommended you read the rest of the guide too.  
