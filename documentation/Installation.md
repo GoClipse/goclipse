@@ -11,7 +11,7 @@
  1. Start Eclipse, go to `Help -> Install New Software...`
  1. Click the `Add...` button to add a new update site, enter the URL: **LANG_IDE_UPDATE_SITE** in the Location field, click OK.
  1. Select the recently added update site in the `Work with:` dropdown. Type `LANG_IDE_NAME` in the filter box. Now the LANG_IDE_NAME feature should appear below.
- 1. Select the `LANG_IDE_NAME` feature, and complete the wizard. 
+ 1. Select the `LANG_IDE_NAME` feature, make sure "Contact all update sites during install to find required software" is enabled, and complete the wizard.
   * LANG_IDE_NAME dependencies such as CDT will automatically be added during installation.
  1. Restart Eclipse. 
  1. Follow the instructions from the User Guide's [Configuration section](UserGuide.md#configuration) to configure the required external tools. It is recommended you read the rest of the guide too.  
