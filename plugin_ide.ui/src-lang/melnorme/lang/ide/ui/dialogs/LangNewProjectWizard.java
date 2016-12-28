@@ -178,10 +178,11 @@ public abstract class LangNewProjectWizard extends Wizard
 			LangNewProjectWizard.this.configureCreatedProject(this, monitor);
 		}
 		
-		public void createFolder(IContainer container, IProgressMonitor monitor) throws CoreException {
+		/** @return whether the folder was created or not. (it's not created if it exists already. */
+		public boolean createFolder(IContainer container, IProgressMonitor monitor) throws CoreException {
 			
 			if(container.exists() || !(container instanceof IFolder)) {
-				return;
+				return false;
 			}
 			
 			createFolder(container.getParent(), monitor);
@@ -197,14 +198,17 @@ public abstract class LangNewProjectWizard extends Wizard
 					}
 				}
 			});
+			
+			return true;
 		}
 		
-		public void createFile(IFile file, String contents, boolean openEditor, IProgressMonitor monitor) 
+		/** @return whether the file was created or not. (it's not created if it exists already. */
+		public boolean createFile(IFile file, String contents, boolean openEditor, IProgressMonitor monitor) 
 				throws CoreException {
 			assertNotNull(contents);
 			
 			if(file.exists()) {
-				return;
+				return false;
 			}
 			
 			createFolder(file.getParent(), monitor);
@@ -229,6 +233,7 @@ public abstract class LangNewProjectWizard extends Wizard
 			if(openEditor) {
 				finishActions.add(openEditorRunnable);
 			}
+			return true;
 		}
 
 	}
