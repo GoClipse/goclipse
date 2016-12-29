@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>melnorme_util</artifactId>
-	<version>0.10.0-SNAPSHOT</version>
+	<version>0.12.0-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 
 </project>

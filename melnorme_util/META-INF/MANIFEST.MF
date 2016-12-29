@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: melnorme_util
-Bundle-Version: 0.10.0.qualifier
+Bundle-Version: 0.12.0.qualifier
 Bundle-Name: Melnorme Utils
 Bundle-Vendor: https://github.com/bruno-medeiros/MelnormeEclipse
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
