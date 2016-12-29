@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: Build Target's append environment variables might not replace variables correctly in Windows, due to case issues.
  * Default setting for "auto-insert" of Code Snippets is now false.
  * Fixed stale validation message for location field in New Project Wizard.
  * Fixed stale validation message for Build Command field in Build Targets property page and Launch Configurations dialog.
