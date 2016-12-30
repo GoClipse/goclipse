@@ -21,7 +21,9 @@ For functionality such as code completion, open definition, and editor outline, 
  * The [guru](https://godoc.org/golang.org/x/tools/cmd/guru) tool. 
  * The [godef](https://github.com/rogpeppe/godef) tool. 
  
-The path to the executable of these two tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
+The path to the executable of these three tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
+
+ * The [gometalinter](https://github.com/alecthomas/gometalinter) tool is required for the `lint` build target, and usually a group of linters using `gometalinter --install`.
 
 ### Project setup
 
