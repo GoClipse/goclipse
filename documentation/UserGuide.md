@@ -21,10 +21,11 @@ For functionality such as code completion, open definition, and editor outline, 
  * The [guru](https://godoc.org/golang.org/x/tools/cmd/guru) tool. 
  * The [godef](https://github.com/rogpeppe/godef) tool. 
  
-The path to the executable of these three tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
+The path to the executable of these tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
 
  * The [gometalinter](https://github.com/alecthomas/gometalinter) tool is required for the `lint` build target
  * You'll ususally want a group of linters, installed using `gometalinter --install`.
+ 
 
 ### Project setup
 
@@ -83,7 +84,7 @@ Alternatively, you can start a launch by selecting a Go package folder in the Pr
 | **Windows Note:** _Even with the above, the Go toolchain does not seem to fully support debugging in Windows. While setting breakpoints and step/continue seems to work, inspecting variables doesn't work - garbage values are displayed._ |
 |----|
 
-| **OS X note:** _The GDB that is included with OS X doesn't work properly. You'll need to install the latest GDB from Homebrew. See [this article](http://ntraft.com/installing-gdb-on-os-x-mavericks/) for details. Or alternatively, [this SO link](https://stackoverflow.com/questions/33162757/how-to-install-gdb-debugger-in-mac-osx-el-capitan), which might be more up-to-date._ |
+| **OS X note:** _The GDB that is included with OS X doesn't work properly. You'll need to install the latest GDB from Homebrew or Macports. See [this SO question](https://stackoverflow.com/questions/33162757/how-to-install-gdb-debugger-in-mac-osx-el-capitan) for more up-to-date information._ |
 |----|
 
 

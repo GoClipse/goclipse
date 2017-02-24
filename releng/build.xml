@@ -102,7 +102,7 @@ overwriting the previous one. (This removes history from the git repo it is push
 	<target name="prepareProjectSite.initGit" if="projectSiteGitURL" depends="clean">
 		<condition property="prepareProjectSite.initGit._gitArg" 
 			value="init" 
-			else="clone -n ${projectSiteGitURL} ${_projectSiteDir}">
+			else="clone --depth 1 -n ${projectSiteGitURL} ${_projectSiteDir}">
 			<istrue value="${resetGitHistory}"/>
 		</condition>
 		<runGit dir="${_projectSiteDir}" argLine="${prepareProjectSite.initGit._gitArg}" />

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import melnorme.lang.tooling.utils.ArgumentsParser;
+import melnorme.lang.utils.EnvUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
@@ -106,7 +107,7 @@ public class CommandInvocation {
 			environment.clear();			
 		}
 		for (Entry<String, String> envVar : getEnvironmentVars()) {
-			environment.put(envVar.getKey(), envVar.getValue());
+			EnvUtils.putVarInEnvMap(environment, envVar.getKey(), envVar.getValue());
 		}
 		
 		return pb;
