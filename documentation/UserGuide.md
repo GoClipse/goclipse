@@ -23,6 +23,10 @@ For functionality such as code completion, open definition, and editor outline, 
  
 The path to the executable of these tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
 
+ * The [gometalinter](https://github.com/alecthomas/gometalinter) tool is required for the `lint` build target
+ * You'll ususally want a group of linters, installed using `gometalinter --install`.
+ 
+
 ### Project setup
 
 ##### Project creation:
