@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Reverted 0.16.1 change where GOROOT would not be set when invoking Go. (#247)
+   * According to https://golang.org/doc/install#install GOROOT does need to be set for custom locations.
  * Fixed: Build Target's append environment variables might not replace variables correctly in Windows, due to case issues.
  * Default setting for "auto-insert" of Code Snippets is now false.
  * Fixed stale validation message for location field in New Project Wizard.

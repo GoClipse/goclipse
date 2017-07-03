@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui;
 
 public interface PreferencesMessages_Actual {
 	
-	public static String ROOT_SDKGroup_Label = "Go installation:";
+	public static String ROOT_SDKGroup_Label = "Go installation (GOROOT):";
 	public static String ROOT_SDKGroup_path_Label = "Directory: ";
 	
 }

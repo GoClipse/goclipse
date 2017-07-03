@@ -129,10 +129,8 @@ public class GoEnvironment {
 	public void setupProcessEnv(ProcessBuilder pb, boolean goRootInPath) throws CommonException {
 		Map<String, String> env = pb.environment();
 		
-		// BM: This code setting GOROOT has been commented out, this causes problems for non-archive Go installations,
-		// and google information seems to indicate this should not be set at all. 
-		// Probably this came from old code that doesn't apply anymore. 
-//		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot.asString());
+		// GOROOT needs to be set for custom locations, see https://golang.org/doc/install#install
+		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot.asString());
 		
 		putMapEntry(env, GoEnvironmentConstants.GOPATH, getGoPathString());
 		

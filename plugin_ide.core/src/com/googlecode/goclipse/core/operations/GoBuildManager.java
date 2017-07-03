@@ -413,6 +413,7 @@ public class GoBuildManager extends BuildManager {
 				
 				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 				
+				addOperation(newMessageOperation("  with GOROOT: " + goEnv.getGoRoot().asString() + "\n"));
 				addOperation(newMessageOperation("  with GOPATH: " + goEnv.getGoPathString() + "\n"));
 			}
 		};
