@@ -411,10 +411,12 @@ public class GoBuildManager extends BuildManager {
 			protected void addCompositeBuildOperationMessage() throws CommonException {
 				super.addCompositeBuildOperationMessage();
 				
-				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
-				
-				addOperation(newMessageOperation("  with GOROOT: " + goEnv.getGoRoot().asString() + "\n"));
-				addOperation(newMessageOperation("  with GOPATH: " + goEnv.getGoPathString() + "\n"));
+				// experimental: this code was removed, and instead this info is printed by the tool ruun
+				// which will print it for any Go tool invoked, not just for build
+//				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+//				
+//				addOperation(newMessageOperation("  with GOROOT: " + goEnv.getGoRoot().asString() + "\n"));
+//				addOperation(newMessageOperation("  with GOPATH: " + goEnv.getGoPathString() + "\n"));
 			}
 		};
 	}

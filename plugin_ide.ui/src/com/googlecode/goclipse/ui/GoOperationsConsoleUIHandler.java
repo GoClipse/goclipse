@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
+
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.tools.console.LangOperationsConsoleUIHandler;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole.IOConsoleOutputStreamExt;
+import melnorme.lang.utils.EnvUtils;
 
 public class GoOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler {
 	
@@ -36,6 +39,20 @@ public class GoOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler
 		OperationConsoleMonitor monitor = super.createConsoleHandler(kind, console, stdOut, stdErr);
 		monitor.errorOnNonZeroExitValueForBuild = true;
 		return monitor;
+	}
+	
+	@Override
+	protected String getPrefaceText(String prefixText, String suffixText, ProcessBuilder pb) {
+		String prefaceText = super.getPrefaceText(prefixText, suffixText, pb);
+		String goRoot= EnvUtils.getVarFromEnvMap(pb.environment(), GoEnvironmentConstants.GOROOT);
+		if (goRoot != null) {
+			prefaceText += "   with GOROOT: " + goRoot + "\n";
+		}
+		String goPath = EnvUtils.getVarFromEnvMap(pb.environment(), GoEnvironmentConstants.GOPATH);
+		if (goPath != null) {
+			prefaceText += "   with GOPATH: " + goPath + "\n";
+		}
+		return prefaceText;
 	}
 	
 	@Override
