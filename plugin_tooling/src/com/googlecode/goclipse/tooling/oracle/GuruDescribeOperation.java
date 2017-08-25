@@ -31,7 +31,8 @@ public class GuruDescribeOperation implements ToolOutputParseHelper {
 		
 		ArrayList2<String> commandLine = ArrayList2.create(
 			guruPath,
-			"-json",
+			"-format",
+			"json",
 			"describe",
 			fileLoc.toPathString() + ":#" + offset + ",#" + offset
 		);
